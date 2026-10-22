@@ -47,6 +47,12 @@ nav{display:flex;gap:4px;background:var(--panel);border:1px solid var(--line);bo
 nav:empty{display:none}
 nav button{background:none;border:0;padding:7px 13px;border-radius:7px;font-weight:600;font-size:15px;color:var(--muted)}
 nav button[aria-selected="true"]{background:var(--blue);color:#fff}
+nav a.navlink{padding:7px 13px;border-radius:7px;font-weight:700;font-size:15px;color:var(--cyan);text-decoration:none;border:1px dashed rgba(0,252,241,.45)}
+nav a.navlink:hover,nav a.navlink:focus-visible{background:rgba(0,252,241,.12)}
+.irpanel{border-color:rgba(0,252,241,.5);background:linear-gradient(135deg,rgba(0,252,241,.08),rgba(27,54,255,.10)),var(--panel)}
+.irpanel .row a{text-decoration:none}
+.irpanel .row a.btn{color:var(--ink)}
+.irpanel .row a.ghost{color:var(--text)}
 #who{display:flex;align-items:center;gap:8px;font-size:15px}
 #who:empty{display:none}
 .whoname{font-weight:700}
@@ -5145,6 +5151,7 @@ function renderToday(){
   view.innerHTML=`
   <div class="runhead"><div><span class="eyebrow">Today</span><h1 class="ph">Your cases, ${esc(first)}</h1></div>${guideHidden()?'<button class="link" data-guide="show">How the Lab works</button>':''}</div>
   ${isFreeIndividual()?upgradeBannerHTML():joinBoxHTML()}
+  ${incidentRoomHTML()}
   ${caseNotesHTML()}
   ${guideHidden()?'':guideHTML()}
   <div class="two">
@@ -5549,7 +5556,7 @@ async function startUpgrade(kind='pass'){
   alertBox('Checkout opened in a new tab. Pay with '+S.user.email+', then come back here: your account unlocks automatically.');
 }
 const priceTag=(now,later,launch)=>launch?`<b>£${now}</b> <s>£${later}</s>`:`<b>£${now}</b>`;
-const PASS_FEATURES=()=>[`All ${Object.keys(TOP).length} GCSE topics, with new questions every time`,'Paper 1 and Paper 2 practice sets','The full Exam room: grade 7–9 questions','"Show me how" worked examples on every topic',`One payment, valid until ${fmtDate(passExpiry())}`];
+const PASS_FEATURES=()=>[`All ${Object.keys(TOP).length} GCSE topics, with new questions every time`,'Unlimited Incident Room games: solo cases, medals and your case record','Paper 1 and Paper 2 practice sets','The full Exam room: grade 7–9 questions','"Show me how" worked examples on every topic',`One payment, valid until ${fmtDate(passExpiry())}`];
 // Compact banner for the Today page, with the class-code box alongside
 function upgradeBannerHTML(){
   if(!isFreeIndividual()) return '';
@@ -6262,6 +6269,7 @@ const statsFrom=attempts=>{const t={};for(const a of attempts){const s=t[a.topic
 const errorsFrom=attempts=>{const e={};for(const a of attempts) if(a.error_id&&ERR[a.error_id]) e[a.error_id]=(e[a.error_id]||0)+1;return Object.entries(e).sort((x,y)=>y[1]-x[1])};
 
 /* ---------- boot / session ---------- */
+try{const n=new URLSearchParams(location.search).get('next');if(n==='incident-room'||n==='incident-room-host')sessionStorage.setItem('mf-next',n)}catch(e){}
 async function boot(){
   if(api.mode!=='demo') $('.demobar').hidden=true;
   if(api.pendingLink){renderLinkContinue();return}
@@ -6291,6 +6299,8 @@ function renderSetPassword(kind){
   const f=$('#fPw'); f.onsubmit=e=>{e.preventDefault();busy(f,async()=>{await api.setPassword($('#pw-new').value);api.linkType=null;alertBox('Password saved');await afterLogin()})};
 }
 async function afterLogin(){
+  const next=(()=>{try{const n=sessionStorage.getItem('mf-next');sessionStorage.removeItem('mf-next');return n}catch(e){return null}})();
+  if(next==='incident-room'||next==='incident-room-host'){location.href=next==='incident-room-host'?'incident-room/?host':'incident-room/';return}
   S.access=await api.access(S.user);
   S.attempts=await api.attempts(S.user.id);
   S.assignments=S.user.role==='student'?await api.studentAssignments(S.user.id):[];
@@ -6396,7 +6406,8 @@ function alertBox(msg){const p=document.createElement('p');p.className='toast';p
 
 /* ---------- shell ---------- */
 function renderShell(){
-  $('#nav').innerHTML=VIEWS[S.user.role].map(([k,l])=>`<button role="tab" data-view="${k}" aria-selected="${S.view===k}">${l}</button>`).join('');
+  $('#nav').innerHTML=VIEWS[S.user.role].map(([k,l])=>`<button role="tab" data-view="${k}" aria-selected="${S.view===k}">${l}</button>`).join('')
+    +`<a class="navlink" href="incident-room/${S.user.role==='student'?'':'?host'}">Incident Room</a>`;
   $('#who').innerHTML=`<button class="ghost sm reportbtn" type="button" data-feedback title="Report a bug, a wrong mark or send an idea">⚑ <span>Report a problem</span></button>${isFreeIndividual()?'<button class="upgradepill" type="button" data-upgrade="pass" title="Unlock every topic until your exams">⭐ Upgrade</button>':''}<span class="whoname">${esc(S.user.name)}</span><span class="tag">${isFreeIndividual()?'Free plan':ROLE_LABEL[S.user.role]}</span><button class="link" id="signout">Sign out</button>`;
   $('#signout').onclick=signOut;
 }
@@ -6665,12 +6676,23 @@ async function renderAccount(){
   const rd=$('#resetDemo'); if(rd) rd.onclick=async e=>{const b=e.currentTarget;if(b.dataset.armed){await api.resetDemo();S.user=null;renderAuth()}else{b.dataset.armed=1;b.textContent='Tap again to reset everything'}};
 }
 
+/* ---------- Incident Room (the game layer, served from /incident-room/) ---------- */
+function incidentRoomHTML(){
+  if(S.user.role==='student') return `<div class="panel irpanel"><div class="phead"><h2>Incident Room</h2><span class="hint">Maths games</span></div>
+    <p>Spot the mistake, beat the clock and earn your medals. Play solo cases, or join a live game with the code on the board.</p>
+    <div class="row"><a class="btn" href="incident-room/">Play solo cases</a><a class="ghost" href="join/">Join a live game</a></div></div>`;
+  return `<div class="panel irpanel"><div class="phead"><h2>Incident Room</h2><span class="hint">Live maths games for your class</span></div>
+    <p>Show a live quiz on the board: students join on their tablets with a code, answer every GCSE topic in six question types, and finish with a medal ceremony and a class case report.</p>
+    <div class="row"><a class="btn" href="incident-room/?host">Host a live game</a><a class="ghost" href="incident-room/">Team showdown and solo</a></div></div>`;
+}
+
 /* ---------- teacher: classes ---------- */
 async function renderClasses(){
   view.className='page';
   const classes=await api.teacherClasses(S.user.id);
   if(!S.teacherClass&&classes[0]) S.teacherClass=classes[0].id;
   view.innerHTML=`<div><span class="eyebrow">Teacher</span><h1 class="ph">My classes</h1></div>
+  ${incidentRoomHTML()}
   <div class="tabsrow">${classes.map(c=>`<button class="chip" data-class="${c.id}" aria-pressed="${c.id===S.teacherClass}">${esc(c.name)} <span class="hint">${c.students}</span></button>`).join('')}
     <form id="fClass" class="inline" novalidate><input class="inp" id="c-name" placeholder="New class, e.g. 11X3" aria-label="New class name"><button class="ghost" type="submit">Add class</button><p class="formerr" hidden></p></form></div>
   <div id="classDetail">${classes.length?'':'<div class="empty"><b>No classes yet</b>Add a class, then share its code with your students.</div>'}</div>`;

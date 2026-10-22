@@ -316,12 +316,33 @@ details summary { cursor: pointer; }
   .pod-top, .cel-win { opacity: 1; transform: none; animation: none; } .plinth { height: var(--h); animation: none; }
   .pod-top .medal-svg, .cel-win .medal-svg.big, .spot, .glint, .cer-title { animation: none; } .spot { opacity: .7; } .cel-wait { display: none; } }
 
+/* plans and upgrades */
+.plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.plan { border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 10px; background: var(--bg); min-width: 0; }
+.plan.best { border-color: var(--cyan); }
+.plan h3 { font-size: 1.2rem; }
+.plan ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 4px; color: var(--muted); }
+.plan .price b { font-family: var(--mono); font-size: 1.8rem; color: var(--cyan); }
+.plan .btn { align-self: flex-start; }
+.freenote { border: 1px dashed var(--amber); border-radius: 10px; padding: 10px 14px; color: var(--muted); }
+.freenote b { color: var(--amber); }
+.linkbtn { background: none; border: 0; padding: 0; color: var(--cyan); text-decoration: underline; font: inherit; cursor: pointer; }
+.chip.lk { opacity: .55; border-style: dashed; }
+.chip.lk:hover { opacity: .85; }
+.upsell { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; border-color: var(--amber); }
+.upsell > div:first-child { flex: 1 1 280px; min-width: 0; }
+
 </style>
 <script>
-/* ===== Supabase details (Supabase dashboard > Project Settings > API). Use the publishable key, never the secret key. ===== */
+/* Settings. The Supabase key is the publishable one (safe in a web page); never put the secret key here. */
 window.IR_CONFIG = {
   url: "https://duvxykqlrekqhfvsvnrj.supabase.co",
-  key: "sb_publishable_llHxDDCcByPpdbi5G2Hqtg_DqGcnuHn"
+  key: "sb_publishable_llHxDDCcByPpdbi5G2Hqtg_DqGcnuHn",
+  labUrl: "https://lab.mathsforensics.com/",
+  examPassUrl: "https://www.mathsforensics.com/mathsforensics-lab-checkout",
+  teacherProUrl: "",
+  prices: { pass: "£49", passLater: "£59", teacherPro: "£49 a year" },
+  supportEmail: "support@mathsforensics.com"
 };
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.js"></script>
@@ -425,7 +446,7 @@ function makePerm(q) {
 /* questions that match a game's settings: tier (F = Foundation only, H = everything), chosen topics, spot-only */
 function poolFor(cfg) {
   const topics = cfg.topics || [];
-  return QUESTIONS.filter(q => (cfg.tier !== "F" || q.tier === "F") && (!topics.length || topics.includes(q.topic)) && (cfg.mix !== "spot" || q.type === "spot"));
+  return QUESTIONS.filter(q => (cfg.tier !== "F" || q.tier === "F") && (!topics.length || topics.includes(q.topic)) && (!cfg.allow || cfg.allow.includes(q.topic)) && (cfg.mix !== "spot" || q.type === "spot"));
 }
 function pickQuestions(n, cfg) {
   const pool = poolFor(cfg);
@@ -1292,14 +1313,15 @@ const Sound = (() => {
 /* ================= APP ================= */
 const CFG = window.IR_CONFIG || {};
 const JOIN_URL = "lab.mathsforensics.com/join";
-const LAB_URL = "https://lab.mathsforensics.com/";
+const LAB_URL = CFG.labUrl || "https://lab.mathsforensics.com/";
+const signInUrl = next => `${LAB_URL}?next=${next || "incident-room"}`;
 const liveConfigured = () => !!(window.supabase && CFG.url && CFG.key && !/PASTE/.test(CFG.url + CFG.key));
 let sbClient = null;
 const sb = () => sbClient || (sbClient = window.supabase.createClient(CFG.url, CFG.key, { realtime: { params: { eventsPerSecond: 20 } } }));
 
 const app = document.getElementById("app");
-const S = { player: { name: "", avatar: "det-f" }, user: null, solo: null, teams: null, host: null, stu: null, pad: null, guarded: false };
-window.IR = { S, QUESTIONS, normAns, isCorrect, typedOk, TOPICS, poolFor, pickQuestions };
+const S = { player: { name: "", avatar: "det-f" }, user: null, acc: null, solo: null, teams: null, host: null, stu: null, pad: null, guarded: false };
+window.IR = { S, QUESTIONS, normAns, isCorrect, typedOk, TOPICS, poolFor, pickQuestions, FREE_TOPICS_IR: () => FREE_TOPICS_IR };
 let tick = null;
 const stopTimer = () => { if (tick) { clearInterval(tick); tick = null; } };
 /* ---------- celebrations: medals, podium reveal, confetti ---------- */
@@ -1528,6 +1550,90 @@ async function initAuth() {
     if (!S.player.name) S.player.name = S.user.name;
   } catch (e) {}
 }
+/* ================= PLANS: what this person can play ================= */
+/* S.acc is null until we know the plans are switched on (migration 007 run); while null nothing is locked. */
+const FREE_TOPICS_IR = ["N1", "N2", "N5", "A1", "A2", "A6", "R1", "R2", "G1", "G4", "P1", "S1"];
+const GUEST_SOLO_LIMIT = 2;
+const PRICES = Object.assign({ pass: "£49", passLater: "£59", teacherPro: "£49 a year" }, CFG.prices || {});
+const gating = () => !!S.acc;
+const hostUnlimited = () => !gating() || ["pro", "school", "trial"].includes(S.acc.host_plan);
+const soloUnlimited = () => !gating() || (S.acc.signed_in && (S.acc.lab_level === "full" || hostUnlimited()));
+const soloAllow = () => (soloUnlimited() ? null : FREE_TOPICS_IR);
+const fmtDay = d => { try { return new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "long" }); } catch (e) { return ""; } };
+async function loadAccess() {
+  if (!liveConfigured()) return;
+  try {
+    const { data, error } = await sb().rpc("ir_access");
+    S.acc = error ? null : (data || { signed_in: false });
+  } catch (e) { S.acc = null; }
+}
+function guestSolo() {
+  const today = new Date().toISOString().slice(0, 10);
+  const g = store.get("ir-guest-solo", { day: today, n: 0 });
+  return g.day === today ? g : { day: today, n: 0 };
+}
+function planLabel() {
+  if (!gating()) return S.user ? "Signed in · " + S.user.name : "Playing as a guest";
+  const a = S.acc;
+  if (!a.signed_in) { const left = Math.max(0, GUEST_SOLO_LIMIT - guestSolo().n); return `Guest · ${left} of ${GUEST_SOLO_LIMIT} free games left today`; }
+  if (a.host_plan === "pro") return "Teacher Pro";
+  if (a.host_plan === "school") return "School licence";
+  if (a.host_plan === "trial") return `Teacher Pro trial · until ${fmtDay(a.trial_ends)}`;
+  if (a.lab_level === "full") return a.lab_source === "school" ? "School licence" : "Exam Pass";
+  return `Free plan · ${Math.max(0, a.solo_limit - a.solo_today)} of ${a.solo_limit} solo games left today`;
+}
+const upgradeCard = (kind) => kind === "pass" ? `<div class="plan best"><span class="eyebrow">For students</span><h3>Lab Exam Pass</h3>
+    <p class="price"><b>${esc(PRICES.pass)}</b>${PRICES.passLater && PRICES.passLater !== PRICES.pass ? ` <span class="muted small">launch price, then ${esc(PRICES.passLater)}</span>` : ""}</p>
+    <ul><li>Unlimited solo games on all 76 GCSE topics</li><li>Your case record: promotions, medals and topics to practise</li><li>Everything in Maths Forensics Lab, until your exams</li></ul>
+    <a class="btn primary" href="${esc(CFG.examPassUrl || LAB_URL)}">Get the Exam Pass</a></div>`
+  : `<div class="plan best"><span class="eyebrow">For teachers</span><h3>Teacher Pro</h3><p class="price"><b>${esc(PRICES.teacherPro)}</b></p>
+    <ul><li>Unlimited live games and team showdowns</li><li>All 432 questions, Foundation and Higher, every topic</li><li>Class case reports after every game</li></ul>
+    ${CFG.teacherProUrl ? `<a class="btn primary" href="${esc(CFG.teacherProUrl)}">Get Teacher Pro</a>` : `<span class="tag">On sale soon</span>`}</div>`;
+function upgradeScreen(reason, back, retry) {
+  stopTimer(); S.pad = null;
+  const a = S.acc || {};
+  const canTrial = reason === "host_limit" && a.signed_in && !a.trial_used;
+  const head = { solo_limit: ["You've played your free games for today", `Free accounts get ${a.solo_limit || GUEST_SOLO_LIMIT} solo games a day on ${FREE_TOPICS_IR.length} sample topics. Come back tomorrow, or unlock everything now.`],
+    host_limit: ["You've hosted your 3 free games this month", "Free teacher accounts can host 3 live games or team showdowns a month. Start a free trial or go Pro for unlimited games."],
+    locked: ["That topic is part of the Exam Pass", `The free plan covers ${FREE_TOPICS_IR.length} sample topics. The Exam Pass unlocks all 76.`] }[reason];
+  set(`${brand(planLabel())}<div class="tape"></div>
+    <section class="panel"><span class="eyebrow">Upgrade</span><h2>${esc(head[0])}</h2><p class="muted">${esc(head[1])}</p>
+      ${canTrial ? `<div class="row"><button class="btn primary big" id="trial">Start my 30-day free trial</button></div><p class="muted small">Teacher Pro free for 30 days. No card needed, and it doesn't renew.</p>` : ""}
+      <div class="plans">${reason === "host_limit" ? upgradeCard("pro") : upgradeCard("pass")}
+        ${reason === "host_limit" ? `<div class="plan"><span class="eyebrow">For schools</span><h3>Department licence</h3><p class="muted">Every maths teacher and student in your school, with Maths Forensics Lab included. Email <b>${esc(CFG.supportEmail || "support@mathsforensics.com")}</b> for a quote.</p></div>`
+          : `<div class="plan"><span class="eyebrow">At school?</span><h3>Join your class</h3><p class="muted">If your school has a licence, enter your class code in Maths Forensics Lab and everything unlocks.</p><a class="btn" href="${LAB_URL}">Open the Lab</a></div>`}</div>
+      <div class="row"><button class="btn" id="recheck">I've just paid: check again</button><button class="btn quiet" id="back">Back</button></div>
+    </section>`, reason === "host_limit");
+  const t = document.getElementById("trial");
+  if (t) t.onclick = async () => { t.disabled = true; try { const { data, error } = await sb().rpc("ir_start_trial"); if (!error && data) S.acc = data; } catch (e) {} retry ? retry() : back(); };
+  document.getElementById("recheck").onclick = async () => { await loadAccess(); retry ? retry() : back(); };
+  document.getElementById("back").onclick = back;
+}
+function signInToHost(back) {
+  set(`${brand("Host a game")}<section class="panel"><h2>Sign in to host a game</h2>
+    <p class="muted">Hosting is free with a Maths Forensics Lab account: 3 live games or team showdowns a month, or unlimited with Teacher Pro (${esc(PRICES.teacherPro)}). New accounts can try Teacher Pro free for 30 days.</p>
+    <div class="row"><a class="btn primary" href="${signInUrl("incident-room-host")}">Sign in or create a free account</a><button class="btn quiet" id="back">Back</button></div></section>`);
+  document.getElementById("back").onclick = back;
+}
+/* Ask the server before a game starts; calls go() if allowed */
+async function claimGame(kind, go, back) {
+  if (!gating()) return go();
+  if (kind === "host" && !S.acc.signed_in) return signInToHost(back);
+  if (kind === "solo" && !S.acc.signed_in) {
+    const g = guestSolo();
+    if (g.n >= GUEST_SOLO_LIMIT) return upgradeScreen("solo_limit", back, () => claimGame(kind, go, back));
+    store.set("ir-guest-solo", { day: g.day, n: g.n + 1 });
+    return go();
+  }
+  try {
+    const { data, error } = await sb().rpc("ir_claim", { p_kind: kind });
+    if (error || !data) return go();
+    if (data.access) S.acc = data.access;
+    if (data.ok) return go();
+    upgradeScreen(data.reason, back, () => claimGame(kind, go, back));
+  } catch (e) { go(); }
+}
+
 async function saveResult(r) {
   if (!S.user || !liveConfigured()) return { saved: false, why: "guest" };
   try {
@@ -1545,7 +1651,7 @@ function topicTally(results) {
   return t;
 }
 const saveNote = res => !res ? "" : res.saved ? `<p class="good small">Saved to your case record.</p>`
-  : res.why === "guest" ? `<p class="muted small">Playing as a guest, so this isn't saved. <a href="${LAB_URL}">Sign in to the Lab</a> to keep a case record.</p>`
+  : res.why === "guest" ? `<p class="muted small">Playing as a guest, so this isn't saved. <a href="${signInUrl()}">Sign in to the Lab</a> to keep a case record.</p>`
   : res.why === "setup" ? `<p class="muted small">Case records aren't switched on yet, so this wasn't saved.</p>`
   : `<p class="muted small">Couldn't save this result. Check the connection.</p>`;
 
@@ -1568,7 +1674,7 @@ function signIn() {
       ${S.user ? `<p>Signed in as <b>${esc(S.user.name)}</b> (${esc(S.user.email)}). Your solo and live results are saved to your case record.</p>
         <div class="row"><button class="btn primary" id="toProfile">Continue as ${esc(S.user.name)}</button></div>`
       : `<p class="muted">Sign in to Maths Forensics Lab with Google, Microsoft or your Lab email to save your results and earn promotions. Then come back here.</p>
-        <div class="row"><a class="btn primary" href="${LAB_URL}">Sign in to the Lab</a><button class="btn" id="toProfile">Play as a guest</button></div>`}
+        <div class="row"><a class="btn primary" href="${signInUrl()}">Sign in to the Lab</a><button class="btn" id="toProfile">Play as a guest</button></div>`}
     </section>
     <section class="panel">
       <span class="eyebrow">Teacher</span>
@@ -1602,7 +1708,8 @@ function profile() {
 function lobby() {
   stopTimer(); S.pad = null; Sound.stopMusic();
   if (!S.host && !S.stu) disarmGuard();
-  set(`<div class="hud">${brand(S.user ? "Signed in · " + S.user.name : "Playing as a guest")}
+  const showUpgrade = gating() && !soloUnlimited();
+  set(`<div class="hud">${brand(planLabel())}
       <div class="who">${avatarSvg(S.player.avatar, "sm")}${esc(S.player.name)}</div></div>
     <div class="tape"></div>
     <div class="modes">
@@ -1619,6 +1726,8 @@ function lobby() {
         <p class="muted">2 to 4 teams answer on mini whiteboards. You reveal and award points.</p>
         <span class="tag">No devices needed</span></button>
     </div>
+    ${showUpgrade ? `<section class="panel upsell"><div><span class="eyebrow">Free plan</span><h3>Unlock all 76 GCSE topics</h3><p class="muted">The Exam Pass gives you unlimited solo games, your case record and all of Maths Forensics Lab.</p></div>
+      <div class="row"><a class="btn primary" href="${esc(CFG.examPassUrl || LAB_URL)}">Get the Exam Pass · ${esc(PRICES.pass)}</a>${S.acc.signed_in ? "" : `<a class="btn" href="${signInUrl()}">Sign in</a>`}</div></section>` : ""}
     <div class="row"><button class="btn" id="out">Back to the start</button></div>`);
   document.getElementById("solo").onclick = soloSetup;
   document.getElementById("record").onclick = recordScreen;
@@ -1629,10 +1738,11 @@ function lobby() {
 const choice = (attr, val, opts) => `<div class="choice">${opts.map(([v, l]) => `<button class="btn" data-${attr}="${v}" aria-pressed="${String(v) === String(val)}">${l}</button>`).join("")}</div>`;
 const bindChoice = (attr, fn) => app.querySelectorAll(`[data-${attr}]`).forEach(b => b.onclick = () => fn(b.dataset[attr]));
 const withFilter = (cfg, defaults) => { const c = Object.assign({}, defaults, cfg || {}); c.tier = c.tier === "F" ? "F" : "H"; c.topics = Array.isArray(c.topics) ? c.topics.filter(id => TOPICS[id]) : []; c.open = []; c.picking = c.topics.length > 0; return c; };
-const saveCfg = (key, cfg) => { const { open, picking, ...keep } = cfg; store.set(key, keep); };
+const saveCfg = (key, cfg) => { const { open, picking, allow, ...keep } = cfg; store.set(key, keep); };
 const filterSummary = cfg => `${cfg.tier === "F" ? "Foundation" : "Higher"} · ${cfg.topics.length ? cfg.topics.length + " topic" + (cfg.topics.length > 1 ? "s" : "") : "all topics"}`;
 function topicPicker(cfg) {
   const avail = id => QUESTIONS.some(q => q.topic === id && (cfg.tier !== "F" || q.tier === "F"));
+  const lk = id => !!cfg.allow && !cfg.allow.includes(id);
   const n = poolFor(cfg).length;
   const picking = cfg.picking || cfg.topics.length > 0;
   const boxes = Object.entries(STRANDS).map(([s, name]) => {
@@ -1640,9 +1750,10 @@ function topicPicker(cfg) {
     if (!ids.length) return "";
     const on = ids.filter(id => cfg.topics.includes(id)).length;
     return `<details data-strand-box="${s}" ${(on && on < ids.length) || cfg.open.includes(s) ? "open" : ""}><summary><span class="sname">${name}</span><span class="muted small">${on ? `${on} of ${ids.length} chosen` : `${ids.length} topics`}</span></summary>
-      <div class="chips"><button class="chip all" data-strand="${s}">${on === ids.length ? "Clear all" : "Select all"}</button>${ids.map(id => `<button class="chip" data-topic="${id}" aria-pressed="${cfg.topics.includes(id)}">${esc(TOPICS[id])}</button>`).join("")}</div></details>`;
+      <div class="chips"><button class="chip all" data-strand="${s}">${on === ids.length ? "Clear all" : "Select all"}</button>${ids.map(id => lk(id) ? `<button class="chip lk" data-locked="${id}" title="Unlock with the Exam Pass">🔒 ${esc(TOPICS[id])}</button>` : `<button class="chip" data-topic="${id}" aria-pressed="${cfg.topics.includes(id)}">${esc(TOPICS[id])}</button>`).join("")}</div></details>`;
   }).join("");
-  return `<span class="eyebrow">Tier</span>${choice("tier", cfg.tier, [["F", "Foundation"], ["H", "Higher (includes Foundation)"]])}
+  return `${cfg.allow ? `<div class="freenote"><b>Free plan:</b> ${cfg.allow.length} sample topics (🔒 shows the rest). <button class="linkbtn" data-ui="upgrade">Unlock all 76 topics</button></div>` : ""}
+    <span class="eyebrow">Tier</span>${choice("tier", cfg.tier, [["F", "Foundation"], ["H", "Higher (includes Foundation)"]])}
     <span class="eyebrow">Topics</span>${choice("tmode", picking ? "pick" : "all", [["all", "All GCSE topics"], ["pick", "Choose topics"]])}
     ${picking ? `<div class="chips strands">${Object.entries(STRANDS).map(([s, name]) => {
         const ids = TOPIC_IDS.filter(id => strandOf(id) === s && avail(id));
@@ -1665,10 +1776,12 @@ function bindTopicPicker(cfg, redraw) {
   app.querySelectorAll("[data-strand]").forEach(b => b.onclick = () => {
     const s = b.dataset.strand;
     const ids = [...app.querySelectorAll(`[data-strand-box="${s}"] [data-topic]`)].map(x => x.dataset.topic);
+    if (!ids.length) return;
     const all = ids.every(id => cfg.topics.includes(id));
     cfg.topics = all ? cfg.topics.filter(id => !ids.includes(id)) : [...new Set([...cfg.topics, ...ids])];
     redraw();
   });
+  app.querySelectorAll("[data-locked], [data-ui=upgrade]").forEach(b => b.onclick = () => upgradeScreen("locked", () => redraw()));
   app.querySelectorAll("[data-strand-box]").forEach(d => d.addEventListener("toggle", () => {
     const s = d.dataset.strandBox;
     cfg.open = d.open ? [...new Set([...cfg.open, s])] : cfg.open.filter(x => x !== s);
@@ -1691,7 +1804,7 @@ async function recordScreen() {
     return set(`<div class="hud">${brand("Case record")}</div>
       <section class="panel"><h2>Sign in to keep a case record</h2>
       <p class="muted">Your case record saves every solo and live game: your scores, promotions from Constable to Superintendent, and medals. Sign in to Maths Forensics Lab, then come back to Incident Room.</p>
-      <div class="row"><a class="btn primary" href="${LAB_URL}">Sign in to the Lab</a><button class="btn" id="back">Back</button></div></section>`), document.getElementById("back").onclick = lobby;
+      <div class="row"><a class="btn primary" href="${signInUrl()}">Sign in to the Lab</a><button class="btn" id="back">Back</button></div></section>`), document.getElementById("back").onclick = lobby;
   }
   set(`<div class="hud">${brand("Case record")}<div class="who">${avatarSvg(S.player.avatar, "sm")}${esc(S.player.name)}</div></div>
     <section class="panel"><h2>Opening your case record…</h2></section>`);
@@ -1753,6 +1866,8 @@ async function recordScreen() {
 function soloSetup() {
   stopTimer(); S.pad = null;
   const cfg = withFilter(store.get("ir-solo", null), { mix: "mixed", n: 10, tier: "H", topics: [] });
+  cfg.allow = soloAllow();
+  if (cfg.allow) cfg.topics = cfg.topics.filter(id => cfg.allow.includes(id));
   const draw = (keep = false) => {
     const none = !poolFor(cfg).length;
     set(`<div class="hud">${brand("Solo cases")}<div class="who">${avatarSvg(S.player.avatar, "sm")}${esc(S.player.name)}</div></div>
@@ -1768,7 +1883,7 @@ function soloSetup() {
     bindChoice("mix", v => { cfg.mix = v; redraw(); });
     bindChoice("n", v => { cfg.n = +v; redraw(); });
     document.getElementById("back").onclick = lobby;
-    document.getElementById("go").onclick = () => { saveCfg("ir-solo", cfg); Sound.unlock(); startSolo(cfg); };
+    document.getElementById("go").onclick = () => { saveCfg("ir-solo", cfg); Sound.unlock(); claimGame("solo", () => startSolo(cfg), soloSetup); };
   };
   draw();
 }
@@ -1944,8 +2059,10 @@ function teamSetup() {
       Sound.unlock();
       const qs = pickQuestions(cfg.n, cfg);
       if (!qs.length) return;
-      S.teams = { i: 0, qs, perms: qs.map(n => makePerm(QUESTIONS[n])), list: TEAM_DEFS.slice(0, cfg.count).map(t => ({ ...t, score: 0 })) };
-      teamCase();
+      claimGame("host", () => {
+        S.teams = { i: 0, qs, perms: qs.map(n => makePerm(QUESTIONS[n])), list: TEAM_DEFS.slice(0, cfg.count).map(t => ({ ...t, score: 0 })) };
+        teamCase();
+      }, teamSetup);
     };
   };
   draw();
@@ -2020,6 +2137,7 @@ const homeFn = () => (S.player.name ? lobby() : signIn());
 function hostSetup() {
   stopTimer(); S.pad = null;
   if (!liveConfigured()) return liveMissing(homeFn);
+  if (gating() && !S.acc.signed_in) return signInToHost(homeFn);
   const cfg = withFilter(store.get("ir-host", null), { n: 10, time: "auto", mix: "mixed", typed: false, tier: "H", topics: [] });
   const draw = (keep = false) => {
     const none = !poolFor(cfg).length;
@@ -2040,7 +2158,7 @@ function hostSetup() {
     bindChoice("time", v => { cfg.time = v === "auto" ? "auto" : +v; redraw(); });
     bindChoice("typed", v => { cfg.typed = v === "1"; redraw(); });
     document.getElementById("back").onclick = homeFn;
-    document.getElementById("go").onclick = () => { saveCfg("ir-host", cfg); Sound.unlock(); hostStart(cfg); };
+    document.getElementById("go").onclick = () => { saveCfg("ir-host", cfg); Sound.unlock(); claimGame("host", () => hostStart(cfg), hostSetup); };
   };
   draw();
 }
@@ -2504,11 +2622,12 @@ app.addEventListener("click", e => {
 /* ================= START ================= */
 (async () => {
   const q = new URLSearchParams(location.search);
-  if (q.has("host")) hostSetup();
+  if (q.has("host")) { set(`${brand("Host a game")}<section class="panel"><h2>Opening…</h2></section>`); await initAuth(); await loadAccess(); return hostSetup(); }
   else if (q.has("join") || q.has("code")) joinScreen((q.get("code") || "").replace(/\D/g, "").slice(0, 6));
   else signIn();
   await initAuth();
-  if (S.user && !S.host && !S.stu && !S.solo && app.querySelector("#toJoin")) signIn();
+  await loadAccess();
+  if (!S.host && !S.stu && !S.solo && app.querySelector("#toJoin")) signIn();
   const jn = document.getElementById("jname"); if (S.user && jn && !jn.value) jn.value = S.player.name;
 })();
 
