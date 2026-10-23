@@ -5,7 +5,7 @@
 --   Students with the Lab Exam Pass or a school licence (my_access().level = 'full'): every topic in solo play, unlimited.
 --   Free accounts: 2 solo games a day on the sample topics; hosting 3 live games or team showdowns a month.
 --   Teacher Pro (entitlement kind 'teacher_pro'), teachers and school admins in a licensed school, and the owner: unlimited hosting.
---   Anyone can start a one-off 30-day Teacher Pro trial, which begins the first time they choose to.
+--   Anyone can start a one-off 14-day Teacher Pro trial, which begins the first time they choose to.
 -- Case records (ir_results) are created by 008_incident_room_case_records.sql (you ran this earlier as incident-room-case-records.sql).
 
 -- 1. Allow Teacher Pro purchases in the entitlements table.
@@ -65,13 +65,13 @@ begin
     when p.role = 'owner' then 'pro'
     when pro_until is not null or exists (select 1 from entitlements e where lower(e.email) = lower(p.email) and e.kind = 'teacher_pro' and e.expires_at is null) then 'pro'
     when coalesce(school_ok, false) and p.role in ('teacher', 'schooladmin') then 'school'
-    when trial_start is not null and trial_start > now() - interval '30 days' then 'trial'
+    when trial_start is not null and trial_start > now() - interval '14 days' then 'trial'
     else 'free' end;
   return jsonb_build_object(
     'signed_in', true, 'role', p.role, 'name', p.name,
     'lab_level', coalesce(lab->>'level', 'free'), 'lab_source', lab->>'source',
     'host_plan', plan, 'pro_until', pro_until,
-    'trial_used', trial_start is not null, 'trial_ends', trial_start + interval '30 days',
+    'trial_used', trial_start is not null, 'trial_ends', trial_start + interval '14 days',
     'solo_today', solo_n, 'solo_limit', 2, 'hosts_month', host_n, 'host_limit', 3);
 end $$;
 grant execute on function public.ir_access() to anon, authenticated;
@@ -100,7 +100,7 @@ begin
 end $$;
 grant execute on function public.ir_claim(text) to authenticated;
 
--- 5. Start the one-off 30-day Teacher Pro trial
+-- 5. Start the one-off 14-day Teacher Pro trial
 create or replace function public.ir_start_trial() returns jsonb
 language plpgsql security definer set search_path = public as $$
 begin

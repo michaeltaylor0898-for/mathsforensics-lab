@@ -15,7 +15,7 @@ No secret keys belong in this repository. The publishable Supabase key in the pa
 | Who | Solo play | Hosting live games / team showdowns |
 | --- | --- | --- |
 | Guest (not signed in) | 2 games a day, 12 sample topics | Must sign in |
-| Free Lab account | 2 games a day, 12 sample topics | 3 a month, then a one-off 30-day Teacher Pro trial |
+| Free Lab account | 2 games a day, 12 sample topics | 3 a month, then a one-off 14-day Teacher Pro trial |
 | Exam Pass or school-licence student | Unlimited, all 76 topics | 3 a month (free) |
 | Teacher Pro (`entitlements.kind = 'teacher_pro'`) | Unlimited | Unlimited |
 | Teacher or school admin in a licensed school | Unlimited | Unlimited |

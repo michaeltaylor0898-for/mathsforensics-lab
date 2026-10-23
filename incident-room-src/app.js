@@ -286,7 +286,7 @@ function upgradeScreen(reason, back, retry) {
     locked: ["That topic is part of the Exam Pass", `The free plan covers ${FREE_TOPICS_IR.length} sample topics. The Exam Pass unlocks all 76.`] }[reason];
   set(`${brand(planLabel())}<div class="tape"></div>
     <section class="panel"><span class="eyebrow">Upgrade</span><h2>${esc(head[0])}</h2><p class="muted">${esc(head[1])}</p>
-      ${canTrial ? `<div class="row"><button class="btn primary big" id="trial">Start my 30-day free trial</button></div><p class="muted small">Teacher Pro free for 30 days. No card needed, and it doesn't renew.</p>` : ""}
+      ${canTrial ? `<div class="row"><button class="btn primary big" id="trial">Start my 14-day free trial</button></div><p class="muted small">Teacher Pro free for 14 days. No card needed, and it doesn't renew.</p>` : ""}
       <div class="plans">${reason === "host_limit" ? upgradeCard("pro") : upgradeCard("pass")}
         ${reason === "host_limit" ? `<div class="plan"><span class="eyebrow">For schools</span><h3>Department licence</h3><p class="muted">Every maths teacher and student in your school, with Maths Forensics Lab included. Email <b>${esc(CFG.supportEmail || "support@mathsforensics.com")}</b> for a quote.</p></div>`
           : `<div class="plan"><span class="eyebrow">At school?</span><h3>Join your class</h3><p class="muted">If your school has a licence, enter your class code in Maths Forensics Lab and everything unlocks.</p><a class="btn" href="${LAB_URL}">Open the Lab</a></div>`}</div>
@@ -299,7 +299,7 @@ function upgradeScreen(reason, back, retry) {
 }
 function signInToHost(back) {
   set(`${brand("Host a game")}<section class="panel"><h2>Sign in to host a game</h2>
-    <p class="muted">Hosting is free with a Maths Forensics Lab account: 3 live games or team showdowns a month, or unlimited with Teacher Pro (${esc(PRICES.teacherPro)}). New accounts can try Teacher Pro free for 30 days.</p>
+    <p class="muted">Hosting is free with a Maths Forensics Lab account: 3 live games or team showdowns a month, or unlimited with Teacher Pro (${esc(PRICES.teacherPro)}). New accounts can try Teacher Pro free for 14 days.</p>
     <div class="row"><a class="btn primary" href="${signInUrl("incident-room-host")}">Sign in or create a free account</a><button class="btn quiet" id="back">Back</button></div></section>`);
   document.getElementById("back").onclick = back;
 }
