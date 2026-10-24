@@ -247,6 +247,7 @@ const gating = () => !!S.acc;
 const hostUnlimited = () => !gating() || ["pro", "school", "trial"].includes(S.acc.host_plan);
 const soloUnlimited = () => !gating() || (S.acc.signed_in && (S.acc.lab_level === "full" || hostUnlimited()));
 const soloAllow = () => (soloUnlimited() ? null : FREE_TOPICS_IR);
+const fmtDate = d => { try { return new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }); } catch (e) { return ""; } };
 const fmtDay = d => { try { return new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "long" }); } catch (e) { return ""; } };
 async function loadAccess() {
   if (!liveConfigured()) return;
@@ -302,6 +303,50 @@ function signInToHost(back) {
     <p class="muted">Hosting is free with a Maths Forensics Lab account: 3 live games or team showdowns a month, or unlimited with Teacher Pro (${esc(PRICES.teacherPro)}). New accounts can try Teacher Pro free for 14 days.</p>
     <div class="row"><a class="btn primary" href="${signInUrl("incident-room-host")}">Sign in or create a free account</a><button class="btn quiet" id="back">Back</button></div></section>`);
   document.getElementById("back").onclick = back;
+}
+
+/* My account: what this person's plan includes, with upgrade, trial and "check again" */
+const withEmail = url => { try { const u = new URL(url); if (S.user && S.user.email) u.searchParams.set("email", S.user.email); return u.toString(); } catch (e) { return url; } };
+async function accountScreen() {
+  stopTimer(); S.pad = null;
+  set(`${brand("My account")}<div class="tape"></div><section class="panel"><h2>Checking your plan…</h2></section>`);
+  await loadAccess();
+  const a = S.acc, back = `<button class="btn quiet" id="back">Back</button>`;
+  if (!S.user || !a || !a.signed_in) {
+    set(`${brand("My account")}<div class="tape"></div><section class="panel"><span class="eyebrow">My account</span>
+      ${S.user ? `<h2>Your plan couldn't be loaded</h2><p class="muted">Check your connection and try again.</p><div class="row"><button class="btn primary" id="again">Try again</button>${back}</div>`
+        : `<h2>You're playing as a guest</h2><p class="muted">Guests get ${GUEST_SOLO_LIMIT} solo games a day. Sign in to Maths Forensics Lab to save your case record, host games and see your plan.</p>
+          <div class="row"><a class="btn primary" href="${signInUrl()}">Sign in to the Lab</a>${back}</div>`}</section>`);
+    const ag = document.getElementById("again"); if (ag) ag.onclick = accountScreen;
+    document.getElementById("back").onclick = signIn; return;
+  }
+  const unlimitedSolo = a.lab_level === "full" || ["pro", "school", "trial"].includes(a.host_plan);
+  const solo = unlimitedSolo ? `<b>Unlimited</b> on every topic${a.lab_level === "full" ? ` (${a.lab_source === "school" ? "school licence" : "Exam Pass"})` : ""}`
+    : `<b>${Math.max(0, a.solo_limit - a.solo_today)} of ${a.solo_limit}</b> free games left today, on ${FREE_TOPICS_IR.length} sample topics`;
+  const host = { pro: `<b>Teacher Pro</b>: unlimited${a.pro_until ? `, until <b>${fmtDate(a.pro_until)}</b>` : ""}`,
+    school: "<b>School licence</b>: unlimited",
+    trial: `<b>Teacher Pro free trial</b>: unlimited until <b>${fmtDate(a.trial_ends)}</b>`,
+    free: `<b>Free</b>: ${Math.min(a.hosts_month, a.host_limit)} of ${a.host_limit} games used this month${a.trial_used ? `. Your free trial ended on ${fmtDate(a.trial_ends)}` : ""}` }[a.host_plan] || "";
+  const teacherish = a.role !== "student" || a.host_plan !== "free";
+  const canPro = teacherish && (a.host_plan === "free" || a.host_plan === "trial") && CFG.teacherProUrl;
+  const canTrial = teacherish && a.host_plan === "free" && !a.trial_used;
+  const canPass = a.role === "student" && !unlimitedSolo && CFG.examPassUrl;
+  set(`${brand(planLabel())}<div class="tape"></div>
+    <section class="panel"><span class="eyebrow">My account</span><h2>${esc(S.user.name)}</h2><p class="muted">${esc(S.user.email)}</p>
+      <div class="acctrows">
+        <div><span class="muted">Solo cases</span><span>${solo}</span></div>
+        <div><span class="muted">Live games and team showdowns</span><span>${host}</span></div>
+      </div>
+      <div class="row">${canPro ? `<a class="btn primary" href="${esc(withEmail(CFG.teacherProUrl))}" target="_blank" rel="noopener">Get Teacher Pro · ${esc(PRICES.teacherPro)}</a>` : ""}
+        ${canTrial ? `<button class="btn" id="trial">Start 14-day free trial</button>` : ""}
+        ${canPass ? `<a class="btn${canPro ? "" : " primary"}" href="${esc(withEmail(CFG.examPassUrl))}" target="_blank" rel="noopener">Get the Exam Pass · ${esc(PRICES.pass)}</a>` : ""}</div>
+      <p class="muted small">Bought something? Payments usually arrive within a minute. Use the same email to sign in as you used to pay.</p>
+      <div class="row"><button class="btn" id="again">I've paid: check again</button><a class="btn quiet" href="${LAB_URL}?next=account">Account in the Lab</a>${back}</div>
+    </section>`);
+  document.getElementById("again").onclick = accountScreen;
+  document.getElementById("back").onclick = signIn;
+  const t = document.getElementById("trial");
+  if (t) t.onclick = async () => { t.disabled = true; try { await sb().rpc("ir_start_trial"); } catch (e) {} accountScreen(); };
 }
 /* Ask the server before a game starts; calls go() if allowed */
 async function claimGame(kind, go, back) {
@@ -369,8 +414,10 @@ function signIn() {
       <h2>Host a game on the board</h2>
       <p class="muted">Live game: students join on their tablets with a code. Team showdown: teams answer on mini whiteboards.</p>
       <div class="row"><button class="btn" id="toHost">Host a live game</button><button class="btn" id="toTeams">Team showdown</button></div>
-    </section>`);
+    </section>
+    ${liveConfigured() ? `<div class="row center"><button class="btn quiet" id="toAcct">My account and plan</button></div>` : ""}`);
   document.getElementById("toJoin").onclick = () => joinScreen();
+  const ta = document.getElementById("toAcct"); if (ta) ta.onclick = () => accountScreen();
   document.getElementById("toHost").onclick = () => { Sound.unlock(); hostSetup(); };
   document.getElementById("toTeams").onclick = () => { Sound.unlock(); teamSetup(); };
   document.getElementById("toProfile").onclick = profile;

@@ -320,3 +320,7 @@ details summary { cursor: pointer; }
 .chip.lk:hover { opacity: .85; }
 .upsell { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; border-color: var(--amber); }
 .upsell > div:first-child { flex: 1 1 280px; min-width: 0; }
+
+.acctrows { display: grid; gap: 10px; margin: 6px 0 16px; }
+.acctrows > div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+.row.center { justify-content: center; }

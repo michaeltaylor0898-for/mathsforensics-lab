@@ -49,10 +49,11 @@ nav button{background:none;border:0;padding:7px 13px;border-radius:7px;font-weig
 nav button[aria-selected="true"]{background:var(--blue);color:#fff}
 nav a.navlink{padding:7px 13px;border-radius:7px;font-weight:700;font-size:15px;color:var(--cyan);text-decoration:none;border:1px dashed rgba(0,252,241,.45)}
 nav a.navlink:hover,nav a.navlink:focus-visible{background:rgba(0,252,241,.12)}
+.irrows{display:grid;gap:10px;margin:6px 0 14px}.irrows>div{display:flex;flex-wrap:wrap;gap:4px 16px;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:8px}
 .irpanel{border-color:rgba(0,252,241,.5);background:linear-gradient(135deg,rgba(0,252,241,.08),rgba(27,54,255,.10)),var(--panel)}
-.irpanel .row a{text-decoration:none}
-.irpanel .row a.btn{color:var(--ink)}
-.irpanel .row a.ghost{color:var(--text)}
+.irpanel .row a,#irAcct .row a{text-decoration:none}
+.irpanel .row a.btn,#irAcct .row a.btn{color:var(--ink)}
+.irpanel .row a.ghost,#irAcct .row a.ghost{color:var(--text)}
 #who{display:flex;align-items:center;gap:8px;font-size:15px}
 #who:empty{display:none}
 .whoname{font-weight:700}
@@ -787,7 +788,7 @@ tr.sessrow>td{background:var(--ink);text-align:left;padding:10px 14px}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-<script>window.MF_CONFIG={"supabaseUrl": "https://duvxykqlrekqhfvsvnrj.supabase.co", "supabaseAnonKey": "sb_publishable_llHxDDCcByPpdbi5G2Hqtg_DqGcnuHn", "checkoutUrl": "https://www.mathsforensics.com/mathsforensics-lab-checkout", "kitCheckoutUrl": ""};</script>
+<script>window.MF_CONFIG={"supabaseUrl": "https://duvxykqlrekqhfvsvnrj.supabase.co", "supabaseAnonKey": "sb_publishable_llHxDDCcByPpdbi5G2Hqtg_DqGcnuHn", "checkoutUrl": "https://www.mathsforensics.com/mathsforensics-lab-checkout", "kitCheckoutUrl": "", "teacherProUrl": "https://www.mathsforensics.com/incident-room-teacherpro-checkout"};</script>
 <script>
 /* ===== core: helpers, parsers, diagrams, error library ===== */
 const $=s=>document.querySelector(s);
@@ -4952,6 +4953,7 @@ function supabaseStore(cfg){
     },
     checkoutUrl:cfg.checkoutUrl||'',
     kitCheckoutUrl:cfg.kitCheckoutUrl||'',
+    teacherProUrl:cfg.teacherProUrl||'',
     async session(){
       const u=await me(); if(!u) return null;
       const p=await profile(u.id);
@@ -5000,6 +5002,9 @@ function supabaseStore(cfg){
     async resetPassword(email){must(await sb.auth.resetPasswordForEmail(String(email).trim(),{redirectTo:redirect}))},
     async setPassword(pw){if(String(pw).length<8) throw new Error('Use a password of at least 8 characters.');must(await sb.auth.updateUser({password:pw}));history.replaceState(null,'',redirect)},
     async access(){return must(await sb.rpc('my_access'))||{level:'free'}},
+    // Incident Room plan (migration 007); null if it can't be read
+    async irAccess(){try{const {data,error}=await sb.rpc('ir_access');return error?null:data}catch(e){return null}},
+    async irStartTrial(){try{const {data,error}=await sb.rpc('ir_start_trial');return error?null:data}catch(e){return null}},
     // `source` and `diagnostics` arrive with migration 002; until it is run, fall back quietly
     async recordAttempt(userId,topic,correct,error_id,source='practice',extra={}){
       const row={user_id:userId,topic,correct,error_id:error_id||null};
@@ -5543,7 +5548,7 @@ function guideHTML(){
 const PASS_PRICES=()=>{const launch=Date.now()<Date.UTC(2027,1,1);return {launch,pass:launch?49:59,passLater:59,kit:launch?69:79,kitLater:79}};
 const isFreeIndividual=()=>!!(S.user&&S.user.role==='student'&&S.access&&S.access.level!=='full');
 function checkoutLink(kind){
-  const base=kind==='kit'?(api.kitCheckoutUrl||''):(api.checkoutUrl||''); if(!base) return '';
+  const base=kind==='kit'?(api.kitCheckoutUrl||''):kind==='pro'?(api.teacherProUrl||''):(api.checkoutUrl||''); if(!base) return '';
   try{const u=new URL(base);u.searchParams.set('email',S.user.email);return u.toString()}catch(e){return base}
 }
 const canCheckout=kind=>api.mode==='demo'||!!checkoutLink(kind);
@@ -6269,7 +6274,7 @@ const statsFrom=attempts=>{const t={};for(const a of attempts){const s=t[a.topic
 const errorsFrom=attempts=>{const e={};for(const a of attempts) if(a.error_id&&ERR[a.error_id]) e[a.error_id]=(e[a.error_id]||0)+1;return Object.entries(e).sort((x,y)=>y[1]-x[1])};
 
 /* ---------- boot / session ---------- */
-try{const n=new URLSearchParams(location.search).get('next');if(n==='incident-room'||n==='incident-room-host')sessionStorage.setItem('mf-next',n)}catch(e){}
+try{const n=new URLSearchParams(location.search).get('next');if(n==='incident-room'||n==='incident-room-host'||n==='account')sessionStorage.setItem('mf-next',n)}catch(e){}
 async function boot(){
   if(api.mode!=='demo') $('.demobar').hidden=true;
   if(api.pendingLink){renderLinkContinue();return}
@@ -6306,7 +6311,7 @@ async function afterLogin(){
   S.assignments=S.user.role==='student'?await api.studentAssignments(S.user.id):[];
   S.diags=S.user.role==='student'?await api.diagnostics(S.user.id):[];
   S.prevSession=lastSession(S.attempts); // snapshot at sign-in, so "last time" doesn't change as they answer today
-  S.view=VIEWS[S.user.role][0][0]; S.teacherClass=null; S.helpTab=null;
+  S.view=next==='account'?'account':VIEWS[S.user.role][0][0]; S.teacherClass=null; S.helpTab=null;
   if(!G[S.topic]) S.topic='pct';
   renderShell(); go(S.view);
   refreshReportBadge();
@@ -6668,12 +6673,35 @@ async function renderAccount(){
     lic+=`<div class="panel"><h2>School classes</h2>${classes.length?classes.map(c=>`<div class="lr"><b>${esc(c.name)}</b><span class="hint">${esc(c.teacher||'')}</span></div>`).join(''):'<p class="hint">Not in a class yet. If your school has a licence, your teacher will give you a 6-character class code.</p>'}
       <form id="fJoin" class="inline" novalidate><input class="inp" id="j-code" placeholder="Class code" maxlength="6" autocomplete="off" aria-label="Class code"><button class="btn" type="submit">Join class</button><p class="formerr" hidden></p></form></div>`;
   }
-  view.innerHTML=`<div><span class="eyebrow">Account</span><h1 class="ph">${esc(u.name)}</h1><p class="hint">${esc(u.email)} · ${ROLE_LABEL[u.role]}</p></div>${lic}
+  view.innerHTML=`<div><span class="eyebrow">Account</span><h1 class="ph">${esc(u.name)}</h1><p class="hint">${esc(u.email)} · ${ROLE_LABEL[u.role]}</p></div>${lic}<div id="irAcct"></div>
   ${api.mode==='demo'?`<div class="panel"><h2>Demo data</h2><p class="hint">Everything in this prototype is stored in this browser only. Resetting restores the example school, classes and accounts.</p><div class="row"><button class="ghost" id="resetDemo">Reset demo data</button></div></div>`:''}`;
   ['buy','buyKit'].forEach(id=>{const b=$('#'+id); if(b) b.onclick=async()=>{await api.recordSale(u.email);S.access=await api.access(u);renderShell();alertBox('Payment received. Exam Pass active.');renderAccount()}});
   const fj=$('#fJoin'); if(fj) fj.onsubmit=e=>{e.preventDefault();busy(fj,async()=>{const c=await api.joinClass(u.id,$('#j-code').value);S.user=await api.session();S.access=await api.access(S.user);S.assignments=await api.studentAssignments(u.id);renderShell();alertBox('Joined '+c.name);renderAccount()})};
   const rf=$('#refresh'); if(rf) rf.onclick=()=>checkPaymentArrived(false);
+  fillIrAccount();
   const rd=$('#resetDemo'); if(rd) rd.onclick=async e=>{const b=e.currentTarget;if(b.dataset.armed){await api.resetDemo();S.user=null;renderAuth()}else{b.dataset.armed=1;b.textContent='Tap again to reset everything'}};
+}
+
+/* Incident Room plan on the Account page: solo games, hosting, Teacher Pro and the trial */
+async function fillIrAccount(){
+  if(!$('#irAcct')||!api.irAccess) return;
+  const ir=await api.irAccess(); const box=$('#irAcct'); if(!box) return;
+  const head='<span class="eyebrow">Incident Room</span><h2>Maths games</h2>';
+  if(!ir||!ir.signed_in){box.innerHTML=`<div class="panel">${head}<p class="hint">Your Incident Room plan couldn't be loaded just now.</p><div class="row"><button class="ghost" id="irRe">Check again</button></div></div>`;$('#irRe').onclick=fillIrAccount;return}
+  const unlimitedSolo=ir.lab_level==='full'||['pro','school','trial'].includes(ir.host_plan);
+  const solo=unlimitedSolo?'<b>Unlimited</b>, every topic':`<b>${Math.max(0,ir.solo_limit-ir.solo_today)} of ${ir.solo_limit}</b> free games left today, on the sample topics`;
+  const showHost=ir.role!=='student'||ir.host_plan!=='free'||ir.trial_used;
+  const host={pro:`<b>Teacher Pro</b>: unlimited${ir.pro_until?`, until <b>${fmtDate(ir.pro_until)}</b>`:''}`,
+    school:'<b>School licence</b>: unlimited',
+    trial:`<b>Teacher Pro free trial</b>: unlimited until <b>${fmtDate(ir.trial_ends)}</b>`,
+    free:`<b>Free</b>: ${Math.min(ir.hosts_month,ir.host_limit)} of ${ir.host_limit} games used this month${ir.trial_used?` (free trial ended ${fmtDate(ir.trial_ends)})`:''}`}[ir.host_plan]||'';
+  const pro=showHost&&(ir.host_plan==='free'||ir.host_plan==='trial')&&checkoutLink('pro');
+  const trial=showHost&&ir.host_plan==='free'&&!ir.trial_used;
+  box.innerHTML=`<div class="panel${ir.host_plan==='pro'?' licence ok':''}">${head}
+    <div class="irrows"><div><span class="hint">Solo cases</span><span>${solo}</span></div>${showHost?`<div><span class="hint">Live games and team showdowns</span><span>${host}</span></div>`:''}</div>
+    <div class="row"><a class="btn" href="incident-room/">Open Incident Room</a>${pro?`<a class="ghost" href="${esc(pro)}" target="_blank" rel="noopener">Get Teacher Pro · £49 a year</a>`:''}${trial?'<button class="ghost" id="irTrial">Start 14-day free trial</button>':''}<button class="ghost" id="irRe">I've paid: check again</button></div></div>`;
+  $('#irRe').onclick=async e=>{e.currentTarget.disabled=true;await fillIrAccount()};
+  const t=$('#irTrial'); if(t) t.onclick=async()=>{t.disabled=true;await api.irStartTrial();fillIrAccount()};
 }
 
 /* ---------- Incident Room (the game layer, served from /incident-room/) ---------- */
