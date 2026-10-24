@@ -16,7 +16,7 @@ const gameIcon = (id, cls = "") => `<svg class="gicon ${cls}" viewBox="0 0 64 64
 const GAMES = [
   { id: "rapid", name: "Rapid Response", tag: "Quick-fire case questions", desc: "Spot the mistake, multiple choice, true or false, put in order and type the answer, across all 76 GCSE topics.", maths: "Every GCSE topic", modes: ["Live class", "Team showdown", "Solo"], ready: true },
   { id: "so", name: "Stakeout", tag: "Find the hidden suspect", desc: "Three surveillance reports point to one spot on a coordinate grid. Rule out points, draw the lines, make one arrest.", maths: "Coordinates and straight-line graphs", modes: ["Live class"], ready: true },
-  { id: "ik", name: "The Identikit", tag: "Who, or what, is under the tiles?", desc: "Every right answer lifts tiles off a hidden graph, shape, solid, famous mathematician or catchphrase. Make one ID from the line-up.", maths: "Key terms, graphs, shapes and solids", modes: ["Live class"], ready: true, isNew: true },
+  { id: "ik", name: "The Identikit", tag: "Who, or what, is under the tiles?", desc: "Every right answer lifts tiles off a hidden graph, shape, solid, famous mathematician or catchphrase. Make one ID from the line-up.", maths: "Key terms, graphs, shapes and solids", modes: ["Live class", "Solo"], ready: true, isNew: true },
   { id: "inquiry", name: "Line of Inquiry", tag: "Claim a path across the board", desc: "Two teams win hexagons by answering. The first unbroken line across wins, so blocking matters.", maths: "Mixed revision", modes: ["Two teams"] },
   { id: "trail", name: "Case Trail", tag: "Follow the trail round the board", desc: "Move round a board of topics. Answer to claim a topic; rivals who land there face a harder question.", maths: "Longer revision lessons", modes: ["2 to 6 players or teams"] },
   { id: "lineup", name: "The Lineup", tag: "Four in a row", desc: "Answer to drop a counter. Harder questions let you choose any column.", maths: "Quick-fire practice", modes: ["1 v 1", "Teams"] },
@@ -32,7 +32,9 @@ const hostGame = id => { Sound.unlock(); if (id === "home") return signIn(); sto
 const bindGameSwitch = () => app.querySelectorAll("[data-game]").forEach(b => b.onclick = () => hostGame(b.dataset.game));
 
 function gameCard(g) {
-  const acts = g.id === "rapid"
+  const acts = g.id === "ik"
+    ? `<button class="btn primary" data-host="ik">Host on the board</button><button class="btn" data-iksolo>Play solo</button>`
+    : g.id === "rapid"
     ? `<button class="btn primary" data-host="rapid">Host on the board</button><button class="btn" data-teams>Team showdown</button><button class="btn" data-solo>Practise solo</button>`
     : g.ready ? `<button class="btn primary" data-host="${g.id}">Host on the board</button><span class="muted small">Students: join with your teacher's code</span>`
     : `<span class="tag">Coming soon</span>`;
@@ -76,6 +78,7 @@ function signIn() {
   app.querySelectorAll("[data-host]").forEach(b => b.onclick = () => hostGame(b.dataset.host));
   app.querySelectorAll("[data-teams]").forEach(b => b.onclick = () => { Sound.unlock(); teamSetup(); });
   app.querySelectorAll("[data-solo]").forEach(b => b.onclick = () => profile(soloSetup));
+  app.querySelectorAll("[data-iksolo]").forEach(b => b.onclick = () => profile(ikSoloSetup));
   document.getElementById("toRec").onclick = recordScreen;
   const ta = document.getElementById("toAcct"); if (ta) ta.onclick = () => accountScreen();
   const rj = document.getElementById("rejoin");

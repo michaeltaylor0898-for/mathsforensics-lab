@@ -84,7 +84,9 @@ function ikPlan(cfg) {
   const used = new Set();
   return out.map(p => {
     const own = p.topics && p.topics.length && p.cat !== "people" && p.cat !== "catch";
-    const pick = topics => shuffle(poolFor({ tier: cfg.tier, topics, mix: "mixed" }).filter(q => !used.has(q.n)));
+    /* free plan: only the sample topics */
+    const lim = t => { if (!cfg.allow) return t; const ok = t.filter(x => cfg.allow.includes(x)); return ok.length ? ok : cfg.allow; };
+    const pick = topics => shuffle(poolFor({ tier: cfg.tier, topics: lim(topics), mix: "mixed" }).filter(q => !used.has(q.n)));
     let qs = pick(own ? p.topics : cfg.topics);
     if (own && qs.length < IK_MAXQ) {      /* top up from the same strand, then anything */
       const strand = p.topics[0][0];
