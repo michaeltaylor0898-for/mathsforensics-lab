@@ -25,7 +25,7 @@ window.IR_CONFIG = {{
   key: "sb_publishable_llHxDDCcByPpdbi5G2Hqtg_DqGcnuHn",
   labUrl: "https://lab.mathsforensics.com/",
   examPassUrl: "https://www.mathsforensics.com/mathsforensics-lab-checkout",
-  teacherProUrl: "",
+  teacherProUrl: "https://www.mathsforensics.com/incident-room-teacherpro-checkout",
   prices: {{ pass: "£49", passLater: "£59", teacherPro: "£49 a year" }},
   supportEmail: "support@mathsforensics.com"
 }};
