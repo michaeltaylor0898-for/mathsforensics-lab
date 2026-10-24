@@ -1660,7 +1660,7 @@ function signIn() {
   stopTimer(); S.pad = null;
   const last = store.get("ir-last", null);
   const canRejoin = last && Date.now() - last.t < 3 * 3600e3;
-  set(`${brand()}
+  set(`${brand(liveConfigured() ? planLabel() : undefined)}
     <div class="tape"></div>
     <section class="panel joincard">
       <span class="eyebrow">Live game in class?</span>
