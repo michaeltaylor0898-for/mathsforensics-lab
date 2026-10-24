@@ -56,6 +56,27 @@ const Sound = (() => {
     silver: t => { [64, 69, 73].forEach((n, k) => tone(N(n), t + k * 0.11, 0.4, "triangle", 0.2)); hiss(t + 0.22, 0.5, 0.035, 5000); },
     gold: t => { hiss(t, 0.9, 0.07, 3500); [60, 64, 67, 72, 76, 79].forEach((n, k) => tone(N(n), t + k * 0.09, k === 5 ? 1.1 : 0.3, "triangle", 0.22));
       [72, 76, 79, 84].forEach(n => tone(N(n), t + 0.6, 1.2, "sine", 0.08)); },
+    /* ---- The Identikit: original game-show sounds ---- */
+    /* one tile lifting: a bright plink on a little upward whoosh */
+    ikTile: t => { hiss(t, 0.12, 0.03, 4000); tone(N(84), t, 0.09, "sine", 0.16, N(91)); tone(N(96), t + 0.05, 0.12, "triangle", 0.08); },
+    /* buzzing in with an ID: a two-tone game-show buzzer */
+    ikBuzz: t => { tone(N(57), t, 0.22, "square", 0.09); tone(N(64), t, 0.22, "square", 0.07); tone(N(69), t + 0.2, 0.32, "square", 0.08); },
+    /* a question right / wrong on the Identikit */
+    ikDing: t => { tone(N(88), t, 0.5, "sine", 0.18); tone(N(93), t + 0.12, 0.7, "sine", 0.16); tone(N(100), t + 0.12, 0.6, "sine", 0.05); },
+    ikNope: t => { tone(N(47), t, 0.16, "sawtooth", 0.08); tone(N(46), t + 0.2, 0.3, "sawtooth", 0.08); },
+    /* the unmasking: quick drum build, whoosh, then a bright chord */
+    ikReveal: t => { for (let i = 0; i < 12; i++) { hiss(t + i * 0.045, 0.04, 0.02 + i * 0.003, 2000); tone(N(43), t + i * 0.045, 0.04, "triangle", 0.05); }
+      hiss(t + 0.55, 0.6, 0.06, 1200); [60, 64, 67, 72, 76].forEach((n, k) => tone(N(n), t + 0.6 + k * 0.03, 1.1, "triangle", 0.12)); },
+    /* a correct ID: sparkly run up and a ta-da */
+    ikRight: t => { [72, 76, 79, 84, 88, 91, 96].forEach((n, k) => tone(N(n), t + k * 0.05, 0.18, "sine", 0.12));
+      [72, 76, 79].forEach(n => tone(N(n), t + 0.4, 0.25, "square", 0.05)); [72, 76, 79, 84].forEach(n => tone(N(n), t + 0.62, 1.2, "triangle", 0.12)); hiss(t + 0.62, 0.8, 0.04, 6000); },
+    /* a wrong ID: the sad trombone, wah-wah-wah-waaah */
+    ikWrong: t => { [[58, 0], [57, 0.32], [56, 0.64]].forEach(([n, d]) => tone(N(n), t + d, 0.3, "sawtooth", 0.08, N(n) * 0.985));
+      const o = ctx.createOscillator(), g = ctx.createGain(), lfo = ctx.createOscillator(), lg = ctx.createGain();
+      o.type = "sawtooth"; o.frequency.setValueAtTime(N(55), t + 0.96); o.frequency.linearRampToValueAtTime(N(53), t + 2.0);
+      lfo.frequency.value = 6; lg.gain.value = 4; lfo.connect(lg); lg.connect(o.frequency);
+      g.gain.setValueAtTime(0.0001, t + 0.96); g.gain.exponentialRampToValueAtTime(0.09, t + 1.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 2.0);
+      o.connect(g); g.connect(master); o.start(t + 0.96); lfo.start(t + 0.96); o.stop(t + 2.05); lfo.stop(t + 2.05); },
     end: t => { [60, 64, 67, 72].forEach((n, k) => tone(N(n), t + k * 0.14, 0.3, "triangle", 0.2));
       [72, 76, 79].forEach(n => tone(N(n), t + 0.62, 0.9, "triangle", 0.12)); }
   };
@@ -63,19 +84,30 @@ const Sound = (() => {
 
   /* quiet detective-style loop: A minor bass line with a soft off-beat hi-hat, 96 bpm */
   const BASS = [45, 45, 48, 45, 52, 45, 50, 48, 45, 45, 48, 45, 52, 53, 52, 47];
+  /* The Identikit: a bouncy, original game-show bed in C major, 120 bpm */
+  const SHOW = [48, 55, 52, 55, 53, 57, 60, 57, 55, 59, 62, 59, 48, 55, 52, 43];
+  const CHORDS = [[64, 67, 72], [65, 69, 72], [67, 71, 74], [64, 67, 72]];
+  let theme = "detective";
   function schedule() {
     if (!ctx) return;
-    const spb = 60 / 96 / 2;
+    const spb = theme === "show" ? 60 / 120 / 2 : 60 / 96 / 2;
     while (nextBeat < ctx.currentTime + 0.25) {
-      const n = BASS[beat % BASS.length];
-      tone(N(n), nextBeat, spb * 0.9, "triangle", 0.045);
-      if (beat % 2 === 1) hiss(nextBeat, 0.05, 0.012, 7000);
-      if (beat % 16 === 0) tone(N(69), nextBeat, spb * 6, "sine", 0.012);
+      if (theme === "show") {
+        tone(N(SHOW[beat % SHOW.length]), nextBeat, spb * 0.7, "square", 0.022);
+        if (beat % 4 === 2) CHORDS[Math.floor(beat / 4) % 4].forEach(n => tone(N(n), nextBeat, spb * 0.6, "triangle", 0.018));
+        if (beat % 2 === 1) hiss(nextBeat, 0.04, 0.012, 8000);
+        if (beat % 32 === 28) [79, 84].forEach((n, k) => tone(N(n), nextBeat + k * spb, spb * 0.8, "sine", 0.03));
+      } else {
+        tone(N(BASS[beat % BASS.length]), nextBeat, spb * 0.9, "triangle", 0.045);
+        if (beat % 2 === 1) hiss(nextBeat, 0.05, 0.012, 7000);
+        if (beat % 16 === 0) tone(N(69), nextBeat, spb * 6, "sine", 0.012);
+      }
       nextBeat += spb; beat += 1;
     }
   }
-  function startMusic() {
+  function startMusic(t = "detective") {
     musicWanted = true;
+    if (t !== theme) { theme = t; if (musicTimer) { clearInterval(musicTimer); musicTimer = null; } }
     if (!musicOn || musicTimer || !ensure()) return;
     nextBeat = ctx.currentTime + 0.1; beat = 0;
     musicTimer = setInterval(schedule, 100);
@@ -83,8 +115,10 @@ const Sound = (() => {
   function stopMusic(keepWanted = false) { if (!keepWanted) musicWanted = false; clearInterval(musicTimer); musicTimer = null; }
   return {
     play, startMusic, stopMusic, unlock: ensure,
+    /* schedule a sound at a set time (used to render previews) */
+    at(name, t) { if (ensure() && FX[name]) FX[name](t); },
     get sfx() { return sfxOn; }, get music() { return musicOn; },
     toggleSfx() { sfxOn = !sfxOn; store.set("ir-sound", sfxOn); if (sfxOn) play("tap"); return sfxOn; },
-    toggleMusic() { musicOn = !musicOn; store.set("ir-music", musicOn); if (musicOn) { if (musicWanted) startMusic(); } else stopMusic(true); return musicOn; }
+    toggleMusic() { musicOn = !musicOn; store.set("ir-music", musicOn); if (musicOn) { if (musicWanted) startMusic(theme); } else stopMusic(true); return musicOn; }
   };
 })();

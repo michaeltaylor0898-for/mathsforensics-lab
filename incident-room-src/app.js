@@ -9,7 +9,7 @@ const sb = () => sbClient || (sbClient = window.supabase.createClient(CFG.url, C
 
 const app = document.getElementById("app");
 const S = { player: { name: "", avatar: "det-f" }, user: null, acc: null, solo: null, teams: null, host: null, stu: null, pad: null, guarded: false };
-window.IR = { S, QUESTIONS, normAns, isCorrect, typedOk, TOPICS, poolFor, pickQuestions, FREE_TOPICS_IR: () => FREE_TOPICS_IR, SO, IK };
+window.IR = { S, QUESTIONS, normAns, isCorrect, typedOk, TOPICS, poolFor, pickQuestions, FREE_TOPICS_IR: () => FREE_TOPICS_IR, SO, IK, Sound };
 let tick = null;
 const stopTimer = () => { if (tick) { clearInterval(tick); tick = null; } };
 /* ---------- celebrations: medals, podium reveal, confetti ---------- */

@@ -44,7 +44,7 @@ function ikSoloStart(cfg) {
   if (!plan.length) return ikSoloSetup();
   S.iks = { cfg, plan, pi: -1, score: 0, correct: 0, wrong: 0, streak: 0, best: 0, results: [], pics: [] };
   armGuard(() => { stopTimer(); S.iks = null; S.pad = null; signIn(); }, "Your answers in this game won't be saved.");
-  Sound.startMusic();
+  Sound.startMusic("show");
   ikSoloPicture();
 }
 function ikSoloPicture() {
@@ -91,10 +91,10 @@ function ikSoloCheck() {
   K.results.push({ q, ok, ans: K.L.ans });
   K.fresh = P.order.filter(i => !K.off.includes(i)).slice(0, ok ? IKS_RIGHT : IKS_WRONG);
   K.off = K.off.concat(K.fresh);
-  Sound.play(ok ? (K.promoted ? "promote" : "correct") : K.L.ans === null ? "noanswer" : "wrong");
+  Sound.play(ok ? (K.promoted ? "promote" : "ikDing") : K.L.ans === null ? "noanswer" : "ikNope");
   K.phase = "done"; S.pad = null; K.freshShown = false;
   ikSoloDraw(true);
-  if (K.fresh.length) later(250, () => Sound.play("promote"));
+  K.fresh.forEach((_, k) => later(300 + k * 350, () => Sound.play("ikTile")));
 }
 function ikSoloIdent(k) {
   const K = S.iks, P = K.plan[K.pi], pic = IK.byId[P.id];
@@ -104,9 +104,10 @@ function ikSoloIdent(k) {
   K.score += pts;
   K.pics.push({ id: P.id, ok, covered, stars, pts, guess: P.lineup[k] });
   K.phase = "unmask"; K.idOpen = false;
-  Sound.play(ok ? "gold" : "wrong");
+  Sound.play("ikReveal");
   ikSoloDraw();
-  if (ok) later(300, () => Confetti.burst(stars === 3 ? 180 : 100, 0.5, 0.3));
+  later(1300, () => Sound.play(ok ? "ikRight" : "ikWrong"));
+  if (ok) later(1350, () => Confetti.burst(stars === 3 ? 180 : 100, 0.5, 0.3));
 }
 function ikSoloDraw(keep = false) {
   const K = S.iks, P = K.plan[K.pi], pic = IK.byId[P.id];
@@ -163,7 +164,7 @@ document.addEventListener("click", e => {
   if (a === "close") K.idOpen = false;
   if (a === "pick") K.idPick = +b.dataset.k;
   Sound.play("tap");
-  if (a === "confirm" && K.idPick !== null) { Sound.play("arrest"); return ikSoloIdent(K.idPick); }
+  if (a === "confirm" && K.idPick !== null) { Sound.play("ikBuzz"); return ikSoloIdent(K.idPick); }
   const el = document.getElementById("iksId"); if (el) { const keepQ = K.phase === "q"; ikSoloDraw(true); if (keepQ) timerUI(K.left, K.total); }
 });
 async function ikSoloReport() {

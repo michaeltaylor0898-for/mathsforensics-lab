@@ -120,7 +120,7 @@ function ikHostStart(cfg) {
     });
   H.beat = setInterval(ikPush, 3000);
   armGuard(() => { hostClose(); homeFn(); }, "Leaving ends the game for every student.");
-  Sound.startMusic();
+  Sound.startMusic("show");
   ikDrawHost();
 }
 function ikNewRound(H) {
@@ -163,7 +163,7 @@ function ikNextQuestion() {
   if (H.qi >= P.qs.length || H.off.length >= IK_TILES) return ikUnmask();
   const q = ikQ(H);
   H.phase = "q"; H.total = secsFor(q, H.cfg.time, false); H.left = H.total; H.answers = {}; H.closing = false;
-  Sound.startMusic(); clearTimeout(H.auto);
+  Sound.startMusic("show"); clearTimeout(H.auto);
   ikDrawHost(); ikPush();
   stopTimer();
   tick = setInterval(() => {
@@ -190,7 +190,7 @@ function ikOnIdent(p) {
   const k = +p.k; if (!Number.isInteger(k) || k < 0 || k > 3) return;
   addPlayer(p);
   H.ids[p.id] = { k, covered: IK_TILES - H.off.length, t: Date.now() };
-  Sound.play("arrest");
+  Sound.play("ikBuzz");
   ikLiveUI(); ikPush();
 }
 function ikRevealQ() {
@@ -211,7 +211,7 @@ function ikRevealQ() {
   H.off = H.off.concat(H.fresh);
   H.qstats.push({ pi: H.pi, qn: P.qs[H.qi], right, answered, of, dist });
   H.phase = "tiles";
-  Sound.play(right ? "correct" : "reveal");
+  Sound.play(right ? "ikDing" : "ikNope");
   ikPush(); ikDrawHost();
 }
 const ikAllIded = H => { const online = [...H.online].filter(id => H.players[id]); return online.length > 0 && online.every(id => H.ids[id]); };
@@ -231,8 +231,9 @@ function ikUnmask() {
   });
   H.stats.push({ pi: H.pi, id: pic.id, right, of: Object.keys(H.players).length, made: Object.keys(H.ids).length, counts, first, tilesLeft: IK_TILES - H.off.length });
   H.phase = "unmask"; H.fresh = [];
-  Sound.play("gold");
+  Sound.play("ikReveal");
   ikPush(); ikDrawHost();
+  later(1300, () => Sound.play(right ? "ikRight" : "ikWrong"));
 }
 function ikLiveUI() {
   const H = S.host; if (!H || H.game !== "identikit") return;
@@ -321,7 +322,7 @@ function ikDrawHost() {
           <div class="row">${done ? `<button class="btn primary big" id="unmask">Unmask the picture</button>` : `<button class="btn primary big" id="nextq">Next question</button><button class="btn quiet" id="unmask">Unmask now</button>`}<button class="btn quiet" id="quit">End game</button></div>
         </section></div>`, true);
     ikLiveUI();
-    if (H.fresh.length) later(200, () => Sound.play("promote"));
+    H.fresh.forEach((_, k) => later(250 + k * 350, () => Sound.play("ikTile")));
     const nq = document.getElementById("nextq"); if (nq) nq.onclick = ikNextQuestion;
     document.getElementById("unmask").onclick = ikUnmask;
     document.getElementById("quit").onclick = ikHostEnd;
@@ -341,7 +342,7 @@ function ikDrawHost() {
             ${s.made < s.of ? `<p class="muted small">${s.of - s.made} made no ID.</p>` : ""}</div>
           <div class="row"><button class="btn primary big" id="next">Show the standings</button><button class="btn quiet" id="quit">End game</button></div>
         </section></div>`, true);
-    later(300, () => Confetti.burst(s.right ? 140 : 40, 0.3, 0.3));
+    later(1400, () => Confetti.burst(s.right ? 140 : 40, 0.3, 0.3));
     document.getElementById("next").onclick = () => { H.phase = "standings"; Sound.play("standings"); ikPush(); ikDrawHost(); };
     document.getElementById("quit").onclick = ikHostEnd;
     return;
@@ -373,7 +374,7 @@ function ikDrawHost() {
       <div class="row"><button class="btn primary" id="again">Play again with the same players</button><button class="btn" id="new">New game</button><button class="btn" id="home">Back to Incident Room</button></div>
     </section>`, true);
   if (rk.length) runCeremony(rk.slice(0, 3));
-  document.getElementById("again").onclick = () => { H.round += 1; ikNewRound(H); Sound.startMusic(); ikPush(); ikDrawHost(); };
+  document.getElementById("again").onclick = () => { H.round += 1; ikNewRound(H); Sound.startMusic("show"); ikPush(); ikDrawHost(); };
   document.getElementById("new").onclick = () => { hostClose(); ikHostSetup(); };
   document.getElementById("home").onclick = () => { hostClose(); homeFn(); };
 }
@@ -401,9 +402,9 @@ function ikStudentState(st) {
   if (st.phase === "tiles" && st.qn !== null) {
     const q = QUESTIONS[st.qn];
     P.hist.push({ q, ok: !!(mine && mine.qok), ans: P.L ? P.L.sentAns : null });
-    Sound.play(mine && mine.qok ? "correct" : P.L && P.L.sentAns !== null ? "wrong" : "noanswer");
+    Sound.play(mine && mine.qok ? "ikDing" : P.L && P.L.sentAns !== null ? "ikNope" : "noanswer");
   }
-  if (st.phase === "unmask") { Sound.play(mine && mine.idOk ? "gold" : "reveal"); }
+  if (st.phase === "unmask") { Sound.play("ikReveal"); setTimeout(() => { if (mine && mine.idPick) Sound.play(mine.idOk ? "ikRight" : "ikWrong"); }, 1300); }
   if (st.phase === "standings" && mine) { const r = rankIdx(mine.correct, GAME_RANK_AT); P.promoted = r > P.lastRank; P.lastRank = r; Sound.play(P.promoted ? "promote" : "standings"); }
   if (st.phase === "end") studentSave();
   ikDrawStudent();
@@ -438,7 +439,7 @@ document.addEventListener("click", e => {
   if (a === "close") I.open = false;
   if (a === "pick") I.picked = +b.dataset.k;
   if (a === "confirm" && I.picked !== null) {
-    I.sent = true; I.open = false; Sound.play("arrest");
+    I.sent = true; I.open = false; Sound.play("ikBuzz");
     P.ch.send({ type: "broadcast", event: "ident", payload: { id: P.id, name: S.player.name, avatar: S.player.avatar, round: st.round, pi: st.pi, k: I.picked } });
   }
   Sound.play("tap");
@@ -495,7 +496,7 @@ function ikDrawStudent(keep = false) {
             ${mine && mine.idPick && !mine.idOk ? `<p>You said: <b>${esc(mine.idPick)}</b></p>` : ""}
             ${u.first ? `<p>First correct ID: <b>${esc(u.first.name)}</b> with ${u.first.covered} tile${u.first.covered === 1 ? "" : "s"} still on.</p>` : ""}</div>
         </section></div>`, true);
-    if (mine && mine.idOk) later(300, () => Confetti.burst(120, 0.5, 0.3));
+    if (mine && mine.idOk) later(1400, () => Confetti.burst(120, 0.5, 0.3));
     return;
   }
   if (st.phase === "standings") {
