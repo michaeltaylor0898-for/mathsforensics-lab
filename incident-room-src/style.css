@@ -334,7 +334,7 @@ details summary { cursor: pointer; }
 .eq { font-weight: 700; color: #fff; white-space: nowrap; }
 .so-grid { display: block; width: 100%; max-width: min(100%, 74vh); margin: 0 auto; height: auto; user-select: none; -webkit-user-select: none; }
 .so-pad .so-grid { touch-action: none; cursor: crosshair; }
-.so-grid.big { max-width: min(100%, 76vh); }
+.so-grid.big { max-width: min(100%, calc(100vh - 205px)); }
 .so-bg { fill: #0A1029; stroke: var(--line); }
 .so-gl { stroke: #22305f; stroke-width: 1; }
 .so-ax { stroke: var(--cyan); stroke-width: 2; opacity: .85; }
@@ -380,12 +380,30 @@ details summary { cursor: pointer; }
 .so-txt { font-size: 1.15rem; font-weight: 600; line-height: 1.35; }
 .so-reps.so-big .so-txt { font-size: clamp(1.2rem, 1.9vw, 1.6rem); }
 .so-rules { margin: 6px 0 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 4px; }
-.so-board { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+.so-board { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 18px; align-items: start; }
 @media (max-width: 900px) { .so-board { grid-template-columns: minmax(0, 1fr); } }
-.so-map { padding: 14px; }
+.so-map { padding: 10px; }
 .so-intro { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 340px); gap: 20px; align-items: center; }
 @media (max-width: 760px) { .so-intro { grid-template-columns: minmax(0, 1fr); } }
 .custody { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
 .cu { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px 3px 3px; font-size: .9rem; }
 .so-tags { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
 .so-tags b { font-family: var(--mono); color: var(--bad); margin-right: 4px; }
+
+/* student layout: reports, then a big map, then tools; side by side on landscape screens */
+.so-play { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); grid-template-areas: "reps" "tools" "map"; align-items: start; }
+.so-a-reps { grid-area: reps; } .so-a-map { grid-area: map; padding: 8px; } .so-a-tools { grid-area: tools; }
+.so-a-map .so-grid { max-width: 100%; }
+.so-play .panel { gap: 12px; }
+@media (min-width: 900px) and (orientation: landscape) {
+  .so-play { grid-template-columns: minmax(0, 1.55fr) minmax(300px, 1fr); grid-template-areas: "map reps" "map tools"; }
+  .so-a-map .so-grid { max-width: min(100%, calc(100vh - 120px)); }
+}
+@media (max-width: 560px) { .so-a-map { padding: 4px; } }
+.so-reps .wait .muted { font-size: .95rem; }
+/* rewards */
+.so-win { position: relative; overflow: hidden; }
+.so-stamp { align-self: flex-start; margin: 2px 0 4px 4px; font-family: var(--display); font-weight: 700; font-size: 1.3rem; letter-spacing: .18em; text-transform: uppercase; color: var(--good); border: 3px solid var(--good); border-radius: 8px; padding: 4px 12px; transform: rotate(-8deg); animation: soStamp .5s cubic-bezier(.2, 1.6, .4, 1) both .2s; }
+@keyframes soStamp { from { transform: rotate(-8deg) scale(2.4); opacity: 0; } to { transform: rotate(-8deg) scale(1); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .so-stamp { animation: none; } }
+.so-fast { display: flex; align-items: center; gap: 12px; font-size: 1.1rem; }

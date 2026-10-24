@@ -4,7 +4,7 @@
    earlier arrests score more, a wrong arrest scores nothing. After each case the board
    shows where everyone arrested, so mix-ups like swapping x and y are visible at once. */
 const SO_COL = ["#FFC857", "#00FCF1", "#FF8FB1"];
-const SO_U = 40, SO_M = 34, SO_W = SO_M * 2 + SO.R * 2 * SO_U;
+const SO_U = 40, SO_M = 26, SO_W = SO_M * 2 + SO.R * 2 * SO_U;
 const soKey = (x, y) => x + "," + y;
 const soXY = (x, y) => [SO_M + (x + SO.R) * SO_U, SO_M + (SO.R - y) * SO_U];
 let soClipN = 0;
@@ -52,7 +52,7 @@ function soGridSvg(o = {}) {
   g += `<g class="so-pts">`;
   SO.POINTS.forEach(([x, y]) => {
     const [cx, cy] = soXY(x, y), k = soKey(x, y);
-    g += `<g class="sp${pad.crossed.has(k) ? " x" : ""}" data-k="${k}" transform="translate(${cx},${cy})"><circle r="4.2"/><path class="xx" d="M-6-6L6 6M6-6L-6 6"/></g>`;
+    g += `<g class="sp${pad.crossed.has(k) ? " x" : ""}" data-k="${k}" transform="translate(${cx},${cy})"><circle r="5"/><path class="xx" d="M-7-7L7 7M7-7L-7 7"/></g>`;
   });
   g += `</g>`;
   if (pad.pending) { const [cx, cy] = soXY(...pad.pending); g += `<circle class="so-pend" cx="${cx}" cy="${cy}" r="10"/>`; }
@@ -158,8 +158,9 @@ function soTools(pad, onArrest) {
     soMountPad(pad, onArrest); soTools(pad, onArrest);
   };
 }
-const soReports = (reps, k, big) => `<ol class="so-reps${big ? " so-big" : ""}">${reps.map((r, i) => `<li class="${i === k ? "now" : ""}" style="--c:${SO_COL[i]}"><span class="so-src">Report ${i + 1} · ${esc(r.src)}</span><span class="so-txt">${r.h}</span></li>`).join("")}
-  ${reps.length < 3 ? Array.from({ length: 3 - reps.length }, (_, j) => `<li class="wait"><span class="so-src">Report ${reps.length + j + 1}</span><span class="so-txt muted">Waiting for surveillance…</span></li>`).join("") : ""}</ol>`;
+const soReports = (reps, k, big, compact) => `<ol class="so-reps${big ? " so-big" : ""}">${reps.map((r, i) => `<li class="${i === k ? "now" : ""}" style="--c:${SO_COL[i]}"><span class="so-src">Report ${i + 1} · ${esc(r.src)}</span><span class="so-txt">${r.h}</span></li>`).join("")}
+  ${reps.length < 3 && compact ? `<li class="wait"><span class="so-src">Report ${reps.length + 1} of 3</span><span class="muted small">On its way…</span></li>` : ""}
+  ${reps.length < 3 && !compact ? Array.from({ length: 3 - reps.length }, (_, j) => `<li class="wait"><span class="so-src">Report ${reps.length + j + 1}</span><span class="so-txt muted">Waiting for surveillance…</span></li>`).join("") : ""}</ol>`;
 const soSteps = rev => `<ol class="so-steps">${rev.steps.map((s, i) => `<li style="--c:${SO_COL[i]}"><span class="so-txt">${s.h}</span>${s.how ? `<span class="muted small">${esc(s.how)}</span>` : ""}
   <span class="small">${Array.isArray(s.left) ? (s.left.length === 1 ? `Only <b>${SO.pt(...s.left[0])}</b> is left: the suspect.` : `Still possible: ${s.left.map(p => SO.pt(...p)).join(", ")}`) : `Still possible: ${s.left} points`}</span></li>`).join("")}</ol>`;
 const SO_RULES = `<ul class="so-rules"><li><b>3 surveillance reports</b> per case, one at a time.</li><li><b>Cross off</b> the points the suspect can't be, or <b>draw a line</b> to help.</li><li><b>One arrest per case.</b> The earlier you arrest, the more you score, but a wrong arrest scores nothing.</li></ul>`;
@@ -386,6 +387,7 @@ function soDrawHost() {
   if (H.phase === "reveal") {
     const s = H.stats[H.stats.length - 1], rev = soReveal(cs);
     const swapN = s.tags.swap || 0;
+    const caught = Object.values(H.players).filter(p => p.ok).sort((a, b) => b.last - a.last);
     set(`${hud(`Case ${H.ci + 1} of ${H.cases.length} · reveal`)}
       <div class="row spread">${codeBar}<span class="stat"><b>${s.right}</b> of ${s.of} caught the suspect</span></div>
       <div class="so-board">
@@ -393,12 +395,15 @@ function soDrawHost() {
         <section class="panel so-side">
           <div class="result good"><span class="rhead">The suspect was at ${SO.pt(...cs.p)}</span>
             <p>${s.right} of ${s.of} caught them${s.of - s.arrested ? ` · ${s.of - s.arrested} made no arrest` : ""}.</p>
+            ${caught.length ? `<p class="so-fast">${avatarSvg(caught[0].avatar, "sm")}<span>Fastest arrest: <b>${esc(caught[0].name)}</b>, after report ${caught[0].when} · +${caught[0].last}</span></p>
+              ${caught.length > 1 ? `<div class="custody">${caught.slice(1, 12).map(p => `<span class="cu">${avatarSvg(p.avatar, "xs")}${esc(p.name)}</span>`).join("")}</div>` : ""}` : ""}
             ${s.common ? `<p>Most common wrong arrest: <span class="answer">${SO.pt(...s.common[0].split(",").map(Number))}</span> (${s.common[1]})${swapN && s.common[0] === soKey(cs.p[1], cs.p[0]) ? `: x and y swapped.` : ""}</p>` : ""}
             ${soTagList(s.tags)}</div>
           <span class="eyebrow">How to crack it</span>${soSteps(rev)}
           <div class="row"><button class="btn primary big" id="next">Show the standings</button><button class="btn quiet" id="quit">End game</button></div>
         </section>
       </div>`, true);
+    if (caught.length && H.revealFx !== H.ci) { H.revealFx = H.ci; later(600, () => { Sound.play("correct"); Confetti.burst(Math.min(200, 60 + caught.length * 10), 0.3, 0.3); }); }
     document.getElementById("next").onclick = () => { H.phase = "standings"; Sound.play("standings"); soPush(); soDrawHost(); };
     document.getElementById("quit").onclick = soHostEnd;
     return;
@@ -479,7 +484,7 @@ function soSendArrest(pt) {
   P.ch.send({ type: "broadcast", event: "arrest", payload: { id: P.id, name: S.player.name, avatar: S.player.avatar, round: st.round, ci: st.ci, pt } });
 }
 function soStudentReports(st) {
-  const el = document.getElementById("soReps"); if (el) el.innerHTML = soReports(st.reps, st.k);
+  const el = document.getElementById("soReps"); if (el) el.innerHTML = soReports(st.reps, st.k, false, true);
   const pts = document.getElementById("soWorth"); if (pts) pts.textContent = SO.arrestPoints(st.k, st.total, st.total);
   const h = document.getElementById("soHead"); if (h) h.textContent = `Case ${st.ci + 1} / ${st.n} · report ${st.k + 1} of 3`;
 }
@@ -499,22 +504,28 @@ function soDrawStudent() {
   const hud = extra => `<div class="hud">${me}${extra || ""}${cnt}${soundBtns()}</div>`;
   if (st.phase === "lobby") {
     set(`${hud(`<span class="stat">Game <b>${spaced(P.code)}</b></span>`)}
-      <section class="panel"><span class="eyebrow">Stakeout</span><h2>You're in, ${esc(S.player.name)}</h2>${SO_RULES}
-        <p class="muted small">Practise with the tools while you wait. The first case starts when your teacher is ready.</p></section>
-      <section class="panel so-pad"><div id="soGrid"></div><div id="soTools"></div></section>`);
+      <div class="so-play">
+        <section class="panel so-a-reps"><span class="eyebrow">Stakeout</span><h2>You're in, ${esc(S.player.name)}</h2>${SO_RULES}
+          <p class="muted small">Practise with the tools while you wait. The first case starts when your teacher is ready.</p></section>
+        <section class="panel so-pad so-a-map"><div id="soGrid"></div></section>
+        <section class="panel so-a-tools"><div id="soTools"></div></section>
+      </div>`, true);
     soMountPad(P.so, null); soTools(P.so, null);
     return;
   }
   if (st.phase === "report") {
     set(`${hud(`<span class="stat" id="soHead">Case ${st.ci + 1} / ${st.n} · report ${st.k + 1} of 3</span>`)}
       <div class="timer" aria-hidden="true"><div class="timer-fill" style="width:${(P.left / st.total) * 100}%"></div></div>
-      <section class="panel so-pad">
-        <div class="row spread"><span class="eyebrow">Find the suspect</span><span class="stat secs"><span id="tleft">${P.left}</span>s</span></div>
-        <div id="soReps">${soReports(st.reps, st.k)}</div>
-        <p class="muted small">An arrest now scores up to <b id="soWorth">${SO.arrestPoints(st.k, st.total, st.total)}</b> points. A wrong arrest scores 0.</p>
-        <p class="closing" id="closing" ${st.closing ? "" : "hidden"}>Everyone has made an arrest. Revealing…</p>
-        <div id="soGrid"></div><div id="soTools"></div>
-      </section>`);
+      <div class="so-play">
+        <section class="panel so-a-reps">
+          <div class="row spread"><span class="eyebrow">Find the suspect</span><span class="stat secs"><span id="tleft">${P.left}</span>s</span></div>
+          <div id="soReps">${soReports(st.reps, st.k, false, true)}</div>
+          <p class="muted small">Arrest now for up to <b id="soWorth">${SO.arrestPoints(st.k, st.total, st.total)}</b> points. One arrest per case: a wrong one scores 0.</p>
+          <p class="closing" id="closing" ${st.closing ? "" : "hidden"}>Everyone has made an arrest. Revealing…</p>
+        </section>
+        <section class="panel so-pad so-a-map"><div id="soGrid"></div></section>
+        <section class="panel so-a-tools"><div id="soTools"></div></section>
+      </div>`, true);
     soMountPad(P.so, soSendArrest); soTools(P.so, soSendArrest);
     return;
   }
@@ -522,15 +533,19 @@ function soDrawStudent() {
     const ok = mine && mine.ok, made = mine && mine.arrest;
     const pad = P.so && P.so.ci === st.ci ? P.so : soFreshPad();
     const view = { crossed: pad.crossed, lines: pad.lines, arrestPt: made ? mine.arrest : null };
+    const praise = !ok ? "" : mine.when === 1 ? "Arrested after the first report: outstanding detective work!" : mine.when === 2 ? "Arrested after report 2: sharp thinking." : "Case solved.";
     set(`${hud(`<span class="stat">Case <b>${st.ci + 1}</b> / ${st.n}</span>`)}
-      <section class="panel">
-        <div class="result ${ok ? "good" : "bad"}"><span class="rhead">${ok ? `Suspect caught · +${mine.last}` : made ? "Wrong suspect" : "No arrest made"}</span>
-          ${ok ? `<p>You arrested after report ${mine.when}${mine.when === 1 ? ": brilliant detective work" : ""}.</p>` : made ? `<p>${esc(mine.diag)}</p>` : `<p>Arrest before the time runs out to score.</p>`}
-          <p>The suspect was at <span class="answer">${SO.pt(...st.rev.p)}</span>.</p></div>
-        ${soGridSvg({ pad: view, rev: st.rev })}
-        <span class="eyebrow">How to crack it</span>${soSteps(st.rev)}
-        <p class="muted">Look at the board to see where everyone arrested.</p>
-      </section>`);
+      <div class="so-play">
+        <section class="panel so-a-reps">
+          <div class="result ${ok ? "good" : "bad"}${ok ? " so-win" : ""}">${ok ? `<span class="so-stamp">Caught</span>` : ""}<span class="rhead">${ok ? `Suspect caught · +${mine.last}` : made ? "Wrong suspect" : "No arrest made"}</span>
+            ${ok ? `<p>${praise}</p>${mine.streak >= 2 ? `<span class="streak">${mine.streak} suspects in a row</span>` : ""}` : made ? `<p>${esc(mine.diag)}</p>` : `<p>Arrest before the time runs out to score.</p>`}
+            <p>The suspect was at <span class="answer">${SO.pt(...st.rev.p)}</span>.</p></div>
+          <p class="muted small">Look at the board to see where everyone arrested.</p>
+        </section>
+        <section class="panel so-a-map">${soGridSvg({ pad: view, rev: st.rev })}</section>
+        <section class="panel so-a-tools"><span class="eyebrow">How to crack it</span>${soSteps(st.rev)}</section>
+      </div>`, true);
+    if (ok) { later(300, () => Confetti.burst(mine.when === 1 ? 160 : 90, 0.5, 0.3)); if (mine.when === 1) later(700, () => Sound.play("promote")); }
     return;
   }
   if (st.phase === "standings") {
