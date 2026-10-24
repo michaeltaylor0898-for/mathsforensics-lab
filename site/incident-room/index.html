@@ -482,6 +482,49 @@ details summary { cursor: pointer; }
 .ptbtn.on { border-color: var(--cyan); color: var(--cyan); }
 .so-editrow { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 
+/* ---------- The Identikit ---------- */
+.ik-frame { position: relative; width: 100%; max-width: 440px; margin: 0 auto; aspect-ratio: 1; border-radius: 12px; overflow: hidden; border: 3px solid var(--amber); background: #0E1636; }
+.ik-frame.big { max-width: min(100%, calc(100vh - 340px)); }
+.ik-board .opt { font-size: clamp(1rem, 1.5vw, 1.35rem); }
+.ik-board .ot { word-break: normal; overflow-wrap: normal; }
+.ik-pic, .ik-pic svg, .ik-pic img { display: block; width: 100%; height: 100%; object-fit: cover; user-select: none; -webkit-user-drag: none; }
+.ik-tiles { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr); }
+.ik-t { display: grid; place-items: center; border: 2px solid #0B122C; background: repeating-linear-gradient(135deg, #1B2654 0 14px, #18214A 14px 28px); color: var(--amber); font: 700 clamp(1rem, 3.2vw, 2.2rem) var(--mono); transition: opacity .4s, transform .4s; }
+.ik-t.off { opacity: 0; transform: scale(.4) rotate(-14deg); }
+.ik-t.go { animation: ikLift 1s ease-in forwards; animation-delay: var(--d, 0s); }
+@keyframes ikLift { 0% { transform: none; opacity: 1; } 35% { transform: translateY(-6%) rotate(-5deg) scale(1.08); opacity: 1; box-shadow: 0 0 0 3px var(--amber); } 100% { transform: translateY(-45%) rotate(-28deg) scale(.4); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .ik-t.go { animation: none; opacity: 0; } }
+.ik-frame.solved { border-color: var(--good); animation: ikShine 1.2s ease-out; }
+@keyframes ikShine { from { box-shadow: 0 0 0 0 rgba(61,220,151,.9); } to { box-shadow: 0 0 0 28px rgba(61,220,151,0); } }
+.ik-board { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 900px) { .ik-board { grid-template-columns: minmax(0, 1fr); } }
+.ik-left { gap: 14px; }
+.ik-lineup { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 6px; }
+.ik-sus { display: flex; align-items: center; gap: 10px; text-align: left; border: 1px solid var(--line); background: var(--bg); border-radius: 10px; padding: 10px 12px; font: 600 1.05rem var(--body); color: var(--text); min-height: 52px; }
+.ik-lineup.board .ik-sus { font-size: clamp(1.05rem, 1.6vw, 1.4rem); }
+button.ik-sus:hover { border-color: var(--cyan); }
+.ik-sus.chosen { border-color: var(--cyan); background: rgba(0,252,241,.12); }
+.ik-sus.right { border-color: var(--good); background: rgba(61,220,151,.15); }
+.ik-sus.dim { opacity: .5; }
+.ik-no { flex: none; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--amber); color: var(--bg); font: 700 .9rem var(--mono); }
+.ik-nm { flex: 1; min-width: 0; }
+.ik-sus .cnt { font-family: var(--mono); color: var(--muted); }
+.ik-lift { display: flex; align-items: center; gap: 14px; font-family: var(--display); font-weight: 700; text-transform: uppercase; letter-spacing: .06em; font-size: 1.2rem; }
+.ik-lift small { text-transform: none; letter-spacing: 0; font-weight: 500; color: var(--muted); font-family: var(--body); }
+.ik-big { font: 700 3.4rem var(--mono); color: var(--amber); line-height: 1; }
+.ik-play { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (min-width: 900px) and (orientation: landscape) { .ik-play { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); } }
+.ik-mini { gap: 12px; }
+.ik-idbtn { background: var(--amber) !important; border-color: var(--amber) !important; color: var(--bg) !important; }
+.ik-idbox { border: 2px solid var(--amber); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 10px; background: rgba(255,200,87,.06); }
+.ik-name { font-size: clamp(1.6rem, 3.4vw, 2.6rem); color: var(--amber); }
+.ik-fact { font-size: 1.15rem; }
+.ik-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; }
+.ik-gallery figure { margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.ik-gallery .ik-frame { border-width: 2px; }
+.ik-gallery figcaption { font-size: .9rem; color: var(--muted); }
+.ik-demo .ik-frame { max-width: 300px; }
+
 </style>
 <script>
 /* Settings. The Supabase key is the publishable one (safe in a web page); never put the secret key here. */
@@ -2303,6 +2346,735 @@ function soDrawStudent() {
 }
 
 
+/* ================= THE IDENTIKIT: the hidden pictures =================
+   Every picture is 600 x 600. Graphs, shapes, solids and catchphrases are drawn here so they stay exact
+   and sharp on a projector; the famous mathematicians and scientists are photos in img/identikit/.
+   Each picture: id, cat, name (the right answer), options (3 look-alikes), fact, tier, topics (for the
+   tile questions; people and catchphrases use the teacher's topics instead). */
+const IK = (() => {
+  const BG = `<rect width="600" height="600" fill="#0E1636"/>`;
+  const CY = "#00FCF1", AM = "#FFC857", PK = "#FF8FB1", WH = "#E9EDFA", MU = "#5B6AA8", GR = "#22305F";
+  const M = "−";
+  const svg = body => `<svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hidden picture">${BG}${body}</svg>`;
+
+  /* ---------- graphs ---------- */
+  function graph(o) {
+    const [x0, x1] = o.xr || [-5, 5], [y0, y1] = o.yr || [-5, 5];
+    const X = x => 50 + (x - x0) / (x1 - x0) * 500, Y = y => 550 - (y - y0) / (y1 - y0) * 500;
+    const xs = o.xstep || 1, ys = o.ystep || 1;
+    let g = `<g stroke="${GR}" stroke-width="2">`;
+    for (let x = Math.ceil(x0 / xs) * xs; x <= x1 + 1e-9; x += xs) g += `<line x1="${X(x)}" y1="50" x2="${X(x)}" y2="550"/>`;
+    for (let y = Math.ceil(y0 / ys) * ys; y <= y1 + 1e-9; y += ys) g += `<line x1="50" y1="${Y(y)}" x2="550" y2="${Y(y)}"/>`;
+    g += `</g><g stroke="${WH}" stroke-width="3"><line x1="40" y1="${Y(0)}" x2="562" y2="${Y(0)}"/><line x1="${X(0)}" y1="38" x2="${X(0)}" y2="560"/></g>`;
+    g += `<g fill="${WH}" font-family="JetBrains Mono, monospace" font-size="19" font-weight="700"><text x="570" y="${Y(0) + 6}">x</text><text x="${X(0) - 6}" y="30">y</text>`;
+    const lab = v => (v < 0 ? M + Math.abs(v) : String(v)) + (o.deg ? "°" : "");
+    (o.xlabels || []).forEach(x => { g += `<text x="${X(x)}" y="${Y(0) + 26}" text-anchor="middle" font-size="${o.deg ? 15 : 19}">${lab(x)}</text>`; });
+    (o.ylabels || []).forEach(y => { g += `<text x="${X(0) - 10}" y="${Y(y) + 6}" text-anchor="end">${y < 0 ? M + Math.abs(y) : y}</text>`; });
+    g += `</g>`;
+    const curve = `stroke="${AM}" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"`;
+    if (o.vline !== undefined) g += `<line x1="${X(o.vline)}" y1="50" x2="${X(o.vline)}" y2="550" ${curve}/>`;
+    else if (o.circle) g += `<circle cx="${X(0)}" cy="${Y(0)}" r="${X(o.circle) - X(0)}" ${curve}/>`;
+    else {
+      let d = "", prev = null;
+      for (let i = 0; i <= 600; i++) {
+        const x = x0 + (x1 - x0) * i / 600, y = o.f(x);
+        const ok = Number.isFinite(y) && y > y0 - 2 && y < y1 + 2;
+        const jump = prev !== null && Math.abs(y - prev) > (y1 - y0);
+        if (!ok || jump) { prev = ok ? y : null; if (ok) d += `M${X(x).toFixed(1)} ${Y(y).toFixed(1)}`; continue; }
+        d += (prev === null ? "M" : "L") + `${X(x).toFixed(1)} ${Y(y).toFixed(1)}`; prev = y;
+      }
+      g += `<clipPath id="gc"><rect x="50" y="50" width="500" height="500"/></clipPath><path d="${d}" ${curve} clip-path="url(#gc)"/>`;
+    }
+    return svg(g);
+  }
+  const L5 = [-4, -3, -2, -1, 1, 2, 3, 4];
+  const G = (o) => graph(Object.assign({ xlabels: L5, ylabels: L5 }, o));
+  const TRIG = { xr: [-360, 360], yr: [-2, 2], xstep: 90, ystep: 0.5, deg: true, xlabels: [-360, -180, 180, 360], ylabels: [-1, 1] };
+
+  /* ---------- flat shapes ---------- */
+  const P = pts => pts.map(p => p.join(",")).join(" ");
+  const mid = (a, b) => [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+  const unit = (a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy); return [dx / l, dy / l]; };
+  function ticks(a, b, n) { const [ux, uy] = unit(a, b), [mx, my] = mid(a, b), nx = -uy, ny = ux; let s = "";
+    for (let i = 0; i < n; i++) { const o = (i - (n - 1) / 2) * 11, cx = mx + ux * o, cy = my + uy * o; s += `<line x1="${cx - nx * 14}" y1="${cy - ny * 14}" x2="${cx + nx * 14}" y2="${cy + ny * 14}"/>`; }
+    return `<g stroke="${WH}" stroke-width="4" stroke-linecap="round">${s}</g>`; }
+  function arrows(a, b, n) { const [ux, uy] = unit(a, b), [mx, my] = mid(a, b), nx = -uy, ny = ux; let s = "";
+    for (let i = 0; i < n; i++) { const o = (i - (n - 1) / 2) * 14, cx = mx + ux * o, cy = my + uy * o;
+      s += `<polyline points="${cx - ux * 12 + nx * 11},${cy - uy * 12 + ny * 11} ${cx},${cy} ${cx - ux * 12 - nx * 11},${cy - uy * 12 - ny * 11}"/>`; }
+    return `<g stroke="${WH}" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">${s}</g>`; }
+  const rightAngle = (v, a, b, s = 30) => { const [ax, ay] = unit(v, a), [bx, by] = unit(v, b);
+    return `<polyline points="${v[0] + ax * s},${v[1] + ay * s} ${v[0] + ax * s + bx * s},${v[1] + ay * s + by * s} ${v[0] + bx * s},${v[1] + by * s}" fill="none" stroke="${WH}" stroke-width="4"/>`; };
+  const shape = (pts, extra = "") => svg(`<polygon points="${P(pts)}" fill="rgba(0,252,241,.13)" stroke="${CY}" stroke-width="6" stroke-linejoin="round"/>${extra}`);
+  const regular = (n, r = 215, cx = 300, cy = 315) => { const pts = []; for (let i = 0; i < n; i++) { const t = Math.PI / 2 + Math.PI / n + i * 2 * Math.PI / n; pts.push([cx + r * Math.cos(t), cy + r * Math.sin(t)]); } return pts; };
+  const allTicks = (pts, n = 1) => pts.map((p, i) => ticks(p, pts[(i + 1) % pts.length], n)).join("");
+  const arcPt = (t, r = 210, c = [300, 300]) => [c[0] + r * Math.cos(t * Math.PI / 180), c[1] - r * Math.sin(t * Math.PI / 180)];
+  const circleBase = `<circle cx="300" cy="300" r="210" fill="rgba(0,252,241,.08)" stroke="${CY}" stroke-width="6"/><circle cx="300" cy="300" r="6" fill="${WH}"/>`;
+
+  /* ---------- solids: polyhedra in oblique projection, hidden edges dashed ---------- */
+  const KX = 0.5, KY = 0.36;
+  function poly3(V, F, o = {}) {
+    const ox = o.ox || 150, oy = o.oy || 470;
+    const pr = ([x, y, z]) => [ox + x + KX * z, oy - y - KY * z];
+    const c = V.reduce((s, v) => [s[0] + v[0] / V.length, s[1] + v[1] / V.length, s[2] + v[2] / V.length], [0, 0, 0]);
+    const vis = F.map(f => {
+      const [a, b, d] = [V[f[0]], V[f[1]], V[f[2]]];
+      const u = [b[0] - a[0], b[1] - a[1], b[2] - a[2]], w = [d[0] - a[0], d[1] - a[1], d[2] - a[2]];
+      let n = [u[1] * w[2] - u[2] * w[1], u[2] * w[0] - u[0] * w[2], u[0] * w[1] - u[1] * w[0]];
+      const fc = f.reduce((s, i) => [s[0] + V[i][0] / f.length, s[1] + V[i][1] / f.length, s[2] + V[i][2] / f.length], [0, 0, 0]);
+      if (n[0] * (fc[0] - c[0]) + n[1] * (fc[1] - c[1]) + n[2] * (fc[2] - c[2]) < 0) n = n.map(x => -x);
+      return n[0] * -KX + n[1] * -KY + n[2] * 1 < 0;          // facing the viewer
+    });
+    const edges = new Map();
+    F.forEach((f, fi) => f.forEach((v, i) => { const a = v, b = f[(i + 1) % f.length], k = a < b ? a + "-" + b : b + "-" + a; edges.set(k, (edges.get(k) || false) || vis[fi]); }));
+    let g = "";
+    F.forEach((f, fi) => { if (vis[fi]) g += `<polygon points="${P(f.map(i => pr(V[i])))}" fill="${fi === (o.shade ?? -1) ? "rgba(255,200,87,.22)" : "rgba(0,252,241,.12)"}" stroke="none"/>`; });
+    edges.forEach((seen, k) => { const [a, b] = k.split("-").map(Number), p = pr(V[a]), q = pr(V[b]);
+      g += `<line x1="${p[0]}" y1="${p[1]}" x2="${q[0]}" y2="${q[1]}" stroke="${CY}" stroke-width="${seen ? 6 : 3.5}" ${seen ? "" : `stroke-dasharray="14 10" opacity=".75"`} stroke-linecap="round"/>`; });
+    return svg(g);
+  }
+  const box = (w, h, d) => poly3([[0, 0, 0], [w, 0, 0], [w, h, 0], [0, h, 0], [0, 0, d], [w, 0, d], [w, h, d], [0, h, d]],
+    [[0, 1, 2, 3], [4, 5, 6, 7], [0, 1, 5, 4], [3, 2, 6, 7], [0, 3, 7, 4], [1, 2, 6, 5]], { ox: 300 - (w + KX * d) / 2, oy: 300 + (h + KY * d) / 2 });
+  const prism = (base, d, o) => { const n = base.length, V = base.map(([x, y]) => [x, y, 0]).concat(base.map(([x, y]) => [x, y, d]));
+    const F = [[...Array(n).keys()], [...Array(n).keys()].map(i => i + n)]; for (let i = 0; i < n; i++) F.push([i, (i + 1) % n, (i + 1) % n + n, i + n]); return poly3(V, F, o); };
+  const pyramid = (base, apex, o) => { const n = base.length, V = base.concat([apex]); const F = [[...Array(n).keys()]]; for (let i = 0; i < n; i++) F.push([i, (i + 1) % n, n]); return poly3(V, F, o); };
+  /* round solids, drawn with ellipses */
+  const ell = (cx, cy, rx, ry, half) => half === "front" ? `<path d="M${cx - rx} ${cy}A${rx} ${ry} 0 0 0 ${cx + rx} ${cy}" fill="none" stroke="${CY}" stroke-width="6"/>`
+    : half === "back" ? `<path d="M${cx - rx} ${cy}A${rx} ${ry} 0 0 1 ${cx + rx} ${cy}" fill="none" stroke="${CY}" stroke-width="3.5" stroke-dasharray="14 10" opacity=".75"/>`
+    : `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="rgba(0,252,241,.12)" stroke="${CY}" stroke-width="6"/>`;
+  const FILL = "rgba(0,252,241,.12)";
+
+  /* ---------- catchphrases ---------- */
+  const face = (cx, cy, mood) => mood === "cute"
+    ? `<circle cx="${cx - 26}" cy="${cy}" r="14" fill="${WH}"/><circle cx="${cx + 26}" cy="${cy}" r="14" fill="${WH}"/><circle cx="${cx - 22}" cy="${cy + 2}" r="7" fill="#0B122C"/><circle cx="${cx + 30}" cy="${cy + 2}" r="7" fill="#0B122C"/>
+       <path d="M${cx - 18} ${cy + 30}q18 16 36 0" stroke="${WH}" stroke-width="5" fill="none" stroke-linecap="round"/><ellipse cx="${cx - 46}" cy="${cy + 24}" rx="10" ry="6" fill="${PK}" opacity=".8"/><ellipse cx="${cx + 46}" cy="${cy + 24}" rx="10" ry="6" fill="${PK}" opacity=".8"/>`
+    : `<path d="M${cx - 50} ${cy - 22}l36 14M${cx + 50} ${cy - 22}l-36 14" stroke="#0B122C" stroke-width="9" stroke-linecap="round"/><circle cx="${cx - 26}" cy="${cy + 6}" r="8" fill="#0B122C"/><circle cx="${cx + 26}" cy="${cy + 6}" r="8" fill="#0B122C"/>
+       <rect x="${cx - 30}" y="${cy + 34}" width="60" height="20" rx="4" fill="${WH}" stroke="#0B122C" stroke-width="4"/><path d="M${cx - 15} ${cy + 34}v20M${cx} ${cy + 34}v20M${cx + 15} ${cy + 34}v20" stroke="#0B122C" stroke-width="3"/>`;
+  const heart = (x, y, s = 1, c = PK) => `<path transform="translate(${x},${y}) scale(${s})" d="M0 10C-14 0-22-8-14-16-8-21 0-17 0-11 0-17 8-21 14-16 22-8 14 0 0 10z" fill="${c}"/>`;
+
+  const PICS = [
+    /* GRAPHS */
+    { id: "g-yx", cat: "graphs", name: "y = x", options: ["y = " + M + "x", "y = 2x", "y = x + 1"], tier: "F", topics: ["A9"], fact: "y = x goes through the origin with gradient 1: every point has the same x and y coordinate.", draw: () => G({ f: x => x }) },
+    { id: "g-ynx", cat: "graphs", name: "y = " + M + "x", options: ["y = x", "y = " + M + "2x", "y = 1 " + M + " x"], tier: "F", topics: ["A9"], fact: "y = " + M + "x goes through the origin with gradient " + M + "1, sloping down from left to right.", draw: () => G({ f: x => -x }) },
+    { id: "g-2x1", cat: "graphs", name: "y = 2x + 1", options: ["y = x + 2", "y = " + M + "2x + 1", "y = 2x " + M + " 1"], tier: "F", topics: ["A9"], fact: "y = 2x + 1 has gradient 2 and crosses the y-axis at (0, 1).", draw: () => G({ f: x => 2 * x + 1 }) },
+    { id: "g-n2x3", cat: "graphs", name: "y = " + M + "2x + 3", options: ["y = 2x + 3", "y = " + M + "2x " + M + " 3", "y = " + M + "3x + 2"], tier: "F", topics: ["A9"], fact: "y = " + M + "2x + 3 has gradient " + M + "2 and crosses the y-axis at (0, 3).", draw: () => G({ f: x => -2 * x + 3 }) },
+    { id: "g-y3", cat: "graphs", name: "y = 3", options: ["x = 3", "y = " + M + "3", "y = 3x"], tier: "F", topics: ["A9"], fact: "y = 3 is a horizontal line: every point on it has y-coordinate 3.", draw: () => G({ f: () => 3 }) },
+    { id: "g-xn2", cat: "graphs", name: "x = " + M + "2", options: ["y = " + M + "2", "x = 2", "y = " + M + "2x"], tier: "F", topics: ["A9"], fact: "x = " + M + "2 is a vertical line: every point on it has x-coordinate " + M + "2.", draw: () => G({ vline: -2 }) },
+    { id: "g-x2", cat: "graphs", name: "y = x²", options: ["y = " + M + "x²", "y = x² + 2", "y = 2x"], tier: "F", topics: ["A10"], fact: "y = x² is a U-shaped parabola with its turning point (a minimum) at the origin.", draw: () => G({ f: x => x * x }) },
+    { id: "g-nx24", cat: "graphs", name: "y = " + M + "x² + 4", options: ["y = x² + 4", "y = x² " + M + " 4", "y = " + M + "x² " + M + " 4"], tier: "F", topics: ["A10"], fact: "y = " + M + "x² + 4 is an upside-down parabola with its maximum at (0, 4). It crosses the x-axis at " + M + "2 and 2.", draw: () => G({ f: x => 4 - x * x }) },
+    { id: "g-x2m4", cat: "graphs", name: "y = x² " + M + " 4", options: ["y = x² + 4", "y = (x " + M + " 4)²", "y = " + M + "x² + 4"], tier: "F", topics: ["A10"], fact: "y = x² " + M + " 4 is y = x² moved down 4. Its minimum is (0, " + M + "4) and its roots are " + M + "2 and 2.", draw: () => G({ f: x => x * x - 4 }) },
+    { id: "g-xm2sq", cat: "graphs", name: "y = (x " + M + " 2)²", options: ["y = (x + 2)²", "y = x² " + M + " 2", "y = x² + 2"], tier: "H", topics: ["A10", "A22"], fact: "y = (x " + M + " 2)² is y = x² moved 2 to the right. Its turning point is (2, 0).", draw: () => G({ f: x => (x - 2) ** 2 }) },
+    { id: "g-x3", cat: "graphs", name: "y = x³", options: ["y = " + M + "x³", "y = x²", "y = 1/x"], tier: "F", topics: ["A18"], fact: "y = x³ is a cubic: it rises from bottom left to top right and flattens through the origin.", draw: () => G({ f: x => x ** 3 }) },
+    { id: "g-nx3", cat: "graphs", name: "y = " + M + "x³", options: ["y = x³", "y = " + M + "x²", "y = " + M + "1/x"], tier: "F", topics: ["A18"], fact: "y = " + M + "x³ is a cubic that falls from top left to bottom right.", draw: () => G({ f: x => -(x ** 3) }) },
+    { id: "g-recip", cat: "graphs", name: "y = 1/x", options: ["y = " + M + "1/x", "y = x³", "y = x"], tier: "F", topics: ["A18"], fact: "y = 1/x is a reciprocal graph: two curves that never touch either axis (the axes are asymptotes).", draw: () => G({ f: x => 1 / x }) },
+    { id: "g-exp", cat: "graphs", name: "y = 2ˣ", options: ["y = (½)ˣ", "y = x²", "y = 2x"], tier: "H", topics: ["A18"], fact: "y = 2ˣ is exponential growth: it crosses the y-axis at (0, 1) and doubles every step to the right.", draw: () => G({ f: x => 2 ** x }) },
+    { id: "g-circ", cat: "graphs", name: "x² + y² = 9", options: ["x² + y² = 3", "x² + y² = 81", "x + y = 9"], tier: "H", topics: ["A19"], fact: "x² + y² = 9 is a circle centred on the origin with radius 3 (because 3² = 9).", draw: () => G({ circle: 3 }) },
+    { id: "g-sin", cat: "graphs", name: "y = sin x", options: ["y = cos x", "y = tan x", "y = " + M + "sin x"], tier: "H", topics: ["A18", "G10"], fact: "y = sin x goes through (0, 0), peaks at 1 when x = 90° and repeats every 360°.", draw: () => graph(Object.assign({ f: x => Math.sin(x * Math.PI / 180) }, TRIG)) },
+    { id: "g-cos", cat: "graphs", name: "y = cos x", options: ["y = sin x", "y = tan x", "y = " + M + "cos x"], tier: "H", topics: ["A18", "G10"], fact: "y = cos x starts at (0, 1), crosses the x-axis at 90° and repeats every 360°.", draw: () => graph(Object.assign({ f: x => Math.cos(x * Math.PI / 180) }, TRIG)) },
+    { id: "g-tan", cat: "graphs", name: "y = tan x", options: ["y = sin x", "y = cos x", "y = 1/x"], tier: "H", topics: ["A18", "G10"], fact: "y = tan x repeats every 180° and has asymptotes at 90°, 270° and so on, where it is undefined.", draw: () => graph(Object.assign({ f: x => Math.tan(x * Math.PI / 180) }, TRIG, { yr: [-4, 4], ystep: 1, ylabels: [-2, 2] })) },
+
+    /* FLAT SHAPES */
+    { id: "s-equi", cat: "shapes", name: "Equilateral triangle", options: ["Isosceles triangle", "Scalene triangle", "Right-angled triangle"], tier: "F", topics: ["G3", "G1"], fact: "An equilateral triangle has 3 equal sides and 3 equal angles of 60°.", draw: () => { const p = [[150, 470], [450, 470], [300, 210]]; return shape(p, allTicks(p)); } },
+    { id: "s-isos", cat: "shapes", name: "Isosceles triangle", options: ["Equilateral triangle", "Scalene triangle", "Right-angled triangle"], tier: "F", topics: ["G3", "G1"], fact: "An isosceles triangle has 2 equal sides, and the 2 angles opposite them are equal.", draw: () => { const p = [[200, 490], [400, 490], [300, 110]]; return shape(p, ticks(p[0], p[2], 1) + ticks(p[1], p[2], 1)); } },
+    { id: "s-scal", cat: "shapes", name: "Scalene triangle", options: ["Isosceles triangle", "Equilateral triangle", "Right-angled triangle"], tier: "F", topics: ["G3", "G1"], fact: "A scalene triangle has no equal sides and no equal angles. Different numbers of dashes show the sides are all different.", draw: () => { const p = [[100, 470], [510, 490], [220, 150]]; return shape(p, ticks(p[0], p[1], 1) + ticks(p[1], p[2], 2) + ticks(p[2], p[0], 3)); } },
+    { id: "s-right", cat: "shapes", name: "Right-angled triangle", options: ["Isosceles triangle", "Equilateral triangle", "Scalene triangle"], tier: "F", topics: ["G3", "G9"], fact: "A right-angled triangle has one 90° angle, shown by the small square. Its longest side is the hypotenuse.", draw: () => { const p = [[150, 470], [470, 470], [150, 220]]; return shape(p, rightAngle(p[0], p[1], p[2])); } },
+    { id: "s-para", cat: "shapes", name: "Parallelogram", options: ["Rhombus", "Trapezium", "Rectangle"], tier: "F", topics: ["G3", "G4"], fact: "A parallelogram has two pairs of parallel sides (shown by the arrows). Opposite sides and opposite angles are equal.", draw: () => { const p = [[100, 430], [390, 430], [500, 190], [210, 190]]; return shape(p, arrows(p[0], p[1], 1) + arrows(p[3], p[2], 1) + arrows(p[0], p[3], 2) + arrows(p[1], p[2], 2)); } },
+    { id: "s-rhom", cat: "shapes", name: "Rhombus", options: ["Square", "Parallelogram", "Kite"], tier: "F", topics: ["G3"], fact: "A rhombus has 4 equal sides and two pairs of parallel sides. Its diagonals cross at right angles.", draw: () => { const p = [[130, 420], [380, 420], [505, 203.5], [255, 203.5]]; return shape(p, allTicks(p) + arrows(p[0], p[1], 1) + arrows(p[3], p[2], 1)); } },
+    { id: "s-trap", cat: "shapes", name: "Trapezium", options: ["Parallelogram", "Kite", "Rhombus"], tier: "F", topics: ["G3", "G4"], fact: "A trapezium has exactly one pair of parallel sides. Its area is ½(a + b)h.", draw: () => { const p = [[90, 440], [510, 440], [400, 200], [180, 200]]; return shape(p, arrows(p[0], p[1], 1) + arrows(p[3], p[2], 1)); } },
+    { id: "s-kite", cat: "shapes", name: "Kite", options: ["Rhombus", "Trapezium", "Parallelogram"], tier: "F", topics: ["G3"], fact: "A kite has two pairs of equal adjacent sides and one line of symmetry. Its diagonals cross at right angles.", draw: () => { const p = [[300, 100], [450, 250], [300, 510], [150, 250]]; return shape(p, ticks(p[0], p[1], 1) + ticks(p[3], p[0], 1) + ticks(p[1], p[2], 2) + ticks(p[2], p[3], 2)); } },
+    { id: "s-pent", cat: "shapes", name: "Regular pentagon", options: ["Regular hexagon", "Regular heptagon", "Regular octagon"], tier: "F", topics: ["G2"], fact: "A regular pentagon has 5 equal sides. Each interior angle is 108° and the exterior angles are 72°.", draw: () => { const p = regular(5); return shape(p, allTicks(p)); } },
+    { id: "s-hex", cat: "shapes", name: "Regular hexagon", options: ["Regular pentagon", "Regular octagon", "Regular heptagon"], tier: "F", topics: ["G2"], fact: "A regular hexagon has 6 equal sides and interior angles of 120°. Hexagons tessellate, which is why bees use them.", draw: () => { const p = regular(6); return shape(p, allTicks(p)); } },
+    { id: "s-oct", cat: "shapes", name: "Regular octagon", options: ["Regular hexagon", "Regular decagon", "Regular heptagon"], tier: "F", topics: ["G2"], fact: "A regular octagon has 8 equal sides. Each exterior angle is 360° ÷ 8 = 45°, so each interior angle is 135°.", draw: () => { const p = regular(8); return shape(p, allTicks(p)); } },
+    { id: "s-sector", cat: "shapes", name: "Sector", options: ["Segment", "Semicircle", "Arc"], tier: "F", topics: ["G5", "G6"], fact: "A sector is the slice between two radii and an arc, like a slice of pizza.", draw: () => { const a = arcPt(20), b = arcPt(100); return svg(circleBase + `<path d="M300 300L${a}A210 210 0 0 0 ${b}Z" fill="rgba(255,200,87,.55)" stroke="${AM}" stroke-width="6" stroke-linejoin="round"/>`); } },
+    { id: "s-segment", cat: "shapes", name: "Segment", options: ["Sector", "Chord", "Semicircle"], tier: "F", topics: ["G5", "G6"], fact: "A segment is the region between a chord and an arc.", draw: () => { const a = arcPt(200), b = arcPt(340); return svg(circleBase + `<path d="M${a}A210 210 0 0 0 ${b}Z" fill="rgba(255,200,87,.55)" stroke="${AM}" stroke-width="6"/>`); } },
+    { id: "s-tangent", cat: "shapes", name: "Tangent", options: ["Chord", "Radius", "Diameter"], tier: "F", topics: ["G5", "G19"], fact: "A tangent touches a circle at exactly one point, and it meets the radius there at 90°.", draw: () => { const t = 45, p = arcPt(t), d = [Math.cos((t + 90) * Math.PI / 180), -Math.sin((t + 90) * Math.PI / 180)];
+      return svg(circleBase + `<line x1="300" y1="300" x2="${p[0]}" y2="${p[1]}" stroke="${WH}" stroke-width="4" stroke-dasharray="10 8"/><line x1="${p[0] - d[0] * 260}" y1="${p[1] - d[1] * 260}" x2="${p[0] + d[0] * 260}" y2="${p[1] + d[1] * 260}" stroke="${AM}" stroke-width="7" stroke-linecap="round"/>` + rightAngle(p, [300, 300], [p[0] + d[0] * 100, p[1] + d[1] * 100], 24)); } },
+
+    /* SOLIDS */
+    { id: "d-cube", cat: "solids", name: "Cube", options: ["Cuboid", "Square-based pyramid", "Square"], tier: "F", topics: ["G7", "G20"], fact: "A cube has 6 square faces, 12 edges and 8 vertices. Volume = side³.", draw: () => box(230, 230, 230) },
+    { id: "d-cuboid", cat: "solids", name: "Cuboid", options: ["Cube", "Rectangle", "Triangular prism"], tier: "F", topics: ["G7", "G20"], fact: "A cuboid has 6 rectangular faces. Volume = length × width × height.", draw: () => box(320, 160, 230) },
+    { id: "d-triprism", cat: "solids", name: "Triangular prism", options: ["Square-based pyramid", "Tetrahedron", "Cuboid"], tier: "F", topics: ["G7"], fact: "A triangular prism has the same triangle all the way through. Volume = area of the triangle × length.", draw: () => prism([[0, 0], [260, 0], [130, 200]], 300, { ox: 95, oy: 450 }) },
+    { id: "d-hexprism", cat: "solids", name: "Hexagonal prism", options: ["Pentagonal prism", "Hexagonal pyramid", "Cylinder"], tier: "F", topics: ["G7"], fact: "A hexagonal prism has two hexagon ends joined by 6 rectangles: 8 faces, 18 edges and 12 vertices.", draw: () => prism([[70, 0], [210, 0], [280, 121], [210, 242], [70, 242], [0, 121]], 170, { ox: 120, oy: 450 }) },
+    { id: "d-sqpyr", cat: "solids", name: "Square-based pyramid", options: ["Tetrahedron", "Cone", "Triangular prism"], tier: "F", topics: ["G8"], fact: "A square-based pyramid has a square base and 4 triangular faces meeting at a point. Volume = ⅓ × base area × height.", draw: () => pyramid([[0, 0, 0], [280, 0, 0], [280, 0, 280], [0, 0, 280]], [140, 300, 140], { ox: 90, oy: 470 }) },
+    { id: "d-tetra", cat: "solids", name: "Tetrahedron", options: ["Square-based pyramid", "Triangular prism", "Cube"], tier: "F", topics: ["G8"], fact: "A tetrahedron is a triangle-based pyramid: 4 triangular faces, 6 edges and 4 vertices.", draw: () => pyramid([[0, 0, 0], [300, 0, 0], [210, 0, 300]], [170, 300, 110], { ox: 90, oy: 480 }) },
+    { id: "d-cyl", cat: "solids", name: "Cylinder", options: ["Cone", "Sphere", "Circle"], tier: "F", topics: ["G7"], fact: "A cylinder is a prism with a circular cross-section. Volume = πr²h.", draw: () => svg(`<path d="M170 170V430A130 42 0 0 0 430 430V170" fill="${FILL}" stroke="${CY}" stroke-width="6"/>${ell(300, 430, 130, 42, "back")}${ell(300, 170, 130, 42)}`) },
+    { id: "d-cone", cat: "solids", name: "Cone", options: ["Cylinder", "Square-based pyramid", "Sector"], tier: "F", topics: ["G8"], fact: "A cone has a circular base and one vertex. Volume = ⅓πr²h, a third of the cylinder it fits inside.", draw: () => svg(`<path d="M300 90L160 450A140 45 0 0 0 440 450Z" fill="${FILL}" stroke="${CY}" stroke-width="6" stroke-linejoin="round"/>${ell(300, 450, 140, 45, "back")}`) },
+    { id: "d-sphere", cat: "solids", name: "Sphere", options: ["Hemisphere", "Circle", "Cylinder"], tier: "F", topics: ["G8"], fact: "A sphere is perfectly round in 3D. Volume = ⁴⁄₃πr³ and surface area = 4πr².", draw: () => svg(`<circle cx="300" cy="300" r="200" fill="${FILL}" stroke="${CY}" stroke-width="6"/>${ell(300, 300, 200, 55, "front")}${ell(300, 300, 200, 55, "back")}`) },
+    { id: "d-hemi", cat: "solids", name: "Hemisphere", options: ["Sphere", "Cone", "Semicircle"], tier: "F", topics: ["G8"], fact: "A hemisphere is half a sphere. Volume = ⅔πr³.", draw: () => svg(`<path d="M100 370A200 200 0 0 1 500 370A200 60 0 0 1 100 370Z" fill="${FILL}" stroke="${CY}" stroke-width="6"/>${ell(300, 370, 200, 60, "back")}`) },
+    { id: "d-frustum", cat: "solids", name: "Frustum", options: ["Cone", "Cylinder", "Hemisphere"], tier: "H", topics: ["G8", "G15"], fact: "A frustum is a cone with its top cut off parallel to the base. Volume = big cone " + M + " small cone.", draw: () => svg(`<path d="M220 180L130 440A170 52 0 0 0 470 440L380 180" fill="${FILL}" stroke="${CY}" stroke-width="6" stroke-linejoin="round"/>${ell(300, 440, 170, 52, "back")}${ell(300, 180, 80, 25)}`) },
+
+    /* CATCHPHRASES: say what you see */
+    { id: "c-sqroot", cat: "catch", name: "Square root", options: ["Cube root", "Square number", "Tree diagram"], tier: "F", topics: ["N4"], fact: "The square root of a number, when multiplied by itself, gives that number: √49 = 7.", draw: () => svg(`<rect y="330" width="600" height="270" fill="#3A2A1C"/><line x1="0" y1="330" x2="600" y2="330" stroke="#6B4E2E" stroke-width="6"/>
+      <g stroke="#C89A5B" stroke-width="9" fill="none" stroke-linecap="round"><path d="M300 330c0 60-40 90-90 130s-60 70-60 100"/><path d="M300 330c10 70 60 90 100 140s40 60 50 90"/><path d="M290 340c-20 50-80 40-130 60"/><path d="M310 345c30 40 90 30 150 50"/><path d="M210 460c-30 0-60 20-80 10"/><path d="M400 470c30-10 60 0 80-20"/><path d="M300 330v170"/></g>
+      <rect x="180" y="90" width="240" height="240" fill="rgba(0,252,241,.15)" stroke="${CY}" stroke-width="9"/>`) },
+    { id: "c-acute", cat: "catch", name: "Acute angle", options: ["Obtuse angle", "Right angle", "Reflex angle"], tier: "F", topics: ["G1"], fact: "An acute angle is less than 90°. (A cute angle!)", draw: () => svg(`<path d="M90 470H540M90 470L470 180" stroke="${CY}" stroke-width="10" stroke-linecap="round" fill="none"/><path d="M230 470A140 140 0 0 0 201 385" stroke="${AM}" stroke-width="7" fill="none"/>
+      <g transform="translate(380 360)">${face(0, 0, "cute")}</g>${heart(470, 120, 2)}${heart(530, 230, 1.3)}${heart(170, 200, 1.6)}`) },
+    { id: "c-times", cat: "catch", name: "Times table", options: ["Two-way table", "Table of values", "Frequency table"], tier: "F", topics: ["N3"], fact: "Times tables are the multiplication facts, and knowing them up to 12 × 12 speeds up all your other maths.", draw: () => svg(`<rect x="70" y="390" width="460" height="34" rx="8" fill="#8B5E34"/><rect x="110" y="424" width="26" height="140" fill="#6B4527"/><rect x="464" y="424" width="26" height="140" fill="#6B4527"/>
+      <circle cx="300" cy="235" r="150" fill="#F4F1E8" stroke="${AM}" stroke-width="14"/>${[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(i => { const t = i * Math.PI / 6; return `<line x1="${300 + 122 * Math.sin(t)}" y1="${235 - 122 * Math.cos(t)}" x2="${300 + 136 * Math.sin(t)}" y2="${235 - 136 * Math.cos(t)}" stroke="#0B122C" stroke-width="${i % 3 ? 4 : 8}"/>`; }).join("")}
+      <g font-family="JetBrains Mono, monospace" font-weight="700" font-size="34" fill="#0B122C" text-anchor="middle"><text x="300" y="132">12</text><text x="398" y="247">3</text><text x="300" y="358">6</text><text x="202" y="247">9</text></g>
+      <path d="M300 235L300 150M300 235L360 270" stroke="#0B122C" stroke-width="9" stroke-linecap="round"/><circle cx="300" cy="235" r="9" fill="#0B122C"/>`) },
+    { id: "c-sine", cat: "catch", name: "Sine wave", options: ["Tangent", "Sign change", "Cosine rule"], tier: "H", topics: ["G10", "A18"], fact: "A sine wave is the graph of y = sin x: smooth up-and-down waves that repeat every 360°.", draw: () => svg(`<rect x="285" y="250" width="30" height="330" fill="#9AA6C8"/><rect x="140" y="110" width="320" height="170" rx="16" fill="#1C7C3A" stroke="${WH}" stroke-width="8"/>
+      <g fill="${WH}" font-family="Josefin Sans, sans-serif" font-weight="700" font-size="64" text-anchor="middle"><text x="300" y="218">HELLO!</text></g>
+      <path d="M460 190c40-10 70-40 80-80" stroke="#F1C9A5" stroke-width="22" stroke-linecap="round" fill="none"/><g fill="#F1C9A5"><circle cx="545" cy="95" r="24"/><rect x="532" y="44" width="10" height="38" rx="5"/><rect x="545" y="40" width="10" height="40" rx="5"/><rect x="558" y="48" width="10" height="36" rx="5"/><rect x="566" y="70" width="10" height="30" rx="5" transform="rotate(30 571 85)"/></g>
+      <g stroke="${AM}" stroke-width="6" stroke-linecap="round" fill="none"><path d="M500 50c-10-14-10-30 0-42"/><path d="M590 130c14 6 24 0 30-10"/></g>`) },
+    { id: "c-mean", cat: "catch", name: "Mean", options: ["Median", "Mode", "Range"], tier: "F", topics: ["S1"], fact: "The mean is the total divided by how many values there are. (This one is just mean!)", draw: () => svg(`<g font-family="JetBrains Mono, monospace" font-weight="700" font-size="70" fill="${MU}" text-anchor="middle"><text x="110" y="120">3</text><text x="490" y="120">7</text></g>
+      <circle cx="300" cy="340" r="200" fill="${AM}"/><g transform="translate(300 350) scale(1.7)">${face(0, 0, "mean")}</g>
+      <text x="300" y="215" font-family="JetBrains Mono, monospace" font-weight="700" font-size="70" fill="#0B122C" text-anchor="middle">5</text>
+      <g fill="${WH}" opacity=".75"><circle cx="70" cy="300" r="24"/><circle cx="40" cy="260" r="16"/><circle cx="530" cy="300" r="24"/><circle cx="560" cy="260" r="16"/></g>`) },
+    { id: "c-power2", cat: "catch", name: "Power of 2", options: ["Square root of 2", "Multiple of 2", "Factor of 2"], tier: "F", topics: ["N4"], fact: "A power of 2 is 2 multiplied by itself: 2, 4, 8, 16, 32 … 2¹⁰ = 1024.", draw: () => svg(`<text x="300" y="550" font-family="Josefin Sans, sans-serif" font-weight="700" font-size="380" text-anchor="middle" fill="${CY}">2</text>
+      <path d="M215 320C140 300 120 210 165 140M385 320C460 300 480 210 435 140" stroke="#F1C9A5" stroke-width="30" stroke-linecap="round" fill="none"/><circle cx="150" cy="255" r="30" fill="#F1C9A5"/><circle cx="450" cy="255" r="30" fill="#F1C9A5"/>
+      <rect x="70" y="104" width="460" height="22" rx="10" fill="#9AA6C8"/><rect x="40" y="62" width="44" height="106" rx="10" fill="${MU}"/><rect x="516" y="62" width="44" height="106" rx="10" fill="${MU}"/><circle cx="165" cy="125" r="24" fill="#F1C9A5"/><circle cx="435" cy="125" r="24" fill="#F1C9A5"/>
+      <g transform="translate(300 360) scale(.75)">${face(0, 0, "cute")}</g><g stroke="${AM}" stroke-width="6" stroke-linecap="round"><path d="M110 330l-30 14M490 330l30 14M300 30v-20"/></g>`) },
+    { id: "c-bestfit", cat: "catch", name: "Line of best fit", options: ["Line of symmetry", "Number line", "Tangent"], tier: "F", topics: ["S4"], fact: "A line of best fit runs through the middle of the points on a scatter graph to show the trend.", draw: () => svg(`<line x1="70" y1="530" x2="560" y2="530" stroke="${WH}" stroke-width="4"/><line x1="70" y1="530" x2="70" y2="60" stroke="${WH}" stroke-width="4"/>
+      ${[[110, 470], [150, 440], [170, 470], [210, 400], [250, 410], [280, 350], [320, 360], [340, 300], [390, 300], [420, 250], [450, 270], [490, 200], [520, 180]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="9" fill="${MU}"/>`).join("")}
+      <line x1="90" y1="490" x2="540" y2="165" stroke="${AM}" stroke-width="12" stroke-linecap="round"/><rect x="292" y="314" width="70" height="20" rx="6" fill="${PK}" transform="rotate(-36 327 324)"/>
+      <g transform="translate(470 120)"><rect x="-40" y="-10" width="80" height="20" rx="8" fill="#9AA6C8"/><rect x="-54" y="-26" width="18" height="52" rx="6" fill="${MU}"/><rect x="36" y="-26" width="18" height="52" rx="6" fill="${MU}"/></g>
+      <g fill="${CY}"><path d="M260 280q-8 14 0 22q8-8 0-22z"/><path d="M380 230q-8 14 0 22q8-8 0-22z"/></g>`) },
+
+    /* FAMOUS MATHEMATICIANS AND SCIENTISTS (photos) */
+    { id: "p-newton", cat: "people", name: "Isaac Newton", img: "newton", fact: "Isaac Newton (1643–1727) explained gravity and the laws of motion, and developed calculus." },
+    { id: "p-einstein", cat: "people", name: "Albert Einstein", img: "einstein", fact: "Albert Einstein (1879–1955) developed the theory of relativity, including E = mc²." },
+    { id: "p-turing", cat: "people", name: "Alan Turing", img: "turing", fact: "Alan Turing (1912–1954) helped break the Enigma code in the Second World War and laid the foundations of computer science." },
+    { id: "p-curie", cat: "people", name: "Marie Curie", img: "curie", fact: "Marie Curie (1867–1934) pioneered the study of radioactivity and was the first person to win Nobel Prizes in two sciences." },
+    { id: "p-nightingale", cat: "people", name: "Florence Nightingale", img: "nightingale", fact: "Florence Nightingale (1820–1910) was a nurse and statistician whose rose diagrams showed that most soldiers were dying of preventable disease." },
+    { id: "p-euler", cat: "people", name: "Leonhard Euler", img: "euler", fact: "Leonhard Euler (1707–1783) gave us f(x) notation and the formula faces + vertices " + M + " edges = 2 for solids." },
+    { id: "p-pythagoras", cat: "people", name: "Pythagoras", img: "pythagoras", fact: "Pythagoras (about 570–495 BC) is the Greek thinker the theorem a² + b² = c² is named after." },
+    { id: "p-pythagoras2", cat: "people", name: "Pythagoras", img: "pythagoras-theorem", fact: "Squares on the sides of a right-angled triangle: a² + b² = c², Pythagoras' theorem." },
+    { id: "p-leonardo", cat: "people", name: "Leonardo da Vinci", img: "leonardo", fact: "Leonardo da Vinci (1452–1519) was an artist and inventor who drew the Vitruvian Man and illustrated a famous book on the golden ratio." },
+    { id: "p-fibonacci", cat: "people", name: "Fibonacci", img: "fibonacci", fact: "Fibonacci (about 1170–1250) brought our 0–9 digits to Europe and is famous for the sequence 1, 1, 2, 3, 5, 8, 13 …" },
+    { id: "p-pascal", cat: "people", name: "Blaise Pascal", img: "pascal", fact: "Blaise Pascal (1623–1662) helped found probability theory and built one of the first mechanical calculators." },
+    { id: "p-pascal2", cat: "people", name: "Blaise Pascal", img: "pascal-triangle", fact: "Pascal's triangle: each number is the sum of the two above it. Its rows give the coefficients for expanding brackets." },
+    { id: "p-galileo", cat: "people", name: "Galileo Galilei", img: "galileo", fact: "Galileo Galilei (1564–1642) improved the telescope and discovered four of Jupiter's moons." },
+    { id: "p-johnson", cat: "people", name: "Katherine Johnson", img: "johnson", fact: "Katherine Johnson (1918–2020) calculated the flight paths that took NASA astronauts into orbit and to the Moon." },
+    { id: "p-johnson2", cat: "people", name: "Katherine Johnson", img: "johnson-nasa", fact: "Katherine Johnson co-wrote this 1960 NASA report on placing a satellite over a chosen point on Earth." },
+    { id: "p-descartes", cat: "people", name: "René Descartes", img: "descartes", fact: "René Descartes (1596–1650) invented the coordinate system: (x, y) coordinates are called Cartesian after him." },
+    { id: "p-euclid", cat: "people", name: "Euclid", img: "euclid", fact: "Euclid (about 300 BC) wrote the Elements, the geometry book used in schools for over 2,000 years." }
+  ];
+  /* people get their line-up from the other people */
+  const PEOPLE = [...new Set(PICS.filter(p => p.cat === "people").map(p => p.name))];
+  PICS.filter(p => p.cat === "people").forEach(p => { p.tier = "F"; p.topics = []; p.options = null; });
+  const CATS = { graphs: "Graphs", shapes: "Shapes", solids: "Solids", catch: "Catchphrase", people: "Famous mathematicians & scientists" };
+  const byId = Object.fromEntries(PICS.map(p => [p.id, p]));
+  const shuf = a => { const x = a.slice(); for (let i = x.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [x[i], x[j]] = [x[j], x[i]]; } return x; };
+  /* the four names shown in the line-up, in a random order */
+  function lineup(p) {
+    const others = p.options || shuf(PEOPLE.filter(n => n !== p.name)).slice(0, 3);
+    return shuf([p.name, ...others]);
+  }
+  const html = (p, imgBase = "img/identikit/") => p.img ? `<img src="${imgBase}${p.img}.jpg" alt="" draggable="false">` : p.draw();
+  return { PICS, CATS, byId, lineup, html, PEOPLE };
+})();
+
+/* ================= THE IDENTIKIT: live class game =================
+   A hidden picture sits under 16 numbered tiles. Each question the class answers lifts tiles off:
+   the more students who get it right, the more tiles come off (1 to 4). At any time a student can make
+   ONE identification from a line-up of four names: the more tiles still covering the picture, the more
+   it scores. Graphs, shapes and solids use questions on the picture's own topic; famous people and
+   catchphrases use the topics the teacher picks. */
+const IK_TILES = 16, IK_MAXQ = 10;
+const IK_CATS = ["graphs", "shapes", "solids", "people", "catch"];
+const ikIdPoints = covered => 200 + 50 * covered;
+const ikTilesFor = (right, of) => 1 + Math.round(3 * (of ? right / of : 0));
+const ikQPoints = (left, total) => 100 + Math.round(100 * Math.max(0, left) / Math.max(1, total));
+
+/* the picture with its tiles; newly lifted tiles animate off */
+function ikFrame(pic, off = [], fresh = [], o = {}) {
+  const offS = new Set(off), freshS = new Set(fresh);
+  let order = 0;
+  return `<div class="ik-frame${o.big ? " big" : ""}${o.solved ? " solved" : ""}">
+    <div class="ik-pic">${IK.html(pic)}</div>
+    ${o.solved ? "" : `<div class="ik-tiles">${Array.from({ length: IK_TILES }, (_, i) => {
+      const f = freshS.has(i), gone = offS.has(i) && !f;
+      return `<div class="ik-t${gone ? " off" : ""}${f ? " go" : ""}" ${f ? `style="--d:${(order++) * 0.35}s"` : ""}><span>${i + 1}</span></div>`; }).join("")}</div>`}
+  </div>`;
+}
+const ikLineup = (names, opts = {}) => `<div class="ik-lineup${opts.board ? " board" : ""}">${names.map((n, k) =>
+  `<${opts.pick ? "button" : "div"} class="ik-sus${opts.right === n ? " right" : opts.right ? " dim" : ""}${opts.chosen === k ? " chosen" : ""}" ${opts.pick ? `data-ik="pick" data-k="${k}"` : ""}>
+    <span class="ik-no">${k + 1}</span><span class="ik-nm">${esc(n)}</span>${opts.counts ? `<span class="cnt">${opts.counts[k] || 0}</span>` : ""}</${opts.pick ? "button" : "div"}>`).join("")}</div>`;
+const IK_RULES = `<ul class="so-rules">
+  <li><b>A hidden picture</b> is under 16 tiles: a graph, a shape, a solid, a famous mathematician or scientist, or a catchphrase.</li>
+  <li><b>Answer the questions.</b> The more of the class who get each one right, the more tiles come off.</li>
+  <li><b>Make one ID</b> from the line-up whenever you think you know. The more tiles still covering the picture, the more you score. A wrong ID scores nothing.</li></ul>`;
+
+/* ================= HOST ================= */
+function ikHostSetup() {
+  stopTimer(); S.pad = null;
+  if (!liveConfigured()) return liveMissing(homeFn);
+  if (gating() && !S.acc.signed_in) return signInToHost(homeFn);
+  const cfg = withFilter(store.get("ir-ik", null), { n: 3, time: "auto", tier: "H", topics: [], cats: IK_CATS.slice() });
+  cfg.cats = Array.isArray(cfg.cats) && cfg.cats.length ? cfg.cats.filter(c => IK.CATS[c]) : IK_CATS.slice();
+  const avail = () => IK.PICS.filter(p => cfg.cats.includes(p.cat) && (cfg.tier !== "F" || p.tier === "F")).length;
+  const draw = (keep = false) => {
+    const needTopics = cfg.cats.includes("people") || cfg.cats.includes("catch");
+    set(`${brand("The Identikit · teacher")}
+      ${gameSwitch("ik")}
+      <section class="panel"><span class="eyebrow">Live class game</span><h2>The Identikit</h2>
+        <ol class="so-teach">
+          <li><b>Open the game</b> and show this screen on the board. Students go to <b>${JOIN_URL}</b> and type the code.</li>
+          <li><b>A picture hides under 16 tiles.</b> The class answers questions on their tablets, and the more who get each one right, the more tiles come off.</li>
+          <li><b>Students make one ID</b> from a line-up of four whenever they're ready. Earlier IDs score more; a wrong ID scores nothing.</li>
+          <li><b>The unmasking</b> reveals the picture with a fact about it, and who identified it first.</li>
+        </ol>
+        <span class="eyebrow">Pictures to include</span>
+        <div class="choice">${IK_CATS.map(c => `<button class="btn" data-ikcat="${c}" aria-pressed="${cfg.cats.includes(c)}">${esc(IK.CATS[c])}</button>`).join("")}</div>
+        <p class="muted small">Graphs, shapes and solids ask questions on the picture's own topic (a hidden quadratic means quadratic questions). ${needTopics ? "Famous people and catchphrases use the topics below." : ""}</p>
+        <span class="eyebrow">Tier</span>${choice("tier", cfg.tier, [["F", "Foundation"], ["H", "Higher (includes Foundation)"]])}
+        ${needTopics ? `<div class="ik-topics"><span class="eyebrow">Topics for famous people and catchphrase rounds</span>${topicPicker(cfg)}</div>` : ""}
+        <span class="eyebrow">Number of pictures</span>${choice("n", cfg.n, [[3, "3"], [5, "5"], [8, "8"]])}
+        <span class="eyebrow">Time per question</span>${choice("time", cfg.time, [["auto", "Auto: suits each question"], [20, "20 s"], [30, "30 s"], [45, "45 s"]])}
+        <p class="muted small">${avail()} pictures match these settings.</p>
+        <div class="row"><button class="btn primary big" id="go" ${avail() && cfg.cats.length ? "" : "disabled"}>Open the game</button><button class="btn" id="back">Back</button>${soundBtns(true)}</div>
+      </section>`, true, keep);
+    const redraw = () => draw(true);
+    bindGameSwitch();
+    if (needTopics) bindTopicPicker(cfg, redraw);
+    app.querySelectorAll("[data-ikcat]").forEach(b => b.onclick = () => { const c = b.dataset.ikcat; cfg.cats = cfg.cats.includes(c) ? cfg.cats.filter(x => x !== c) : cfg.cats.concat(c); redraw(); });
+    bindChoice("tier", v => { cfg.tier = v; redraw(); });
+    bindChoice("n", v => { cfg.n = +v; redraw(); });
+    bindChoice("time", v => { cfg.time = v === "auto" ? "auto" : +v; redraw(); });
+    document.getElementById("back").onclick = homeFn;
+    document.getElementById("go").onclick = () => { saveCfg("ir-ik", cfg); Sound.unlock(); claimGame("host", () => ikHostStart(cfg), ikHostSetup); };
+  };
+  draw();
+}
+/* choose the pictures (mixing the categories) and the questions for each */
+function ikPlan(cfg) {
+  const ok = p => cfg.cats.includes(p.cat) && (cfg.tier !== "F" || p.tier === "F");
+  const byCat = {}; shuffle(IK.PICS.filter(ok)).forEach(p => { (byCat[p.cat] = byCat[p.cat] || []).push(p); });
+  const cats = shuffle(Object.keys(byCat)), out = [], usedNames = new Set();
+  for (let k = 0; out.length < cfg.n && k < 200; k++) {
+    const list = byCat[cats[k % cats.length]];
+    if (!list || !list.length) { if (Object.values(byCat).every(l => !l.length)) break; continue; }
+    const p = list.shift(); if (usedNames.has(p.name)) continue;
+    usedNames.add(p.name); out.push(p);
+  }
+  const used = new Set();
+  return out.map(p => {
+    const own = p.topics && p.topics.length && p.cat !== "people" && p.cat !== "catch";
+    const pick = topics => shuffle(poolFor({ tier: cfg.tier, topics, mix: "mixed" }).filter(q => !used.has(q.n)));
+    let qs = pick(own ? p.topics : cfg.topics);
+    if (own && qs.length < IK_MAXQ) {      /* top up from the same strand, then anything */
+      const strand = p.topics[0][0];
+      qs = qs.concat(pick(TOPIC_IDS.filter(t => t[0] === strand && !p.topics.includes(t))));
+    }
+    if (qs.length < IK_MAXQ) qs = qs.concat(pick([]).filter(q => !qs.includes(q)));
+    qs = qs.slice(0, IK_MAXQ); qs.forEach(q => used.add(q.n));
+    return { id: p.id, lineup: IK.lineup(p), order: shuffle([...Array(IK_TILES).keys()]), qs: qs.map(q => q.n), perms: qs.map(q => makePerm(q)) };
+  });
+}
+function ikHostStart(cfg) {
+  const code = String(100000 + Math.floor(Math.random() * 900000));
+  const H = S.host = { game: "identikit", code, cfg, round: 1, phase: "lobby", pi: -1, qi: -1, plan: [], off: [], fresh: [], players: {}, online: new Set(), kicked: new Set(), answers: {}, ids: {}, left: 0, total: 0, stats: [], qstats: [], status: "connecting" };
+  ikNewRound(H);
+  const ch = sb().channel("ir-" + code, { config: { broadcast: { self: false }, presence: { key: "host" } } });
+  H.ch = ch;
+  ch.on("broadcast", { event: "hello" }, ({ payload }) => { addPlayer(payload); ikPush(); if (H.phase === "lobby") ikDrawHost(); })
+    .on("broadcast", { event: "answer" }, ({ payload }) => ikOnAnswer(payload))
+    .on("broadcast", { event: "ident" }, ({ payload }) => ikOnIdent(payload))
+    .on("presence", { event: "sync" }, () => {
+      const st = ch.presenceState();
+      H.online = new Set(Object.keys(st).filter(k => k !== "host"));
+      Object.keys(st).forEach(k => { if (k !== "host" && st[k][0]) addPlayer(st[k][0]); });
+      if (H.phase === "lobby") ikDrawHost(); else ikLiveUI();
+    })
+    .subscribe(status => {
+      if (status === "SUBSCRIBED") { H.status = "live"; ch.track({ role: "host" }); ikPush(); }
+      else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") H.status = "error";
+      else if (status === "CLOSED") H.status = "closed";
+      if (H.phase === "lobby") ikDrawHost();
+    });
+  H.beat = setInterval(ikPush, 3000);
+  armGuard(() => { hostClose(); homeFn(); }, "Leaving ends the game for every student.");
+  Sound.startMusic();
+  ikDrawHost();
+}
+function ikNewRound(H) {
+  H.plan = ikPlan(H.cfg);
+  H.pi = -1; H.qi = -1; H.off = []; H.fresh = []; H.ids = {}; H.stats = []; H.qstats = []; H.phase = "lobby";
+  Object.values(H.players).forEach(p => Object.assign(p, { score: 0, correct: 0, wrong: 0, streak: 0, best: 0, last: 0, ok: false, prevRank: 0, idsRight: 0, idOk: false, idPts: 0, idPick: null, qok: false, qpts: 0 }));
+}
+const ikPic = H => IK.byId[H.plan[H.pi].id];
+const ikQ = H => QUESTIONS[H.plan[H.pi].qs[H.qi]];
+function ikPush() {
+  const H = S.host; if (!H || !H.ch || H.status !== "live" || H.game !== "identikit") return;
+  const P = H.pi >= 0 && H.pi < H.plan.length ? H.plan[H.pi] : null;
+  const inQ = P && H.qi >= 0 && H.qi < P.qs.length;
+  const payload = { game: "identikit", phase: H.phase, round: H.round, pi: H.pi, n: H.plan.length, qi: H.qi,
+    qn: inQ && (H.phase === "q" || H.phase === "tiles") ? P.qs[H.qi] : null, perm: inQ ? P.perms[H.qi] : null,
+    pic: P && H.phase !== "lobby" ? P.id : null, lineup: P ? P.lineup : null, off: H.off, fresh: H.fresh,
+    left: H.left, total: H.total, closing: !!H.closing, kicked: [...H.kicked], code: H.code, done: Object.keys(H.ids), typed: false };
+  if (H.phase === "tiles") { const s = H.qstats[H.qstats.length - 1]; payload.qres = s ? { right: s.right, of: s.of, removed: H.fresh.length } : null; }
+  if (H.phase === "unmask") { const s = H.stats[H.stats.length - 1]; payload.unmask = { name: ikPic(H).name, fact: ikPic(H).fact, first: s.first, right: s.right, of: s.of }; }
+  if (["tiles", "unmask", "standings", "end"].includes(H.phase)) {
+    const rk = ranking(), scores = {};
+    rk.forEach((p, k) => { scores[p.id] = { score: p.score, rank: k + 1, of: rk.length, last: p.last, correct: p.correct, wrong: p.wrong, streak: p.streak, best: p.best,
+      gap: k > 0 ? rk[k - 1].score - p.score : 0, above: k > 0 ? rk[k - 1].name : "", qok: p.qok, qpts: p.qpts, idOk: p.idOk, idPts: p.idPts, idPick: p.idPick, idsRight: p.idsRight }; });
+    payload.scores = scores;
+  }
+  H.ch.send({ type: "broadcast", event: "state", payload });
+}
+function ikNextPicture() {
+  const H = S.host;
+  H.pi += 1;
+  if (H.pi >= H.plan.length) return ikHostEnd();
+  H.qi = -1; H.off = []; H.fresh = []; H.ids = {};
+  Object.values(H.players).forEach(p => Object.assign(p, { last: 0, idOk: false, idPts: 0, idPick: null }));
+  ikNextQuestion();
+}
+function ikNextQuestion() {
+  const H = S.host;
+  H.qi += 1; H.fresh = [];
+  const P = H.plan[H.pi];
+  if (H.qi >= P.qs.length || H.off.length >= IK_TILES) return ikUnmask();
+  const q = ikQ(H);
+  H.phase = "q"; H.total = secsFor(q, H.cfg.time, false); H.left = H.total; H.answers = {}; H.closing = false;
+  Sound.startMusic(); clearTimeout(H.auto);
+  ikDrawHost(); ikPush();
+  stopTimer();
+  tick = setInterval(() => {
+    H.left = Math.max(0, H.left - 1);
+    ikLiveUI();
+    if (H.left <= 5 && H.left > 0) Sound.play("tick");
+    if (H.left % 5 === 0 || H.closing) ikPush();
+    if (H.left === 0) ikRevealQ();
+  }, 1000);
+}
+function ikOnAnswer(p) {
+  const H = S.host;
+  if (!H || H.game !== "identikit" || H.phase !== "q" || !p || p.pi !== H.pi || p.qi !== H.qi || p.round !== H.round || H.kicked.has(p.id)) return;
+  addPlayer(p);
+  const a = H.answers[p.id] = H.answers[p.id] || { ans: null, left: H.left };
+  if (p.ans !== undefined && p.ans !== null && JSON.stringify(p.ans) !== JSON.stringify(a.ans)) { a.ans = p.ans; a.left = H.left; }
+  ikLiveUI();
+  const online = [...H.online].filter(id => H.players[id]);
+  if (!H.closing && online.length && online.every(id => H.answers[id] && H.answers[id].ans !== null) && H.left > 4) { H.closing = true; H.left = 4; ikLiveUI(); ikPush(); }
+}
+function ikOnIdent(p) {
+  const H = S.host;
+  if (!H || H.game !== "identikit" || !["q", "tiles"].includes(H.phase) || !p || p.pi !== H.pi || p.round !== H.round || H.kicked.has(p.id) || H.ids[p.id]) return;
+  const k = +p.k; if (!Number.isInteger(k) || k < 0 || k > 3) return;
+  addPlayer(p);
+  H.ids[p.id] = { k, covered: IK_TILES - H.off.length, t: Date.now() };
+  Sound.play("arrest");
+  ikLiveUI(); ikPush();
+}
+function ikRevealQ() {
+  const H = S.host; stopTimer();
+  if (!H || H.phase !== "q") return;
+  const q = ikQ(H);
+  let right = 0, answered = 0; const dist = {};
+  Object.values(H.players).forEach(p => {
+    const a = H.answers[p.id], has = a && a.ans !== null && a.ans !== undefined;
+    p.qok = false; p.qpts = 0;
+    if (has) { answered += 1; const key = Array.isArray(a.ans) ? "seq" : a.ans; dist[key] = (dist[key] || 0) + 1; }
+    if (has && isCorrect(q, a.ans)) { p.qok = true; right += 1; p.correct += 1; p.streak += 1; p.best = Math.max(p.best, p.streak); p.qpts = ikQPoints(a.left, H.total); p.score += p.qpts; p.last += p.qpts; }
+    else { p.wrong += 1; p.streak = 0; }
+  });
+  const of = Object.keys(H.players).length;
+  const P = H.plan[H.pi], want = ikTilesFor(right, of);
+  H.fresh = P.order.filter(i => !H.off.includes(i)).slice(0, want);
+  H.off = H.off.concat(H.fresh);
+  H.qstats.push({ pi: H.pi, qn: P.qs[H.qi], right, answered, of, dist });
+  H.phase = "tiles";
+  Sound.play(right ? "correct" : "reveal");
+  ikPush(); ikDrawHost();
+}
+const ikAllIded = H => { const online = [...H.online].filter(id => H.players[id]); return online.length > 0 && online.every(id => H.ids[id]); };
+function ikUnmask() {
+  const H = S.host; stopTimer(); clearTimeout(H.auto);
+  const pic = ikPic(H), P = H.plan[H.pi];
+  const prev = {}; ranking().forEach((p, k) => { prev[p.id] = k + 1; });
+  let right = 0, first = null; const counts = [0, 0, 0, 0];
+  Object.values(H.players).forEach(p => {
+    const d = H.ids[p.id]; p.prevRank = prev[p.id]; p.idOk = false; p.idPts = 0; p.idPick = d ? P.lineup[d.k] : null;
+    if (!d) return;
+    counts[d.k] += 1;
+    if (P.lineup[d.k] === pic.name) {
+      p.idOk = true; p.idsRight += 1; right += 1; p.idPts = ikIdPoints(d.covered); p.score += p.idPts; p.last += p.idPts;
+      if (!first || d.t < first.t) first = { name: p.name, avatar: p.avatar, covered: d.covered, t: d.t, pts: p.idPts };
+    }
+  });
+  H.stats.push({ pi: H.pi, id: pic.id, right, of: Object.keys(H.players).length, made: Object.keys(H.ids).length, counts, first, tilesLeft: IK_TILES - H.off.length });
+  H.phase = "unmask"; H.fresh = [];
+  Sound.play("gold");
+  ikPush(); ikDrawHost();
+}
+function ikLiveUI() {
+  const H = S.host; if (!H || H.game !== "identikit") return;
+  if (H.phase === "q") {
+    timerUI(H.left, H.total);
+    const t = document.getElementById("tleft"); if (t) t.textContent = H.left;
+    const a = document.getElementById("acount"); if (a) a.textContent = Object.values(H.answers).filter(x => x.ans !== null).length;
+    const c = document.getElementById("closing"); if (c) c.hidden = !H.closing;
+  }
+  const n = document.getElementById("pcount"); if (n) n.textContent = Object.keys(H.players).length;
+  const ids = document.getElementById("idlist");
+  if (ids) ids.innerHTML = Object.keys(H.ids).map(id => H.players[id]).filter(Boolean).map(p => `<span class="cu">${avatarSvg(p.avatar, "xs")}${esc(p.name)}</span>`).join("") || `<span class="muted small">No IDs yet.</span>`;
+  const ic = document.getElementById("idcount"); if (ic) ic.textContent = Object.keys(H.ids).length;
+}
+function ikHostEnd() {
+  const H = S.host; stopTimer(); clearTimeout(H.auto);
+  H.phase = "end"; Sound.stopMusic();
+  ikPush(); ikDrawHost();
+}
+function ikDrawHost() {
+  const H = S.host; if (!H) return;
+  const players = Object.values(H.players);
+  const statusText = H.status === "live" ? "Connected" : H.status === "error" ? "Connection problem" : H.status === "closed" ? "Disconnected" : "Connecting…";
+  const hud = sub => `<div class="hud">${brand(sub)}<span class="stat${H.status === "error" ? " no" : ""}">${statusText}</span>${soundBtns(true)}</div>`;
+  const codeBar = `<span class="stat">Join: <b>${JOIN_URL}</b> · code <b class="cy">${spaced(H.code)}</b></span>`;
+  if (H.phase === "lobby") {
+    set(`${hud(H.round > 1 ? "The Identikit · next round" : "The Identikit · teacher screen")}
+      <section class="panel joinpanel">
+        <div><span class="eyebrow">On your tablet go to</span><div class="joinurl">${JOIN_URL}</div></div>
+        <div><span class="eyebrow">Game code</span><div class="bigcode">${spaced(H.code)}</div></div>
+      </section>
+      <section class="panel so-intro"><div><span class="eyebrow">The Identikit · ${H.plan.length} pictures</span><h2>Who, or what, is under the tiles?</h2>${IK_RULES}</div>
+        <div class="ik-demo">${ikFrame({ draw: () => `<svg viewBox="0 0 600 600"><rect width="600" height="600" fill="#0E1636"/><text x="300" y="360" font-size="260" text-anchor="middle" fill="#FFC857" font-family="Josefin Sans, sans-serif" font-weight="700">?</text></svg>` }, [5, 10], [])}</div></section>
+      <section class="panel">
+        <div class="row spread"><h3>Detectives in the room · ${players.length}</h3>
+          <div class="row"><button class="btn primary big" id="start" ${players.length ? "" : "disabled"}>Start the Identikit</button><button class="btn quiet" id="quit">Close game</button></div></div>
+        ${players.length ? `<div class="teams">${players.map(p => `<div class="team">${avatarSvg(p.avatar, "sm")}<span class="tn grow">${esc(p.name)}</span><button class="kick" data-kick="${esc(p.id)}" aria-label="Remove ${esc(p.name)}">×</button></div>`).join("")}</div>`
+          : `<p class="muted">Waiting for students to join…</p>`}
+        <p class="muted small">${H.cfg.cats.map(c => IK.CATS[c]).join(", ")} · ${H.cfg.tier === "F" ? "Foundation" : "Higher"}</p>
+      </section>`, true);
+    const st = document.getElementById("start"); if (st) st.onclick = ikNextPicture;
+    app.querySelectorAll("[data-kick]").forEach(b => b.onclick = () => { H.kicked.add(b.dataset.kick); delete H.players[b.dataset.kick]; ikPush(); ikDrawHost(); });
+    document.getElementById("quit").onclick = () => { hostClose(); homeFn(); };
+    return;
+  }
+  const P = H.pi >= 0 && H.pi < H.plan.length ? H.plan[H.pi] : null, pic = P ? IK.byId[P.id] : null;
+  const head = `Picture ${H.pi + 1} of ${H.plan.length}`;
+  const left = (extra = "") => `<section class="panel ik-left">${ikFrame(pic, H.off, H.fresh, { big: true })}
+    <div><span class="eyebrow">The line-up: who or what is it?</span>${ikLineup(P.lineup, { board: true })}</div>${extra}</section>`;
+  const idBox = `<div><span class="eyebrow">IDs made · <span id="idcount">0</span></span><div class="custody" id="idlist"></div></div>`;
+  if (H.phase === "q") {
+    const q = ikQ(H), perm = P.perms[H.qi];
+    set(`${hud(head)}
+      <div class="row spread">${codeBar}<span class="stat">Answered <b id="acount">0</b> / <span id="pcount">${players.length}</span> · tiles left <b>${IK_TILES - H.off.length}</b></span></div>
+      <div class="timer big" aria-hidden="true"><div class="timer-fill" style="width:100%"></div></div>
+      <div class="ik-board">${left()}
+        <section class="panel">
+          ${qHead(q, `<span class="stat secs"><span id="tleft">${H.left}</span>s</span>`)}
+          <p class="brief">${esc(q.brief)}</p>
+          ${todoBanner(todoText(q, "board", false))}
+          ${boardQ(q, perm, null)}
+          <p class="closing" id="closing" ${H.closing ? "" : "hidden"}>Everyone has answered. Lifting tiles in a few seconds…</p>
+          ${idBox}
+          <div class="row"><button class="btn primary" id="reveal">Reveal answer</button><button class="btn quiet" id="unmask">Unmask now</button><button class="btn quiet" id="quit">End game</button></div>
+        </section></div>`, true);
+    ikLiveUI();
+    document.getElementById("reveal").onclick = ikRevealQ;
+    document.getElementById("unmask").onclick = ikUnmask;
+    document.getElementById("quit").onclick = ikHostEnd;
+    return;
+  }
+  if (H.phase === "tiles") {
+    const q = ikQ(H), perm = P.perms[H.qi], s = H.qstats[H.qstats.length - 1];
+    const done = H.off.length >= IK_TILES || H.qi + 1 >= P.qs.length || ikAllIded(H);
+    const pct = s.of ? Math.round(100 * s.right / s.of) : 0;
+    set(`${hud(head)}
+      <div class="row spread">${codeBar}<span class="stat"><b>${s.right}</b> of ${s.of} right · tiles left <b>${IK_TILES - H.off.length}</b></span></div>
+      <div class="ik-board">${left()}
+        <section class="panel">
+          <div class="ik-lift"><span class="ik-big">${H.fresh.length}</span><span>tile${H.fresh.length === 1 ? "" : "s"} lifted<br><small>${pct}% of the class got it right</small></span></div>
+          ${qHead(q)}<p class="brief">${esc(q.brief)}</p>
+          ${boardQ(q, perm, { dist: s.dist, answered: s.answered })}
+          ${q.type === "spot" ? `<p>Final answer: <span class="answer">${esc(q.answer)}</span></p>` : ""}
+          <p class="why"><b>Why:</b> ${esc(q.why)}</p>
+          ${idBox}
+          <div class="row">${done ? `<button class="btn primary big" id="unmask">Unmask the picture</button>` : `<button class="btn primary big" id="nextq">Next question</button><button class="btn quiet" id="unmask">Unmask now</button>`}<button class="btn quiet" id="quit">End game</button></div>
+        </section></div>`, true);
+    ikLiveUI();
+    if (H.fresh.length) later(200, () => Sound.play("promote"));
+    const nq = document.getElementById("nextq"); if (nq) nq.onclick = ikNextQuestion;
+    document.getElementById("unmask").onclick = ikUnmask;
+    document.getElementById("quit").onclick = ikHostEnd;
+    return;
+  }
+  if (H.phase === "unmask") {
+    const s = H.stats[H.stats.length - 1];
+    set(`${hud(head + " · unmasked")}
+      <div class="ik-board">
+        <section class="panel ik-left">${ikFrame(pic, [], [], { big: true, solved: true })}</section>
+        <section class="panel">
+          <span class="eyebrow">${esc(IK.CATS[pic.cat])}</span><h2 class="ik-name">${esc(pic.name)}</h2>
+          <p class="ik-fact">${esc(pic.fact)}</p>
+          ${ikLineup(P.lineup, { board: true, right: pic.name, counts: s.counts })}
+          <div class="result good"><span class="rhead">${s.right} of ${s.of} identified it</span>
+            ${s.first ? `<p class="so-fast">${avatarSvg(s.first.avatar, "sm")}<span>First correct ID: <b>${esc(s.first.name)}</b>, with ${s.first.covered} tile${s.first.covered === 1 ? "" : "s"} still on · +${s.first.pts}</span></p>` : `<p>Nobody made a correct ID this time.</p>`}
+            ${s.made < s.of ? `<p class="muted small">${s.of - s.made} made no ID.</p>` : ""}</div>
+          <div class="row"><button class="btn primary big" id="next">Show the standings</button><button class="btn quiet" id="quit">End game</button></div>
+        </section></div>`, true);
+    later(300, () => Confetti.burst(s.right ? 140 : 40, 0.3, 0.3));
+    document.getElementById("next").onclick = () => { H.phase = "standings"; Sound.play("standings"); ikPush(); ikDrawHost(); };
+    document.getElementById("quit").onclick = ikHostEnd;
+    return;
+  }
+  if (H.phase === "standings") {
+    set(`${hud(`Standings after picture ${H.pi + 1}`)}
+      <section class="panel"><h2>Top detectives</h2>${standingsRows(ranking(), 10)}
+        <div class="row"><button class="btn primary big" id="next">${H.pi + 1 < H.plan.length ? "Next picture" : "Final results"}</button><button class="btn quiet" id="quit">End game</button></div>
+      </section>`, true);
+    document.getElementById("next").onclick = ikNextPicture;
+    document.getElementById("quit").onclick = ikHostEnd;
+    return;
+  }
+  /* end */
+  const rk = ranking();
+  const hardest = H.qstats.slice().sort((a, b) => a.right / Math.max(1, a.of) - b.right / Math.max(1, b.of)).slice(0, 5);
+  set(`${hud("The Identikit · final results")}<div class="tape"></div>
+    ${rk.length ? ceremonyHtml(rk.slice(0, 3), "Case closed: the top detectives") : `<section class="panel"><h2>Game over</h2></section>`}
+    ${rk.length > 3 ? `<section class="panel"><h3>The rest of the squad</h3>${standingsRows(rk.slice(3).map(p => ({ ...p, prevRank: 0 })), 7, false).replace(/<span class="pos">(\d+)<\/span>/g, (m, d) => `<span class="pos">${+d + 3}</span>`)}</section>` : ""}
+    <section class="panel"><h3>Class case report</h3>
+      <span class="eyebrow">The pictures</span>
+      <div class="ik-gallery">${H.stats.map(s => { const p = IK.byId[s.id]; return `<figure>${ikFrame(p, [], [], { solved: true })}<figcaption><b>${esc(p.name)}</b><br>${s.right} of ${s.of} identified · ${s.tilesLeft} tile${s.tilesLeft === 1 ? "" : "s"} left</figcaption></figure>`; }).join("")}</div>
+      ${hardest.length ? `<span class="eyebrow">Hardest questions</span><div class="bars">${hardest.map(s => { const q = QUESTIONS[s.qn]; const pct = s.of ? Math.round(100 * s.right / s.of) : 0; return `<div class="bar wide-label"><span>${esc(q.brief)}</span><div class="track"><div class="fill" style="width:${pct}%"></div></div><span class="n">${pct}%</span></div>`; }).join("")}</div>` : ""}
+      <details><summary class="eyebrow">Full results (teacher only)</summary>
+        <div class="podium" style="margin-top:12px">${rk.map((p, k) => `<div class="place"><span class="pos">${k + 1}</span>${avatarSvg(p.avatar, "sm")}<span class="tn">${esc(p.name)}</span><span class="ts">✓${p.correct} ✗${p.wrong} · IDs ${p.idsRight} · ${p.score}</span></div>`).join("")}</div>
+      </details>
+    </section>
+    <section class="panel"><h3>What next?</h3>
+      <div class="row"><button class="btn primary" id="again">Play again with the same players</button><button class="btn" id="new">New game</button><button class="btn" id="home">Back to Incident Room</button></div>
+    </section>`, true);
+  if (rk.length) runCeremony(rk.slice(0, 3));
+  document.getElementById("again").onclick = () => { H.round += 1; ikNewRound(H); Sound.startMusic(); ikPush(); ikDrawHost(); };
+  document.getElementById("new").onclick = () => { hostClose(); ikHostSetup(); };
+  document.getElementById("home").onclick = () => { hostClose(); homeFn(); };
+}
+
+/* ================= STUDENT ================= */
+function ikStudentState(st) {
+  const P = S.stu;
+  if (st.round !== P.round) { P.round = st.round; P.hist = []; P.lastRank = 0; P.ik = {}; }
+  P.state = st; P.ik = P.ik || {};
+  const key = `${st.round}:${st.phase}:${st.pi}:${st.qi}`;
+  const mine = st.scores && st.scores[P.id];
+  if (st.pi !== P.ik.pi) P.ik = { pi: st.pi, picked: null, sent: false, open: false };
+  if (st.done && st.done.includes(P.id)) P.ik.sent = true;
+  if (key === P.key) {
+    if (st.phase === "q") { P.left = Math.min(P.left, st.left); timerUI(P.left, st.total); const t = document.getElementById("tleft"); if (t) t.textContent = P.left; const c = document.getElementById("closing"); if (c) c.hidden = !st.closing; }
+    return;
+  }
+  P.key = key;
+  stopTimer();
+  if (st.phase === "q") {
+    P.L = freshPad(); P.left = st.left;
+    S.pad = { L: P.L, act: (a, v) => ikStudentAct(a, v) };
+    tick = setInterval(() => { P.left = Math.max(0, P.left - 1); timerUI(P.left, st.total); const t = document.getElementById("tleft"); if (t) t.textContent = P.left; }, 1000);
+  } else S.pad = null;
+  if (st.phase === "tiles" && st.qn !== null) {
+    const q = QUESTIONS[st.qn];
+    P.hist.push({ q, ok: !!(mine && mine.qok), ans: P.L ? P.L.sentAns : null });
+    Sound.play(mine && mine.qok ? "correct" : P.L && P.L.sentAns !== null ? "wrong" : "noanswer");
+  }
+  if (st.phase === "unmask") { Sound.play(mine && mine.idOk ? "gold" : "reveal"); }
+  if (st.phase === "standings" && mine) { const r = rankIdx(mine.correct, GAME_RANK_AT); P.promoted = r > P.lastRank; P.lastRank = r; Sound.play(P.promoted ? "promote" : "standings"); }
+  if (st.phase === "end") studentSave();
+  ikDrawStudent();
+}
+function ikStudentAct(act, v) {
+  const P = S.stu, st = P && P.state;
+  if (!st || st.phase !== "q") return;
+  const q = QUESTIONS[st.qn], L = P.L, r = padAct(q, L, act, v);
+  if (!r) return;
+  const send = ans => P.ch.send({ type: "broadcast", event: "answer", payload: { id: P.id, name: S.player.name, avatar: S.player.avatar, round: st.round, pi: st.pi, qi: st.qi, ans } });
+  if (r === "ans") { L.sentAns = L.ans; send(L.ans); Sound.play("tap"); }
+  if (act === "seq-send" && L.ans) { L.sentAns = L.ans.slice(); send(L.sentAns); Sound.play("tap"); }
+  if (r === "text" && q.type === "type") { L.sentAns = L.ans; L.sentText = L.ans; send(L.ans); Sound.play("tap"); }
+  if (r === "seq") Sound.play("tap");
+  ikDrawStudent(true);
+}
+/* the ID panel: pick from the line-up, confirm, then it's locked for this picture */
+function ikIdPanel(st) {
+  const I = S.stu.ik;
+  if (I.sent) return `<div class="so-done">ID made${I.picked !== null && I.picked !== undefined ? `: <b>${esc(st.lineup[I.picked])}</b>` : ""}. Wait for the unmasking to see if you're right.</div>`;
+  if (!I.open) return `<div class="row"><button class="btn primary big ik-idbtn" data-ik="open">Make an ID</button><span class="muted small">Worth ${ikIdPoints(IK_TILES - st.off.length)} points now. One try only.</span></div>`;
+  return `<div class="ik-idbox"><span class="eyebrow">Who, or what, is it?</span>${ikLineup(st.lineup, { pick: true, chosen: I.picked })}
+    <div class="row"><button class="btn primary" data-ik="confirm" ${I.picked === null ? "disabled" : ""}>Confirm ID${I.picked !== null ? `: ${esc(st.lineup[I.picked])}` : ""}</button><button class="btn quiet" data-ik="close">Not yet</button></div>
+    <p class="muted small">Worth ${ikIdPoints(IK_TILES - st.off.length)} points now. A wrong ID scores 0 and you can't try again on this picture.</p></div>`;
+}
+document.addEventListener("click", e => {
+  const b = e.target.closest && e.target.closest("[data-ik]");
+  if (!b || !S.stu || !S.stu.state || S.stu.state.game !== "identikit") return;
+  const P = S.stu, st = P.state, I = P.ik, a = b.dataset.ik;
+  if (!["q", "tiles"].includes(st.phase) || I.sent) return;
+  if (a === "open") { I.open = true; I.picked = null; }
+  if (a === "close") I.open = false;
+  if (a === "pick") I.picked = +b.dataset.k;
+  if (a === "confirm" && I.picked !== null) {
+    I.sent = true; I.open = false; Sound.play("arrest");
+    P.ch.send({ type: "broadcast", event: "ident", payload: { id: P.id, name: S.player.name, avatar: S.player.avatar, round: st.round, pi: st.pi, k: I.picked } });
+  }
+  Sound.play("tap");
+  const el = document.getElementById("ikId"); if (el) el.innerHTML = ikIdPanel(st);
+});
+function ikDrawStudent(keep = false) {
+  const P = S.stu, st = P.state, mine = st.scores && st.scores[P.id];
+  const me = `<div class="who">${avatarSvg(S.player.avatar, "sm")}${esc(S.player.name)}</div>`;
+  const cnt = mine ? counters(mine.correct, mine.wrong) : "";
+  const hud = extra => `<div class="hud">${me}${extra || ""}${cnt}${soundBtns()}</div>`;
+  const pic = st.pic ? IK.byId[st.pic] : null;
+  const head = `<span class="stat">Picture <b>${st.pi + 1}</b> / ${st.n}</span>`;
+  if (st.phase === "lobby") {
+    return set(`${hud(`<span class="stat">Game <b>${spaced(P.code)}</b></span>`)}
+      <section class="panel"><span class="eyebrow">The Identikit</span><h2>You're in, ${esc(S.player.name)}</h2>${IK_RULES}
+        <p class="muted small">Look at the board. The first picture appears when your teacher starts the game.</p></section>`);
+  }
+  if (st.phase === "q") {
+    const q = QUESTIONS[st.qn];
+    return set(`${hud(head)}
+      <div class="timer" aria-hidden="true"><div class="timer-fill" style="width:${(P.left / st.total) * 100}%"></div></div>
+      <div class="ik-play">
+        <section class="panel ik-mini">${ikFrame(pic, st.off, [])}<div id="ikId">${ikIdPanel(st)}</div></section>
+        <section class="panel">
+          ${qHead(q, `<span class="stat secs"><span id="tleft">${P.left}</span>s</span>`)}
+          <p class="brief">${esc(q.brief)}</p>
+          ${todoBanner(todoText(q, "live", false) + " Every right answer helps lift the tiles.")}
+          ${deviceQ(q, st.perm, P.L, { mode: "live", typed: false })}
+          <p class="closing" id="closing" ${st.closing ? "" : "hidden"}>Everyone has answered. A few seconds left to change your answer.</p>
+        </section></div>`, true, keep);
+  }
+  if (st.phase === "tiles") {
+    const h = P.hist[P.hist.length - 1], ok = mine && mine.qok, q = QUESTIONS[st.qn];
+    set(`${hud(head)}
+      <div class="ik-play">
+        <section class="panel ik-mini">${ikFrame(pic, st.off, st.fresh)}<div id="ikId">${ikIdPanel(st)}</div></section>
+        <section class="panel">
+          <div class="result ${ok ? "good" : "bad"}"><span class="rhead">${ok ? `Correct · +${mine.qpts}` : h && h.ans !== null ? "Not this time" : "No answer in time"}</span>
+            ${!ok && h && h.ans !== null && h.ans !== undefined ? `<p>You said: <b>${esc(ansLabel(q, h.ans))}</b></p>` : ""}
+            <p>Correct answer: <span class="answer">${esc(rightLabel(q))}</span></p><p class="why"><b>Why:</b> ${esc(q.why)}</p></div>
+          ${st.qres ? `<div class="ik-lift"><span class="ik-big">${st.qres.removed}</span><span>tile${st.qres.removed === 1 ? "" : "s"} lifted<br><small>${st.qres.right} of ${st.qres.of} got it right</small></span></div>` : ""}
+        </section></div>`, true);
+    return;
+  }
+  if (st.phase === "unmask") {
+    const u = st.unmask, I = P.ik;
+    set(`${hud(head)}
+      <div class="ik-play">
+        <section class="panel ik-mini">${ikFrame(pic, [], [], { solved: true })}</section>
+        <section class="panel">
+          <span class="eyebrow">Unmasked</span><h2 class="ik-name">${esc(u.name)}</h2><p class="ik-fact">${esc(u.fact)}</p>
+          <div class="result ${mine && mine.idOk ? "good so-win" : "bad"}">${mine && mine.idOk ? `<span class="so-stamp">Identified</span>` : ""}
+            <span class="rhead">${mine && mine.idOk ? `Correct ID · +${mine.idPts}` : mine && mine.idPick ? "Wrong ID" : "No ID made"}</span>
+            ${mine && mine.idPick && !mine.idOk ? `<p>You said: <b>${esc(mine.idPick)}</b></p>` : ""}
+            ${u.first ? `<p>First correct ID: <b>${esc(u.first.name)}</b> with ${u.first.covered} tile${u.first.covered === 1 ? "" : "s"} still on.</p>` : ""}</div>
+        </section></div>`, true);
+    if (mine && mine.idOk) later(300, () => Confetti.burst(120, 0.5, 0.3));
+    return;
+  }
+  if (st.phase === "standings") {
+    return set(`${hud(`<span class="stat">After picture <b>${st.pi + 1}</b> / ${st.n}</span>`)}
+      <section class="panel center">
+        ${P.promoted ? `<div class="promo">Promoted to ${RANKS[P.lastRank]}</div>` : ""}
+        ${mine ? `<span class="eyebrow">Your position</span><div class="big">${ordinal(mine.rank)}</div><p class="muted">of ${mine.of} · ${mine.score} points</p>
+          <p class="gap">${mine.rank === 1 ? "You're top of the board. Keep it up." : `${mine.gap + 1} points to pass ${esc(mine.above)}`}</p>
+          ${rankBadge(rankIdx(mine.correct, GAME_RANK_AT))}${mine.streak >= 3 ? `<span class="streak">${mine.streak} in a row</span>` : ""}` : `<h2>Standings on the board</h2>`}
+      </section>`);
+  }
+  /* end: reuse the live game's end screen */
+  return drawStudent(keep);
+}
+
 /* ================= THE GAMES: one list drives the home page and the teacher's game switch =================
    Students never choose a game: they type the code from the board and land in whatever game the teacher opened. */
 const GI = {
@@ -2311,7 +3083,7 @@ const GI = {
 const GAME_ICONS = {
   rapid: `<circle cx="32" cy="36" r="19" fill="none" stroke="${GI.cy}" stroke-width="4"/><rect x="27" y="9" width="10" height="6" rx="2" fill="${GI.cy}"/><path d="M32 36V24" stroke="${GI.cy}" stroke-width="4" stroke-linecap="round"/><path d="M36 30l-6 9h6l-4 9 10-12h-6l4-6z" fill="${GI.am}"/>`,
   so: `<g stroke="${GI.mu}" stroke-width="1.5" opacity=".7">${[14, 24, 34, 44, 54].map(v => `<path d="M${v} 10v44M10 ${v}h44"/>`).join("")}</g><path d="M10 34h44M34 10v44" stroke="${GI.cy}" stroke-width="2.5"/><circle cx="44" cy="24" r="7" fill="none" stroke="${GI.am}" stroke-width="3.5"/><path d="M44 13v5M44 30v5M33 24h5M50 24h5" stroke="${GI.am}" stroke-width="3" stroke-linecap="round"/>`,
-  identikit: `<rect x="12" y="8" width="40" height="48" rx="6" fill="none" stroke="${GI.cy}" stroke-width="3"/><circle cx="32" cy="27" r="9" fill="${GI.mu}"/><path d="M18 52c2-9 8-13 14-13s12 4 14 13z" fill="${GI.mu}"/><rect x="14" y="10" width="18" height="15" fill="${GI.am}"/><rect x="32" y="40" width="18" height="14" fill="${GI.am}"/><path d="M14 25h36M14 40h36M32 10v44" stroke="${GI.ink}" stroke-width="2"/>`,
+  ik: `<rect x="12" y="8" width="40" height="48" rx="6" fill="none" stroke="${GI.cy}" stroke-width="3"/><circle cx="32" cy="27" r="9" fill="${GI.mu}"/><path d="M18 52c2-9 8-13 14-13s12 4 14 13z" fill="${GI.mu}"/><rect x="14" y="10" width="18" height="15" fill="${GI.am}"/><rect x="32" y="40" width="18" height="14" fill="${GI.am}"/><path d="M14 25h36M14 40h36M32 10v44" stroke="${GI.ink}" stroke-width="2"/>`,
   inquiry: `${[[20, 18, GI.cy], [36, 18, GI.mu], [12, 32, GI.mu], [28, 32, GI.cy], [44, 32, GI.am], [20, 46, GI.am], [36, 46, GI.cy]].map(([x, y, c]) => `<path d="M${x} ${y - 9}l8 4.5v9l-8 4.5-8-4.5v-9z" fill="${c}" opacity="${c === GI.mu ? .45 : 1}"/>`).join("")}`,
   trail: `<rect x="8" y="8" width="48" height="48" rx="6" fill="none" stroke="${GI.mu}" stroke-width="2.5"/><path d="M14 46h10V30h16v-12h10" fill="none" stroke="${GI.cy}" stroke-width="4" stroke-dasharray="4 4" stroke-linecap="round"/><path d="M50 10c-4 0-7 3-7 7 0 5 7 11 7 11s7-6 7-11c0-4-3-7-7-7z" fill="${GI.am}"/><circle cx="50" cy="17" r="2.6" fill="${GI.ink}"/><circle cx="14" cy="46" r="4" fill="${GI.pk}"/>`,
   lineup: `<rect x="8" y="12" width="48" height="40" rx="5" fill="${GI.bl}"/>${[0, 1, 2, 3].map(r => [0, 1, 2, 3, 4].map(c => { const f = (r === 3 && c < 4) ? GI.am : (r === 2 && c === 1) || (r === 3 && c === 4) ? GI.cy : GI.ink; return `<circle cx="${15 + c * 8.5}" cy="${19 + r * 9}" r="3.4" fill="${f}"/>`; }).join("")).join("")}<path d="M10 56h44" stroke="${GI.mu}" stroke-width="3" stroke-linecap="round"/>`,
@@ -2320,8 +3092,8 @@ const GAME_ICONS = {
 const gameIcon = (id, cls = "") => `<svg class="gicon ${cls}" viewBox="0 0 64 64" aria-hidden="true">${GAME_ICONS[id] || ""}</svg>`;
 const GAMES = [
   { id: "rapid", name: "Rapid Response", tag: "Quick-fire case questions", desc: "Spot the mistake, multiple choice, true or false, put in order and type the answer, across all 76 GCSE topics.", maths: "Every GCSE topic", modes: ["Live class", "Team showdown", "Solo"], ready: true },
-  { id: "so", name: "Stakeout", tag: "Find the hidden suspect", desc: "Three surveillance reports point to one spot on a coordinate grid. Rule out points, draw the lines, make one arrest.", maths: "Coordinates and straight-line graphs", modes: ["Live class"], ready: true, isNew: true },
-  { id: "identikit", name: "The Identikit", tag: "Reveal the suspect's face", desc: "Every right answer peels a tile off a hidden picture. Risk a guess at any time.", maths: "Key terms and quick recall", modes: ["Teams", "Solo"] },
+  { id: "so", name: "Stakeout", tag: "Find the hidden suspect", desc: "Three surveillance reports point to one spot on a coordinate grid. Rule out points, draw the lines, make one arrest.", maths: "Coordinates and straight-line graphs", modes: ["Live class"], ready: true },
+  { id: "ik", name: "The Identikit", tag: "Who, or what, is under the tiles?", desc: "Every right answer lifts tiles off a hidden graph, shape, solid, famous mathematician or catchphrase. Make one ID from the line-up.", maths: "Key terms, graphs, shapes and solids", modes: ["Live class"], ready: true, isNew: true },
   { id: "inquiry", name: "Line of Inquiry", tag: "Claim a path across the board", desc: "Two teams win hexagons by answering. The first unbroken line across wins, so blocking matters.", maths: "Mixed revision", modes: ["Two teams"] },
   { id: "trail", name: "Case Trail", tag: "Follow the trail round the board", desc: "Move round a board of topics. Answer to claim a topic; rivals who land there face a harder question.", maths: "Longer revision lessons", modes: ["2 to 6 players or teams"] },
   { id: "lineup", name: "The Lineup", tag: "Four in a row", desc: "Answer to drop a counter. Harder questions let you choose any column.", maths: "Quick-fire practice", modes: ["1 v 1", "Teams"] },
@@ -2333,13 +3105,13 @@ const READY = GAMES.filter(g => g.ready);
 const gameSwitch = cur => `<div class="gameswitch" role="group" aria-label="Choose a game">
   ${READY.map(g => `<button class="gsw" data-game="${g.id}" aria-pressed="${cur === g.id}">${gameIcon(g.id, "sm")}<span>${esc(g.name)}</span>${g.isNew ? `<span class="newtag">New</span>` : ""}</button>`).join("")}
   <button class="gsw quiet" data-game="home">All games</button></div>`;
-const hostGame = id => { Sound.unlock(); if (id === "home") return signIn(); store.set("ir-game", id); (id === "so" ? soHostSetup : hostSetup)(); };
+const hostGame = id => { Sound.unlock(); if (id === "home") return signIn(); store.set("ir-game", id); ({ so: soHostSetup, ik: ikHostSetup }[id] || hostSetup)(); };
 const bindGameSwitch = () => app.querySelectorAll("[data-game]").forEach(b => b.onclick = () => hostGame(b.dataset.game));
 
 function gameCard(g) {
   const acts = g.id === "rapid"
     ? `<button class="btn primary" data-host="rapid">Host on the board</button><button class="btn" data-teams>Team showdown</button><button class="btn" data-solo>Practise solo</button>`
-    : g.id === "so" ? `<button class="btn primary" data-host="so">Host on the board</button><span class="muted small">Students: join with your teacher's code</span>`
+    : g.ready ? `<button class="btn primary" data-host="${g.id}">Host on the board</button><span class="muted small">Students: join with your teacher's code</span>`
     : `<span class="tag">Coming soon</span>`;
   return `<article class="gcard${g.ready ? " ready" : " soon"}">
     <div class="ghead">${gameIcon(g.id)}<div><h3>${esc(g.name)}${g.isNew ? ` <span class="newtag">New</span>` : ""}</h3><p class="gtag">${esc(g.tag)}</p></div></div>
@@ -2398,7 +3170,7 @@ const sb = () => sbClient || (sbClient = window.supabase.createClient(CFG.url, C
 
 const app = document.getElementById("app");
 const S = { player: { name: "", avatar: "det-f" }, user: null, acc: null, solo: null, teams: null, host: null, stu: null, pad: null, guarded: false };
-window.IR = { S, QUESTIONS, normAns, isCorrect, typedOk, TOPICS, poolFor, pickQuestions, FREE_TOPICS_IR: () => FREE_TOPICS_IR, SO };
+window.IR = { S, QUESTIONS, normAns, isCorrect, typedOk, TOPICS, poolFor, pickQuestions, FREE_TOPICS_IR: () => FREE_TOPICS_IR, SO, IK };
 let tick = null;
 const stopTimer = () => { if (tick) { clearInterval(tick); tick = null; } };
 /* ---------- celebrations: medals, podium reveal, confetti ---------- */
@@ -3547,6 +4319,7 @@ function onState(st) {
     Sound.play("join");
   }
   if (st.game === "stakeout") return soStudentState(st);
+  if (st.game === "identikit") return ikStudentState(st);
   if (st.round !== P.round) { P.round = st.round; P.hist = []; P.lastRank = 0; }
   P.state = st;
   const key = `${st.round}:${st.phase}:${st.i}`;
@@ -3687,7 +4460,7 @@ app.addEventListener("click", e => {
 /* ================= START ================= */
 (async () => {
   const q = new URLSearchParams(location.search);
-  if (q.has("host")) { set(`${brand("Host a game")}<section class="panel"><h2>Opening…</h2></section>`); await initAuth(); await loadAccess(); return (q.get("game") === "stakeout" || (!q.get("game") && store.get("ir-game", "quiz") === "so") ? soHostSetup : hostSetup)(); }
+  if (q.has("host")) { set(`${brand("Host a game")}<section class="panel"><h2>Opening…</h2></section>`); await initAuth(); await loadAccess(); return ({ stakeout: soHostSetup, so: soHostSetup, identikit: ikHostSetup, ik: ikHostSetup }[q.get("game") || store.get("ir-game", "rapid")] || hostSetup)(); }
   else if (q.has("join") || q.has("code")) joinScreen((q.get("code") || "").replace(/\D/g, "").slice(0, 6));
   else signIn();
   await initAuth();

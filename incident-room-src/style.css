@@ -470,3 +470,46 @@ details summary { cursor: pointer; }
 .ptbtn { font: 700 1rem var(--mono); color: #fff; background: var(--panel-2); border: 1px solid #B9C4FF; border-radius: 8px; padding: 2px 8px; }
 .ptbtn.on { border-color: var(--cyan); color: var(--cyan); }
 .so-editrow { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+/* ---------- The Identikit ---------- */
+.ik-frame { position: relative; width: 100%; max-width: 440px; margin: 0 auto; aspect-ratio: 1; border-radius: 12px; overflow: hidden; border: 3px solid var(--amber); background: #0E1636; }
+.ik-frame.big { max-width: min(100%, calc(100vh - 340px)); }
+.ik-board .opt { font-size: clamp(1rem, 1.5vw, 1.35rem); }
+.ik-board .ot { word-break: normal; overflow-wrap: normal; }
+.ik-pic, .ik-pic svg, .ik-pic img { display: block; width: 100%; height: 100%; object-fit: cover; user-select: none; -webkit-user-drag: none; }
+.ik-tiles { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr); }
+.ik-t { display: grid; place-items: center; border: 2px solid #0B122C; background: repeating-linear-gradient(135deg, #1B2654 0 14px, #18214A 14px 28px); color: var(--amber); font: 700 clamp(1rem, 3.2vw, 2.2rem) var(--mono); transition: opacity .4s, transform .4s; }
+.ik-t.off { opacity: 0; transform: scale(.4) rotate(-14deg); }
+.ik-t.go { animation: ikLift 1s ease-in forwards; animation-delay: var(--d, 0s); }
+@keyframes ikLift { 0% { transform: none; opacity: 1; } 35% { transform: translateY(-6%) rotate(-5deg) scale(1.08); opacity: 1; box-shadow: 0 0 0 3px var(--amber); } 100% { transform: translateY(-45%) rotate(-28deg) scale(.4); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .ik-t.go { animation: none; opacity: 0; } }
+.ik-frame.solved { border-color: var(--good); animation: ikShine 1.2s ease-out; }
+@keyframes ikShine { from { box-shadow: 0 0 0 0 rgba(61,220,151,.9); } to { box-shadow: 0 0 0 28px rgba(61,220,151,0); } }
+.ik-board { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 900px) { .ik-board { grid-template-columns: minmax(0, 1fr); } }
+.ik-left { gap: 14px; }
+.ik-lineup { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 6px; }
+.ik-sus { display: flex; align-items: center; gap: 10px; text-align: left; border: 1px solid var(--line); background: var(--bg); border-radius: 10px; padding: 10px 12px; font: 600 1.05rem var(--body); color: var(--text); min-height: 52px; }
+.ik-lineup.board .ik-sus { font-size: clamp(1.05rem, 1.6vw, 1.4rem); }
+button.ik-sus:hover { border-color: var(--cyan); }
+.ik-sus.chosen { border-color: var(--cyan); background: rgba(0,252,241,.12); }
+.ik-sus.right { border-color: var(--good); background: rgba(61,220,151,.15); }
+.ik-sus.dim { opacity: .5; }
+.ik-no { flex: none; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--amber); color: var(--bg); font: 700 .9rem var(--mono); }
+.ik-nm { flex: 1; min-width: 0; }
+.ik-sus .cnt { font-family: var(--mono); color: var(--muted); }
+.ik-lift { display: flex; align-items: center; gap: 14px; font-family: var(--display); font-weight: 700; text-transform: uppercase; letter-spacing: .06em; font-size: 1.2rem; }
+.ik-lift small { text-transform: none; letter-spacing: 0; font-weight: 500; color: var(--muted); font-family: var(--body); }
+.ik-big { font: 700 3.4rem var(--mono); color: var(--amber); line-height: 1; }
+.ik-play { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (min-width: 900px) and (orientation: landscape) { .ik-play { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); } }
+.ik-mini { gap: 12px; }
+.ik-idbtn { background: var(--amber) !important; border-color: var(--amber) !important; color: var(--bg) !important; }
+.ik-idbox { border: 2px solid var(--amber); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 10px; background: rgba(255,200,87,.06); }
+.ik-name { font-size: clamp(1.6rem, 3.4vw, 2.6rem); color: var(--amber); }
+.ik-fact { font-size: 1.15rem; }
+.ik-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; }
+.ik-gallery figure { margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.ik-gallery .ik-frame { border-width: 2px; }
+.ik-gallery figcaption { font-size: .9rem; color: var(--muted); }
+.ik-demo .ik-frame { max-width: 300px; }

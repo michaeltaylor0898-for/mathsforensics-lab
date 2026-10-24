@@ -9,7 +9,7 @@ const sb = () => sbClient || (sbClient = window.supabase.createClient(CFG.url, C
 
 const app = document.getElementById("app");
 const S = { player: { name: "", avatar: "det-f" }, user: null, acc: null, solo: null, teams: null, host: null, stu: null, pad: null, guarded: false };
-window.IR = { S, QUESTIONS, normAns, isCorrect, typedOk, TOPICS, poolFor, pickQuestions, FREE_TOPICS_IR: () => FREE_TOPICS_IR, SO };
+window.IR = { S, QUESTIONS, normAns, isCorrect, typedOk, TOPICS, poolFor, pickQuestions, FREE_TOPICS_IR: () => FREE_TOPICS_IR, SO, IK };
 let tick = null;
 const stopTimer = () => { if (tick) { clearInterval(tick); tick = null; } };
 /* ---------- celebrations: medals, podium reveal, confetti ---------- */
@@ -1158,6 +1158,7 @@ function onState(st) {
     Sound.play("join");
   }
   if (st.game === "stakeout") return soStudentState(st);
+  if (st.game === "identikit") return ikStudentState(st);
   if (st.round !== P.round) { P.round = st.round; P.hist = []; P.lastRank = 0; }
   P.state = st;
   const key = `${st.round}:${st.phase}:${st.i}`;
@@ -1298,7 +1299,7 @@ app.addEventListener("click", e => {
 /* ================= START ================= */
 (async () => {
   const q = new URLSearchParams(location.search);
-  if (q.has("host")) { set(`${brand("Host a game")}<section class="panel"><h2>Opening…</h2></section>`); await initAuth(); await loadAccess(); return (q.get("game") === "stakeout" || (!q.get("game") && store.get("ir-game", "quiz") === "so") ? soHostSetup : hostSetup)(); }
+  if (q.has("host")) { set(`${brand("Host a game")}<section class="panel"><h2>Opening…</h2></section>`); await initAuth(); await loadAccess(); return ({ stakeout: soHostSetup, so: soHostSetup, identikit: ikHostSetup, ik: ikHostSetup }[q.get("game") || store.get("ir-game", "rapid")] || hostSetup)(); }
   else if (q.has("join") || q.has("code")) joinScreen((q.get("code") || "").replace(/\D/g, "").slice(0, 6));
   else signIn();
   await initAuth();
