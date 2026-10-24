@@ -1,0 +1,32 @@
+Portraits from Wikimedia Commons. Check each file page for its licence.
+
+al-khwarizmi.jpg	Al-Khwarizmi	https://upload.wikimedia.org/wikipedia/commons/d/dd/Al-Khwarizmi_portrait.jpg
+noether.jpg	Emmy Noether	https://upload.wikimedia.org/wikipedia/commons/e/e5/Noether.jpg
+cauchy.jpg	Augustin-Louis Cauchy	https://upload.wikimedia.org/wikipedia/commons/d/d3/Augustin-Louis_Cauchy_1901.jpg
+fibonacci.jpg	Leonardo Fibonacci	https://upload.wikimedia.org/wikipedia/commons/a/a2/Fibonacci.jpg
+cantor.jpg	Georg Cantor	https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Georg_Cantor_%28Portr%C3%A4t%29.jpg/500px-Georg_Cantor_%28Portr%C3%A4t%29.jpg
+aryabhata.jpg	Aryabhata	https://upload.wikimedia.org/wikipedia/commons/a/af/2064_aryabhata-crp.jpg
+riemann.jpg	Bernhard Riemann	https://upload.wikimedia.org/wikipedia/commons/8/82/Georg_Friedrich_Bernhard_Riemann.jpeg
+gauss.jpg	Carl Friedrich Gauss	https://upload.wikimedia.org/wikipedia/commons/9/9b/Carl_Friedrich_Gauss.jpg
+leibniz.jpg	Gottfried Wilhelm Leibniz	https://upload.wikimedia.org/wikipedia/commons/0/07/Leibniz_Hannover.jpg
+newton.jpg	Isaac Newton	https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Portrait_of_Sir_Isaac_Newton%2C_1689.jpg/500px-Portrait_of_Sir_Isaac_Newton%2C_1689.jpg
+descartes.jpg	René Descartes	https://upload.wikimedia.org/wikipedia/commons/7/73/Frans_Hals_-_Portret_van_Ren%C3%A9_Descartes.jpg
+pascal.jpg	Blaise Pascal	https://upload.wikimedia.org/wikipedia/commons/5/54/Anonymous_-_Portrait_pr%C3%A9sum%C3%A9_de_Blaise_Pascal_%281623-1662%29%2C_savant_et_%C3%A9crivain._-_P1800_-_Mus%C3%A9e_Carnavalet.jpg
+euler.jpg	Leonhard Euler	https://upload.wikimedia.org/wikipedia/commons/d/d7/Leonhard_Euler.jpg
+galois.jpg	Évariste Galois	https://upload.wikimedia.org/wikipedia/commons/5/53/Evariste_galois.jpg
+ramanujan.jpg	Srinivasa Ramanujan	https://upload.wikimedia.org/wikipedia/commons/c/c1/Srinivasa_Ramanujan_-_OPC_-_1.jpg
+weierstrass.jpg	Karl Weierstrass	https://upload.wikimedia.org/wikipedia/commons/5/5b/Karl_Weierstrass_2.jpg
+euclid.jpg	Euclid	https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Jusepe_de_Ribera_-_Euclid_-_2001.26_-_J._Paul_Getty_Museum.jpg/960px-Jusepe_de_Ribera_-_Euclid_-_2001.26_-_J._Paul_Getty_Museum.jpg
+banach.jpg	Stefan Banach	https://upload.wikimedia.org/wikipedia/commons/5/51/Stefana_Banach_-_%D8%B3%D8%AA%D9%8A%D9%81%D8%A7%D9%86_%D8%A8%D9%86%D8%A7%D8%AE.jpg
+fermat.jpg	Pierre de Fermat	https://upload.wikimedia.org/wikipedia/commons/3/3b/Pierre_de_Fermat3.jpg
+boole.jpg	George Boole	https://upload.wikimedia.org/wikipedia/commons/6/6c/George_Boole.jpg
+turing.jpg	Alan Turing	https://upload.wikimedia.org/wikipedia/commons/f/f8/Alan_Turing_%281951%29.jpg
+cayley.jpg	Arthur Cayley	https://upload.wikimedia.org/wikipedia/commons/a/a9/Arthur_Cayley.jpg
+archimedes.jpg	Archimedes	https://upload.wikimedia.org/wikipedia/commons/e/e7/Domenico-Fetti_Archimedes_1620.jpg
+lagrange.jpg	Joseph-Louis Lagrange	https://upload.wikimedia.org/wikipedia/commons/6/69/Joseph_Louis_Lagrange2.jpg
+pythagoras.jpg	Pythagoras	https://upload.wikimedia.org/wikipedia/commons/9/96/Pythagoras_knapp.jpg
+maxwell.jpg	James Clerk Maxwell	https://upload.wikimedia.org/wikipedia/commons/b/b0/James-Clerk-Maxwell-1831-1879.jpg
+hilbert.jpg	David Hilbert	https://upload.wikimedia.org/wikipedia/commons/f/f9/David_Hilbert_1886.jpg
+babbage.jpg	Charles Babbage	https://upload.wikimedia.org/wikipedia/commons/d/d2/Charles_Babbage_1860.jpg
+poincare.jpg	Henri Poincaré	https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Henri_Poincar%C3%A9%2C_PA03199.jpg/960px-Henri_Poincar%C3%A9%2C_PA03199.jpg
+lovelace.jpg	Ada Lovelace	https://upload.wikimedia.org/wikipedia/commons/a/a4/Ada_Lovelace_portrait.jpg
