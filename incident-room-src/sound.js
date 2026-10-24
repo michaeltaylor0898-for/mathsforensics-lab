@@ -42,6 +42,10 @@ const Sound = (() => {
       tone(110, t, 0.5, "square", 0.05); },
     noanswer: t => { tone(330, t, 0.18, "triangle", 0.15); tone(247, t + 0.2, 0.3, "triangle", 0.15); },
     tick: t => tone(1100, t, 0.04, "square", 0.04),
+    /* new surveillance report: radio squelch and two chirps */
+    radio: t => { hiss(t, 0.18, 0.06, 1800); tone(1250, t + 0.16, 0.07, "square", 0.05); tone(1650, t + 0.25, 0.09, "square", 0.05); hiss(t + 0.36, 0.08, 0.04, 2200); },
+    /* handcuffs: two quick metallic clicks */
+    arrest: t => { tone(2400, t, 0.03, "square", 0.08); hiss(t, 0.04, 0.05, 5000); tone(2100, t + 0.09, 0.04, "square", 0.08); hiss(t + 0.09, 0.05, 0.05, 5000); tone(N(55), t + 0.12, 0.25, "triangle", 0.12); },
     join: t => { tone(880, t, 0.08, "sine", 0.18); tone(1320, t + 0.07, 0.1, "sine", 0.18); },
     tap: t => tone(660, t, 0.05, "sine", 0.08),
     reveal: t => { tone(N(45), t, 0.25, "square", 0.08); tone(N(40), t + 0.28, 0.5, "square", 0.08); hiss(t + 0.28, 0.3, 0.03, 3000); },

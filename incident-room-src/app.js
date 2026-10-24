@@ -9,7 +9,7 @@ const sb = () => sbClient || (sbClient = window.supabase.createClient(CFG.url, C
 
 const app = document.getElementById("app");
 const S = { player: { name: "", avatar: "det-f" }, user: null, acc: null, solo: null, teams: null, host: null, stu: null, pad: null, guarded: false };
-window.IR = { S, QUESTIONS, normAns, isCorrect, typedOk, TOPICS, poolFor, pickQuestions, FREE_TOPICS_IR: () => FREE_TOPICS_IR };
+window.IR = { S, QUESTIONS, normAns, isCorrect, typedOk, TOPICS, poolFor, pickQuestions, FREE_TOPICS_IR: () => FREE_TOPICS_IR, SO };
 let tick = null;
 const stopTimer = () => { if (tick) { clearInterval(tick); tick = null; } };
 /* ---------- celebrations: medals, podium reveal, confetti ---------- */
@@ -413,12 +413,13 @@ function signIn() {
       <span class="eyebrow">Teacher</span>
       <h2>Host a game on the board</h2>
       <p class="muted">Live game: students join on their tablets with a code. Team showdown: teams answer on mini whiteboards.</p>
-      <div class="row"><button class="btn" id="toHost">Host a live game</button><button class="btn" id="toTeams">Team showdown</button></div>
+      <div class="row"><button class="btn" id="toHost">Host a live game</button><button class="btn" id="toSo">Stakeout <span class="newtag">New</span></button><button class="btn" id="toTeams">Team showdown</button></div>
     </section>
     ${liveConfigured() ? `<div class="row center"><button class="btn quiet" id="toAcct">My account and plan</button></div>` : ""}`);
   document.getElementById("toJoin").onclick = () => joinScreen();
   const ta = document.getElementById("toAcct"); if (ta) ta.onclick = () => accountScreen();
   document.getElementById("toHost").onclick = () => { Sound.unlock(); hostSetup(); };
+  document.getElementById("toSo").onclick = () => { Sound.unlock(); store.set("ir-game", "so"); soHostSetup(); };
   document.getElementById("toTeams").onclick = () => { Sound.unlock(); teamSetup(); };
   document.getElementById("toProfile").onclick = profile;
   const rj = document.getElementById("rejoin");
@@ -877,6 +878,7 @@ function hostSetup() {
   const draw = (keep = false) => {
     const none = !poolFor(cfg).length;
     set(`${brand("Live game · teacher")}
+      ${gameSwitch("quiz")}
       <section class="panel"><h2>Host a live game</h2>
         <p class="muted">Show this screen on the board. Students join at <b>${JOIN_URL}</b> with the game code and answer on their tablets.</p>
         ${topicPicker(cfg)}
@@ -892,6 +894,7 @@ function hostSetup() {
     bindChoice("n", v => { cfg.n = +v; redraw(); });
     bindChoice("time", v => { cfg.time = v === "auto" ? "auto" : +v; redraw(); });
     bindChoice("typed", v => { cfg.typed = v === "1"; redraw(); });
+    bindGameSwitch();
     document.getElementById("back").onclick = homeFn;
     document.getElementById("go").onclick = () => { saveCfg("ir-host", cfg); Sound.unlock(); claimGame("host", () => hostStart(cfg), hostSetup); };
   };
@@ -1217,6 +1220,7 @@ function onState(st) {
     armGuard(() => { store.del("ir-last"); studentLeave(); }, "If you leave, you stop scoring points. You can rejoin with the same code and keep your score.");
     Sound.play("join");
   }
+  if (st.game === "stakeout") return soStudentState(st);
   if (st.round !== P.round) { P.round = st.round; P.hist = []; P.lastRank = 0; }
   P.state = st;
   const key = `${st.round}:${st.phase}:${st.i}`;
@@ -1357,7 +1361,7 @@ app.addEventListener("click", e => {
 /* ================= START ================= */
 (async () => {
   const q = new URLSearchParams(location.search);
-  if (q.has("host")) { set(`${brand("Host a game")}<section class="panel"><h2>Opening…</h2></section>`); await initAuth(); await loadAccess(); return hostSetup(); }
+  if (q.has("host")) { set(`${brand("Host a game")}<section class="panel"><h2>Opening…</h2></section>`); await initAuth(); await loadAccess(); return (q.get("game") === "stakeout" || (!q.get("game") && store.get("ir-game", "quiz") === "so") ? soHostSetup : hostSetup)(); }
   else if (q.has("join") || q.has("code")) joinScreen((q.get("code") || "").replace(/\D/g, "").slice(0, 6));
   else signIn();
   await initAuth();
