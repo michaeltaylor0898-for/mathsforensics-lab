@@ -17,9 +17,9 @@ const GAMES = [
   { id: "rapid", name: "Rapid Response", tag: "Quick-fire case questions", desc: "Spot the mistake, multiple choice, true or false, put in order and type the answer, across all 76 GCSE topics.", maths: "Every GCSE topic", modes: ["Live class", "Team showdown", "Solo"], ready: true },
   { id: "so", name: "Stakeout", tag: "Find the hidden suspect", desc: "Three surveillance reports point to one spot on a coordinate grid. Rule out points, draw the lines, make one arrest.", maths: "Coordinates and straight-line graphs", modes: ["Live class"], ready: true },
   { id: "ik", name: "The Identikit", tag: "Who, or what, is under the tiles?", desc: "Every right answer lifts tiles off a hidden graph, shape, solid, famous mathematician or catchphrase. Make one ID from the line-up.", maths: "Key terms, graphs, shapes and solids", modes: ["Live class", "Solo"], ready: true },
-  { id: "inquiry", name: "Line of Inquiry", tag: "Claim a path across the board", desc: "Cyan v Amber: pick a hexagon, everyone answers, and the team with more right wins it. First unbroken line across wins, so blocking matters.", maths: "Any topics you choose", modes: ["Two teams", "Live class"], ready: true, isNew: true },
+  { id: "inquiry", name: "Line of Inquiry", tag: "Claim a path across the board", desc: "Cyan v Amber: pick a hexagon, everyone answers, and the team with more right wins it. First unbroken line across wins, so blocking matters.", maths: "Any topics you choose", modes: ["Two teams", "Live class"], ready: true },
   { id: "trail", name: "Case Trail", tag: "Follow the trail round the board", desc: "Move round a board of topics. Answer to claim a topic; rivals who land there face a harder question.", maths: "Longer revision lessons", modes: ["2 to 6 players or teams"] },
-  { id: "lineup", name: "The Lineup", tag: "Four in a row", desc: "Answer to drop a counter. Harder questions let you choose any column.", maths: "Quick-fire practice", modes: ["1 v 1", "Teams"] },
+  { id: "lineup", name: "The Lineup", tag: "Four in a row", desc: "Cyan v Amber take turns: get half your team right to drop a counter, or steal the drop when the other team misses. Four in a row wins.", maths: "Any topics you choose", modes: ["Two teams", "Live class"], ready: true, isNew: true },
   { id: "crimelab", name: "Crime Lab", tag: "Solve it together", desc: "A multi-step problem split between teammates: each holds one step, and nobody finishes alone.", maths: "Multi-step problems", modes: ["Teams of 3 or 4"] }
 ];
 const READY = GAMES.filter(g => g.ready);
@@ -28,7 +28,7 @@ const READY = GAMES.filter(g => g.ready);
 const gameSwitch = cur => `<div class="gameswitch" role="group" aria-label="Choose a game">
   ${READY.map(g => `<button class="gsw" data-game="${g.id}" aria-pressed="${cur === g.id}">${gameIcon(g.id, "sm")}<span>${esc(g.name)}</span>${g.isNew ? `<span class="newtag">New</span>` : ""}</button>`).join("")}
   <button class="gsw quiet" data-game="home">All games</button></div>`;
-const hostGame = id => { Sound.unlock(); if (id === "home") return signIn(); store.set("ir-game", id); ({ so: soHostSetup, ik: ikHostSetup, inquiry: liHostSetup }[id] || hostSetup)(); };
+const hostGame = id => { Sound.unlock(); if (id === "home") return signIn(); store.set("ir-game", id); ({ so: soHostSetup, ik: ikHostSetup, inquiry: liHostSetup, lineup: lnHostSetup }[id] || hostSetup)(); };
 const bindGameSwitch = () => app.querySelectorAll("[data-game]").forEach(b => b.onclick = () => hostGame(b.dataset.game));
 
 function gameCard(g) {

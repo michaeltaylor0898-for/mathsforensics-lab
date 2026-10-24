@@ -1160,6 +1160,7 @@ function onState(st) {
   if (st.game === "stakeout") return soStudentState(st);
   if (st.game === "identikit") return ikStudentState(st);
   if (st.game === "inquiry") return liStudentState(st);
+  if (st.game === "lineup") return lnStudentState(st);
   if (st.round !== P.round) { P.round = st.round; P.hist = []; P.lastRank = 0; }
   P.state = st;
   const key = `${st.round}:${st.phase}:${st.i}`;
@@ -1300,7 +1301,7 @@ app.addEventListener("click", e => {
 /* ================= START ================= */
 (async () => {
   const q = new URLSearchParams(location.search);
-  if (q.has("host")) { set(`${brand("Host a game")}<section class="panel"><h2>Opening…</h2></section>`); await initAuth(); await loadAccess(); return ({ stakeout: soHostSetup, so: soHostSetup, identikit: ikHostSetup, ik: ikHostSetup, inquiry: liHostSetup }[q.get("game") || store.get("ir-game", "rapid")] || hostSetup)(); }
+  if (q.has("host")) { set(`${brand("Host a game")}<section class="panel"><h2>Opening…</h2></section>`); await initAuth(); await loadAccess(); return ({ stakeout: soHostSetup, so: soHostSetup, identikit: ikHostSetup, ik: ikHostSetup, inquiry: liHostSetup, lineup: lnHostSetup }[q.get("game") || store.get("ir-game", "rapid")] || hostSetup)(); }
   else if (q.has("join") || q.has("code")) joinScreen((q.get("code") || "").replace(/\D/g, "").slice(0, 6));
   else signIn();
   await initAuth();

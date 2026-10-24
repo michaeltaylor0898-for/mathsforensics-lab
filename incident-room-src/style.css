@@ -559,3 +559,19 @@ button.ik-sus:hover { border-color: var(--cyan); }
 .li-champ.c h2 { color: var(--cyan); } .li-champ.a h2 { color: var(--amber); }
 .li-joined.c { border: 3px solid var(--cyan); } .li-joined.a { border: 3px solid var(--amber); }
 .li-joined.c h2 { color: var(--cyan); } .li-joined.a h2 { color: var(--amber); }
+
+/* ---------- The Lineup ---------- */
+.ln-board { display: block; width: 100%; max-width: min(100%, calc((100vh - 200px) * 1.18)); margin: 0 auto; height: auto; user-select: none; }
+.ln-board.small { max-width: 480px; }
+.ln-col { cursor: pointer; }
+.ln-col:hover rect, .ln-col:focus rect { fill: rgba(255,255,255,.06); }
+.ln-col:focus { outline: none; }
+.ln-arrow { fill: var(--muted); }
+.ln-col:hover .ln-arrow, .ln-col:focus .ln-arrow { fill: #FFFFFF; }
+.ln-num { font: 700 22px var(--mono); fill: #FFFFFF; }
+.ln-ctr.new { animation: lnDrop .65s cubic-bezier(.35, 1.5, .6, 1) both; }
+@keyframes lnDrop { from { transform: translateY(var(--from)); } to { transform: none; } }
+.ln-ctr.win circle { animation: lnGlow .8s ease-in-out infinite alternate; }
+@keyframes lnGlow { from { filter: none; } to { filter: drop-shadow(0 0 12px #fff); } }
+@media (prefers-reduced-motion: reduce) { .ln-ctr.new, .ln-ctr.win circle { animation: none; } }
+.li-turn.none { border-color: var(--line); }

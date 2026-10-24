@@ -4,7 +4,7 @@ D = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(D)
 rd = lambda name: open(os.path.join(D, name), encoding="utf-8").read()
 chars = rd("characters.js").replace('class="a-scan" d="M39 56h9"', 'class="a-scan2" d="M39 56h9"')
 js = "\n".join([rd("core.js"), rd("questions.js"), rd("bank-nr.js"), rd("bank-a.js"), rd("bank-g.js"), rd("bank-ps.js"),
-                "const QUESTIONS = BANK;\nQUESTIONS.forEach((q, k) => { q.n = k; });", chars, rd("sound.js"), rd("stakeout-core.js"), rd("stakeout.js"), rd("identikit-pics.js"), rd("identikit.js"), rd("identikit-solo.js"), rd("inquiry.js"), rd("games.js"), rd("app.js")])
+                "const QUESTIONS = BANK;\nQUESTIONS.forEach((q, k) => { q.n = k; });", chars, rd("sound.js"), rd("stakeout-core.js"), rd("stakeout.js"), rd("identikit-pics.js"), rd("identikit.js"), rd("identikit-solo.js"), rd("inquiry.js"), rd("lineup.js"), rd("games.js"), rd("app.js")])
 html = f"""<!doctype html>
 <html lang="en">
 <head>
