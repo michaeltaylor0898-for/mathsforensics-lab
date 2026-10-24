@@ -46,13 +46,13 @@ function soGridSvg(o = {}) {
   /* lines: the reports' lines after the reveal, then the student's own */
   g += `<g clip-path="url(#${clip})">`;
   if (rev) rev.lines.forEach(l => { if (l) g += `<line class="so-rl" stroke="${SO_COL[l.k]}" ${soSeg(l.L)}/>`; });
-  (pad.lines || []).forEach((l, i) => { g += `<line class="so-ml" ${soSeg(soLineOf(l.a, l.b))}/>`; });
+  (pad.lines || []).forEach((l, i) => { const sg = soSeg(soLineOf(l.a, l.b)); g += `<line class="so-mlh" ${sg}/><line class="so-ml" ${sg}/>`; });
   g += `</g>`;
   /* points */
   g += `<g class="so-pts">`;
   SO.POINTS.forEach(([x, y]) => {
     const [cx, cy] = soXY(x, y), k = soKey(x, y);
-    g += `<g class="sp${pad.crossed.has(k) ? " x" : ""}" data-k="${k}" transform="translate(${cx},${cy})"><circle r="5"/><path class="xx" d="M-7-7L7 7M7-7L-7 7"/></g>`;
+    g += `<g class="sp${pad.crossed.has(k) ? " x" : ""}" data-k="${k}" transform="translate(${cx},${cy})"><circle r="5"/><path class="xx" d="M-4.2-4.2L4.2 4.2M4.2-4.2L-4.2 4.2"/></g>`;
   });
   g += `</g>`;
   if (pad.pending) { const [cx, cy] = soXY(...pad.pending); g += `<circle class="so-pend" cx="${cx}" cy="${cy}" r="10"/>`; }
@@ -66,10 +66,14 @@ function soGridSvg(o = {}) {
   const arr = pad.arrestPt || pad.confirm;
   if (arr) { const [cx, cy] = soXY(...arr), ok = rev ? (rev.p[0] === arr[0] && rev.p[1] === arr[1]) : null;
     g += `<g class="so-arr${ok === true ? " ok" : ok === false ? " no" : ""}" transform="translate(${cx},${cy})"><circle r="14"/><path d="M0-20v9M0 11v9M-20 0h9M11 0h9"/></g>`; }
+  const tag = (p, cls) => { if (!p) return ""; const [cx, cy] = soXY(...p), up = cy > 70, w = SO.pt(...p).length * 9 + 18;
+    return `<g class="so-tag ${cls}" transform="translate(${cx},${up ? cy - 30 : cy + 32})"><rect x="${-w / 2}" y="-15" width="${w}" height="26" rx="7"/><text y="4.5" text-anchor="middle">${SO.pt(...p)}</text></g>`; };
+  if (!rev) g += tag(pad.pending, "pend") + tag(pad.confirm, "arr");
   return `<svg class="so-grid${o.big ? " big" : ""}" viewBox="0 0 ${SO_W} ${SO_W}" role="img" aria-label="Coordinate grid from ${SO.num(-R)} to ${R}">${g}</svg>`;
 }
 
 /* ---------- the student's tools: cross off, draw a line, arrest ---------- */
+const soPractice = () => { const p = soFreshPad(true); p.case = SO.makeCase(1); p.onNew = () => { S.stu.so = soPractice(); soDrawStudent(); }; return p; };
 const soFreshPad = (practice = false) => ({ crossed: new Set(), lines: [], tool: "cross", pending: null, confirm: null, arrested: false, arrestPt: null, undo: [], practice });
 const soSnap = pad => { pad.undo.push({ c: [...pad.crossed], l: pad.lines.map(l => ({ ...l })) }); if (pad.undo.length > 40) pad.undo.shift(); };
 /* pointer position in grid units */
@@ -89,8 +93,9 @@ function soNearest(svg, ev, maxD) {
 }
 function soMountPad(pad, onArrest) {
   const wrap = document.getElementById("soGrid"); if (!wrap) return;
-  wrap.innerHTML = soGridSvg({ pad });
-  const svg = wrap.querySelector("svg");
+  wrap.innerHTML = `<div class="so-read" id="soRead" aria-live="polite">${pad.confirm ? `Selected <b>${SO.pt(...pad.confirm)}</b>` : pad.pending ? `First point <b>${SO.pt(...pad.pending)}</b>` : "Touch or point at the map to see coordinates"}</div>` + soGridSvg({ pad });
+  const svg = wrap.querySelector("svg"), read = wrap.querySelector("#soRead");
+  const show = (pt, verb = "Point") => { if (pt && read) read.innerHTML = `${verb} <b>${SO.pt(...pt)}</b>`; };
   let drag = null;
   const mark = (pt) => {
     const k = soKey(...pt); if (drag.done.has(k)) return; drag.done.add(k);
@@ -99,7 +104,7 @@ function soMountPad(pad, onArrest) {
   };
   svg.addEventListener("pointerdown", ev => {
     const pt = soNearest(svg, ev, 0.48); if (!pt) return;
-    ev.preventDefault();
+    ev.preventDefault(); show(pt);
     if (pad.tool === "cross") {
       soSnap(pad);
       drag = { mode: !pad.crossed.has(soKey(...pt)), done: new Set(), id: ev.pointerId, last: soGridPos(svg, ev) };
@@ -108,7 +113,7 @@ function soMountPad(pad, onArrest) {
     } else if (pad.tool === "line") {
       if (!pad.pending) pad.pending = pt;
       else if (pad.pending[0] === pt[0] && pad.pending[1] === pt[1]) pad.pending = null;
-      else { soSnap(pad); pad.lines.push({ a: pad.pending, b: pt }); if (pad.lines.length > 3) pad.lines.shift(); pad.pending = null; Sound.play("tap"); }
+      else { soSnap(pad); pad.lines.push({ a: pad.pending, b: pt }); if (pad.lines.length > 3) pad.lines.shift(); pad.pending = null; pad.tool = "cross"; Sound.play("tap"); }
       soMountPad(pad, onArrest); soTools(pad, onArrest);
     } else if (pad.tool === "arrest" && !pad.arrested) {
       pad.confirm = pt; Sound.play("tap");
@@ -116,6 +121,7 @@ function soMountPad(pad, onArrest) {
     }
   });
   svg.addEventListener("pointermove", ev => {
+    show(soNearest(svg, ev, 0.5));
     if (!drag || ev.pointerId !== drag.id) return;
     /* follow the whole path since the last event, so a quick swipe doesn't skip points */
     const g = soGridPos(svg, ev); if (!g) return;
@@ -126,14 +132,31 @@ function soMountPad(pad, onArrest) {
   const end = () => { if (drag) { drag = null; soTools(pad, onArrest); } };
   svg.addEventListener("pointerup", end); svg.addEventListener("pointercancel", end); svg.addEventListener("lostpointercapture", end);
 }
+/* which of the 3 steps the student is on, and exactly what to do now */
+function soDoNow(pad) {
+  if (pad.arrested) return pad.practice ? "" : `Arrest made${pad.arrestPt ? ` at <b>${SO.pt(...pad.arrestPt)}</b>` : ""}. Watch the board for the reveal. You can keep working on the map.`;
+  if (pad.confirm) return `Is the suspect at <b>${SO.pt(...pad.confirm)}</b>? Tap <b>Confirm arrest</b>, or <b>Cancel</b> to keep looking.`;
+  if (pad.tool === "line") return pad.pending ? `Now tap a <b>second point</b> on the line.` : `Tap <b>two points</b> that are on the line in the report. A dashed line appears through them.`;
+  if (pad.tool === "arrest") return `Tap the point where the suspect is hiding. <b>You only get one arrest</b>, so be sure.`;
+  const end = " When only one point is left, tap <b>Arrest</b>.";
+  if (pad.lines.length) return `Tap <b>Cross off everything not on it</b> under your line, or drag across points to cross them off.${end}`;
+  if (pad.repKind === "line") return `Report ${pad.repN} is a line. Tap <b>Draw a line</b>, tap two points that are on it, then tap <b>Cross off everything not on it</b>.${end}`;
+  if (pad.repKind === "area") return `Report ${pad.repN} narrows it down. <b>Drag your finger</b> (or mouse) across the points that don't fit to cross them off.${end}`;
+  return `Use the reports to rule out points: <b>draw a line</b> or <b>drag across points</b> to cross them off.${end}`;
+}
+const soStepper = (w, p) => `<div class="so-xy" role="group" aria-label="Adjust the point">${[0, 1].map(ax => `<span class="grp"><i class="ax">${ax ? "y" : "x"}</i><button class="btn" data-so="nudge" data-w="${w}" data-ax="${ax}" data-d="-1" aria-label="${ax ? "y" : "x"} minus 1">−</button><b>${SO.num(p[ax])}</b><button class="btn" data-so="nudge" data-w="${w}" data-ax="${ax}" data-d="1" aria-label="${ax ? "y" : "x"} plus 1">+</button></span>`).join("")}</div>`;
+const soPtBtn = (i, end, p, on) => `<button class="ptbtn${on ? " on" : ""}" data-so="editpt" data-i="${i}" data-end="${end}" title="Change this point">${SO.pt(...p)}</button>`;
 function soTools(pad, onArrest) {
   const el = document.getElementById("soTools"); if (!el) return;
-  const hint = pad.arrested ? "" : pad.tool === "cross" ? "Tap or drag across points to cross off places the suspect can't be. Drag over crossed points to bring them back."
-    : pad.tool === "line" ? (pad.pending ? `Now tap a second point to draw a line through ${SO.pt(...pad.pending)}.` : "Tap two points to draw a straight line through them.")
-    : "Tap the point where you think the suspect is hiding.";
+  const step = pad.arrested || pad.tool === "arrest" || pad.confirm ? 3 : pad.crossed.size || pad.lines.length || pad.tool === "line" ? 2 : 1;
+  const now = soDoNow(pad);
   el.innerHTML = `
-    ${pad.arrested ? `<div class="so-done">${pad.practice ? "Practice arrest" : "Arrest made"}${pad.arrestPt ? ` at <b>${SO.pt(...pad.arrestPt)}</b>` : ""}. ${pad.practice ? "In the game you get one arrest warrant per case." : "One warrant per case: wait for the reveal. You can keep working on the map."}</div>` : ""}
-    ${pad.confirm && !pad.arrested ? `<div class="so-confirm"><span>Arrest the suspect at <b>${SO.pt(...pad.confirm)}</b>?</span><div class="row"><button class="btn primary" data-so="confirm">Confirm arrest</button><button class="btn quiet" data-so="cancel">Cancel</button></div></div>` : ""}
+    <ol class="so-how">${["Read the report", "Rule out points", "Make your arrest"].map((t, i) => `<li class="${i + 1 === step ? "on" : i + 1 < step ? "done" : ""}"><b>${i + 1}</b>${t}</li>`).join("")}</ol>
+    ${now ? `<div class="todo so-now"><span class="todo-k">What to do</span><span class="todo-t">${now}</span></div>` : ""}
+    ${pad.practiceMsg ? `<div class="result ${pad.practiceOk ? "good" : "bad"}"><span class="rhead">${pad.practiceOk ? "Correct: suspect caught!" : "Not this time"}</span><p>${esc(pad.practiceMsg)}</p>
+      <div class="row"><button class="btn primary" data-so="newcase">Try another practice case</button></div></div>` : ""}
+    ${pad.confirm && !pad.arrested ? `<div class="so-confirm"><span>Arrest the suspect at <b class="so-big-pt">${SO.pt(...pad.confirm)}</b>?</span>${soStepper("confirm", pad.confirm)}<p class="muted small">Use + and − to change the point if you need to.</p><div class="row"><button class="btn primary" data-so="confirm">Confirm arrest</button><button class="btn quiet" data-so="cancel">Cancel</button></div></div>` : ""}
+    ${pad.pending ? `<div class="so-pendbox"><span>First point <b class="so-big-pt">${SO.pt(...pad.pending)}</b>. Change it here, or tap the second point on the map.</span>${soStepper("pending", pad.pending)}</div>` : ""}
     <div class="so-toolrow">
       <div class="choice">
         <button class="btn" data-sotool="cross" aria-pressed="${pad.tool === "cross"}"><span aria-hidden="true">✕</span> Cross off</button>
@@ -142,19 +165,38 @@ function soTools(pad, onArrest) {
       </div>
       <div class="row"><button class="btn quiet" data-so="undo" ${pad.undo.length ? "" : "disabled"}>Undo</button><button class="btn quiet" data-so="clear">Clear map</button></div>
     </div>
-    ${hint ? `<p class="muted small">${hint}</p>` : ""}
-    ${pad.lines.length ? `<div class="so-lines">${pad.lines.map((l, i) => `<div class="so-line"><span>Your line through ${SO.pt(...l.a)} and ${SO.pt(...l.b)}</span>
-      <button class="btn" data-so="keep" data-i="${i}">Cross off everything not on it</button><button class="btn quiet" data-so="rm" data-i="${i}" aria-label="Remove this line">✕</button></div>`).join("")}</div>` : ""}`;
+    ${pad.lines.length ? `<div class="so-lines">${pad.lines.map((l, i) => { const ed = pad.edit && pad.edit.i === i ? pad.edit.end : null;
+      return `<div class="so-line"><span>Your line through ${soPtBtn(i, "a", l.a, ed === "a")} and ${soPtBtn(i, "b", l.b, ed === "b")}</span>
+      <button class="btn" data-so="keep" data-i="${i}">Cross off everything not on it</button><button class="btn quiet" data-so="rm" data-i="${i}" aria-label="Remove this line">✕</button>
+      ${ed ? `<div class="so-editrow">${soStepper("line", l[ed])}<button class="btn" data-so="editdone">Done</button></div>` : ""}</div>`; }).join("")}<p class="muted small">Tap a point in your line to change it.</p></div>` : ""}`;
   el.onclick = e => {
     const t = e.target.closest("[data-sotool], [data-so]"); if (!t || t.disabled) return;
     if (t.dataset.sotool) { pad.tool = t.dataset.sotool; pad.pending = null; if (pad.tool !== "arrest") pad.confirm = null; Sound.play("tap"); soMountPad(pad, onArrest); return soTools(pad, onArrest); }
     const a = t.dataset.so, i = +t.dataset.i;
+    if (a === "newcase" && pad.onNew) return pad.onNew();
+    if (a === "editpt") pad.edit = pad.edit && pad.edit.i === i && pad.edit.end === t.dataset.end ? null : { i, end: t.dataset.end };
+    if (a === "editdone") pad.edit = null;
+    if (a === "nudge") {
+      const ax = +t.dataset.ax, d = +t.dataset.d, w = t.dataset.w;
+      const move = p => { const q = p.slice(); q[ax] = Math.max(-SO.R, Math.min(SO.R, q[ax] + d)); return q; };
+      if (w === "confirm" && pad.confirm) pad.confirm = move(pad.confirm);
+      if (w === "pending" && pad.pending) pad.pending = move(pad.pending);
+      if (w === "line" && pad.edit && pad.lines[pad.edit.i]) {
+        const l = pad.lines[pad.edit.i], other = pad.edit.end === "a" ? l.b : l.a, q = move(l[pad.edit.end]);
+        if (q[0] !== other[0] || q[1] !== other[1]) { soSnap(pad); l[pad.edit.end] = q; }
+      }
+      Sound.play("tap");
+    }
     if (a === "undo") { const s = pad.undo.pop(); if (s) { pad.crossed = new Set(s.c); pad.lines = s.l; } }
-    if (a === "clear") { soSnap(pad); pad.crossed.clear(); pad.lines = []; pad.pending = null; if (pad.practice) { pad.arrested = false; pad.arrestPt = null; } }
-    if (a === "rm") { soSnap(pad); pad.lines.splice(i, 1); }
+    if (a === "clear") { soSnap(pad); pad.crossed.clear(); pad.lines = []; pad.pending = null; if (pad.practice) { pad.arrested = false; pad.arrestPt = null; pad.practiceMsg = ""; } }
+    if (a === "rm") { soSnap(pad); pad.lines.splice(i, 1); pad.edit = null; }
     if (a === "keep") { soSnap(pad); const L = soLineOf(pad.lines[i].a, pad.lines[i].b); SO.POINTS.forEach(([x, y]) => { if (!soOn(L, x, y)) pad.crossed.add(soKey(x, y)); }); Sound.play("tap"); }
     if (a === "cancel") pad.confirm = null;
-    if (a === "confirm" && pad.confirm) { pad.arrested = true; pad.arrestPt = pad.confirm; pad.confirm = null; pad.tool = "cross"; Sound.play("arrest"); if (onArrest) onArrest(pad.arrestPt); }
+    if (a === "confirm" && pad.confirm) {
+      pad.arrested = true; pad.arrestPt = pad.confirm; pad.confirm = null; pad.tool = "cross"; Sound.play("arrest");
+      if (pad.practice && pad.case) { const d = SO.diagnose(pad.case, ...pad.arrestPt); pad.practiceOk = d.tag === "right"; pad.practiceMsg = pad.practiceOk ? `The suspect was at ${SO.pt(...pad.case.p)}. Well done, detective.` : `${d.text} The suspect was at ${SO.pt(...pad.case.p)}.`; setTimeout(() => Sound.play(pad.practiceOk ? "correct" : "wrong"), 350); }
+      if (onArrest) onArrest(pad.arrestPt);
+    }
     soMountPad(pad, onArrest); soTools(pad, onArrest);
   };
 }
@@ -174,10 +216,15 @@ function soHostSetup() {
   const draw = (keep = false) => {
     set(`${brand("Stakeout · teacher")}
       ${gameSwitch("so")}
-      <section class="panel"><span class="eyebrow">New game</span><h2>Stakeout</h2>
-        <p class="muted">Find the hidden suspect on a coordinate grid. Students join at <b>${JOIN_URL}</b> with the game code. Each case has 3 surveillance reports; students cross off points, draw lines and make one arrest. After each case the board shows where everyone arrested, so you can see mistakes like swapped coordinates straight away.</p>
-        <span class="eyebrow">Straight-line graphs</span>${choice("lv", cfg.level, [[1, "Level 1: y = mx + c"], [2, "Level 2: rearranging, two points, parallel"], [3, "Level 3 (Higher): fractions, perpendicular"]])}
-        <p class="muted small">${esc(SO.LEVELS[cfg.level])}. Grid from ${SO.num(-SO.R)} to ${SO.R}.</p>
+      <section class="panel"><span class="eyebrow">Live class game</span><h2>Stakeout</h2>
+        <ol class="so-teach">
+          <li><b>Open the game</b> and show this screen on the board. Students go to <b>${JOIN_URL}</b> and type the code.</li>
+          <li><b>Each case has 3 surveillance reports</b>, shown one at a time. The next one comes when the timer runs out, or when you tap <b>Next report</b>.</li>
+          <li><b>Students rule out points</b> on their tablet (cross off, draw lines) and make <b>one arrest</b>. The earlier they arrest, the more they score.</li>
+          <li><b>The reveal</b> shows where everyone arrested and the mistakes behind wrong arrests, like swapped coordinates.</li>
+        </ol>
+        <span class="eyebrow">Maths level: straight-line graphs</span><div class="nocaps">${choice("lv", cfg.level, [[1, "Level 1 · y = mx + c"], [2, "Level 2 · rearranging, two points, parallel"], [3, "Level 3 · Higher: fractions, perpendicular"]])}</div>
+        <p class="muted small">Reports use: ${esc(SO.LEVELS[cfg.level])}. Grid from ${SO.num(-SO.R)} to ${SO.R}.</p>
         <span class="eyebrow">Number of cases</span>${choice("n", cfg.n, [[3, "3"], [5, "5"], [8, "8"]])}
         <span class="eyebrow">Time per report</span>${choice("t", cfg.time, Object.entries(SO_TIME))}
         <div class="row"><button class="btn primary big" id="go">Open the game</button><button class="btn" id="back">Back</button>${soundBtns(true)}</div>
@@ -230,7 +277,7 @@ function soPush() {
   const H = S.host; if (!H || !H.ch || H.status !== "live" || H.game !== "stakeout") return;
   const cs = H.ci >= 0 && H.ci < H.cases.length ? soCase(H) : null;
   const payload = { game: "stakeout", phase: H.phase, round: H.round, ci: H.ci, n: H.cases.length, k: H.k, level: H.cfg.level,
-    reps: cs && H.phase !== "lobby" ? cs.clues.slice(0, H.phase === "report" ? H.k + 1 : 3).map(c => ({ src: c.src, h: c.h })) : [],
+    reps: cs && H.phase !== "lobby" ? cs.clues.slice(0, H.phase === "report" ? H.k + 1 : 3).map(c => ({ src: c.src, h: c.h, kind: c.kind })) : [],
     left: H.left, total: H.total, closing: !!H.closing, kicked: [...H.kicked], code: H.code, done: Object.keys(H.arrests) };
   if (cs && H.phase === "reveal") payload.rev = soReveal(cs);
   if (H.phase === "reveal" || H.phase === "standings" || H.phase === "end") {
@@ -450,7 +497,7 @@ function soStudentState(st) {
   const mine = st.scores && st.scores[P.id];
   if (key === P.key) {
     if (st.phase === "report") {
-      if (st.k !== P.soK) { P.soK = st.k; P.left = st.left; Sound.play("radio"); soStudentReports(st); }
+      if (st.k !== P.soK) { P.soK = st.k; P.left = st.left; Sound.play("radio"); soRepInfo(st); soStudentReports(st); soTools(P.so, soSendArrest); }
       else P.left = Math.min(P.left, st.left);
       timerUI(P.left, st.total); const t = document.getElementById("tleft"); if (t) t.textContent = P.left;
       const c = document.getElementById("closing"); if (c) c.hidden = !st.closing;
@@ -459,11 +506,11 @@ function soStudentState(st) {
   }
   P.key = key;
   stopTimer();
-  if (st.phase === "lobby") { if (!P.so || !P.so.practice) P.so = soFreshPad(true); }
+  if (st.phase === "lobby") { if (!P.so || !P.so.practice) P.so = soPractice(); }
   if (st.phase === "report") {
     if (!P.so || P.so.ci !== st.ci || P.so.practice || P.so.round !== st.round) { P.so = soFreshPad(); P.so.ci = st.ci; P.so.round = st.round; }
     if (st.done && st.done.includes(P.id)) P.so.arrested = true;
-    P.soK = st.k; P.left = st.left;
+    P.soK = st.k; P.left = st.left; soRepInfo(st);
     tick = setInterval(() => { P.left = Math.max(0, P.left - 1); timerUI(P.left, st.total); const t = document.getElementById("tleft"); if (t) t.textContent = P.left; }, 1000);
   }
   if (st.phase === "reveal" && st.rev) {
@@ -479,6 +526,7 @@ function soStudentState(st) {
   if (st.phase === "end") soStudentSave();
   soDrawStudent();
 }
+function soRepInfo(st) { const P = S.stu; if (!P || !P.so) return; const r = st.reps[st.k]; P.so.repKind = r && r.kind; P.so.repN = st.k + 1; }
 function soSendArrest(pt) {
   const P = S.stu, st = P && P.state; if (!st || st.phase !== "report") return;
   P.ch.send({ type: "broadcast", event: "arrest", payload: { id: P.id, name: S.player.name, avatar: S.player.avatar, round: st.round, ci: st.ci, pt } });
@@ -505,8 +553,9 @@ function soDrawStudent() {
   if (st.phase === "lobby") {
     set(`${hud(`<span class="stat">Game <b>${spaced(P.code)}</b></span>`)}
       <div class="so-play">
-        <section class="panel so-a-reps"><span class="eyebrow">Stakeout</span><h2>You're in, ${esc(S.player.name)}</h2>${SO_RULES}
-          <p class="muted small">Practise with the tools while you wait. The first case starts when your teacher is ready.</p></section>
+        <section class="panel so-a-reps"><span class="eyebrow">You're in, ${esc(S.player.name)}</span><h2>Practice case</h2>
+          <p class="muted small">Try the tools while you wait. The real game starts when your teacher is ready, and then reports arrive one at a time.</p>
+          ${soReports(P.so.case.clues.map(c => ({ src: c.src, h: c.h })), -1)}${SO_RULES}</section>
         <section class="panel so-pad so-a-map"><div id="soGrid"></div></section>
         <section class="panel so-a-tools"><div id="soTools"></div></section>
       </div>`, true);
@@ -576,7 +625,7 @@ function soDrawStudent() {
     </section>
     <section class="panel"><h3>What next?</h3>
       <p class="muted small">If your teacher starts another round, you'll join it automatically. Stay on this page.</p>
-      <div class="row"><button class="btn primary" id="solo">Practise solo cases</button>${S.user ? `<button class="btn" id="rec">My case record</button>` : ""}<button class="btn quiet" id="leave">Leave the game</button></div>
+      <div class="row"><button class="btn primary" id="solo">Practise solo</button>${S.user ? `<button class="btn" id="rec">My case record</button>` : ""}<button class="btn quiet" id="leave">Leave the game</button></div>
     </section>`);
   if (place) {
     if (place === 1) later(REVEAL.roll, () => Sound.play("drumroll"));
@@ -584,8 +633,4 @@ function soDrawStudent() {
     if (place === 1) later(REVEAL[1] + 900, () => Confetti.burst(140, 0.5, 0.3));
   } else Sound.play("end");
 }
-
-/* choosing between the live games on the teacher's setup screen */
-const gameSwitch = cur => `<div class="choice gameswitch" role="group" aria-label="Choose a game"><button class="btn" data-game="quiz" aria-pressed="${cur === "quiz"}">Case quiz</button><button class="btn" data-game="so" aria-pressed="${cur === "so"}">Stakeout <span class="newtag">New</span></button></div>`;
-const bindGameSwitch = () => app.querySelectorAll("[data-game]").forEach(b => b.onclick = () => { store.set("ir-game", b.dataset.game); (b.dataset.game === "so" ? soHostSetup : hostSetup)(); });
 

@@ -380,7 +380,7 @@ details summary { cursor: pointer; }
 .so-done { border: 2px solid var(--cyan); background: rgba(0,252,241,.08); border-radius: 12px; padding: 12px 16px; }
 .so-lines { display: flex; flex-direction: column; gap: 8px; }
 .so-line { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; border: 1px dashed #B9C4FF; border-radius: 10px; padding: 8px 12px; }
-.so-line span { flex: 1 1 200px; color: #B9C4FF; }
+.so-line > span { flex: 1 1 200px; color: #B9C4FF; }
 .so-line .btn { padding: 8px 12px; font-size: .85rem; }
 .so-reps, .so-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
 .so-reps li, .so-steps li { border-left: 6px solid var(--c, var(--line)); background: var(--bg); border-radius: 8px; padding: 10px 14px; display: flex; flex-direction: column; gap: 4px; }
@@ -418,6 +418,69 @@ details summary { cursor: pointer; }
 @keyframes soStamp { from { transform: rotate(-8deg) scale(2.4); opacity: 0; } to { transform: rotate(-8deg) scale(1); opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .so-stamp { animation: none; } }
 .so-fast { display: flex; align-items: center; gap: 12px; font-size: 1.1rem; }
+.so-mlh { stroke: #0A1029; stroke-width: 8; stroke-linecap: round; opacity: .85; }
+.so-ml { stroke: #FFFFFF; stroke-width: 3.5; stroke-dasharray: 12 7; stroke-linecap: round; }
+.sp .xx { stroke: #4C5784; stroke-width: 2; }
+.sp.x circle { opacity: .12; }
+.so-how { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.so-how li { display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; font-family: var(--display); font-weight: 600; font-size: .9rem; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); line-height: 1.2; }
+.so-how li b { flex: none; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--panel-2); color: var(--muted); font-family: var(--mono); }
+.so-how li.on { border-color: var(--cyan); color: var(--text); background: rgba(0,252,241,.08); }
+.so-how li.on b { background: var(--cyan); color: var(--bg); }
+.so-how li.done b { background: var(--good); color: var(--bg); }
+@media (max-width: 560px) { .so-how li { font-size: .74rem; padding: 6px; gap: 5px; } .so-how li b { width: 22px; height: 22px; } }
+.so-now .todo-t { font-size: 1.05rem; font-weight: 500; }
+.so-now .todo-t b { color: var(--cyan); }
+/* home page: join bar and the games */
+.joinhero { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px 24px; align-items: center; border-color: var(--cyan); }
+.joinhero > .btn { grid-column: 1 / -1; justify-self: start; }
+@media (max-width: 760px) { .joinhero { grid-template-columns: minmax(0, 1fr); } }
+.joinform { display: flex; gap: 10px; flex-wrap: wrap; }
+.joinform .code-in { width: 11ch; font-size: 1.6rem; text-align: center; letter-spacing: .12em; }
+.gamesec { display: flex; flex-direction: column; gap: 14px; }
+.games { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 16px; }
+.gcard { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.gcard.ready { border-color: rgba(0,252,241,.55); box-shadow: 0 0 0 1px rgba(0,252,241,.15), 0 10px 30px rgba(0,0,0,.25); }
+.gcard.soon { opacity: .78; }
+.ghead { display: flex; gap: 14px; align-items: center; }
+.gicon { width: 64px; height: 64px; flex: none; background: var(--bg); border: 1px solid var(--line); border-radius: 14px; padding: 6px; }
+.gicon.sm { width: 30px; height: 30px; border-radius: 8px; padding: 2px; }
+.gcard h3 { font-size: 1.3rem; letter-spacing: .06em; }
+.gtag { color: var(--cyan); font-weight: 600; }
+.gdesc { color: var(--muted); flex: 1; }
+.gchips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip-s { font-size: .78rem; border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; color: var(--muted); }
+.chip-s.maths { border-color: var(--amber); color: var(--amber); }
+.gacts .btn { padding: 10px 14px; font-size: .9rem; }
+.gameswitch { display: flex; flex-wrap: wrap; gap: 8px; }
+.gsw { display: inline-flex; align-items: center; gap: 10px; border: 1px solid var(--line); background: var(--panel); border-radius: 12px; padding: 8px 14px 8px 8px; font-family: var(--display); font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--text); }
+.gsw[aria-pressed="true"] { border-color: var(--cyan); color: var(--cyan); background: rgba(0,252,241,.08); }
+.gsw.quiet { color: var(--muted); padding-left: 14px; }
+.so-teach { margin: 0; padding-left: 1.4em; display: flex; flex-direction: column; gap: 8px; }
+.so-teach li::marker { color: var(--cyan); font-family: var(--mono); font-weight: 700; }
+.nocaps .btn { text-transform: none; letter-spacing: .02em; }
+
+/* clearer axis numbers, selected-point tags and the x/y adjusters */
+.so-n { fill: #DCE3FA; font: 700 15px var(--mono); paint-order: stroke; stroke: #0A1029; stroke-width: 5px; stroke-linejoin: round; }
+.so-grid.big .so-n { font-size: 16px; }
+@media (max-width: 560px) { .so-n { font-size: 18px; } }
+.so-tag rect { fill: var(--bg); stroke: var(--amber); stroke-width: 2; }
+.so-tag text { fill: var(--amber); font: 700 15px var(--mono); }
+.so-tag.pend rect { stroke: #FFFFFF; } .so-tag.pend text { fill: #FFFFFF; }
+.so-read { text-align: center; font-family: var(--mono); color: var(--muted); padding: 4px 0 8px; min-height: 2em; }
+.so-read b { color: var(--cyan); font-size: 1.25rem; }
+.so-xy { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.so-xy { gap: 10px 18px; }
+.so-xy .grp { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.so-xy .ax { font-family: var(--mono); font-weight: 700; color: var(--cyan); font-size: 1.2rem; }
+.so-xy .btn { width: 46px; height: 46px; padding: 0; justify-content: center; font-size: 1.4rem; }
+.so-xy b { font-family: var(--mono); font-size: 1.3rem; min-width: 2.2ch; text-align: center; }
+.so-big-pt { font-family: var(--mono); font-size: 1.3rem; color: var(--amber); }
+.so-pendbox { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; border: 2px dashed #FFFFFF; border-radius: 12px; padding: 10px 14px; }
+.so-pendbox .so-big-pt { color: #fff; }
+.ptbtn { font: 700 1rem var(--mono); color: #fff; background: var(--panel-2); border: 1px solid #B9C4FF; border-radius: 8px; padding: 2px 8px; }
+.ptbtn.on { border-color: var(--cyan); color: var(--cyan); }
+.so-editrow { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 
 </style>
 <script>
@@ -1651,13 +1714,13 @@ function soGridSvg(o = {}) {
   /* lines: the reports' lines after the reveal, then the student's own */
   g += `<g clip-path="url(#${clip})">`;
   if (rev) rev.lines.forEach(l => { if (l) g += `<line class="so-rl" stroke="${SO_COL[l.k]}" ${soSeg(l.L)}/>`; });
-  (pad.lines || []).forEach((l, i) => { g += `<line class="so-ml" ${soSeg(soLineOf(l.a, l.b))}/>`; });
+  (pad.lines || []).forEach((l, i) => { const sg = soSeg(soLineOf(l.a, l.b)); g += `<line class="so-mlh" ${sg}/><line class="so-ml" ${sg}/>`; });
   g += `</g>`;
   /* points */
   g += `<g class="so-pts">`;
   SO.POINTS.forEach(([x, y]) => {
     const [cx, cy] = soXY(x, y), k = soKey(x, y);
-    g += `<g class="sp${pad.crossed.has(k) ? " x" : ""}" data-k="${k}" transform="translate(${cx},${cy})"><circle r="5"/><path class="xx" d="M-7-7L7 7M7-7L-7 7"/></g>`;
+    g += `<g class="sp${pad.crossed.has(k) ? " x" : ""}" data-k="${k}" transform="translate(${cx},${cy})"><circle r="5"/><path class="xx" d="M-4.2-4.2L4.2 4.2M4.2-4.2L-4.2 4.2"/></g>`;
   });
   g += `</g>`;
   if (pad.pending) { const [cx, cy] = soXY(...pad.pending); g += `<circle class="so-pend" cx="${cx}" cy="${cy}" r="10"/>`; }
@@ -1671,10 +1734,14 @@ function soGridSvg(o = {}) {
   const arr = pad.arrestPt || pad.confirm;
   if (arr) { const [cx, cy] = soXY(...arr), ok = rev ? (rev.p[0] === arr[0] && rev.p[1] === arr[1]) : null;
     g += `<g class="so-arr${ok === true ? " ok" : ok === false ? " no" : ""}" transform="translate(${cx},${cy})"><circle r="14"/><path d="M0-20v9M0 11v9M-20 0h9M11 0h9"/></g>`; }
+  const tag = (p, cls) => { if (!p) return ""; const [cx, cy] = soXY(...p), up = cy > 70, w = SO.pt(...p).length * 9 + 18;
+    return `<g class="so-tag ${cls}" transform="translate(${cx},${up ? cy - 30 : cy + 32})"><rect x="${-w / 2}" y="-15" width="${w}" height="26" rx="7"/><text y="4.5" text-anchor="middle">${SO.pt(...p)}</text></g>`; };
+  if (!rev) g += tag(pad.pending, "pend") + tag(pad.confirm, "arr");
   return `<svg class="so-grid${o.big ? " big" : ""}" viewBox="0 0 ${SO_W} ${SO_W}" role="img" aria-label="Coordinate grid from ${SO.num(-R)} to ${R}">${g}</svg>`;
 }
 
 /* ---------- the student's tools: cross off, draw a line, arrest ---------- */
+const soPractice = () => { const p = soFreshPad(true); p.case = SO.makeCase(1); p.onNew = () => { S.stu.so = soPractice(); soDrawStudent(); }; return p; };
 const soFreshPad = (practice = false) => ({ crossed: new Set(), lines: [], tool: "cross", pending: null, confirm: null, arrested: false, arrestPt: null, undo: [], practice });
 const soSnap = pad => { pad.undo.push({ c: [...pad.crossed], l: pad.lines.map(l => ({ ...l })) }); if (pad.undo.length > 40) pad.undo.shift(); };
 /* pointer position in grid units */
@@ -1694,8 +1761,9 @@ function soNearest(svg, ev, maxD) {
 }
 function soMountPad(pad, onArrest) {
   const wrap = document.getElementById("soGrid"); if (!wrap) return;
-  wrap.innerHTML = soGridSvg({ pad });
-  const svg = wrap.querySelector("svg");
+  wrap.innerHTML = `<div class="so-read" id="soRead" aria-live="polite">${pad.confirm ? `Selected <b>${SO.pt(...pad.confirm)}</b>` : pad.pending ? `First point <b>${SO.pt(...pad.pending)}</b>` : "Touch or point at the map to see coordinates"}</div>` + soGridSvg({ pad });
+  const svg = wrap.querySelector("svg"), read = wrap.querySelector("#soRead");
+  const show = (pt, verb = "Point") => { if (pt && read) read.innerHTML = `${verb} <b>${SO.pt(...pt)}</b>`; };
   let drag = null;
   const mark = (pt) => {
     const k = soKey(...pt); if (drag.done.has(k)) return; drag.done.add(k);
@@ -1704,7 +1772,7 @@ function soMountPad(pad, onArrest) {
   };
   svg.addEventListener("pointerdown", ev => {
     const pt = soNearest(svg, ev, 0.48); if (!pt) return;
-    ev.preventDefault();
+    ev.preventDefault(); show(pt);
     if (pad.tool === "cross") {
       soSnap(pad);
       drag = { mode: !pad.crossed.has(soKey(...pt)), done: new Set(), id: ev.pointerId, last: soGridPos(svg, ev) };
@@ -1713,7 +1781,7 @@ function soMountPad(pad, onArrest) {
     } else if (pad.tool === "line") {
       if (!pad.pending) pad.pending = pt;
       else if (pad.pending[0] === pt[0] && pad.pending[1] === pt[1]) pad.pending = null;
-      else { soSnap(pad); pad.lines.push({ a: pad.pending, b: pt }); if (pad.lines.length > 3) pad.lines.shift(); pad.pending = null; Sound.play("tap"); }
+      else { soSnap(pad); pad.lines.push({ a: pad.pending, b: pt }); if (pad.lines.length > 3) pad.lines.shift(); pad.pending = null; pad.tool = "cross"; Sound.play("tap"); }
       soMountPad(pad, onArrest); soTools(pad, onArrest);
     } else if (pad.tool === "arrest" && !pad.arrested) {
       pad.confirm = pt; Sound.play("tap");
@@ -1721,6 +1789,7 @@ function soMountPad(pad, onArrest) {
     }
   });
   svg.addEventListener("pointermove", ev => {
+    show(soNearest(svg, ev, 0.5));
     if (!drag || ev.pointerId !== drag.id) return;
     /* follow the whole path since the last event, so a quick swipe doesn't skip points */
     const g = soGridPos(svg, ev); if (!g) return;
@@ -1731,14 +1800,31 @@ function soMountPad(pad, onArrest) {
   const end = () => { if (drag) { drag = null; soTools(pad, onArrest); } };
   svg.addEventListener("pointerup", end); svg.addEventListener("pointercancel", end); svg.addEventListener("lostpointercapture", end);
 }
+/* which of the 3 steps the student is on, and exactly what to do now */
+function soDoNow(pad) {
+  if (pad.arrested) return pad.practice ? "" : `Arrest made${pad.arrestPt ? ` at <b>${SO.pt(...pad.arrestPt)}</b>` : ""}. Watch the board for the reveal. You can keep working on the map.`;
+  if (pad.confirm) return `Is the suspect at <b>${SO.pt(...pad.confirm)}</b>? Tap <b>Confirm arrest</b>, or <b>Cancel</b> to keep looking.`;
+  if (pad.tool === "line") return pad.pending ? `Now tap a <b>second point</b> on the line.` : `Tap <b>two points</b> that are on the line in the report. A dashed line appears through them.`;
+  if (pad.tool === "arrest") return `Tap the point where the suspect is hiding. <b>You only get one arrest</b>, so be sure.`;
+  const end = " When only one point is left, tap <b>Arrest</b>.";
+  if (pad.lines.length) return `Tap <b>Cross off everything not on it</b> under your line, or drag across points to cross them off.${end}`;
+  if (pad.repKind === "line") return `Report ${pad.repN} is a line. Tap <b>Draw a line</b>, tap two points that are on it, then tap <b>Cross off everything not on it</b>.${end}`;
+  if (pad.repKind === "area") return `Report ${pad.repN} narrows it down. <b>Drag your finger</b> (or mouse) across the points that don't fit to cross them off.${end}`;
+  return `Use the reports to rule out points: <b>draw a line</b> or <b>drag across points</b> to cross them off.${end}`;
+}
+const soStepper = (w, p) => `<div class="so-xy" role="group" aria-label="Adjust the point">${[0, 1].map(ax => `<span class="grp"><i class="ax">${ax ? "y" : "x"}</i><button class="btn" data-so="nudge" data-w="${w}" data-ax="${ax}" data-d="-1" aria-label="${ax ? "y" : "x"} minus 1">−</button><b>${SO.num(p[ax])}</b><button class="btn" data-so="nudge" data-w="${w}" data-ax="${ax}" data-d="1" aria-label="${ax ? "y" : "x"} plus 1">+</button></span>`).join("")}</div>`;
+const soPtBtn = (i, end, p, on) => `<button class="ptbtn${on ? " on" : ""}" data-so="editpt" data-i="${i}" data-end="${end}" title="Change this point">${SO.pt(...p)}</button>`;
 function soTools(pad, onArrest) {
   const el = document.getElementById("soTools"); if (!el) return;
-  const hint = pad.arrested ? "" : pad.tool === "cross" ? "Tap or drag across points to cross off places the suspect can't be. Drag over crossed points to bring them back."
-    : pad.tool === "line" ? (pad.pending ? `Now tap a second point to draw a line through ${SO.pt(...pad.pending)}.` : "Tap two points to draw a straight line through them.")
-    : "Tap the point where you think the suspect is hiding.";
+  const step = pad.arrested || pad.tool === "arrest" || pad.confirm ? 3 : pad.crossed.size || pad.lines.length || pad.tool === "line" ? 2 : 1;
+  const now = soDoNow(pad);
   el.innerHTML = `
-    ${pad.arrested ? `<div class="so-done">${pad.practice ? "Practice arrest" : "Arrest made"}${pad.arrestPt ? ` at <b>${SO.pt(...pad.arrestPt)}</b>` : ""}. ${pad.practice ? "In the game you get one arrest warrant per case." : "One warrant per case: wait for the reveal. You can keep working on the map."}</div>` : ""}
-    ${pad.confirm && !pad.arrested ? `<div class="so-confirm"><span>Arrest the suspect at <b>${SO.pt(...pad.confirm)}</b>?</span><div class="row"><button class="btn primary" data-so="confirm">Confirm arrest</button><button class="btn quiet" data-so="cancel">Cancel</button></div></div>` : ""}
+    <ol class="so-how">${["Read the report", "Rule out points", "Make your arrest"].map((t, i) => `<li class="${i + 1 === step ? "on" : i + 1 < step ? "done" : ""}"><b>${i + 1}</b>${t}</li>`).join("")}</ol>
+    ${now ? `<div class="todo so-now"><span class="todo-k">What to do</span><span class="todo-t">${now}</span></div>` : ""}
+    ${pad.practiceMsg ? `<div class="result ${pad.practiceOk ? "good" : "bad"}"><span class="rhead">${pad.practiceOk ? "Correct: suspect caught!" : "Not this time"}</span><p>${esc(pad.practiceMsg)}</p>
+      <div class="row"><button class="btn primary" data-so="newcase">Try another practice case</button></div></div>` : ""}
+    ${pad.confirm && !pad.arrested ? `<div class="so-confirm"><span>Arrest the suspect at <b class="so-big-pt">${SO.pt(...pad.confirm)}</b>?</span>${soStepper("confirm", pad.confirm)}<p class="muted small">Use + and − to change the point if you need to.</p><div class="row"><button class="btn primary" data-so="confirm">Confirm arrest</button><button class="btn quiet" data-so="cancel">Cancel</button></div></div>` : ""}
+    ${pad.pending ? `<div class="so-pendbox"><span>First point <b class="so-big-pt">${SO.pt(...pad.pending)}</b>. Change it here, or tap the second point on the map.</span>${soStepper("pending", pad.pending)}</div>` : ""}
     <div class="so-toolrow">
       <div class="choice">
         <button class="btn" data-sotool="cross" aria-pressed="${pad.tool === "cross"}"><span aria-hidden="true">✕</span> Cross off</button>
@@ -1747,19 +1833,38 @@ function soTools(pad, onArrest) {
       </div>
       <div class="row"><button class="btn quiet" data-so="undo" ${pad.undo.length ? "" : "disabled"}>Undo</button><button class="btn quiet" data-so="clear">Clear map</button></div>
     </div>
-    ${hint ? `<p class="muted small">${hint}</p>` : ""}
-    ${pad.lines.length ? `<div class="so-lines">${pad.lines.map((l, i) => `<div class="so-line"><span>Your line through ${SO.pt(...l.a)} and ${SO.pt(...l.b)}</span>
-      <button class="btn" data-so="keep" data-i="${i}">Cross off everything not on it</button><button class="btn quiet" data-so="rm" data-i="${i}" aria-label="Remove this line">✕</button></div>`).join("")}</div>` : ""}`;
+    ${pad.lines.length ? `<div class="so-lines">${pad.lines.map((l, i) => { const ed = pad.edit && pad.edit.i === i ? pad.edit.end : null;
+      return `<div class="so-line"><span>Your line through ${soPtBtn(i, "a", l.a, ed === "a")} and ${soPtBtn(i, "b", l.b, ed === "b")}</span>
+      <button class="btn" data-so="keep" data-i="${i}">Cross off everything not on it</button><button class="btn quiet" data-so="rm" data-i="${i}" aria-label="Remove this line">✕</button>
+      ${ed ? `<div class="so-editrow">${soStepper("line", l[ed])}<button class="btn" data-so="editdone">Done</button></div>` : ""}</div>`; }).join("")}<p class="muted small">Tap a point in your line to change it.</p></div>` : ""}`;
   el.onclick = e => {
     const t = e.target.closest("[data-sotool], [data-so]"); if (!t || t.disabled) return;
     if (t.dataset.sotool) { pad.tool = t.dataset.sotool; pad.pending = null; if (pad.tool !== "arrest") pad.confirm = null; Sound.play("tap"); soMountPad(pad, onArrest); return soTools(pad, onArrest); }
     const a = t.dataset.so, i = +t.dataset.i;
+    if (a === "newcase" && pad.onNew) return pad.onNew();
+    if (a === "editpt") pad.edit = pad.edit && pad.edit.i === i && pad.edit.end === t.dataset.end ? null : { i, end: t.dataset.end };
+    if (a === "editdone") pad.edit = null;
+    if (a === "nudge") {
+      const ax = +t.dataset.ax, d = +t.dataset.d, w = t.dataset.w;
+      const move = p => { const q = p.slice(); q[ax] = Math.max(-SO.R, Math.min(SO.R, q[ax] + d)); return q; };
+      if (w === "confirm" && pad.confirm) pad.confirm = move(pad.confirm);
+      if (w === "pending" && pad.pending) pad.pending = move(pad.pending);
+      if (w === "line" && pad.edit && pad.lines[pad.edit.i]) {
+        const l = pad.lines[pad.edit.i], other = pad.edit.end === "a" ? l.b : l.a, q = move(l[pad.edit.end]);
+        if (q[0] !== other[0] || q[1] !== other[1]) { soSnap(pad); l[pad.edit.end] = q; }
+      }
+      Sound.play("tap");
+    }
     if (a === "undo") { const s = pad.undo.pop(); if (s) { pad.crossed = new Set(s.c); pad.lines = s.l; } }
-    if (a === "clear") { soSnap(pad); pad.crossed.clear(); pad.lines = []; pad.pending = null; if (pad.practice) { pad.arrested = false; pad.arrestPt = null; } }
-    if (a === "rm") { soSnap(pad); pad.lines.splice(i, 1); }
+    if (a === "clear") { soSnap(pad); pad.crossed.clear(); pad.lines = []; pad.pending = null; if (pad.practice) { pad.arrested = false; pad.arrestPt = null; pad.practiceMsg = ""; } }
+    if (a === "rm") { soSnap(pad); pad.lines.splice(i, 1); pad.edit = null; }
     if (a === "keep") { soSnap(pad); const L = soLineOf(pad.lines[i].a, pad.lines[i].b); SO.POINTS.forEach(([x, y]) => { if (!soOn(L, x, y)) pad.crossed.add(soKey(x, y)); }); Sound.play("tap"); }
     if (a === "cancel") pad.confirm = null;
-    if (a === "confirm" && pad.confirm) { pad.arrested = true; pad.arrestPt = pad.confirm; pad.confirm = null; pad.tool = "cross"; Sound.play("arrest"); if (onArrest) onArrest(pad.arrestPt); }
+    if (a === "confirm" && pad.confirm) {
+      pad.arrested = true; pad.arrestPt = pad.confirm; pad.confirm = null; pad.tool = "cross"; Sound.play("arrest");
+      if (pad.practice && pad.case) { const d = SO.diagnose(pad.case, ...pad.arrestPt); pad.practiceOk = d.tag === "right"; pad.practiceMsg = pad.practiceOk ? `The suspect was at ${SO.pt(...pad.case.p)}. Well done, detective.` : `${d.text} The suspect was at ${SO.pt(...pad.case.p)}.`; setTimeout(() => Sound.play(pad.practiceOk ? "correct" : "wrong"), 350); }
+      if (onArrest) onArrest(pad.arrestPt);
+    }
     soMountPad(pad, onArrest); soTools(pad, onArrest);
   };
 }
@@ -1779,10 +1884,15 @@ function soHostSetup() {
   const draw = (keep = false) => {
     set(`${brand("Stakeout · teacher")}
       ${gameSwitch("so")}
-      <section class="panel"><span class="eyebrow">New game</span><h2>Stakeout</h2>
-        <p class="muted">Find the hidden suspect on a coordinate grid. Students join at <b>${JOIN_URL}</b> with the game code. Each case has 3 surveillance reports; students cross off points, draw lines and make one arrest. After each case the board shows where everyone arrested, so you can see mistakes like swapped coordinates straight away.</p>
-        <span class="eyebrow">Straight-line graphs</span>${choice("lv", cfg.level, [[1, "Level 1: y = mx + c"], [2, "Level 2: rearranging, two points, parallel"], [3, "Level 3 (Higher): fractions, perpendicular"]])}
-        <p class="muted small">${esc(SO.LEVELS[cfg.level])}. Grid from ${SO.num(-SO.R)} to ${SO.R}.</p>
+      <section class="panel"><span class="eyebrow">Live class game</span><h2>Stakeout</h2>
+        <ol class="so-teach">
+          <li><b>Open the game</b> and show this screen on the board. Students go to <b>${JOIN_URL}</b> and type the code.</li>
+          <li><b>Each case has 3 surveillance reports</b>, shown one at a time. The next one comes when the timer runs out, or when you tap <b>Next report</b>.</li>
+          <li><b>Students rule out points</b> on their tablet (cross off, draw lines) and make <b>one arrest</b>. The earlier they arrest, the more they score.</li>
+          <li><b>The reveal</b> shows where everyone arrested and the mistakes behind wrong arrests, like swapped coordinates.</li>
+        </ol>
+        <span class="eyebrow">Maths level: straight-line graphs</span><div class="nocaps">${choice("lv", cfg.level, [[1, "Level 1 · y = mx + c"], [2, "Level 2 · rearranging, two points, parallel"], [3, "Level 3 · Higher: fractions, perpendicular"]])}</div>
+        <p class="muted small">Reports use: ${esc(SO.LEVELS[cfg.level])}. Grid from ${SO.num(-SO.R)} to ${SO.R}.</p>
         <span class="eyebrow">Number of cases</span>${choice("n", cfg.n, [[3, "3"], [5, "5"], [8, "8"]])}
         <span class="eyebrow">Time per report</span>${choice("t", cfg.time, Object.entries(SO_TIME))}
         <div class="row"><button class="btn primary big" id="go">Open the game</button><button class="btn" id="back">Back</button>${soundBtns(true)}</div>
@@ -1835,7 +1945,7 @@ function soPush() {
   const H = S.host; if (!H || !H.ch || H.status !== "live" || H.game !== "stakeout") return;
   const cs = H.ci >= 0 && H.ci < H.cases.length ? soCase(H) : null;
   const payload = { game: "stakeout", phase: H.phase, round: H.round, ci: H.ci, n: H.cases.length, k: H.k, level: H.cfg.level,
-    reps: cs && H.phase !== "lobby" ? cs.clues.slice(0, H.phase === "report" ? H.k + 1 : 3).map(c => ({ src: c.src, h: c.h })) : [],
+    reps: cs && H.phase !== "lobby" ? cs.clues.slice(0, H.phase === "report" ? H.k + 1 : 3).map(c => ({ src: c.src, h: c.h, kind: c.kind })) : [],
     left: H.left, total: H.total, closing: !!H.closing, kicked: [...H.kicked], code: H.code, done: Object.keys(H.arrests) };
   if (cs && H.phase === "reveal") payload.rev = soReveal(cs);
   if (H.phase === "reveal" || H.phase === "standings" || H.phase === "end") {
@@ -2055,7 +2165,7 @@ function soStudentState(st) {
   const mine = st.scores && st.scores[P.id];
   if (key === P.key) {
     if (st.phase === "report") {
-      if (st.k !== P.soK) { P.soK = st.k; P.left = st.left; Sound.play("radio"); soStudentReports(st); }
+      if (st.k !== P.soK) { P.soK = st.k; P.left = st.left; Sound.play("radio"); soRepInfo(st); soStudentReports(st); soTools(P.so, soSendArrest); }
       else P.left = Math.min(P.left, st.left);
       timerUI(P.left, st.total); const t = document.getElementById("tleft"); if (t) t.textContent = P.left;
       const c = document.getElementById("closing"); if (c) c.hidden = !st.closing;
@@ -2064,11 +2174,11 @@ function soStudentState(st) {
   }
   P.key = key;
   stopTimer();
-  if (st.phase === "lobby") { if (!P.so || !P.so.practice) P.so = soFreshPad(true); }
+  if (st.phase === "lobby") { if (!P.so || !P.so.practice) P.so = soPractice(); }
   if (st.phase === "report") {
     if (!P.so || P.so.ci !== st.ci || P.so.practice || P.so.round !== st.round) { P.so = soFreshPad(); P.so.ci = st.ci; P.so.round = st.round; }
     if (st.done && st.done.includes(P.id)) P.so.arrested = true;
-    P.soK = st.k; P.left = st.left;
+    P.soK = st.k; P.left = st.left; soRepInfo(st);
     tick = setInterval(() => { P.left = Math.max(0, P.left - 1); timerUI(P.left, st.total); const t = document.getElementById("tleft"); if (t) t.textContent = P.left; }, 1000);
   }
   if (st.phase === "reveal" && st.rev) {
@@ -2084,6 +2194,7 @@ function soStudentState(st) {
   if (st.phase === "end") soStudentSave();
   soDrawStudent();
 }
+function soRepInfo(st) { const P = S.stu; if (!P || !P.so) return; const r = st.reps[st.k]; P.so.repKind = r && r.kind; P.so.repN = st.k + 1; }
 function soSendArrest(pt) {
   const P = S.stu, st = P && P.state; if (!st || st.phase !== "report") return;
   P.ch.send({ type: "broadcast", event: "arrest", payload: { id: P.id, name: S.player.name, avatar: S.player.avatar, round: st.round, ci: st.ci, pt } });
@@ -2110,8 +2221,9 @@ function soDrawStudent() {
   if (st.phase === "lobby") {
     set(`${hud(`<span class="stat">Game <b>${spaced(P.code)}</b></span>`)}
       <div class="so-play">
-        <section class="panel so-a-reps"><span class="eyebrow">Stakeout</span><h2>You're in, ${esc(S.player.name)}</h2>${SO_RULES}
-          <p class="muted small">Practise with the tools while you wait. The first case starts when your teacher is ready.</p></section>
+        <section class="panel so-a-reps"><span class="eyebrow">You're in, ${esc(S.player.name)}</span><h2>Practice case</h2>
+          <p class="muted small">Try the tools while you wait. The real game starts when your teacher is ready, and then reports arrive one at a time.</p>
+          ${soReports(P.so.case.clues.map(c => ({ src: c.src, h: c.h })), -1)}${SO_RULES}</section>
         <section class="panel so-pad so-a-map"><div id="soGrid"></div></section>
         <section class="panel so-a-tools"><div id="soTools"></div></section>
       </div>`, true);
@@ -2181,7 +2293,7 @@ function soDrawStudent() {
     </section>
     <section class="panel"><h3>What next?</h3>
       <p class="muted small">If your teacher starts another round, you'll join it automatically. Stay on this page.</p>
-      <div class="row"><button class="btn primary" id="solo">Practise solo cases</button>${S.user ? `<button class="btn" id="rec">My case record</button>` : ""}<button class="btn quiet" id="leave">Leave the game</button></div>
+      <div class="row"><button class="btn primary" id="solo">Practise solo</button>${S.user ? `<button class="btn" id="rec">My case record</button>` : ""}<button class="btn quiet" id="leave">Leave the game</button></div>
     </section>`);
   if (place) {
     if (place === 1) later(REVEAL.roll, () => Sound.play("drumroll"));
@@ -2190,10 +2302,90 @@ function soDrawStudent() {
   } else Sound.play("end");
 }
 
-/* choosing between the live games on the teacher's setup screen */
-const gameSwitch = cur => `<div class="choice gameswitch" role="group" aria-label="Choose a game"><button class="btn" data-game="quiz" aria-pressed="${cur === "quiz"}">Case quiz</button><button class="btn" data-game="so" aria-pressed="${cur === "so"}">Stakeout <span class="newtag">New</span></button></div>`;
-const bindGameSwitch = () => app.querySelectorAll("[data-game]").forEach(b => b.onclick = () => { store.set("ir-game", b.dataset.game); (b.dataset.game === "so" ? soHostSetup : hostSetup)(); });
 
+/* ================= THE GAMES: one list drives the home page and the teacher's game switch =================
+   Students never choose a game: they type the code from the board and land in whatever game the teacher opened. */
+const GI = {
+  cy: "#00FCF1", am: "#FFC857", bl: "#1B36FF", pk: "#FF8FB1", ink: "#0B122C", mu: "#8EA0DA"
+};
+const GAME_ICONS = {
+  rapid: `<circle cx="32" cy="36" r="19" fill="none" stroke="${GI.cy}" stroke-width="4"/><rect x="27" y="9" width="10" height="6" rx="2" fill="${GI.cy}"/><path d="M32 36V24" stroke="${GI.cy}" stroke-width="4" stroke-linecap="round"/><path d="M36 30l-6 9h6l-4 9 10-12h-6l4-6z" fill="${GI.am}"/>`,
+  so: `<g stroke="${GI.mu}" stroke-width="1.5" opacity=".7">${[14, 24, 34, 44, 54].map(v => `<path d="M${v} 10v44M10 ${v}h44"/>`).join("")}</g><path d="M10 34h44M34 10v44" stroke="${GI.cy}" stroke-width="2.5"/><circle cx="44" cy="24" r="7" fill="none" stroke="${GI.am}" stroke-width="3.5"/><path d="M44 13v5M44 30v5M33 24h5M50 24h5" stroke="${GI.am}" stroke-width="3" stroke-linecap="round"/>`,
+  identikit: `<rect x="12" y="8" width="40" height="48" rx="6" fill="none" stroke="${GI.cy}" stroke-width="3"/><circle cx="32" cy="27" r="9" fill="${GI.mu}"/><path d="M18 52c2-9 8-13 14-13s12 4 14 13z" fill="${GI.mu}"/><rect x="14" y="10" width="18" height="15" fill="${GI.am}"/><rect x="32" y="40" width="18" height="14" fill="${GI.am}"/><path d="M14 25h36M14 40h36M32 10v44" stroke="${GI.ink}" stroke-width="2"/>`,
+  inquiry: `${[[20, 18, GI.cy], [36, 18, GI.mu], [12, 32, GI.mu], [28, 32, GI.cy], [44, 32, GI.am], [20, 46, GI.am], [36, 46, GI.cy]].map(([x, y, c]) => `<path d="M${x} ${y - 9}l8 4.5v9l-8 4.5-8-4.5v-9z" fill="${c}" opacity="${c === GI.mu ? .45 : 1}"/>`).join("")}`,
+  trail: `<rect x="8" y="8" width="48" height="48" rx="6" fill="none" stroke="${GI.mu}" stroke-width="2.5"/><path d="M14 46h10V30h16v-12h10" fill="none" stroke="${GI.cy}" stroke-width="4" stroke-dasharray="4 4" stroke-linecap="round"/><path d="M50 10c-4 0-7 3-7 7 0 5 7 11 7 11s7-6 7-11c0-4-3-7-7-7z" fill="${GI.am}"/><circle cx="50" cy="17" r="2.6" fill="${GI.ink}"/><circle cx="14" cy="46" r="4" fill="${GI.pk}"/>`,
+  lineup: `<rect x="8" y="12" width="48" height="40" rx="5" fill="${GI.bl}"/>${[0, 1, 2, 3].map(r => [0, 1, 2, 3, 4].map(c => { const f = (r === 3 && c < 4) ? GI.am : (r === 2 && c === 1) || (r === 3 && c === 4) ? GI.cy : GI.ink; return `<circle cx="${15 + c * 8.5}" cy="${19 + r * 9}" r="3.4" fill="${f}"/>`; }).join("")).join("")}<path d="M10 56h44" stroke="${GI.mu}" stroke-width="3" stroke-linecap="round"/>`,
+  crimelab: `<path d="M25 8h14M28 8v16L14 50c-1.5 3 .5 6 4 6h28c3.5 0 5.5-3 4-6L36 24V8" fill="none" stroke="${GI.cy}" stroke-width="3.5" stroke-linejoin="round"/><path d="M19 44h26l4 7c.6 1.3-.2 2.5-1.6 2.5H16.6c-1.4 0-2.2-1.2-1.6-2.5z" fill="${GI.am}"/><circle cx="29" cy="38" r="2.5" fill="${GI.am}"/><circle cx="36" cy="33" r="1.8" fill="${GI.am}"/>`
+};
+const gameIcon = (id, cls = "") => `<svg class="gicon ${cls}" viewBox="0 0 64 64" aria-hidden="true">${GAME_ICONS[id] || ""}</svg>`;
+const GAMES = [
+  { id: "rapid", name: "Rapid Response", tag: "Quick-fire case questions", desc: "Spot the mistake, multiple choice, true or false, put in order and type the answer, across all 76 GCSE topics.", maths: "Every GCSE topic", modes: ["Live class", "Team showdown", "Solo"], ready: true },
+  { id: "so", name: "Stakeout", tag: "Find the hidden suspect", desc: "Three surveillance reports point to one spot on a coordinate grid. Rule out points, draw the lines, make one arrest.", maths: "Coordinates and straight-line graphs", modes: ["Live class"], ready: true, isNew: true },
+  { id: "identikit", name: "The Identikit", tag: "Reveal the suspect's face", desc: "Every right answer peels a tile off a hidden picture. Risk a guess at any time.", maths: "Key terms and quick recall", modes: ["Teams", "Solo"] },
+  { id: "inquiry", name: "Line of Inquiry", tag: "Claim a path across the board", desc: "Two teams win hexagons by answering. The first unbroken line across wins, so blocking matters.", maths: "Mixed revision", modes: ["Two teams"] },
+  { id: "trail", name: "Case Trail", tag: "Follow the trail round the board", desc: "Move round a board of topics. Answer to claim a topic; rivals who land there face a harder question.", maths: "Longer revision lessons", modes: ["2 to 6 players or teams"] },
+  { id: "lineup", name: "The Lineup", tag: "Four in a row", desc: "Answer to drop a counter. Harder questions let you choose any column.", maths: "Quick-fire practice", modes: ["1 v 1", "Teams"] },
+  { id: "crimelab", name: "Crime Lab", tag: "Solve it together", desc: "A multi-step problem split between teammates: each holds one step, and nobody finishes alone.", maths: "Multi-step problems", modes: ["Teams of 3 or 4"] }
+];
+const READY = GAMES.filter(g => g.ready);
+
+/* the teacher's switch between the games that are ready to host */
+const gameSwitch = cur => `<div class="gameswitch" role="group" aria-label="Choose a game">
+  ${READY.map(g => `<button class="gsw" data-game="${g.id}" aria-pressed="${cur === g.id}">${gameIcon(g.id, "sm")}<span>${esc(g.name)}</span>${g.isNew ? `<span class="newtag">New</span>` : ""}</button>`).join("")}
+  <button class="gsw quiet" data-game="home">All games</button></div>`;
+const hostGame = id => { Sound.unlock(); if (id === "home") return signIn(); store.set("ir-game", id); (id === "so" ? soHostSetup : hostSetup)(); };
+const bindGameSwitch = () => app.querySelectorAll("[data-game]").forEach(b => b.onclick = () => hostGame(b.dataset.game));
+
+function gameCard(g) {
+  const acts = g.id === "rapid"
+    ? `<button class="btn primary" data-host="rapid">Host on the board</button><button class="btn" data-teams>Team showdown</button><button class="btn" data-solo>Practise solo</button>`
+    : g.id === "so" ? `<button class="btn primary" data-host="so">Host on the board</button><span class="muted small">Students: join with your teacher's code</span>`
+    : `<span class="tag">Coming soon</span>`;
+  return `<article class="gcard${g.ready ? " ready" : " soon"}">
+    <div class="ghead">${gameIcon(g.id)}<div><h3>${esc(g.name)}${g.isNew ? ` <span class="newtag">New</span>` : ""}</h3><p class="gtag">${esc(g.tag)}</p></div></div>
+    <p class="gdesc">${esc(g.desc)}</p>
+    <div class="gchips"><span class="chip-s maths">${esc(g.maths)}</span>${g.modes.map(m => `<span class="chip-s">${esc(m)}</span>`).join("")}</div>
+    <div class="row gacts">${acts}</div></article>`;
+}
+function signIn() {
+  stopTimer(); S.pad = null;
+  if (!S.host && !S.stu) disarmGuard();
+  const last = store.get("ir-last", null);
+  const canRejoin = last && Date.now() - last.t < 3 * 3600e3;
+  const showUpgrade = gating() && !soloUnlimited();
+  set(`${brand(liveConfigured() ? planLabel() : undefined)}
+    <div class="tape"></div>
+    <section class="panel joinhero">
+      <div><span class="eyebrow">Playing in class?</span><h2>Type the code from the board</h2>
+        <p class="muted small">One code works for every game. Your teacher has already chosen which one you're playing.</p></div>
+      <form class="joinform" id="hjoin" autocomplete="off">
+        <input id="hcode" class="field code-in" inputmode="numeric" maxlength="7" placeholder="000 000" aria-label="Game code">
+        <button class="btn primary big" type="submit">Join the game</button>
+      </form>
+      ${canRejoin ? `<button class="btn" id="rejoin">Rejoin game ${esc(spaced(last.code))} as ${esc(last.name)}</button>` : ""}
+    </section>
+    <section class="gamesec">
+      <div class="row spread"><div><span class="eyebrow">Incident Room games</span><h2>Choose a game</h2></div>
+        <p class="muted small">Teachers: pick a game and show it on the board. Students join with the code.</p></div>
+      <div class="games">${GAMES.map(gameCard).join("")}</div>
+    </section>
+    <section class="panel">
+      <span class="eyebrow">Your detective</span>
+      ${S.user ? `<p>Signed in as <b>${esc(S.user.name)}</b> (${esc(S.user.email)}). Your results are saved to your case record.</p>`
+        : `<p class="muted">Sign in to Maths Forensics Lab with Google, Microsoft or your Lab email to save your results and earn promotions.</p>`}
+      <div class="row">${S.user ? "" : `<a class="btn primary" href="${signInUrl()}">Sign in to the Lab</a>`}<button class="btn" data-solo>Practise solo</button><button class="btn" id="toRec">My case record</button>${liveConfigured() ? `<button class="btn quiet" id="toAcct">My account and plan</button>` : ""}</div>
+    </section>
+    ${showUpgrade ? `<section class="panel upsell"><div><span class="eyebrow">Free plan</span><h3>Unlock all 76 GCSE topics</h3><p class="muted">The Exam Pass gives you unlimited solo games, your case record and all of Maths Forensics Lab.</p></div>
+      <div class="row"><a class="btn primary" href="${esc(CFG.examPassUrl || LAB_URL)}">Get the Exam Pass · ${esc(PRICES.pass)}</a></div></section>` : ""}`, true);
+  document.getElementById("hjoin").onsubmit = e => { e.preventDefault(); Sound.unlock(); joinScreen(document.getElementById("hcode").value.replace(/\D/g, "").slice(0, 6)); };
+  app.querySelectorAll("[data-host]").forEach(b => b.onclick = () => hostGame(b.dataset.host));
+  app.querySelectorAll("[data-teams]").forEach(b => b.onclick = () => { Sound.unlock(); teamSetup(); });
+  app.querySelectorAll("[data-solo]").forEach(b => b.onclick = () => profile(soloSetup));
+  document.getElementById("toRec").onclick = recordScreen;
+  const ta = document.getElementById("toAcct"); if (ta) ta.onclick = () => accountScreen();
+  const rj = document.getElementById("rejoin");
+  if (rj) rj.onclick = () => { S.player.name = last.name; S.player.avatar = last.avatar; Sound.unlock(); studentJoin(last.code, last.id); };
+}
 
 /* ================= APP ================= */
 const CFG = window.IR_CONFIG || {};
@@ -2586,43 +2778,7 @@ const saveNote = res => !res ? "" : res.saved ? `<p class="good small">Saved to 
   : `<p class="muted small">Couldn't save this result. Check the connection.</p>`;
 
 /* ================= SIGN IN, PROFILE, LOBBY ================= */
-function signIn() {
-  stopTimer(); S.pad = null;
-  const last = store.get("ir-last", null);
-  const canRejoin = last && Date.now() - last.t < 3 * 3600e3;
-  set(`${brand(liveConfigured() ? planLabel() : undefined)}
-    <div class="tape"></div>
-    <section class="panel joincard">
-      <span class="eyebrow">Live game in class?</span>
-      <h2>Join with the code on the board</h2>
-      <div class="row"><button class="btn primary big" id="toJoin">Join a live game</button>
-      ${canRejoin ? `<button class="btn" id="rejoin">Rejoin game ${esc(spaced(last.code))} as ${esc(last.name)}</button>` : ""}</div>
-    </section>
-    <section class="panel">
-      <span class="eyebrow">Play on your own</span>
-      <h2>Solo cases</h2>
-      ${S.user ? `<p>Signed in as <b>${esc(S.user.name)}</b> (${esc(S.user.email)}). Your solo and live results are saved to your case record.</p>
-        <div class="row"><button class="btn primary" id="toProfile">Continue as ${esc(S.user.name)}</button></div>`
-      : `<p class="muted">Sign in to Maths Forensics Lab with Google, Microsoft or your Lab email to save your results and earn promotions. Then come back here.</p>
-        <div class="row"><a class="btn primary" href="${signInUrl()}">Sign in to the Lab</a><button class="btn" id="toProfile">Play as a guest</button></div>`}
-    </section>
-    <section class="panel">
-      <span class="eyebrow">Teacher</span>
-      <h2>Host a game on the board</h2>
-      <p class="muted">Live game: students join on their tablets with a code. Team showdown: teams answer on mini whiteboards.</p>
-      <div class="row"><button class="btn" id="toHost">Host a live game</button><button class="btn" id="toSo">Stakeout <span class="newtag">New</span></button><button class="btn" id="toTeams">Team showdown</button></div>
-    </section>
-    ${liveConfigured() ? `<div class="row center"><button class="btn quiet" id="toAcct">My account and plan</button></div>` : ""}`);
-  document.getElementById("toJoin").onclick = () => joinScreen();
-  const ta = document.getElementById("toAcct"); if (ta) ta.onclick = () => accountScreen();
-  document.getElementById("toHost").onclick = () => { Sound.unlock(); hostSetup(); };
-  document.getElementById("toSo").onclick = () => { Sound.unlock(); store.set("ir-game", "so"); soHostSetup(); };
-  document.getElementById("toTeams").onclick = () => { Sound.unlock(); teamSetup(); };
-  document.getElementById("toProfile").onclick = profile;
-  const rj = document.getElementById("rejoin");
-  if (rj) rj.onclick = () => { S.player.name = last.name; S.player.avatar = last.avatar; Sound.unlock(); studentJoin(last.code, last.id); };
-}
-function profile() {
+function profile(next = signIn) {
   set(`${brand()}
     <section class="panel">
       <label class="eyebrow" for="fname">Your first name</label>
@@ -2630,44 +2786,17 @@ function profile() {
       <h2>Choose your detective</h2>
       <p class="muted small">Your first name and detective are what classmates see. No photos, nothing else to type.</p>
       ${avatarPicker(S.player.avatar)}
-      <div class="row"><button class="btn primary big" id="toLobby">Enter the incident room</button></div>
+      <div class="row"><button class="btn primary big" id="toLobby">Start</button><button class="btn quiet" id="back">Back</button></div>
     </section>`);
   bindPicker(id => { S.player.avatar = id; });
   document.getElementById("toLobby").onclick = () => {
     S.player.name = (document.getElementById("fname").value.trim() || S.player.name || "Detective").slice(0, 20);
-    Sound.unlock(); lobby();
+    Sound.unlock(); next();
   };
+  document.getElementById("back").onclick = signIn;
 }
-function lobby() {
-  stopTimer(); S.pad = null; Sound.stopMusic();
-  if (!S.host && !S.stu) disarmGuard();
-  const showUpgrade = gating() && !soloUnlimited();
-  set(`<div class="hud">${brand(planLabel())}
-      <div class="who">${avatarSvg(S.player.avatar, "sm")}${esc(S.player.name)}</div></div>
-    <div class="tape"></div>
-    <div class="modes">
-      <button class="mode" id="solo"><span class="eyebrow">Solo</span><h2>Solo cases</h2>
-        <p class="muted">Mixed questions: spot the mistake, multiple choice, true or false, put in order, choose the method, type the answer. Explanations after every case.</p>
-        <span class="tag">On your own device</span></button>
-      <button class="mode" id="record"><span class="eyebrow">Your progress</span><h2>Case record</h2>
-        <p class="muted">${S.user ? "Your results, promotions and medals from every game you've played." : "Sign in to the Lab to save results, earn promotions and collect medals."}</p>
-        <span class="tag">${S.user ? "Saved to your account" : "Needs a Lab sign-in"}</span></button>
-      <button class="mode" id="live"><span class="eyebrow">Teacher · live</span><h2>Host a live game</h2>
-        <p class="muted">Board shows the questions. Students join at ${JOIN_URL} with a 6-digit code.</p>
-        <span class="tag">Teacher hosts</span></button>
-      <button class="mode" id="teams"><span class="eyebrow">Teacher · projector</span><h2>Team showdown</h2>
-        <p class="muted">2 to 4 teams answer on mini whiteboards. You reveal and award points.</p>
-        <span class="tag">No devices needed</span></button>
-    </div>
-    ${showUpgrade ? `<section class="panel upsell"><div><span class="eyebrow">Free plan</span><h3>Unlock all 76 GCSE topics</h3><p class="muted">The Exam Pass gives you unlimited solo games, your case record and all of Maths Forensics Lab.</p></div>
-      <div class="row"><a class="btn primary" href="${esc(CFG.examPassUrl || LAB_URL)}">Get the Exam Pass · ${esc(PRICES.pass)}</a>${S.acc.signed_in ? "" : `<a class="btn" href="${signInUrl()}">Sign in</a>`}</div></section>` : ""}
-    <div class="row"><button class="btn" id="out">Back to the start</button></div>`);
-  document.getElementById("solo").onclick = soloSetup;
-  document.getElementById("record").onclick = recordScreen;
-  document.getElementById("live").onclick = hostSetup;
-  document.getElementById("teams").onclick = teamSetup;
-  document.getElementById("out").onclick = signIn;
-}
+/* the old lobby is now the home page */
+function lobby() { return signIn(); }
 const choice = (attr, val, opts) => `<div class="choice">${opts.map(([v, l]) => `<button class="btn" data-${attr}="${v}" aria-pressed="${String(v) === String(val)}">${l}</button>`).join("")}</div>`;
 const bindChoice = (attr, fn) => app.querySelectorAll(`[data-${attr}]`).forEach(b => b.onclick = () => fn(b.dataset[attr]));
 const withFilter = (cfg, defaults) => { const c = Object.assign({}, defaults, cfg || {}); c.tier = c.tier === "F" ? "F" : "H"; c.topics = Array.isArray(c.topics) ? c.topics.filter(id => TOPICS[id]) : []; c.open = []; c.picking = c.topics.length > 0; return c; };
@@ -2790,7 +2919,7 @@ async function recordScreen() {
     <section class="panel"><h3>Recent games</h3>
       ${rows.length ? `<div class="podium">${rows.slice(0, 8).map(r => `<div class="place"><span class="pos small">${new Date(r.played_at).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}</span><span class="tag">${r.mode === "solo" ? "Solo" : "Live"}</span><span class="tn">${r.correct} / ${r.questions} correct</span><span class="ts">${r.score}</span></div>`).join("")}</div>` : `<p class="muted">No games yet.</p>`}
     </section>
-    <div class="row"><button class="btn primary" id="play">Play solo cases</button><button class="btn" id="back">Back</button></div>`);
+    <div class="row"><button class="btn primary" id="play">Practise solo</button><button class="btn" id="back">Back</button></div>`);
   document.getElementById("play").onclick = soloSetup;
   document.getElementById("back").onclick = lobby;
 }
@@ -2803,7 +2932,7 @@ function soloSetup() {
   if (cfg.allow) cfg.topics = cfg.topics.filter(id => cfg.allow.includes(id));
   const draw = (keep = false) => {
     const none = !poolFor(cfg).length;
-    set(`<div class="hud">${brand("Solo cases")}<div class="who">${avatarSvg(S.player.avatar, "sm")}${esc(S.player.name)}</div></div>
+    set(`<div class="hud">${brand("Rapid Response · solo")}<div class="who">${avatarSvg(S.player.avatar, "sm")}${esc(S.player.name)}</div></div>
       <section class="panel"><h2>Set up your cases</h2>
         ${topicPicker(cfg)}
         <span class="eyebrow">Question types</span>${choice("mix", cfg.mix, [["mixed", "Mixed (recommended)"], ["spot", "Spot the mistake only"]])}
@@ -3066,7 +3195,7 @@ function liveMissing(back) {
     <div class="row"><button class="btn" id="back">Back</button></div></section>`);
   document.getElementById("back").onclick = back;
 }
-const homeFn = () => (S.player.name ? lobby() : signIn());
+const homeFn = () => signIn();
 function hostSetup() {
   stopTimer(); S.pad = null;
   if (!liveConfigured()) return liveMissing(homeFn);
@@ -3074,9 +3203,9 @@ function hostSetup() {
   const cfg = withFilter(store.get("ir-host", null), { n: 10, time: "auto", mix: "mixed", typed: false, tier: "H", topics: [] });
   const draw = (keep = false) => {
     const none = !poolFor(cfg).length;
-    set(`${brand("Live game · teacher")}
-      ${gameSwitch("quiz")}
-      <section class="panel"><h2>Host a live game</h2>
+    set(`${brand("Rapid Response · teacher")}
+      ${gameSwitch("rapid")}
+      <section class="panel"><span class="eyebrow">Live class game</span><h2>Rapid Response</h2>
         <p class="muted">Show this screen on the board. Students join at <b>${JOIN_URL}</b> with the game code and answer on their tablets.</p>
         ${topicPicker(cfg)}
         <span class="eyebrow">Question types</span>${choice("mix", cfg.mix, [["mixed", "Mixed (recommended)"], ["spot", "Spot the mistake only"]])}
@@ -3247,7 +3376,7 @@ function drawHost() {
   const statusText = H.status === "live" ? "Connected" : H.status === "error" ? "Connection problem" : H.status === "closed" ? "Disconnected" : "Connecting…";
   const hud = sub => `<div class="hud">${brand(sub)}<span class="stat${H.status === "error" ? " no" : ""}">${statusText}</span>${soundBtns(true)}</div>`;
   if (H.phase === "lobby") {
-    set(`${hud(H.round > 1 ? "Live game · next round" : "Live game · teacher screen")}
+    set(`${hud(H.round > 1 ? "Rapid Response · next round" : "Rapid Response · teacher screen")}
       <section class="panel joinpanel">
         <div><span class="eyebrow">On your tablet go to</span><div class="joinurl">${JOIN_URL}</div></div>
         <div><span class="eyebrow">Game code</span><div class="bigcode">${spaced(H.code)}</div></div>
@@ -3536,7 +3665,7 @@ function drawStudent(keep = false) {
       ${reviewHtml(P.hist)}
       <section class="panel"><h3>What next?</h3>
         <p class="muted small">If your teacher starts another round, you'll join it automatically. Stay on this page.</p>
-        <div class="row"><button class="btn primary" id="solo">Practise solo cases</button>${S.user ? `<button class="btn" id="rec">My case record</button>` : ""}<button class="btn quiet" id="leave">Leave the game</button></div>
+        <div class="row"><button class="btn primary" id="solo">Practise solo</button>${S.user ? `<button class="btn" id="rec">My case record</button>` : ""}<button class="btn quiet" id="leave">Leave the game</button></div>
       </section>`, false, keep);
     if (place) {
       if (place === 1) later(REVEAL.roll, () => Sound.play("drumroll"));

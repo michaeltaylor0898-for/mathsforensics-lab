@@ -389,43 +389,7 @@ const saveNote = res => !res ? "" : res.saved ? `<p class="good small">Saved to 
   : `<p class="muted small">Couldn't save this result. Check the connection.</p>`;
 
 /* ================= SIGN IN, PROFILE, LOBBY ================= */
-function signIn() {
-  stopTimer(); S.pad = null;
-  const last = store.get("ir-last", null);
-  const canRejoin = last && Date.now() - last.t < 3 * 3600e3;
-  set(`${brand(liveConfigured() ? planLabel() : undefined)}
-    <div class="tape"></div>
-    <section class="panel joincard">
-      <span class="eyebrow">Live game in class?</span>
-      <h2>Join with the code on the board</h2>
-      <div class="row"><button class="btn primary big" id="toJoin">Join a live game</button>
-      ${canRejoin ? `<button class="btn" id="rejoin">Rejoin game ${esc(spaced(last.code))} as ${esc(last.name)}</button>` : ""}</div>
-    </section>
-    <section class="panel">
-      <span class="eyebrow">Play on your own</span>
-      <h2>Solo cases</h2>
-      ${S.user ? `<p>Signed in as <b>${esc(S.user.name)}</b> (${esc(S.user.email)}). Your solo and live results are saved to your case record.</p>
-        <div class="row"><button class="btn primary" id="toProfile">Continue as ${esc(S.user.name)}</button></div>`
-      : `<p class="muted">Sign in to Maths Forensics Lab with Google, Microsoft or your Lab email to save your results and earn promotions. Then come back here.</p>
-        <div class="row"><a class="btn primary" href="${signInUrl()}">Sign in to the Lab</a><button class="btn" id="toProfile">Play as a guest</button></div>`}
-    </section>
-    <section class="panel">
-      <span class="eyebrow">Teacher</span>
-      <h2>Host a game on the board</h2>
-      <p class="muted">Live game: students join on their tablets with a code. Team showdown: teams answer on mini whiteboards.</p>
-      <div class="row"><button class="btn" id="toHost">Host a live game</button><button class="btn" id="toSo">Stakeout <span class="newtag">New</span></button><button class="btn" id="toTeams">Team showdown</button></div>
-    </section>
-    ${liveConfigured() ? `<div class="row center"><button class="btn quiet" id="toAcct">My account and plan</button></div>` : ""}`);
-  document.getElementById("toJoin").onclick = () => joinScreen();
-  const ta = document.getElementById("toAcct"); if (ta) ta.onclick = () => accountScreen();
-  document.getElementById("toHost").onclick = () => { Sound.unlock(); hostSetup(); };
-  document.getElementById("toSo").onclick = () => { Sound.unlock(); store.set("ir-game", "so"); soHostSetup(); };
-  document.getElementById("toTeams").onclick = () => { Sound.unlock(); teamSetup(); };
-  document.getElementById("toProfile").onclick = profile;
-  const rj = document.getElementById("rejoin");
-  if (rj) rj.onclick = () => { S.player.name = last.name; S.player.avatar = last.avatar; Sound.unlock(); studentJoin(last.code, last.id); };
-}
-function profile() {
+function profile(next = signIn) {
   set(`${brand()}
     <section class="panel">
       <label class="eyebrow" for="fname">Your first name</label>
@@ -433,44 +397,17 @@ function profile() {
       <h2>Choose your detective</h2>
       <p class="muted small">Your first name and detective are what classmates see. No photos, nothing else to type.</p>
       ${avatarPicker(S.player.avatar)}
-      <div class="row"><button class="btn primary big" id="toLobby">Enter the incident room</button></div>
+      <div class="row"><button class="btn primary big" id="toLobby">Start</button><button class="btn quiet" id="back">Back</button></div>
     </section>`);
   bindPicker(id => { S.player.avatar = id; });
   document.getElementById("toLobby").onclick = () => {
     S.player.name = (document.getElementById("fname").value.trim() || S.player.name || "Detective").slice(0, 20);
-    Sound.unlock(); lobby();
+    Sound.unlock(); next();
   };
+  document.getElementById("back").onclick = signIn;
 }
-function lobby() {
-  stopTimer(); S.pad = null; Sound.stopMusic();
-  if (!S.host && !S.stu) disarmGuard();
-  const showUpgrade = gating() && !soloUnlimited();
-  set(`<div class="hud">${brand(planLabel())}
-      <div class="who">${avatarSvg(S.player.avatar, "sm")}${esc(S.player.name)}</div></div>
-    <div class="tape"></div>
-    <div class="modes">
-      <button class="mode" id="solo"><span class="eyebrow">Solo</span><h2>Solo cases</h2>
-        <p class="muted">Mixed questions: spot the mistake, multiple choice, true or false, put in order, choose the method, type the answer. Explanations after every case.</p>
-        <span class="tag">On your own device</span></button>
-      <button class="mode" id="record"><span class="eyebrow">Your progress</span><h2>Case record</h2>
-        <p class="muted">${S.user ? "Your results, promotions and medals from every game you've played." : "Sign in to the Lab to save results, earn promotions and collect medals."}</p>
-        <span class="tag">${S.user ? "Saved to your account" : "Needs a Lab sign-in"}</span></button>
-      <button class="mode" id="live"><span class="eyebrow">Teacher · live</span><h2>Host a live game</h2>
-        <p class="muted">Board shows the questions. Students join at ${JOIN_URL} with a 6-digit code.</p>
-        <span class="tag">Teacher hosts</span></button>
-      <button class="mode" id="teams"><span class="eyebrow">Teacher · projector</span><h2>Team showdown</h2>
-        <p class="muted">2 to 4 teams answer on mini whiteboards. You reveal and award points.</p>
-        <span class="tag">No devices needed</span></button>
-    </div>
-    ${showUpgrade ? `<section class="panel upsell"><div><span class="eyebrow">Free plan</span><h3>Unlock all 76 GCSE topics</h3><p class="muted">The Exam Pass gives you unlimited solo games, your case record and all of Maths Forensics Lab.</p></div>
-      <div class="row"><a class="btn primary" href="${esc(CFG.examPassUrl || LAB_URL)}">Get the Exam Pass · ${esc(PRICES.pass)}</a>${S.acc.signed_in ? "" : `<a class="btn" href="${signInUrl()}">Sign in</a>`}</div></section>` : ""}
-    <div class="row"><button class="btn" id="out">Back to the start</button></div>`);
-  document.getElementById("solo").onclick = soloSetup;
-  document.getElementById("record").onclick = recordScreen;
-  document.getElementById("live").onclick = hostSetup;
-  document.getElementById("teams").onclick = teamSetup;
-  document.getElementById("out").onclick = signIn;
-}
+/* the old lobby is now the home page */
+function lobby() { return signIn(); }
 const choice = (attr, val, opts) => `<div class="choice">${opts.map(([v, l]) => `<button class="btn" data-${attr}="${v}" aria-pressed="${String(v) === String(val)}">${l}</button>`).join("")}</div>`;
 const bindChoice = (attr, fn) => app.querySelectorAll(`[data-${attr}]`).forEach(b => b.onclick = () => fn(b.dataset[attr]));
 const withFilter = (cfg, defaults) => { const c = Object.assign({}, defaults, cfg || {}); c.tier = c.tier === "F" ? "F" : "H"; c.topics = Array.isArray(c.topics) ? c.topics.filter(id => TOPICS[id]) : []; c.open = []; c.picking = c.topics.length > 0; return c; };
@@ -593,7 +530,7 @@ async function recordScreen() {
     <section class="panel"><h3>Recent games</h3>
       ${rows.length ? `<div class="podium">${rows.slice(0, 8).map(r => `<div class="place"><span class="pos small">${new Date(r.played_at).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}</span><span class="tag">${r.mode === "solo" ? "Solo" : "Live"}</span><span class="tn">${r.correct} / ${r.questions} correct</span><span class="ts">${r.score}</span></div>`).join("")}</div>` : `<p class="muted">No games yet.</p>`}
     </section>
-    <div class="row"><button class="btn primary" id="play">Play solo cases</button><button class="btn" id="back">Back</button></div>`);
+    <div class="row"><button class="btn primary" id="play">Practise solo</button><button class="btn" id="back">Back</button></div>`);
   document.getElementById("play").onclick = soloSetup;
   document.getElementById("back").onclick = lobby;
 }
@@ -606,7 +543,7 @@ function soloSetup() {
   if (cfg.allow) cfg.topics = cfg.topics.filter(id => cfg.allow.includes(id));
   const draw = (keep = false) => {
     const none = !poolFor(cfg).length;
-    set(`<div class="hud">${brand("Solo cases")}<div class="who">${avatarSvg(S.player.avatar, "sm")}${esc(S.player.name)}</div></div>
+    set(`<div class="hud">${brand("Rapid Response · solo")}<div class="who">${avatarSvg(S.player.avatar, "sm")}${esc(S.player.name)}</div></div>
       <section class="panel"><h2>Set up your cases</h2>
         ${topicPicker(cfg)}
         <span class="eyebrow">Question types</span>${choice("mix", cfg.mix, [["mixed", "Mixed (recommended)"], ["spot", "Spot the mistake only"]])}
@@ -869,7 +806,7 @@ function liveMissing(back) {
     <div class="row"><button class="btn" id="back">Back</button></div></section>`);
   document.getElementById("back").onclick = back;
 }
-const homeFn = () => (S.player.name ? lobby() : signIn());
+const homeFn = () => signIn();
 function hostSetup() {
   stopTimer(); S.pad = null;
   if (!liveConfigured()) return liveMissing(homeFn);
@@ -877,9 +814,9 @@ function hostSetup() {
   const cfg = withFilter(store.get("ir-host", null), { n: 10, time: "auto", mix: "mixed", typed: false, tier: "H", topics: [] });
   const draw = (keep = false) => {
     const none = !poolFor(cfg).length;
-    set(`${brand("Live game · teacher")}
-      ${gameSwitch("quiz")}
-      <section class="panel"><h2>Host a live game</h2>
+    set(`${brand("Rapid Response · teacher")}
+      ${gameSwitch("rapid")}
+      <section class="panel"><span class="eyebrow">Live class game</span><h2>Rapid Response</h2>
         <p class="muted">Show this screen on the board. Students join at <b>${JOIN_URL}</b> with the game code and answer on their tablets.</p>
         ${topicPicker(cfg)}
         <span class="eyebrow">Question types</span>${choice("mix", cfg.mix, [["mixed", "Mixed (recommended)"], ["spot", "Spot the mistake only"]])}
@@ -1050,7 +987,7 @@ function drawHost() {
   const statusText = H.status === "live" ? "Connected" : H.status === "error" ? "Connection problem" : H.status === "closed" ? "Disconnected" : "Connecting…";
   const hud = sub => `<div class="hud">${brand(sub)}<span class="stat${H.status === "error" ? " no" : ""}">${statusText}</span>${soundBtns(true)}</div>`;
   if (H.phase === "lobby") {
-    set(`${hud(H.round > 1 ? "Live game · next round" : "Live game · teacher screen")}
+    set(`${hud(H.round > 1 ? "Rapid Response · next round" : "Rapid Response · teacher screen")}
       <section class="panel joinpanel">
         <div><span class="eyebrow">On your tablet go to</span><div class="joinurl">${JOIN_URL}</div></div>
         <div><span class="eyebrow">Game code</span><div class="bigcode">${spaced(H.code)}</div></div>
@@ -1339,7 +1276,7 @@ function drawStudent(keep = false) {
       ${reviewHtml(P.hist)}
       <section class="panel"><h3>What next?</h3>
         <p class="muted small">If your teacher starts another round, you'll join it automatically. Stay on this page.</p>
-        <div class="row"><button class="btn primary" id="solo">Practise solo cases</button>${S.user ? `<button class="btn" id="rec">My case record</button>` : ""}<button class="btn quiet" id="leave">Leave the game</button></div>
+        <div class="row"><button class="btn primary" id="solo">Practise solo</button>${S.user ? `<button class="btn" id="rec">My case record</button>` : ""}<button class="btn quiet" id="leave">Leave the game</button></div>
       </section>`, false, keep);
     if (place) {
       if (place === 1) later(REVEAL.roll, () => Sound.play("drumroll"));
