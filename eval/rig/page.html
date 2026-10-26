@@ -1,0 +1,404 @@
+<title>Marking Test Rig</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Josefin+Sans:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: an examiner's bench. Evidence in (question + working) on the left, the verdict and your own marks on the right, the comparison log underneath. Single dark look in the Maths Forensics navy, matching the Lab. */
+:root{
+  --ink:#0B122C; --panel:#111a3d; --panel2:#16214b; --line:#26336a;
+  --cyan:#00FCF1; --blue:#1B36FF; --text:#E8ECF8; --muted:#93a0c8;
+  --good:#3DDC97; --warn:#FFC857; --bad:#FF6B7A;
+  --paper:#FBFCFF; --grid:#DCE3F5; --pen:#0B122C;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Josefin Sans","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--ink);color:var(--text);font-family:var(--f-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px;
+  background-image:radial-gradient(circle at 1px 1px,rgba(0,252,241,.06) 1px,transparent 0);background-size:22px 22px}
+button,select,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+button:disabled{cursor:default;opacity:.5}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.wrap{max-width:1240px;margin:0 auto}
+.eyebrow{font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--f-display);font-weight:600;font-size:clamp(20px,3.6vw,26px);margin:4px 0 0;text-wrap:balance}
+h2{font-family:var(--f-display);font-weight:600;font-size:14px;letter-spacing:.03em;margin:0}
+.hint{font-size:14px;color:var(--muted);margin:0}
+header{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:end;justify-content:space-between;padding-block:20px 16px;border-bottom:1px solid var(--line)}
+.proto{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;color:var(--warn);border:1px solid rgba(255,200,87,.4);border-radius:4px;padding:3px 8px;white-space:nowrap}
+
+.bench{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;margin-top:20px;align-items:start}
+@media (max-width:900px){.bench{grid-template-columns:minmax(0,1fr)}}
+.col{display:grid;gap:14px;min-width:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+
+.qrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+select{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:7px 10px;flex:1 1 220px;width:0;min-width:0;max-width:100%}
+.qtext{font-size:18px;margin:10px 0 6px}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;padding:2px 6px;border-radius:4px;border:1px solid var(--line);color:var(--muted)}
+.scheme{margin-top:12px}
+.scheme summary{cursor:pointer;font-weight:600;font-size:14px;color:var(--muted)}
+.scheme ol{margin:8px 0 0;padding:0;list-style:none;display:grid;gap:6px;font-size:14px}
+.scheme li{display:grid;grid-template-columns:42px 1fr;gap:8px}
+
+.modes{display:flex;gap:4px;background:var(--ink);border:1px solid var(--line);border-radius:10px;padding:4px;width:max-content}
+.modes button{background:none;border:0;padding:6px 13px;border-radius:7px;font-weight:600;font-size:14px;color:var(--muted)}
+.modes button[aria-selected="true"]{background:var(--blue);color:#fff}
+.tools{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.tool{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:5px 10px;font-size:14px;font-weight:600}
+.tool[aria-pressed="true"]{border-color:var(--cyan);color:var(--cyan)}
+.spacer{flex:1}
+.sheet{position:relative;border-radius:10px;overflow:hidden;background:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px}
+#pad{display:block;width:100%;touch-action:none;cursor:crosshair}
+.empty{position:absolute;inset:0;display:grid;place-items:center;color:#7d88ad;font-size:15px;pointer-events:none;text-align:center;padding:20px}
+.more{width:100%;background:none;border:1px dashed var(--line);border-radius:8px;padding:5px;color:var(--muted);font-size:14px}
+.drop{display:grid;place-items:center;gap:8px;border:1.5px dashed var(--line);border-radius:10px;padding:26px 16px;text-align:center;color:var(--muted);cursor:pointer}
+.drop img{max-width:100%;max-height:440px;border-radius:8px;background:#fff}
+.btn{background:var(--blue);color:#fff;border:0;border-radius:10px;padding:11px 18px;font-weight:700;font-size:16px}
+.btn.ghost{background:var(--panel2);border:1px solid var(--line);color:var(--text)}
+.btn.small{padding:7px 12px;font-size:14px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+#status{font-size:14px;color:var(--muted)}
+#status.err{color:var(--bad)}
+
+/* verdict */
+.verdict{display:flex;gap:14px;align-items:center}
+.ring{--p:0;flex:none;width:76px;height:76px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--c,var(--cyan)) calc(var(--p)*1%),var(--line) 0)}
+.ring b{display:grid;place-items:center;width:62px;height:62px;border-radius:50%;background:var(--panel);font-family:var(--f-mono);font-size:18px;font-variant-numeric:tabular-nums}
+.verdict p{margin:2px 0 0;font-size:17px;font-weight:600}
+.example{font-family:var(--f-mono);font-size:10.5px;color:var(--warn);border:1px solid rgba(255,200,87,.4);border-radius:4px;padding:1px 6px;margin-left:6px}
+.notice{margin-top:12px;padding:9px 12px;border-radius:8px;font-size:14px;background:rgba(255,200,87,.1);border:1px solid rgba(255,200,87,.35);color:var(--warn)}
+.marks{margin:14px 0 0;padding:0;list-style:none;border-top:1px solid var(--line)}
+.marks li{display:grid;grid-template-columns:40px 22px minmax(0,1fr) auto;gap:4px 10px;align-items:start;padding:10px 0;border-bottom:1px solid var(--line)}
+.code{font-family:var(--f-mono);font-weight:700;font-size:12.5px;text-align:center;border-radius:5px;background:var(--ink);padding:2px 0}
+.yes .code,.yes .mk{color:var(--good)} .no .code,.no .mk{color:var(--bad)}
+.mk{font-weight:700;line-height:1.3}
+.why{min-width:0;font-size:15px}
+.ev{display:block;font-family:var(--f-mono);font-size:12.5px;color:var(--muted);margin-top:2px}
+.ev span{color:var(--text);background:var(--ink);padding:1px 6px;border-radius:4px}
+.ft{font-family:var(--f-mono);font-size:10px;color:var(--cyan);border:1px solid rgba(0,252,241,.35);border-radius:4px;padding:0 4px;margin-left:6px;white-space:nowrap}
+.adj{display:block;font-size:13px;color:var(--warn);margin-top:2px}
+/* your marks */
+.you{display:flex;gap:3px;align-self:center}
+.you button{width:30px;height:28px;border-radius:6px;border:1px solid var(--line);background:var(--ink);font-weight:700;font-size:14px;color:var(--muted);padding:0}
+.you button[aria-pressed="true"][data-v="1"]{background:rgba(61,220,151,.18);border-color:var(--good);color:var(--good)}
+.you button[aria-pressed="true"][data-v="0"]{background:rgba(255,107,122,.16);border-color:var(--bad);color:var(--bad)}
+.marks li.differ{background:linear-gradient(90deg,rgba(255,200,87,.08),transparent)}
+.youhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap}
+.cmp{font-family:var(--f-mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.cmp b{color:var(--text)}
+.cause{margin-top:14px;border-left:3px solid var(--bad);background:rgba(255,107,122,.08);border-radius:0 10px 10px 0;padding:10px 12px}
+.cause h3,.sect h3{font-size:14px;font-weight:700;margin:0 0 2px}
+.cause p{margin:0;font-size:15px}
+.sect{margin-top:12px;font-size:15px}
+.sect ul,.sect ol{margin:2px 0 0;padding-left:20px}
+.good h3{color:var(--good)} .bad h3{color:var(--bad)} .fix h3{color:var(--cyan)}
+details.raw{margin-top:12px;border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+details.raw summary{cursor:pointer;font-weight:600;font-size:14px}
+.read{margin:6px 0 0;padding:0;list-style:none;font-family:var(--f-mono);font-size:13.5px}
+.read li{display:flex;gap:10px}
+.read i{color:var(--muted);font-style:normal;width:2ch;text-align:right;flex:none}
+pre{font-family:var(--f-mono);font-size:12px;background:var(--ink);border-radius:8px;padding:10px;overflow-x:auto;max-height:340px;margin:8px 0 0}
+.thinking{display:flex;gap:12px;align-items:center;color:var(--muted)}
+.thinking svg{width:26px;height:26px;animation:sw 1.4s ease-in-out infinite;flex:none}
+@keyframes sw{50%{transform:translate(4px,-3px) rotate(-8deg)}}
+@media (prefers-reduced-motion:reduce){.thinking svg{animation:none}}
+
+/* log */
+.logcard{margin-top:20px}
+.loghead{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px}
+@media (max-width:640px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stat{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.stat b{display:block;font-family:var(--f-mono);font-size:22px;font-variant-numeric:tabular-nums}
+.stat span{font-size:13px;color:var(--muted)}
+.tablewrap{overflow-x:auto;margin-top:12px}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:620px}
+th{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;font-weight:500;padding:6px 8px;border-bottom:1px solid var(--line)}
+td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.pill{font-family:var(--f-mono);font-size:11px;padding:1px 7px;border-radius:999px;white-space:nowrap}
+.pill.ok{background:rgba(61,220,151,.15);color:var(--good)}
+.pill.off{background:rgba(255,200,87,.14);color:var(--warn)}
+.pill.bad{background:rgba(255,107,122,.15);color:var(--bad)}
+.emptylog{color:var(--muted);font-size:14px;padding:14px 0 4px}
+.confirm{display:inline-flex;gap:6px;align-items:center;font-size:14px;color:var(--warn)}
+</style>
+
+<div class="wrap">
+<header>
+  <div>
+    <div class="eyebrow">Maths Forensics Lab · written answers</div>
+    <h1>Marking test rig</h1>
+    <p class="hint">Mark real student working with the same prompt and mark-scheme rules as the live function, then record your own marks to measure how often the AI agrees with you.</p>
+  </div>
+  <span class="proto">PROTOTYPE · RUNS ON YOUR CLAUDE ACCOUNT</span>
+</header>
+
+<div class="bench">
+  <div class="col">
+    <section class="card">
+      <div class="qrow"><label class="eyebrow" for="qsel">Question</label><select id="qsel"></select><span id="qmarks" class="cmp"></span></div>
+      <p class="qtext" id="qtext"></p>
+      <div class="tags" id="qtags"></div>
+      <details class="scheme"><summary>Mark scheme</summary><ol id="qscheme"></ol></details>
+    </section>
+
+    <section class="card" style="display:grid;gap:10px">
+      <div class="modes" role="tablist">
+        <button role="tab" aria-selected="true" data-mode="draw">Write here</button>
+        <button role="tab" aria-selected="false" data-mode="photo">Photo or screenshot</button>
+      </div>
+      <div id="drawMode" style="display:grid;gap:8px">
+        <div class="tools">
+          <button class="tool" data-tool="pen" aria-pressed="true">Pen</button>
+          <button class="tool" data-tool="eraser" aria-pressed="false">Eraser</button>
+          <button class="tool" id="undo">Undo</button>
+          <span class="spacer"></span>
+          <span id="clearWrap"><button class="tool" id="clear">Clear</button></span>
+        </div>
+        <div class="sheet"><canvas id="pad"></canvas><div class="empty" id="empty">Write one step per line, top to bottom</div></div>
+        <button class="more" id="more">+ More space</button>
+      </div>
+      <div id="photoMode" hidden style="display:grid;gap:8px">
+        <label class="drop" for="file">
+          <input type="file" id="file" accept="image/jpeg,image/png,image/webp" hidden>
+          <span id="dropText">Choose a photo or screenshot of the working.<br><small>One question per image. Crop out anything else.</small></span>
+          <img id="preview" alt="The working to be marked" hidden>
+        </label>
+        <div class="tools"><button class="tool" id="rotate" hidden>Rotate 90°</button></div>
+      </div>
+      <div class="actions">
+        <button class="btn" id="go">Mark it</button>
+        <button class="btn ghost small" id="stop" hidden>Stop</button>
+        <span id="status" role="status"></span>
+      </div>
+    </section>
+  </div>
+
+  <div class="col">
+    <section class="card" id="report" aria-live="polite"></section>
+  </div>
+</div>
+
+<section class="card logcard">
+  <div class="loghead">
+    <div><h2>Agreement log</h2><p class="hint">Each saved comparison is kept in this browser. Aim for at least 50 before trusting the marker with students.</p></div>
+    <div class="actions"><button class="btn ghost small" id="export">Download CSV</button><span id="clearLogWrap"><button class="btn ghost small" id="clearLog">Clear log</button></span></div>
+  </div>
+  <div class="stats" id="stats"></div>
+  <div id="logBody"></div>
+</section>
+</div>
+
+<script>/*MARKING_JS*/</script>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const strip=h=>String(h).replace(/<br>/g,' ').replace(/&nbsp;/g,' ').replace(/<[^>]+>/g,'');
+const SCHEMES=MF.SCHEMES, byId=id=>SCHEMES.find(s=>s.id===id);
+const S={q:SCHEMES[0],mode:'draw',result:null,yours:{},example:true,photoBlob:null,ms:0,raw:null,ctl:null};
+
+/* ---------- question ---------- */
+$('#qsel').innerHTML=SCHEMES.map(s=>`<option value="${s.id}">${esc(s.id)} · ${esc(strip(s.prompt).slice(0,48))}${strip(s.prompt).length>48?'…':''}</option>`).join('');
+function renderQ(){
+  const q=S.q;
+  $('#qmarks').textContent=`[${q.marks} marks]`;
+  $('#qtext').innerHTML=q.prompt;
+  $('#qtags').innerHTML=`<span class="tag">${q.tier==='H'?'HIGHER':'FOUNDATION'}</span><span class="tag">${q.calculator?'CALCULATOR':'NON-CALCULATOR'}</span><span class="tag">ANSWER: ${esc(q.answer)}</span>`;
+  $('#qscheme').innerHTML=q.points.map(p=>`<li><span class="code">${p.code}</span><span>${esc(p.criterion)}${p.ft?' <span class="ft">FT</span>':''}${p.dep?.length?` <span class="cmp">dep ${p.dep.join(', ')}</span>`:''}</span></li>`).join('');
+}
+$('#qsel').onchange=e=>{S.q=byId(e.target.value);renderQ();S.result=null;S.yours={};S.example=false;clearPad();clearPhoto();renderReport()};
+
+/* ---------- writing pad ---------- */
+const pad=$('#pad'),ctx=pad.getContext('2d');
+let strokes=[],cur=null,tool='pen',penSeen=false,padH=400;
+function sizePad(){const w=pad.parentElement.clientWidth,d=window.devicePixelRatio||1;if(!w)return;pad.width=w*d;pad.height=padH*d;pad.style.height=padH+'px';ctx.setTransform(d,0,0,d,0,0);redraw()}
+function drawStroke(s,c=ctx){
+  if(!s.pts.length)return;c.save();c.lineCap='round';c.lineJoin='round';
+  if(s.erase){c.globalCompositeOperation='destination-out';c.strokeStyle='#000'}else c.strokeStyle='#0B122C';
+  for(let i=1;i<s.pts.length;i++){const a=s.pts[i-1],b=s.pts[i];c.lineWidth=s.erase?22:1.6+2.4*(b.p||.5);c.beginPath();c.moveTo(a.x,a.y);c.lineTo(b.x,b.y);c.stroke()}
+  if(s.pts.length===1&&!s.erase){const a=s.pts[0];c.fillStyle='#0B122C';c.beginPath();c.arc(a.x,a.y,1.6,0,7);c.fill()}
+  c.restore();
+}
+function redraw(){ctx.clearRect(0,0,pad.width,pad.height);strokes.forEach(s=>drawStroke(s));$('#empty').hidden=strokes.some(s=>!s.erase)}
+const pos=e=>{const r=pad.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top,p:e.pointerType==='mouse'?.5:(e.pressure||.5)}};
+pad.addEventListener('pointerdown',e=>{if(e.pointerType==='pen')penSeen=true;if(penSeen&&e.pointerType==='touch')return;
+  pad.setPointerCapture(e.pointerId);cur={erase:tool==='eraser',pts:[pos(e)]};strokes.push(cur);redraw()});
+pad.addEventListener('pointermove',e=>{if(!cur)return;const evs=e.getCoalescedEvents?.()||[e];for(const ev of evs)cur.pts.push(pos(ev));drawStroke({erase:cur.erase,pts:cur.pts.slice(-2-evs.length)})});
+const end=()=>{cur=null;redraw()};pad.addEventListener('pointerup',end);pad.addEventListener('pointercancel',end);
+function clearPad(){strokes=[];padH=400;sizePad()}
+$('#undo').onclick=()=>{strokes.pop();redraw()};
+$('#more').onclick=()=>{padH+=240;sizePad()};
+document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>{tool=b.dataset.tool;document.querySelectorAll('[data-tool]').forEach(x=>x.setAttribute('aria-pressed',x===b))});
+// in-page confirmation (the viewer has no confirm() dialog)
+function confirmIn(wrap,label,onYes){
+  const orig=wrap.innerHTML;
+  wrap.innerHTML=`<span class="confirm">${label} <button class="tool" data-y>Yes</button><button class="tool" data-n>No</button></span>`;
+  wrap.querySelector('[data-y]').onclick=()=>{wrap.innerHTML=orig;bind();onYes()};
+  wrap.querySelector('[data-n]').onclick=()=>{wrap.innerHTML=orig;bind()};
+}
+function bind(){
+  const c=$('#clear');if(c)c.onclick=()=>strokes.length&&confirmIn($('#clearWrap'),'Clear the page?',clearPad);
+  const l=$('#clearLog');if(l)l.onclick=()=>LOG.length&&confirmIn($('#clearLogWrap'),'Delete all saved comparisons?',()=>{LOG=[];saveLog();renderLog()});
+}
+addEventListener('resize',()=>{if(Math.abs(pad.parentElement.clientWidth*(window.devicePixelRatio||1)-pad.width)>2)sizePad()});
+function padBlob(){
+  const ink=strokes.filter(s=>!s.erase);if(!ink.length)return Promise.resolve(null);
+  let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+  ink.forEach(s=>s.pts.forEach(p=>{x0=Math.min(x0,p.x);y0=Math.min(y0,p.y);x1=Math.max(x1,p.x);y1=Math.max(y1,p.y)}));
+  x0-=24;y0-=24;x1+=24;y1+=24;const w=x1-x0,h=y1-y0,k=Math.min(2,1400/w,2000/h);
+  const c=document.createElement('canvas');c.width=Math.round(w*k);c.height=Math.round(h*k);
+  const layer=document.createElement('canvas');layer.width=c.width;layer.height=c.height;
+  const lg=layer.getContext('2d');lg.setTransform(k,0,0,k,-x0*k,-y0*k);strokes.forEach(s=>drawStroke(s,lg));
+  const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.drawImage(layer,0,0);
+  return new Promise(r=>c.toBlob(r,'image/jpeg',.9));
+}
+
+/* ---------- photo ---------- */
+let bmp=null,rot=0;
+$('#file').onchange=async e=>{const f=e.target.files[0];if(!f)return;
+  bmp=await createImageBitmap(f,{imageOrientation:'from-image'}).catch(()=>null);
+  if(!bmp){status('That file isn\'t an image the rig can read.',true);return}rot=0;showPhoto()};
+function showPhoto(){
+  const k=Math.min(1,1800/Math.max(bmp.width,bmp.height)),w=bmp.width*k,h=bmp.height*k,turn=rot%180!==0;
+  const c=document.createElement('canvas');c.width=turn?h:w;c.height=turn?w:h;
+  const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.translate(c.width/2,c.height/2);g.rotate(rot*Math.PI/180);g.drawImage(bmp,-w/2,-h/2,w,h);
+  $('#preview').src=c.toDataURL('image/jpeg',.85);$('#preview').hidden=false;$('#dropText').hidden=true;$('#rotate').hidden=false;
+  c.toBlob(b=>S.photoBlob=b,'image/jpeg',.88);
+}
+function clearPhoto(){bmp=null;S.photoBlob=null;$('#file').value='';$('#preview').hidden=true;$('#dropText').hidden=false;$('#rotate').hidden=true}
+$('#rotate').onclick=()=>{rot=(rot+90)%360;showPhoto()};
+document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{
+  S.mode=b.dataset.mode;document.querySelectorAll('[data-mode]').forEach(x=>x.setAttribute('aria-selected',x===b));
+  $('#drawMode').hidden=S.mode!=='draw';$('#photoMode').hidden=S.mode!=='photo';if(S.mode==='draw')sizePad()});
+
+/* ---------- marking: the live function's prompt, rules and output shape ---------- */
+const status=(t,bad)=>{$('#status').textContent=t||'';$('#status').className=bad?'err':''};
+const COPY={not_granted:'The rig needs permission to use Claude. Reload the page to be asked again.',sampling_disabled:'Claude isn\'t available on this account.',
+  images_unavailable:'This view can\'t send images to Claude. Try the Claude app or claude.ai in a browser.',image_rejected:'That image was rejected. Try a smaller JPEG or PNG.',
+  rate_limited:'Claude is busy or your usage limit was reached. Wait a minute and press Mark it again.',session_expired:'Sign in to Claude again, then reload.',
+  invalid_json:'The marker\'s reply wasn\'t in the expected format. Press Mark it again.',refused:'Claude declined to mark this image.',empty_completion:'No answer came back. Press Mark it again.'};
+let sample=null;
+(async()=>{sample=await window.claude?.use?.('sample')??null;if(!sample)status('Marking runs only inside Claude. Open this page in claude.ai or the Claude app.',true)})();
+
+$('#stop').onclick=()=>S.ctl?.abort();
+$('#go').onclick=async()=>{
+  const img=S.mode==='draw'?await padBlob():S.photoBlob;
+  if(!img){status(S.mode==='draw'?'Write the working first.':'Choose an image first.',true);return}
+  if(!sample){status('Marking runs only inside Claude. Open this page in claude.ai or the Claude app.',true);return}
+  const q=S.q,ctl=S.ctl=new AbortController(),t0=performance.now();
+  status('');$('#go').disabled=true;$('#stop').hidden=false;S.example=false;S.yours={};
+  $('#report').innerHTML=`<div class="thinking"><svg viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2.2" stroke-linecap="round"><circle cx="10" cy="10" r="6"/><path d="M15 15l5 5"/></svg><span>Examining the evidence, line by line. This usually takes 20 to 60 seconds.</span></div>`;
+  const prompt=MF.SYSTEM_PROMPT+'\n\n'+MF.schemeText(q).replace('Call record_marking once.','')+
+    '\nThe image attached is the student\'s working. Reply with only one JSON object that matches this JSON schema, and nothing else:\n'+JSON.stringify(MF.MARKING_TOOL.input_schema);
+  try{
+    const ai=await sample.json(prompt,{images:[img],signal:ctl.signal,cache:false});
+    if(!ai||typeof ai!=='object'||!Array.isArray(ai.points))throw{code:'invalid_json'};
+    S.raw=ai;S.ms=performance.now()-t0;S.result=MF.applyRules(q,ai);S.resultQ=q.id;
+    renderReport();status(`Marked in ${(S.ms/1000).toFixed(0)} s. Now enter your own marks.`);
+  }catch(e){
+    if(e?.code==='cancelled'){status('Stopped.');renderReport()}
+    else{status(COPY[e?.code]||'Something went wrong. Press Mark it again.',true);renderReport()}
+  }finally{$('#go').disabled=false;$('#stop').hidden=true}
+};
+
+/* ---------- report ---------- */
+function renderReport(){
+  const r=S.result;
+  if(!r){$('#report').innerHTML=`<p class="hint">Write or upload some working, then press Mark it. The verdict appears here.</p>`;return}
+  const q=byId(S.resultQ);
+  if(r.status!=='marked'){
+    $('#report').innerHTML=`<div class="eyebrow">Case report · ${esc(q.id)}</div><p style="margin:8px 0 0">The marker returned <b>${esc(r.status.replace('_',' '))}</b>. ${r.status==='unreadable'?'Try writing larger, one step per line.':''}</p>${rawBlock(r)}`;return;
+  }
+  const pct=Math.round(100*r.score/r.max),col=r.score===r.max?'var(--good)':r.score===0?'var(--bad)':'var(--cyan)';
+  const yoursDone=r.points.every(p=>S.yours[p.id]!=null);
+  const yourScore=r.points.filter(p=>S.yours[p.id]===1).length;
+  const agree=r.points.filter(p=>S.yours[p.id]!=null&&(S.yours[p.id]===1)===p.awarded).length;
+  const li=r.points.map(p=>{
+    const y=S.yours[p.id],differ=y!=null&&(y===1)!==p.awarded;
+    return `<li class="${p.awarded?'yes':'no'}${differ?' differ':''}"><span class="code">${esc(p.code)}</span><span class="mk">${p.awarded?'✓':'✗'}</span>
+      <span class="why">${esc(p.reason)}${p.follow_through?'<span class="ft">FOLLOW-THROUGH</span>':''}${p.overridden?`<span class="adj">Rule applied: ${esc(p.overridden)}</span>`:''}
+      ${p.evidence?`<span class="ev">Line ${p.line}: <span>${esc(p.evidence)}</span></span>`:''}</span>
+      <span class="you" role="group" aria-label="Your mark for ${esc(p.id)}"><button data-p="${esc(p.id)}" data-v="1" aria-pressed="${y===1}" title="You award it">✓</button><button data-p="${esc(p.id)}" data-v="0" aria-pressed="${y===0}" title="You don't award it">✗</button></span></li>`}).join('');
+  const list=(cls,t,a,ol)=>a?.length?`<div class="sect ${cls}"><h3>${t}</h3><${ol?'ol':'ul'}>${a.map(x=>`<li>${esc(x)}</li>`).join('')}</${ol?'ol':'ul'}></div>`:'';
+  $('#report').innerHTML=`<div class="eyebrow">Case report · ${esc(q.id)}${S.example?'<span class="example">EXAMPLE</span>':''}</div>
+    <div class="verdict" style="margin-top:10px"><div class="ring" style="--p:${pct};--c:${col}"><b>${r.score}/${r.max}</b></div><div><span class="eyebrow">Finding</span><p>${esc(r.verdict)}</p></div></div>
+    ${r.needs_review?`<div class="notice">Flagged as provisional. ${esc(r.review_note||'Confidence was '+r.confidence+'.')}</div>`:''}
+    <div class="youhead"><span class="eyebrow">AI mark · your mark</span><span class="cmp">${yoursDone?`You <b>${yourScore}/${r.max}</b> · agree on <b>${agree}/${r.max}</b> points`:'Tap ✓ or ✗ on every mark to compare'}</span></div>
+    <ul class="marks">${li}</ul>
+    <div class="actions" style="margin-top:12px"><button class="btn small" id="save" ${yoursDone&&!S.example?'':'disabled'}>Save to log</button>
+      <input id="note" placeholder="Note (optional), e.g. student or what went wrong" style="flex:1;min-width:160px;background:var(--ink);border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-size:14px"></div>
+    ${S.example?'<p class="hint" style="margin-top:6px">This example shows the layout. Mark your own working to start logging.</p>':''}
+    ${r.root_cause?`<div class="cause"><h3>Root cause${r.root_cause.name?': '+esc(r.root_cause.name):''}${r.root_cause.line?' · line '+r.root_cause.line:''}</h3><p>${esc(r.root_cause.explanation)}</p></div>`:''}
+    ${list('good','What earned marks',r.went_right)}${list('bad','What lost marks',r.went_wrong)}${list('fix','How to fix it',r.fix,true)}
+    ${rawBlock(r)}`;
+  $('#report').querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{S.yours[b.dataset.p]=+b.dataset.v;const n=$('#note').value;renderReport();$('#note').value=n});
+  const sv=$('#save');if(sv)sv.onclick=()=>saveRun($('#note').value);
+}
+function rawBlock(r){
+  return `<details class="raw"><summary>What the marker read${S.ms?` · ${(S.ms/1000).toFixed(0)} s · confidence ${esc(r.confidence)}`:''}</summary>
+    <ol class="read">${r.transcription.map((t,i)=>`<li><i>${i+1}</i><span>${esc(t)}</span></li>`).join('')}</ol>
+    ${S.raw?`<pre>${esc(JSON.stringify(S.raw,null,2))}</pre>`:''}</details>`;
+}
+
+/* ---------- log (this browser only) ---------- */
+let LOG=[];
+try{LOG=JSON.parse(localStorage.getItem('mf-rig-log')||'[]')}catch(e){LOG=[]}
+const saveLog=()=>{try{localStorage.setItem('mf-rig-log',JSON.stringify(LOG))}catch(e){}};
+function saveRun(note){
+  const r=S.result,q=byId(S.resultQ);
+  LOG.unshift({at:new Date().toISOString(),q:q.id,max:r.max,ai:r.points.map(p=>p.awarded?1:0),you:r.points.map(p=>S.yours[p.id]),codes:r.points.map(p=>p.id),
+    review:r.needs_review,conf:r.confidence,cause:r.root_cause?.error_id||'',note:String(note||'').slice(0,200),
+    diffs:r.points.filter(p=>(S.yours[p.id]===1)!==p.awarded).map(p=>`${p.id}: AI ${p.awarded?'gave':'withheld'}. ${p.overridden||p.reason}`)});
+  saveLog();renderLog();status('Saved to the log.');$('#save').disabled=true;
+}
+function renderLog(){
+  const n=LOG.length,sum=a=>a.reduce((x,y)=>x+y,0);
+  const exact=LOG.filter(l=>sum(l.ai)===sum(l.you)).length,within=LOG.filter(l=>Math.abs(sum(l.ai)-sum(l.you))<=1).length;
+  const pts=sum(LOG.map(l=>l.ai.length)),ptsAgree=sum(LOG.map(l=>l.ai.filter((v,i)=>v===l.you[i]).length));
+  const gen=LOG.filter(l=>sum(l.ai)>sum(l.you)).length,harsh=LOG.filter(l=>sum(l.ai)<sum(l.you)).length;
+  const pc=(a,b)=>b?Math.round(100*a/b)+'%':'–';
+  $('#stats').innerHTML=[[n,'answers compared'],[pc(exact,n),'same total as you'],[pc(within,n),'within one mark'],[pc(ptsAgree,pts),'mark points agreeing']]
+    .map(([v,l])=>`<div class="stat"><b>${v}</b><span>${l}</span></div>`).join('')+
+    (n?`<p class="hint" style="grid-column:1/-1;margin:0">When they differ, the AI was more generous ${gen} time${gen===1?'':'s'} and harsher ${harsh} time${harsh===1?'':'s'}.</p>`:'');
+  $('#logBody').innerHTML=n?`<div class="tablewrap"><table><thead><tr><th>When</th><th>Question</th><th>AI</th><th>You</th><th>Match</th><th>Where you differ</th><th>Note</th></tr></thead><tbody>${LOG.map(l=>{
+      const a=sum(l.ai),y=sum(l.you),cls=a===y&&!l.diffs.length?'ok':Math.abs(a-y)<=1?'off':'bad';
+      return `<tr><td class="num">${new Date(l.at).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</td><td class="num">${esc(l.q)}</td><td class="num">${a}/${l.max}</td><td class="num">${y}/${l.max}</td>
+        <td><span class="pill ${cls}">${cls==='ok'?'agree':a===y?'same total':(a>y?'+':'')+(a-y)}</span></td><td>${l.diffs.map(esc).join('<br>')||'–'}</td><td>${esc(l.note)}</td></tr>`}).join('')}</tbody></table></div>`
+    :`<p class="emptylog">No comparisons saved yet. Mark an answer, tap your own ✓ or ✗ for each mark, then press Save to log.</p>`;
+}
+$('#export').onclick=async()=>{
+  if(!LOG.length){status('Nothing in the log to download yet.',true);return}
+  const q=v=>`"${String(v).replace(/"/g,'""')}"`;
+  const rows=[['when','question','ai_marks','your_marks','ai_score','your_score','max','flagged','root_cause','differences','note'].join(',')]
+    .concat(LOG.map(l=>[l.at,l.q,l.codes.map((c,i)=>c+':'+l.ai[i]).join(' '),l.codes.map((c,i)=>c+':'+l.you[i]).join(' '),
+      l.ai.reduce((a,b)=>a+b,0),l.you.reduce((a,b)=>a+b,0),l.max,l.review?'yes':'no',l.cause,l.diffs.join(' | '),l.note].map(q).join(',')));
+  const dl=await window.claude?.use?.('downloads');
+  if(!dl){status('Downloads aren\'t available in this view.',true);return}
+  try{await dl.save({filename:'marking-agreement-log.csv',data:rows.join('\n')});status('CSV ready.')}catch(e){status('Download was cancelled.')}
+};
+
+/* ---------- open with the completing-the-square example so the layout is visible ---------- */
+const EXAMPLE_AI={status:'marked',answer_only:false,confidence:'high',review_note:null,
+  transcription:['(x − 4)² − 16 − 4','(x − 4)² − 20 = 0','x − 4 = √20','x = 4 ± √20','x = 4 ± 2√5'],
+  points:[{id:'B1',awarded:false,line:1,follow_through:false,reason:'The bracket should be (x + 4)². Half of +8 is +4, and the sign stays.'},
+    {id:'M1a',awarded:true,line:2,follow_through:true,reason:'Subtracted 16 and 4 correctly for their bracket.'},
+    {id:'M1b',awarded:true,line:4,follow_through:true,reason:'Square rooted with ±, which appears by line 4.'},
+    {id:'A1a',awarded:false,line:4,follow_through:false,reason:'Needs −4 ± √20, not 4 ± √20.'},
+    {id:'A1b',awarded:false,line:5,follow_through:false,reason:'2√5 is right, but the answer still has the wrong sign.'}],
+  root_cause:{error_id:'csq-half',line:1,explanation:'Wrote (x − 4)² instead of (x + 4)². Everything after line 1 followed from this one slip.'},
+  went_right:['M1: (x − 4)² − 20 = 0 is the right process for their bracket.','M1: square rooting both sides with ±.'],
+  went_wrong:['B1, A1, A1: all lost to the sign of the bracket on line 1.','Line 3 is missing the ±. Write it as soon as you square root.'],
+  fix:['Half of +8 is +4: start with (x + 4)² − 16 − 4 = 0.','So x + 4 = ±√20.','x = −4 ± √20 = −4 ± 2√5.'],
+  verdict:'One sign error on line 1 cost three marks.'};
+S.result=MF.applyRules(SCHEMES[0],EXAMPLE_AI);S.resultQ=SCHEMES[0].id;S.yours={B1:0,M1a:1,M1b:1,A1a:0,A1b:0};
+
+renderQ();sizePad();renderReport();renderLog();bind();
+requestAnimationFrame(sizePad);
+</script>
