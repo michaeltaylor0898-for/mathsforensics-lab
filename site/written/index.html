@@ -312,7 +312,7 @@ function renderReport(r){
     const msg={unreadable:'We couldn\'t read enough of that to mark it. Try writing a little larger, one step per line.',
       blank:'We couldn\'t find any working in that. Make sure your working is in the picture.',
       wrong_question:'That looks like working for a different question. Check you picked the right one.'}[r.status];
-    $('#report').innerHTML=`<div class="card"><p style="margin:0">${msg}</p><p class="foot">This still counts towards today's limit.</p></div>`;return;
+    $('#report').innerHTML=`<div class="card"><p style="margin:0">${msg}</p><p class="foot">This still counts towards this week's allowance.</p></div>`;return;
   }
   const pct=Math.round(100*r.score/r.max),col=r.score===r.max?'var(--good)':r.score===0?'var(--bad)':'var(--cyan)';
   const li=r.points.map(p=>`<li class="${p.awarded?'yes':'no'}"><span class="code">${esc(p.code)}</span><span class="mk" aria-label="${p.awarded?'awarded':'not awarded'}">${p.awarded?'✓':'✗'}</span>
@@ -335,7 +335,7 @@ function renderReport(r){
     ${r.mark_id?`<details id="disp"><summary>Dispute a mark</summary><div class="dispute">
       <textarea id="dnote" maxlength="500" placeholder="Which mark, and why do you think it's wrong?"></textarea>
       <button class="btn ghost" id="dsend">Send to Mike</button></div></details>`:''}
-    <p class="foot">${r.remaining_today!=null?`${r.remaining_today} marked answer${r.remaining_today===1?'':'s'} left today. `:''}AI marking is checked against the mark scheme, but it can still get things wrong.</p>
+    <p class="foot">${r.remaining_week!=null?`${r.remaining_week} marked answer${r.remaining_week===1?'':'s'} left this week. `:''}AI marking is checked against the mark scheme, but it can still get things wrong.</p>
   </div>`;
   const ds=$('#dsend');if(ds)ds.onclick=async()=>{
     ds.disabled=true;
@@ -346,7 +346,7 @@ function renderReport(r){
 }
 
 // What a real report looks like, using the completing-the-square example
-const SAMPLE={status:'marked',score:2,max:5,mark_id:null,question:FALLBACK[0],remaining_today:null,needs_review:false,review_note:null,
+const SAMPLE={status:'marked',score:2,max:5,mark_id:null,question:FALLBACK[0],remaining_week:null,needs_review:false,review_note:null,
   verdict:'One sign error on line 1 cost you three marks.',
   transcription:['(x − 4)² − 16 − 4','(x − 4)² − 20 = 0','x − 4 = √20','x = 4 ± √20','x = 4 ± 2√5'],
   points:[

@@ -8,7 +8,7 @@
 // Deploy:   supabase functions deploy mark-written --no-verify-jwt   (the function checks the sign-in itself)
 // Secrets:  ANTHROPIC_API_KEY=<key from console.anthropic.com>
 //           PURGE_KEY=<long random string> (for the daily image clean-up, see migration 007)
-//           optional: MARKING_MODEL (default claude-sonnet-5-5), FREE_DAILY (default 2), FULL_DAILY (default 25),
+//           optional: MARKING_MODEL (default claude-sonnet-5-5), FREE_WEEKLY (default 3), FULL_WEEKLY (default 40),
 //                     ALLOWED_ORIGINS (comma-separated; default lab.mathsforensics.com + localhost)
 // Needs migration 007 (written_marks table + written-work storage bucket).
 import { createClient } from "npm:@supabase/supabase-js@2.45.4";
@@ -16,8 +16,8 @@ import { byId, publicQuestion, SCHEMES } from "./schemes.ts";
 import { type AiMarking, applyRules, MARKING_TOOL, schemeText, SYSTEM_PROMPT } from "./marking.ts";
 
 const MODEL = Deno.env.get("MARKING_MODEL") ?? "claude-sonnet-5-5";
-const FREE_DAILY = Number(Deno.env.get("FREE_DAILY") ?? 2);
-const FULL_DAILY = Number(Deno.env.get("FULL_DAILY") ?? 25);
+const FREE_WEEKLY = Number(Deno.env.get("FREE_WEEKLY") ?? 3);
+const FULL_WEEKLY = Number(Deno.env.get("FULL_WEEKLY") ?? 40);
 const MAX_IMAGE_BYTES = 3_000_000;
 const ORIGINS = (Deno.env.get("ALLOWED_ORIGINS") ?? "https://lab.mathsforensics.com,http://localhost:8000,http://127.0.0.1:8000")
   .split(",").map((s) => s.trim());
@@ -102,18 +102,19 @@ Deno.serve(async (req) => {
   const [, mediaType, b64] = m;
   if (b64.length * 0.75 > MAX_IMAGE_BYTES) return fail("That image is too large. Try again with a smaller photo.");
 
-  // Exam Pass holders get more marking per day than free accounts
+  // Weekly allowance, resetting at midnight UTC on Monday (midnight UK time in winter, 1am in summer)
   const userDb = createClient(url, anonKey() ?? key, { global: { headers: { Authorization: `Bearer ${token}` } }, auth: { persistSession: false } });
   const { data: access } = await userDb.rpc("my_access");
   const full = access?.level === "full";
-  const limit = full ? FULL_DAILY : FREE_DAILY;
+  const limit = full ? FULL_WEEKLY : FREE_WEEKLY;
   const since = new Date(); since.setUTCHours(0, 0, 0, 0);
+  since.setUTCDate(since.getUTCDate() - ((since.getUTCDay() + 6) % 7)); // back to Monday
   const { count } = await db.from("written_marks").select("id", { count: "exact", head: true })
     .eq("user_id", user.id).gte("created_at", since.toISOString());
   if ((count ?? 0) >= limit) {
     return fail(full
-      ? `You've used today's ${limit} marked answers. More tomorrow.`
-      : `Free accounts get ${limit} marked answers a day. The Exam Pass gives you ${FULL_DAILY}.`, 429);
+      ? `You've used this week's ${limit} marked answers. Your allowance resets on Monday.`
+      : `Free accounts get ${limit} marked answers a week. The Exam Pass gives you ${FULL_WEEKLY} a week.`, 429);
   }
 
   // Ask the AI to mark it
@@ -175,5 +176,5 @@ Deno.serve(async (req) => {
     if (r.error) console.error("Attempt save failed", r.error.message);
   }
 
-  return json({ mark_id: insErr ? null : markId, question: publicQuestion(scheme), ...result, remaining_today: limit - (count ?? 0) - 1 });
+  return json({ mark_id: insErr ? null : markId, question: publicQuestion(scheme), ...result, remaining_week: limit - (count ?? 0) - 1 });
 });
