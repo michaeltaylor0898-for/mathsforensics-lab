@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Written Evidence · Maths Forensics Lab</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Josefin+Sans:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --ink:#0B122C; --panel:#111a3d; --panel2:#16214b; --line:#26336a;
+  --cyan:#00FCF1; --blue:#1B36FF; --text:#E8ECF8; --muted:#93a0c8;
+  --good:#3DDC97; --warn:#FFC857; --bad:#FF6B7A;
+  --paper:#FBFCFF; --paper-grid:#DCE3F5; --pen:#0B122C;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Josefin Sans","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{background:var(--ink);color:var(--text);margin:0}
+body{font-family:var(--f-body);font-size:17px;line-height:1.5;
+  padding:0 max(16px,env(safe-area-inset-right,0px)) 48px max(16px,env(safe-area-inset-left,0px));
+  background-image:radial-gradient(circle at 1px 1px,rgba(0,252,241,.06) 1px,transparent 0);background-size:22px 22px}
+.wrap{max-width:860px;margin:0 auto}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+button:disabled{cursor:default;opacity:.55}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.eyebrow{font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.hint{font-size:14px;color:var(--muted);margin:0}
+
+header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:18px 0 14px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:12px;color:inherit;text-decoration:none}
+.brand svg{width:38px;height:44px;flex:none}
+.wm{font-family:var(--f-display);font-weight:800;font-size:15px;letter-spacing:.08em;line-height:1.1}
+.wm small{display:block;font-family:var(--f-mono);font-weight:500;font-size:11px;letter-spacing:.18em;color:var(--cyan);margin-top:4px}
+#who{font-size:14px;color:var(--muted)}
+#who a{color:var(--cyan)}
+.proto{display:inline-block;margin-top:14px;font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;color:var(--warn);border:1px solid rgba(255,200,87,.4);border-radius:4px;padding:3px 8px}
+
+h1{font-family:var(--f-display);font-weight:600;font-size:clamp(22px,4.5vw,30px);margin:10px 0 6px}
+.picker{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0 12px}
+.picker button{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 11px;font-family:var(--f-mono);font-size:12.5px;color:var(--muted)}
+.picker button[aria-pressed="true"]{border-color:var(--cyan);color:var(--cyan)}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+.qhead{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.qtext{font-size:19px;margin:8px 0 0}
+.qmarks{font-family:var(--f-mono);font-weight:700;color:var(--muted);white-space:nowrap}
+.tags{display:flex;gap:6px;margin-top:4px}
+.tag{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;padding:2px 6px;border-radius:4px;border:1px solid var(--line);color:var(--muted)}
+
+.modes{display:flex;gap:4px;background:var(--ink);border:1px solid var(--line);border-radius:10px;padding:4px;width:max-content;margin:16px 0 10px}
+.modes button{background:none;border:0;padding:7px 14px;border-radius:7px;font-weight:600;font-size:15px;color:var(--muted)}
+.modes button[aria-selected="true"]{background:var(--blue);color:#fff}
+
+.tools{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:8px}
+.tool{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:14px;font-weight:600;display:inline-flex;gap:6px;align-items:center}
+.tool[aria-pressed="true"]{border-color:var(--cyan);color:var(--cyan)}
+.tool svg{width:16px;height:16px}
+.spacer{flex:1}
+
+.sheet{position:relative;border-radius:10px;overflow:hidden;background:var(--paper);
+  background-image:linear-gradient(var(--paper-grid) 1px,transparent 1px),linear-gradient(90deg,var(--paper-grid) 1px,transparent 1px);
+  background-size:24px 24px}
+#pad{display:block;width:100%;touch-action:none;cursor:crosshair}
+.sheet .empty{position:absolute;inset:0;display:grid;place-items:center;color:#8a94b8;font-size:15px;pointer-events:none;text-align:center;padding:20px}
+.more{display:block;width:100%;margin-top:6px;background:none;border:1px dashed var(--line);border-radius:8px;padding:6px;color:var(--muted);font-size:14px}
+
+.drop{display:grid;place-items:center;gap:8px;border:1.5px dashed var(--line);border-radius:10px;padding:28px 16px;text-align:center;color:var(--muted)}
+.drop img{max-width:100%;max-height:420px;border-radius:8px;background:#fff}
+.btn{background:var(--blue);color:#fff;border:0;border-radius:10px;padding:12px 18px;font-weight:700;font-size:16px}
+.btn.ghost{background:var(--panel2);border:1px solid var(--line);color:var(--text)}
+.submit{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+
+/* the case report */
+#report:empty{display:none}
+#report{margin-top:18px}
+.verdict{display:flex;gap:16px;align-items:center}
+.ring{--p:0;flex:none;width:84px;height:84px;border-radius:50%;display:grid;place-items:center;
+  background:conic-gradient(var(--c,var(--cyan)) calc(var(--p)*1%),var(--line) 0)}
+.ring b{display:grid;place-items:center;width:68px;height:68px;border-radius:50%;background:var(--panel);font-family:var(--f-mono);font-size:20px}
+.verdict p{margin:2px 0 0;font-size:18px;font-weight:600}
+.notice{margin-top:14px;padding:10px 12px;border-radius:8px;font-size:14px;background:rgba(255,200,87,.1);border:1px solid rgba(255,200,87,.35);color:var(--warn)}
+.marks{margin:16px 0 0;padding:0;list-style:none;border-top:1px solid var(--line)}
+.marks li{display:grid;grid-template-columns:44px 24px 1fr;gap:6px 10px;align-items:start;padding:11px 0;border-bottom:1px solid var(--line)}
+.code{font-family:var(--f-mono);font-weight:700;font-size:13px;padding:2px 0;text-align:center;border-radius:5px;background:var(--ink)}
+.yes .code{color:var(--good)} .no .code{color:var(--bad)}
+.mk{font-weight:700;font-size:17px;line-height:1.2}
+.yes .mk{color:var(--good)} .no .mk{color:var(--bad)}
+.ev{grid-column:3;font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.ev span{color:var(--text);background:var(--ink);padding:1px 6px;border-radius:4px}
+.ft{font-family:var(--f-mono);font-size:10.5px;color:var(--cyan);border:1px solid rgba(0,252,241,.35);border-radius:4px;padding:0 4px;margin-left:6px}
+.cause{margin-top:16px;border-left:3px solid var(--bad);background:rgba(255,107,122,.08);border-radius:0 10px 10px 0;padding:12px 14px}
+.cause h3,.sect h3{font-family:var(--f-display);font-size:14px;font-weight:600;letter-spacing:.03em;margin:0 0 4px}
+.cause p{margin:0}
+.sect{margin-top:16px}
+.sect ul,.sect ol{margin:4px 0 0;padding-left:22px}
+.sect li{margin:3px 0}
+.good h3{color:var(--good)} .bad h3{color:var(--bad)} .fix h3{color:var(--cyan)}
+details{margin-top:16px;border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+summary{cursor:pointer;font-weight:600}
+.read{margin:8px 0 0;padding:0;list-style:none;font-family:var(--f-mono);font-size:14px}
+.read li{display:flex;gap:10px;padding:2px 0}
+.read li i{color:var(--muted);font-style:normal;width:2ch;text-align:right}
+.dispute{margin-top:12px;display:grid;gap:8px}
+.dispute textarea{background:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px;min-height:70px}
+.foot{margin-top:14px;font-size:13px;color:var(--muted)}
+.loading{display:flex;gap:12px;align-items:center;color:var(--muted)}
+.loading svg{width:28px;height:28px;animation:sw 1.4s ease-in-out infinite}
+@keyframes sw{50%{transform:translate(4px,-3px) rotate(-8deg)}}
+@media (prefers-reduced-motion:reduce){.loading svg{animation:none}}
+.err{color:var(--bad);font-size:15px}
+@media (max-width:520px){.qtext{font-size:17px}.ring{width:70px;height:70px}.ring b{width:56px;height:56px;font-size:17px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <a class="brand" href="../">
+    <svg viewBox="0 0 40 46" aria-hidden="true"><defs><clipPath id="mfShield"><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z"/></clipPath></defs><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z" fill="#111a3d"/><g clip-path="url(#mfShield)" fill="none" stroke="#00FCF1"><path d="M10.5 0V46M20.5 0V46M30.5 0V46M0 12.5H40M0 22.5H40M0 32.5H40" stroke-opacity=".25" stroke-width=".7"/><path d="M6 33C12 31 15.5 25 19 21S27 13.5 34 12.5" stroke-opacity=".9" stroke-width="1.6" stroke-linecap="round"/></g><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z" fill="none" stroke="#00FCF1" stroke-width="2.2" stroke-linejoin="round"/><circle cx="19" cy="21" r="6.2" fill="#111a3d" stroke="#00FCF1" stroke-width="2.6"/><circle cx="19" cy="21" r="1.6" fill="#00FCF1"/><path d="M23.4 25.4 28.8 30.8" stroke="#1B36FF" stroke-width="3.8" stroke-linecap="round"/></svg>
+    <div class="wm">MATHS FORENSICS<small>LAB · WRITTEN EVIDENCE</small></div>
+  </a>
+  <div id="who"></div>
+</header>
+
+<span class="proto">PROTOTYPE · NOT LINKED FROM THE LAB YET</span>
+<h1>Show your working. We'll mark every line.</h1>
+<p class="hint">Write your answer below with a stylus or finger, or photograph your work on paper. Each mark is checked against an exam-style mark scheme, and you'll see exactly where any marks were lost.</p>
+
+<div class="picker" id="picker" role="group" aria-label="Questions"></div>
+
+<section class="card" id="qcard"></section>
+
+<div class="modes" role="tablist">
+  <button role="tab" aria-selected="true" data-mode="draw">Write here</button>
+  <button role="tab" aria-selected="false" data-mode="photo">Upload a photo</button>
+</div>
+
+<section id="drawMode">
+  <div class="tools">
+    <button class="tool" data-tool="pen" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20l4-1 11-11-3-3L5 16z"/></svg>Pen</button>
+    <button class="tool" data-tool="eraser" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M8 20h12M5 15l9-9 5 5-8 8H8z"/></svg>Eraser</button>
+    <button class="tool" id="undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 14L4 9l5-5M4 9h11a5 5 0 010 10h-3"/></svg>Undo</button>
+    <span class="spacer"></span>
+    <button class="tool" id="clear">Clear</button>
+  </div>
+  <div class="sheet" id="sheet">
+    <canvas id="pad"></canvas>
+    <div class="empty" id="empty">Write one step per line, top to bottom</div>
+  </div>
+  <button class="more" id="more">+ More space</button>
+</section>
+
+<section id="photoMode" hidden>
+  <label class="drop" id="drop">
+    <input type="file" id="file" accept="image/*" capture="environment" hidden>
+    <span id="dropText">Tap to take a photo or choose one.<br><small>One question per photo, page flat, good light.</small></span>
+    <img id="preview" alt="Your photo" hidden>
+  </label>
+  <div class="tools" style="margin-top:8px"><button class="tool" id="rotate" hidden>Rotate</button><button class="tool" id="retake" hidden>Choose another</button></div>
+</section>
+
+<div class="submit">
+  <button class="btn" id="submit">Submit for marking</button>
+  <button class="btn ghost" id="sample">See a sample report</button>
+  <span class="hint" id="status"></span>
+</div>
+
+<section id="report" aria-live="polite"></section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+const CFG={supabaseUrl:"https://duvxykqlrekqhfvsvnrj.supabase.co",supabaseAnonKey:"sb_publishable_llHxDDCcByPpdbi5G2Hqtg_DqGcnuHn"};
+const FN=CFG.supabaseUrl+'/functions/v1/mark-written';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const sb=window.supabase?window.supabase.createClient(CFG.supabaseUrl,CFG.supabaseAnonKey,{auth:{persistSession:true}}):null;
+
+// Used until the function is deployed, and for the sample report
+const FALLBACK=[{id:'csq-01',topic:'csq',tier:'H',calculator:false,marks:5,prompt:'By completing the square, solve &nbsp;<b>x² + 8x − 4 = 0</b><br>Give your answers in surd form.'}];
+const S={questions:FALLBACK,q:FALLBACK[0],mode:'draw',session:null,photo:null,last:null};
+
+/* ---------- who's signed in (same session as the Lab) ---------- */
+async function who(){
+  if(sb){const {data}=await sb.auth.getSession(); S.session=data.session}
+  $('#who').innerHTML=S.session?`Signed in as <b>${esc(S.session.user.email)}</b>`:`<a href="../">Sign in to the Lab</a> to have your work marked`;
+}
+async function loadQuestions(){
+  try{const r=await fetch(FN);if(r.ok){const j=await r.json();if(j.questions?.length){S.questions=j.questions;S.q=j.questions[0]}}}catch(e){}
+  renderPicker();renderQ();
+}
+function renderPicker(){
+  $('#picker').innerHTML=S.questions.map(q=>`<button aria-pressed="${q.id===S.q.id}" data-q="${q.id}">${esc(q.id)}</button>`).join('');
+}
+function renderQ(){
+  const q=S.q;
+  $('#qcard').innerHTML=`<div class="qhead"><span class="eyebrow">Question</span><span class="qmarks">[${q.marks}]</span></div>
+    <p class="qtext">${q.prompt}</p>
+    <div class="tags"><span class="tag">${q.tier==='H'?'HIGHER':'FOUNDATION'}</span><span class="tag">${q.calculator?'CALCULATOR':'NON-CALCULATOR'}</span></div>`;
+}
+$('#picker').addEventListener('click',e=>{const b=e.target.closest('[data-q]');if(!b)return;
+  S.q=S.questions.find(q=>q.id===b.dataset.q);renderPicker();renderQ();clearPad();clearPhoto();$('#report').innerHTML='';});
+
+/* ---------- writing pad ---------- */
+const pad=$('#pad'),ctx=pad.getContext('2d');
+let strokes=[],cur=null,tool='pen',penSeen=false,padH=420;
+function sizePad(){
+  const w=pad.parentElement.clientWidth,dpr=window.devicePixelRatio||1;
+  pad.width=w*dpr;pad.height=padH*dpr;pad.style.height=padH+'px';
+  ctx.setTransform(dpr,0,0,dpr,0,0);redraw();
+}
+function drawStroke(s,c=ctx){
+  if(!s.pts.length)return;
+  c.save();c.lineCap='round';c.lineJoin='round';
+  if(s.erase){c.globalCompositeOperation='destination-out';c.strokeStyle='#000'}else c.strokeStyle='#0B122C';
+  for(let i=1;i<s.pts.length;i++){
+    const a=s.pts[i-1],b=s.pts[i];
+    c.lineWidth=s.erase?22:1.6+2.4*(b.p||.5);
+    c.beginPath();c.moveTo(a.x,a.y);c.lineTo(b.x,b.y);c.stroke();
+  }
+  if(s.pts.length===1&&!s.erase){const a=s.pts[0];c.fillStyle='#0B122C';c.beginPath();c.arc(a.x,a.y,1.6,0,7);c.fill()}
+  c.restore();
+}
+function redraw(){ctx.clearRect(0,0,pad.width,pad.height);strokes.forEach(s=>drawStroke(s));$('#empty').hidden=strokes.some(s=>!s.erase)}
+const pos=e=>{const r=pad.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top,p:e.pointerType==='mouse'?.5:(e.pressure||.5)}};
+pad.addEventListener('pointerdown',e=>{
+  if(e.pointerType==='pen')penSeen=true;
+  if(penSeen&&e.pointerType==='touch')return; // palm rejection once a stylus has been used
+  pad.setPointerCapture(e.pointerId);cur={erase:tool==='eraser',pts:[pos(e)]};strokes.push(cur);redraw();
+});
+pad.addEventListener('pointermove',e=>{
+  if(!cur)return;
+  for(const ev of (e.getCoalescedEvents?.()||[e]))cur.pts.push(pos(ev));
+  drawStroke({erase:cur.erase,pts:cur.pts.slice(-2-((e.getCoalescedEvents?.()||[e]).length))});
+});
+const end=()=>{cur=null;redraw()};
+pad.addEventListener('pointerup',end);pad.addEventListener('pointercancel',end);
+function clearPad(){strokes=[];padH=420;sizePad()}
+$('#undo').onclick=()=>{strokes.pop();redraw()};
+$('#clear').onclick=()=>{if(!strokes.length||confirm('Clear all your working?'))clearPad()};
+$('#more').onclick=()=>{padH+=240;sizePad()};
+document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>{tool=b.dataset.tool;document.querySelectorAll('[data-tool]').forEach(x=>x.setAttribute('aria-pressed',x===b))});
+addEventListener('resize',()=>{const old=pad.parentElement.clientWidth;if(Math.abs(old*(window.devicePixelRatio||1)-pad.width)>2)sizePad()});
+
+// Crop to the ink, put it on white, and keep it a sensible size for the marker
+function padImage(){
+  const ink=strokes.filter(s=>!s.erase);if(!ink.length)return null;
+  let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+  ink.forEach(s=>s.pts.forEach(p=>{x0=Math.min(x0,p.x);y0=Math.min(y0,p.y);x1=Math.max(x1,p.x);y1=Math.max(y1,p.y)}));
+  const m=24;x0-=m;y0-=m;x1+=m;y1+=m;
+  const w=x1-x0,h=y1-y0,k=Math.min(2,1400/w,2000/h);
+  const c=document.createElement('canvas');c.width=Math.round(w*k);c.height=Math.round(h*k);
+  const g=c.getContext('2d');
+  const layer=document.createElement('canvas');layer.width=c.width;layer.height=c.height;
+  const lg=layer.getContext('2d');lg.setTransform(k,0,0,k,-x0*k,-y0*k);strokes.forEach(s=>drawStroke(s,lg));
+  g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.drawImage(layer,0,0);
+  return c.toDataURL('image/jpeg',.9);
+}
+
+/* ---------- photo ---------- */
+let rot=0,img=null;
+$('#file').onchange=async e=>{
+  const f=e.target.files[0];if(!f)return;
+  img=await createImageBitmap(f,{imageOrientation:'from-image'}).catch(()=>null);
+  if(!img){$('#status').textContent='That file isn\'t an image we can read.';return}
+  rot=0;showPhoto();
+};
+function showPhoto(){
+  const long=1800,k=Math.min(1,long/Math.max(img.width,img.height));
+  const w=img.width*k,h=img.height*k,turn=rot%180!==0;
+  const c=document.createElement('canvas');c.width=turn?h:w;c.height=turn?w:h;
+  const g=c.getContext('2d');g.translate(c.width/2,c.height/2);g.rotate(rot*Math.PI/180);g.drawImage(img,-w/2,-h/2,w,h);
+  S.photo=c.toDataURL('image/jpeg',.85);
+  $('#preview').src=S.photo;$('#preview').hidden=false;$('#dropText').hidden=true;$('#rotate').hidden=$('#retake').hidden=false;
+}
+function clearPhoto(){S.photo=null;img=null;$('#file').value='';$('#preview').hidden=true;$('#dropText').hidden=false;$('#rotate').hidden=$('#retake').hidden=true}
+$('#rotate').onclick=()=>{rot=(rot+90)%360;showPhoto()};
+$('#retake').onclick=()=>$('#file').click();
+
+document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{
+  S.mode=b.dataset.mode;document.querySelectorAll('[data-mode]').forEach(x=>x.setAttribute('aria-selected',x===b));
+  $('#drawMode').hidden=S.mode!=='draw';$('#photoMode').hidden=S.mode!=='photo';if(S.mode==='draw')sizePad();
+});
+
+/* ---------- marking ---------- */
+const magnifier=`<svg viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2.2" stroke-linecap="round"><circle cx="10" cy="10" r="6"/><path d="M15 15l5 5"/></svg>`;
+$('#submit').onclick=async()=>{
+  const image=S.mode==='draw'?padImage():S.photo;
+  if(!image){$('#status').textContent=S.mode==='draw'?'Write your working first.':'Add a photo first.';return}
+  await who();
+  if(!S.session){$('#status').innerHTML='<a href="../" style="color:var(--cyan)">Sign in to the Lab</a> first, then come back here.';return}
+  $('#status').textContent='';$('#submit').disabled=true;
+  $('#report').innerHTML=`<div class="card loading">${magnifier}<span>Examining the evidence, line by line…</span></div>`;
+  try{
+    const r=await fetch(FN,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+S.session.access_token,apikey:CFG.supabaseAnonKey},
+      body:JSON.stringify({question_id:S.q.id,image})});
+    const j=await r.json().catch(()=>({error:'The marker didn\'t answer. Try again.'}));
+    if(!r.ok||j.error)throw new Error(j.error||'Something went wrong.');
+    renderReport(j);
+  }catch(e){$('#report').innerHTML=`<div class="card err">${esc(e.message)}</div>`}
+  finally{$('#submit').disabled=false}
+};
+
+function renderReport(r){
+  S.last=r;
+  if(r.status!=='marked'){
+    const msg={unreadable:'We couldn\'t read enough of that to mark it. Try writing a little larger, one step per line.',
+      blank:'We couldn\'t find any working in that. Make sure your working is in the picture.',
+      wrong_question:'That looks like working for a different question. Check you picked the right one.'}[r.status];
+    $('#report').innerHTML=`<div class="card"><p style="margin:0">${msg}</p><p class="foot">This still counts towards today's limit.</p></div>`;return;
+  }
+  const pct=Math.round(100*r.score/r.max),col=r.score===r.max?'var(--good)':r.score===0?'var(--bad)':'var(--cyan)';
+  const li=r.points.map(p=>`<li class="${p.awarded?'yes':'no'}"><span class="code">${esc(p.code)}</span><span class="mk" aria-label="${p.awarded?'awarded':'not awarded'}">${p.awarded?'✓':'✗'}</span>
+    <span>${esc(p.overridden||p.reason)}${p.follow_through?'<span class="ft" title="Earned using your own earlier value">FOLLOW-THROUGH</span>':''}</span>
+    ${p.evidence?`<span class="ev">Line ${p.line}: <span>${esc(p.evidence)}</span></span>`:''}</li>`).join('');
+  const list=(cls,title,a,ol)=>a?.length?`<div class="sect ${cls}"><h3>${title}</h3><${ol?'ol':'ul'}>${a.map(x=>`<li>${esc(x)}</li>`).join('')}</${ol?'ol':'ul'}></div>`:'';
+  $('#report').innerHTML=`<div class="card">
+    <div class="eyebrow">Case report · ${esc(r.question?.id||S.q.id)}</div>
+    <div class="verdict" style="margin-top:10px"><div class="ring" style="--p:${pct};--c:${col}"><b>${r.score}/${r.max}</b></div>
+      <div><span class="eyebrow">Finding</span><p>${esc(r.verdict)}</p></div></div>
+    ${r.needs_review?`<div class="notice">Provisional mark. ${esc(r.review_note||'Some of this was hard to judge.')} If it looks wrong, use “Dispute a mark” below.</div>`:''}
+    <ul class="marks">${li}</ul>
+    ${r.root_cause?`<div class="cause"><h3>Root cause${r.root_cause.name?': '+esc(r.root_cause.name):''}${r.root_cause.line?` · line ${r.root_cause.line}`:''}</h3><p>${esc(r.root_cause.explanation)}</p></div>`:''}
+    ${list('good','What earned marks',r.went_right)}
+    ${list('bad','What lost marks',r.went_wrong)}
+    ${list('fix','How to fix it',r.fix,true)}
+    <details><summary>What we read from your working</summary>
+      <ol class="read">${r.transcription.map((t,i)=>`<li><i>${i+1}</i><span>${esc(t)}</span></li>`).join('')}</ol>
+      <p class="foot">If we misread your handwriting, the marks above may be wrong. Tell us below.</p></details>
+    ${r.mark_id?`<details id="disp"><summary>Dispute a mark</summary><div class="dispute">
+      <textarea id="dnote" maxlength="500" placeholder="Which mark, and why do you think it's wrong?"></textarea>
+      <button class="btn ghost" id="dsend">Send to Mike</button></div></details>`:''}
+    <p class="foot">${r.remaining_today!=null?`${r.remaining_today} marked answer${r.remaining_today===1?'':'s'} left today. `:''}AI marking is checked against the mark scheme, but it can still get things wrong.</p>
+  </div>`;
+  const ds=$('#dsend');if(ds)ds.onclick=async()=>{
+    ds.disabled=true;
+    const res=await fetch(FN,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+S.session.access_token,apikey:CFG.supabaseAnonKey},
+      body:JSON.stringify({action:'dispute',mark_id:r.mark_id,note:$('#dnote').value})}).catch(()=>null);
+    $('#disp').innerHTML=res?.ok?'<summary>Dispute sent</summary><p class="foot">Thanks. A person will check this mark.</p>':'<summary>Dispute a mark</summary><p class="err">Couldn\'t send that. Try again later.</p>';
+  };
+}
+
+// What a real report looks like, using the completing-the-square example
+const SAMPLE={status:'marked',score:2,max:5,mark_id:null,question:FALLBACK[0],remaining_today:null,needs_review:false,review_note:null,
+  verdict:'One sign error on line 1 cost you three marks.',
+  transcription:['(x − 4)² − 16 − 4','(x − 4)² − 20 = 0','x − 4 = √20','x = 4 ± √20','x = 4 ± 2√5'],
+  points:[
+    {id:'B1',code:'B1',awarded:false,follow_through:false,line:1,evidence:'(x − 4)² − 16 − 4',reason:'The bracket should be (x + 4)². Half of +8 is +4, and the sign stays the same.'},
+    {id:'M1a',code:'M1',awarded:true,follow_through:true,line:2,evidence:'(x − 4)² − 20 = 0',reason:'You subtracted 16 and 4 correctly for your bracket.'},
+    {id:'M1b',code:'M1',awarded:true,follow_through:true,line:4,evidence:'x = 4 ± √20',reason:'You square rooted both sides, and the ± appears by line 4.'},
+    {id:'A1a',code:'A1',awarded:false,follow_through:false,line:4,evidence:'x = 4 ± √20',reason:'The answer needs −4, not +4. This mark can\'t be earned with a wrong bracket.'},
+    {id:'A1b',code:'A1',awarded:false,follow_through:false,line:5,evidence:'x = 4 ± 2√5',reason:'Simplifying √20 to 2√5 was right, but the answer is still built on the wrong sign.'}],
+  root_cause:{error_id:'csq-half',name:"Didn't halve the x coefficient",line:1,explanation:'You halved 8 correctly but wrote (x − 4)² instead of (x + 4)². Expanding (x − 4)² gives −8x, not +8x. Everything after that line followed from this one slip.'},
+  went_right:['M1: subtracting 16 and 4 to get (x − 4)² − 20 = 0 was the right process.','M1: square rooting both sides with ± was correct.','√20 = 2√5 was simplified correctly.'],
+  went_wrong:['B1, A1, A1: all three were lost to the sign of the bracket on line 1.','Line 3 is missing the ±. It only appears on line 4. Write it as soon as you square root.'],
+  fix:['Half of +8 is +4, so start with (x + 4)² − 16 − 4 = 0.','That gives (x + 4)² = 20, so x + 4 = ±√20.','Take away 4: x = −4 ± √20 = −4 ± 2√5.','Check: expand (x + 4)² in your head. Does it give +8x?']};
+$('#sample').onclick=()=>{S.q=FALLBACK[0];renderPicker();renderQ();renderReport(SAMPLE);$('#report').scrollIntoView({behavior:'smooth',block:'start'})};
+
+who();loadQuestions();sizePad();
+</script>
+</body>
+</html>
