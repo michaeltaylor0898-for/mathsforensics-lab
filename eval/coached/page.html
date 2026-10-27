@@ -89,6 +89,14 @@ button:disabled{cursor:default;opacity:.5}
 .ptool[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
 .ptool.go{background:var(--blue);border-color:var(--blue);color:#fff}
 .spacer{flex:1}
+.sizes{display:inline-flex;gap:4px}
+.size{display:inline-flex;align-items:center;gap:5px}
+.size i{display:inline-block;border-radius:50%;background:currentColor}
+.zoomwrap{margin-top:10px;font-family:var(--f-body)}
+.ztools{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px;font-size:13.5px;color:var(--paper-muted)}
+.zsheet{border:2px solid var(--blue);border-radius:8px;overflow:hidden;background:#fff;
+  background-image:linear-gradient(transparent calc(50% - 1px),var(--paper-rule) calc(50% - 1px),var(--paper-rule) calc(50% + 1px),transparent calc(50% + 1px))}
+.zsheet canvas{display:block;width:100%;touch-action:none;cursor:crosshair}
 .pstatus{font-family:var(--f-body);font-size:13.5px;color:var(--paper-muted)}
 
 /* traps checklist and the part's result, inside the paper */
@@ -224,36 +232,68 @@ function tick(){
   if(!S.finished)setTimeout(tick,1000);
 }
 
-/* ---------- writing pads (one per part) ---------- */
-const PADS={};
-function makePad(id,host){
+/* ---------- writing pads (one per part) ----------
+   Smooth ink: points are low-pass filtered (steadies a shaky mouse or finger) and joined with
+   curves through the midpoints, at the chosen pen size. A stylus varies the width a little with
+   pressure. Zoom writing: write large in a strip under the page; strokes are shrunk by Z into the
+   blue box on the page. */
+const PADS={},SIZES={fine:1.3,medium:2.1,bold:3.1},Z=0.4,ZH=170;
+try{const v=localStorage.getItem('mf-pen');if(SIZES[v])S.size=v;S.zoom=localStorage.getItem('mf-zoom')==='1'}catch(e){}
+S.size=S.size||'fine';
+const mid=(a,b)=>({x:(a.x+b.x)/2,y:(a.y+b.y)/2,p:(a.p+b.p)/2});
+const widthAt=(s,p)=>s.erase?20:SIZES[s.size||'fine']*(s.pen?0.75+0.5*(p??.5):1);
+function seg(c,s,i){const P=s.pts,a=i===1?P[0]:mid(P[i-1],P[i]),b=i===P.length-1?P[i]:mid(P[i],P[i+1]);
+  c.lineWidth=widthAt(s,P[i].p);c.beginPath();c.moveTo(a.x,a.y);if(i===P.length-1)c.lineTo(b.x,b.y);else c.quadraticCurveTo(P[i].x,P[i].y,b.x,b.y);c.stroke()}
+function prep(c,s){c.lineCap='round';c.lineJoin='round';if(s.erase){c.globalCompositeOperation='destination-out';c.strokeStyle='#000'}else{c.globalCompositeOperation='source-over';c.strokeStyle='#141824'}}
+function stroke(s,c){const P=s.pts;if(!P.length)return;c.save();prep(c,s);
+  if(P.length===1){if(!s.erase){c.fillStyle='#141824';c.beginPath();c.arc(P[0].x,P[0].y,widthAt(s,P[0].p)/2+.3,0,7);c.fill()}}
+  else for(let i=1;i<P.length;i++)seg(c,s,i);c.restore()}
+function addPoint(s,q){const P=s.pts,l=P[P.length-1];if(l&&Math.hypot(q.x-l.x,q.y-l.y)<0.7)return;const k=s.pen?0.6:0.38;
+  P.push(l?{x:l.x+(q.x-l.x)*k,y:l.y+(q.y-l.y)*k,p:q.p}:q)}
+function makePad(id,host,zhost){
   const old=PADS[id];
   const cv=document.createElement('canvas'),ctx=cv.getContext('2d'),empty=document.createElement('div');
   empty.className='empty';empty.textContent='Write your working here, one step per line';
   host.append(cv,empty);
-  const pad=PADS[id]={cv,ctx,empty,strokes:old?.strokes||[],h:old?.h||250,cur:null,penSeen:false};
-  pad.size=()=>{const w=host.clientWidth,d=window.devicePixelRatio||1;if(!w)return;cv.width=w*d;cv.height=pad.h*d;cv.style.height=pad.h+'px';ctx.setTransform(d,0,0,d,0,0);pad.redraw()};
-  pad.redraw=()=>{ctx.clearRect(0,0,cv.width,cv.height);pad.strokes.forEach(s=>stroke(s,ctx));empty.hidden=pad.strokes.some(s=>!s.erase)};
-  const pos=e=>{const r=cv.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top,p:e.pointerType==='mouse'?.5:(e.pressure||.5)}};
+  const pad=PADS[id]={cv,ctx,empty,strokes:old?.strokes||[],h:old?.h||250,cur:null,penSeen:false,target:old?.target||{x:12,y:12}};
+  const locked=()=>S.finished||S.st[id].result;
+  const zoomHere=()=>S.zoom&&!locked()&&S.active[QS[S.qi].q]===id;
+  // zoom strip
+  const zc=document.createElement('canvas'),zctx=zc.getContext('2d');zhost.querySelector('.zsheet').append(zc);
+  const zW=()=>zc.clientWidth*Z,zHt=()=>ZH*Z;
+  pad.clamp=()=>{const W=cv.clientWidth,t=pad.target;t.x=Math.max(0,Math.min(t.x,W-zW()));t.y=Math.max(0,t.y);if(t.y+zHt()>pad.h-10){pad.h=Math.ceil(t.y+zHt()+100);pad.size()}};
+  pad.size=()=>{const w=host.clientWidth,d=window.devicePixelRatio||1;if(!w)return;cv.width=w*d;cv.height=pad.h*d;cv.style.height=pad.h+'px';ctx.setTransform(d,0,0,d,0,0);
+    zhost.hidden=!zoomHere();if(!zhost.hidden){const zw=zhost.clientWidth;zc.width=zw*d;zc.height=ZH*d;zc.style.height=ZH+'px'}pad.redraw()};
+  pad.redraw=()=>{ctx.clearRect(0,0,cv.width,cv.height);pad.strokes.forEach(s=>stroke(s,ctx));empty.hidden=pad.strokes.some(s=>!s.erase);
+    cv.style.cursor=zoomHere()?'pointer':'crosshair';
+    if(zoomHere()){const t=pad.target;ctx.save();ctx.strokeStyle='#1B36FF';ctx.lineWidth=1.5;ctx.setLineDash([5,4]);ctx.strokeRect(t.x+.5,t.y+.5,zW(),zHt());ctx.restore();
+      const d=window.devicePixelRatio||1;zctx.setTransform(1,0,0,1,0,0);zctx.clearRect(0,0,zc.width,zc.height);zctx.setTransform(d/Z,0,0,d/Z,-t.x*d/Z,-t.y*d/Z);pad.strokes.forEach(s=>stroke(s,zctx))}};
+  const pos=e=>{const r=cv.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top,p:e.pointerType==='pen'?(e.pressure||.5):.5}};
+  const zpos=e=>{const r=zc.getBoundingClientRect();return{x:pad.target.x+(e.clientX-r.left)*Z,y:pad.target.y+(e.clientY-r.top)*Z,p:e.pointerType==='pen'?(e.pressure||.5):.5}};
+  const begin=(e,el,at)=>{
+    if(e.pointerType==='pen')pad.penSeen=true; if(pad.penSeen&&e.pointerType==='touch')return;if(e.button>0)return;
+    el.setPointerCapture(e.pointerId);pad.cur={erase:S.tool==='eraser',size:S.size,pen:e.pointerType==='pen',pts:[at(e)],drawn:1,at,el};pad.strokes.push(pad.cur);startClock();pad.redraw();
+  };
   cv.addEventListener('pointerdown',e=>{
-    if(S.finished||S.st[id].result)return;
-    if(e.pointerType==='pen')pad.penSeen=true; if(pad.penSeen&&e.pointerType==='touch')return;
-    cv.setPointerCapture(e.pointerId);pad.cur={erase:S.tool==='eraser',pts:[pos(e)]};pad.strokes.push(pad.cur);startClock();
-    if(S.active[QS[S.qi].q]!==id){S.active[QS[S.qi].q]=id;renderCoach()}
-    pad.redraw();
+    if(locked())return;
+    if(S.active[QS[S.qi].q]!==id){S.active[QS[S.qi].q]=id;renderCoach();syncZoom()}
+    if(zoomHere()){const r=cv.getBoundingClientRect();pad.target={x:e.clientX-r.left-zW()/4,y:e.clientY-r.top-zHt()/2};pad.clamp();pad.redraw();return}
+    begin(e,cv,pos);
   });
-  cv.addEventListener('pointermove',e=>{if(!pad.cur)return;const ev=e.getCoalescedEvents?.()||[e];for(const x of ev)pad.cur.pts.push(pos(x));stroke({erase:pad.cur.erase,pts:pad.cur.pts.slice(-2-ev.length)},ctx)});
-  const end=()=>{if(pad.cur){pad.cur=null;pad.redraw();renderNav()}};
-  cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
+  zc.addEventListener('pointerdown',e=>{if(!locked())begin(e,zc,zpos)});
+  const move=e=>{const c=pad.cur;if(!c||c.el!==e.currentTarget)return;for(const x of (e.getCoalescedEvents?.()||[e]))addPoint(c,c.at(x));
+    if(c.el===zc)pad.redraw();else{ctx.save();prep(ctx,c);for(let i=c.drawn;i<c.pts.length-1;i++)seg(ctx,c,i);ctx.restore();c.drawn=Math.max(c.drawn,c.pts.length-1)}};
+  cv.addEventListener('pointermove',move);zc.addEventListener('pointermove',move);
+  const end=()=>{const c=pad.cur;if(!c)return;pad.cur=null;
+    if(c.el===zc){const maxX=Math.max(...c.pts.map(p=>p.x));if(maxX>pad.target.x+zW()*0.8&&pad.target.x+zW()<cv.clientWidth-4){pad.target.x+=zW()*0.55;pad.clamp()}}
+    pad.redraw();renderNav()};
+  for(const el of [cv,zc]){el.addEventListener('pointerup',end);el.addEventListener('pointercancel',end)}
+  zhost.querySelector('[data-zl]').onclick=()=>{pad.target.x-=zW()*0.5;pad.clamp();pad.redraw()};
+  zhost.querySelector('[data-zr]').onclick=()=>{pad.target.x+=zW()*0.5;pad.clamp();pad.redraw()};
+  zhost.querySelector('[data-zn]').onclick=()=>{pad.target.x=12;pad.target.y+=zHt()*0.75;pad.clamp();pad.redraw()};
   requestAnimationFrame(pad.size);
 }
-function stroke(s,c){
-  if(!s.pts.length)return;c.save();c.lineCap='round';c.lineJoin='round';
-  if(s.erase){c.globalCompositeOperation='destination-out';c.strokeStyle='#000'}else c.strokeStyle='#141824';
-  for(let i=1;i<s.pts.length;i++){const a=s.pts[i-1],b=s.pts[i];c.lineWidth=s.erase?22:1.5+2.3*(b.p||.5);c.beginPath();c.moveTo(a.x,a.y);c.lineTo(b.x,b.y);c.stroke()}
-  if(s.pts.length===1&&!s.erase){const a=s.pts[0];c.fillStyle='#141824';c.beginPath();c.arc(a.x,a.y,1.5,0,7);c.fill()}
-  c.restore();
-}
+function syncZoom(){QS[S.qi].parts.forEach(p=>PADS[p.id]?.size())}
 const hasInk=id=>!!PADS[id]?.strokes.some(s=>!s.erase);
 function padBlob(id){
   const pad=PADS[id],ink=pad.strokes.filter(s=>!s.erase);if(!ink.length)return Promise.resolve(null);
@@ -264,6 +304,7 @@ function padBlob(id){
   const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.drawImage(L,0,0);
   return new Promise(r=>c.toBlob(r,'image/jpeg',.9));
 }
+addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='z'&&!/INPUT|TEXTAREA/.test(document.activeElement?.tagName||'')){const id=S.active[QS[S.qi].q];if(!id||S.st[id].result||!PADS[id])return;e.preventDefault();PADS[id].strokes.pop();PADS[id].redraw();renderNav()}});
 addEventListener('resize',()=>Object.values(PADS).forEach(p=>{if(p.cv.isConnected&&Math.abs(p.cv.parentElement.clientWidth*(devicePixelRatio||1)-p.cv.width)>2)p.size()}));
 
 /* ---------- prompt words: student highlights and the key words ---------- */
@@ -316,20 +357,32 @@ function renderSheet(){
       <div class="prompt ${S.hlOn&&S.active[q.q]===p.id?'hlon':''} ${st.revealed?'revealed':''}" data-prompt="${p.id}">${lbl}${p.prompt}</div>
       ${p.diagram?`<div class="diagram">${p.diagram}</div>`:''}
       <div class="pad" data-pad="${p.id}"></div>
+      <div class="zoomwrap" data-zoom="${p.id}" hidden>
+        <div class="ztools"><span>Write big here. Tap the page to choose where it goes.</span><span class="spacer"></span>
+          <button class="ptool" data-zl aria-label="Move left">◀</button><button class="ptool" data-zr aria-label="Move right">▶</button><button class="ptool" data-zn>New line ↵</button></div>
+        <div class="zsheet"></div>
+      </div>
       <div class="padtools">
         <button class="ptool" data-tool="pen" aria-pressed="${S.tool==='pen'}">Pen</button>
         <button class="ptool" data-tool="eraser" aria-pressed="${S.tool==='eraser'}">Eraser</button>
         <button class="ptool" data-undo="${p.id}">Undo</button>
         <button class="ptool" data-more="${p.id}">More space</button>
+        <span class="sizes">${['fine','medium','bold'].map(z=>`<button class="ptool size" data-size="${z}" aria-pressed="${S.size===z}" title="${z[0].toUpperCase()+z.slice(1)} pen"><i style="width:${{fine:4,medium:6,bold:9}[z]}px;height:${{fine:4,medium:6,bold:9}[z]}px"></i>${z[0].toUpperCase()+z.slice(1)}</button>`).join('')}</span>
+        <button class="ptool" data-zoomtoggle aria-pressed="${!!S.zoom}">Zoom writing</button>
         <span class="spacer"></span>
         ${S.mode==='coached'&&!st.result?`<button class="ptool" data-flag="${p.id}">${st.flag?'Unflag':'Skip for now'}</button><button class="ptool go" data-hand="${p.id}" ${st.marking?'disabled':''}>Hand in ${p.source.part?'('+p.source.part+')':'answer'}</button>`:''}
         ${S.mode==='exam'&&!st.result&&!S.finished?`<span class="pstatus">Marked when you hand in the paper</span>`:''}
       </div>
       <div data-out="${p.id}">${partOut(p)}</div></section>`}).join('')}</div></div>
     <div class="sheetfoot"><span>Maths Forensics | Cold Case B | GCSE Higher Paper 1 (Non-Calculator)</span><span>CC-B/1H · Q${q.q}</span></div>`;
-  q.parts.forEach(p=>{makePad(p.id,$(`[data-pad="${p.id}"]`));wordify($(`[data-prompt="${p.id}"]`),p);
+  q.parts.forEach(p=>{makePad(p.id,$(`[data-pad="${p.id}"]`),$(`[data-zoom="${p.id}"]`));wordify($(`[data-prompt="${p.id}"]`),p);
     $(`[data-part="${p.id}"]`).addEventListener('pointerdown',()=>{if(S.active[q.q]!==p.id){S.active[q.q]=p.id;renderCoach();document.querySelectorAll('.prompt').forEach(x=>x.classList.toggle('hlon',S.hlOn&&x.dataset.prompt===p.id))}},true)});
   $('#sheet').querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>{S.tool=b.dataset.tool;$('#sheet').querySelectorAll('[data-tool]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.tool===S.tool))});
+  $('#sheet').querySelectorAll('[data-size]').forEach(b=>b.onclick=()=>{S.size=b.dataset.size;S.tool='pen';try{localStorage.setItem('mf-pen',S.size)}catch(e){}
+    $('#sheet').querySelectorAll('[data-size]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.size===S.size));$('#sheet').querySelectorAll('[data-tool]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.tool==='pen'))});
+  $('#sheet').querySelectorAll('[data-zoomtoggle]').forEach(b=>b.onclick=()=>{S.zoom=!S.zoom;try{localStorage.setItem('mf-zoom',S.zoom?'1':'0')}catch(e){}
+    $('#sheet').querySelectorAll('[data-zoomtoggle]').forEach(x=>x.setAttribute('aria-pressed',S.zoom));
+    const part=b.closest('[data-part]').dataset.part;S.active[QS[S.qi].q]=part;renderCoach();syncZoom()});
   $('#sheet').querySelectorAll('[data-undo]').forEach(b=>b.onclick=()=>{const p=PADS[b.dataset.undo];if(S.st[b.dataset.undo].result)return;p.strokes.pop();p.redraw();renderNav()});
   $('#sheet').querySelectorAll('[data-more]').forEach(b=>b.onclick=()=>{const p=PADS[b.dataset.more];p.h+=200;p.size()});
   $('#sheet').querySelectorAll('[data-flag]').forEach(b=>b.onclick=()=>{const st=S.st[b.dataset.flag];st.flag=!st.flag;renderNav();
