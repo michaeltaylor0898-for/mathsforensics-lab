@@ -3,3 +3,4 @@ node_modules/
 *.zip
 eval/samples/
 eval/rig/marking-rig.html
+eval/coached/coached-paper.html
