@@ -47,6 +47,21 @@ export type Scheme = {
   points: MarkPoint[];
   errors?: { id: string; looksLike: string }[];
   markerNotes?: string[];
+  source?: { paper: string; q: string; part?: string };   // e.g. { paper: "CC-B/1H", q: "2", part: "a" }
+  coach?: Coaching;
+};
+
+// The on-screen coaching for one question (coached-paper mode). Written once per question, so it
+// costs nothing to run and never varies.
+//   keyWords  phrases in the prompt the student should spot before starting. Each `text` must appear
+//             in the prompt exactly as written (the page finds and marks it); `why` is shown on reveal.
+//   clues     three clues, one at a time: 1 names the method, 2 gives the first line, 3 the key step.
+//             Never the final answer.
+//   traps     checks shown just before the student hands the answer in.
+//   export type Coaching = {
+  keyWords: { text: string; why: string }[];
+  clues: [string, string, string];
+  traps: string[];
 };
 
 export const SCHEMES: Scheme[] = [
@@ -207,4 +222,5 @@ export const byId = (id: string) => SCHEMES.find((s) => s.id === id);
 // What the page is allowed to see.
 export const publicQuestion = (s: Scheme) => ({
   id: s.id, topic: s.topic, tier: s.tier, calculator: s.calculator, prompt: s.prompt, marks: s.marks,
+  source: s.source ?? null, coach: s.coach ?? null,
 });
