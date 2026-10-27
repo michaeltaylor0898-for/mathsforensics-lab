@@ -55,6 +55,14 @@ select{background:var(--panel2);border:1px solid var(--line);border-radius:8px;p
 .sheet{position:relative;border-radius:10px;overflow:hidden;background:var(--paper);
   background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px}
 #pad{display:block;width:100%;touch-action:none;cursor:crosshair}
+.ztools{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:2px 0 6px}
+.zsheet{border-radius:10px;overflow:hidden;background:var(--paper);border:2px solid var(--blue);
+  background-image:linear-gradient(transparent calc(50% - 1px),var(--grid) calc(50% - 1px),var(--grid) calc(50% + 1px),transparent calc(50% + 1px))}
+#zpad{display:block;width:100%;touch-action:none;cursor:crosshair}
+.sizes{display:inline-flex;gap:4px}
+.size{display:inline-flex;align-items:center;gap:6px}
+.size i{display:inline-block;border-radius:50%;background:currentColor}
+
 .empty{position:absolute;inset:0;display:grid;place-items:center;color:#7d88ad;font-size:15px;pointer-events:none;text-align:center;padding:20px}
 .more{width:100%;background:none;border:1px dashed var(--line);border-radius:8px;padding:5px;color:var(--muted);font-size:14px}
 .drop{display:grid;place-items:center;gap:8px;border:1.5px dashed var(--line);border-radius:10px;padding:26px 16px;text-align:center;color:var(--muted);cursor:pointer}
@@ -158,12 +166,28 @@ td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:n
         <div class="tools">
           <button class="tool" data-tool="pen" aria-pressed="true">Pen</button>
           <button class="tool" data-tool="eraser" aria-pressed="false">Eraser</button>
-          <button class="tool" id="undo">Undo</button>
+          <button class="tool" id="undo" title="Undo (Ctrl+Z)">Undo</button>
+          <span class="sizes" role="group" aria-label="Pen size">
+            <button class="tool size" data-size="fine" aria-pressed="true" title="Fine pen"><i style="width:4px;height:4px"></i>Fine</button>
+            <button class="tool size" data-size="medium" aria-pressed="false" title="Medium pen"><i style="width:6px;height:6px"></i>Medium</button>
+            <button class="tool size" data-size="bold" aria-pressed="false" title="Bold pen"><i style="width:9px;height:9px"></i>Bold</button>
+          </span>
+          <button class="tool" id="zoomBtn" aria-pressed="false" title="Write large in a strip; it's shrunk onto the page">Zoom writing</button>
           <span class="spacer"></span>
           <span id="clearWrap"><button class="tool" id="clear">Clear</button></span>
         </div>
         <div class="sheet"><canvas id="pad"></canvas><div class="empty" id="empty">Write one step per line, top to bottom</div></div>
         <button class="more" id="more">+ More space</button>
+        <div id="zoomWrap" hidden>
+          <div class="ztools">
+            <span class="hint">Write big here. Tap the page above to choose where it goes.</span>
+            <span class="spacer"></span>
+            <button class="tool" id="zLeft" aria-label="Move left">◀</button>
+            <button class="tool" id="zRight" aria-label="Move right">▶</button>
+            <button class="tool" id="zLine">New line ↵</button>
+          </div>
+          <div class="zsheet"><canvas id="zpad"></canvas></div>
+        </div>
       </div>
       <div id="photoMode" hidden style="display:grid;gap:8px">
         <label class="drop" for="file">
@@ -215,27 +239,99 @@ function renderQ(){
 }
 $('#qsel').onchange=e=>{S.q=byId(e.target.value);renderQ();S.result=null;S.yours={};S.example=false;clearPad();clearPhoto();renderReport()};
 
-/* ---------- writing pad ---------- */
+/* ---------- writing pad ----------
+   Smooth ink: points are low-pass filtered (steadies a shaky mouse or finger), joined with
+   quadratic curves through the midpoints, and drawn at the chosen pen size. A stylus varies
+   the width a little with pressure; mouse and finger draw at a constant width. */
 const pad=$('#pad'),ctx=pad.getContext('2d');
-let strokes=[],cur=null,tool='pen',penSeen=false,padH=400;
+const SIZES={fine:1.3,medium:2.1,bold:3.1};
+let strokes=[],cur=null,tool='pen',penSeen=false,padH=400,size='fine';
+try{const v=localStorage.getItem('mf-pen');if(SIZES[v])size=v}catch(e){}
 function sizePad(){const w=pad.parentElement.clientWidth,d=window.devicePixelRatio||1;if(!w)return;pad.width=w*d;pad.height=padH*d;pad.style.height=padH+'px';ctx.setTransform(d,0,0,d,0,0);redraw()}
+const mid=(a,b)=>({x:(a.x+b.x)/2,y:(a.y+b.y)/2,p:(a.p+b.p)/2});
+const widthAt=(s,p)=>s.erase?20:SIZES[s.size||'fine']*(s.pen?0.75+0.5*(p??.5):1);
+function seg(c,s,i){ // the curve that belongs to point i
+  const P=s.pts,a=i===1?P[0]:mid(P[i-1],P[i]),b=i===P.length-1?P[i]:mid(P[i],P[i+1]);
+  c.lineWidth=widthAt(s,P[i].p);c.beginPath();c.moveTo(a.x,a.y);
+  if(i===P.length-1)c.lineTo(b.x,b.y);else c.quadraticCurveTo(P[i].x,P[i].y,b.x,b.y);
+  c.stroke();
+}
+function prep(c,s){c.lineCap='round';c.lineJoin='round';if(s.erase){c.globalCompositeOperation='destination-out';c.strokeStyle='#000'}else{c.globalCompositeOperation='source-over';c.strokeStyle='#0B122C'}}
 function drawStroke(s,c=ctx){
-  if(!s.pts.length)return;c.save();c.lineCap='round';c.lineJoin='round';
-  if(s.erase){c.globalCompositeOperation='destination-out';c.strokeStyle='#000'}else c.strokeStyle='#0B122C';
-  for(let i=1;i<s.pts.length;i++){const a=s.pts[i-1],b=s.pts[i];c.lineWidth=s.erase?22:1.6+2.4*(b.p||.5);c.beginPath();c.moveTo(a.x,a.y);c.lineTo(b.x,b.y);c.stroke()}
-  if(s.pts.length===1&&!s.erase){const a=s.pts[0];c.fillStyle='#0B122C';c.beginPath();c.arc(a.x,a.y,1.6,0,7);c.fill()}
+  const P=s.pts;if(!P.length)return;c.save();prep(c,s);
+  if(P.length===1){if(!s.erase){c.fillStyle='#0B122C';c.beginPath();c.arc(P[0].x,P[0].y,widthAt(s,P[0].p)/2+.3,0,7);c.fill()}}
+  else for(let i=1;i<P.length;i++)seg(c,s,i);
   c.restore();
 }
 function redraw(){ctx.clearRect(0,0,pad.width,pad.height);strokes.forEach(s=>drawStroke(s));$('#empty').hidden=strokes.some(s=>!s.erase)}
-const pos=e=>{const r=pad.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top,p:e.pointerType==='mouse'?.5:(e.pressure||.5)}};
-pad.addEventListener('pointerdown',e=>{if(e.pointerType==='pen')penSeen=true;if(penSeen&&e.pointerType==='touch')return;
-  pad.setPointerCapture(e.pointerId);cur={erase:tool==='eraser',pts:[pos(e)]};strokes.push(cur);redraw()});
-pad.addEventListener('pointermove',e=>{if(!cur)return;const evs=e.getCoalescedEvents?.()||[e];for(const ev of evs)cur.pts.push(pos(ev));drawStroke({erase:cur.erase,pts:cur.pts.slice(-2-evs.length)})});
-const end=()=>{cur=null;redraw()};pad.addEventListener('pointerup',end);pad.addEventListener('pointercancel',end);
-function clearPad(){strokes=[];padH=400;sizePad()}
+const raw=e=>{const r=pad.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top,p:e.pointerType==='pen'?(e.pressure||.5):.5}};
+function addPoint(s,q){
+  const P=s.pts,last=P[P.length-1];
+  if(last&&Math.hypot(q.x-last.x,q.y-last.y)<0.7)return false;
+  const k=s.pen?0.6:0.38; // more smoothing for mouse and finger than for a stylus
+  P.push(last?{x:last.x+(q.x-last.x)*k,y:last.y+(q.y-last.y)*k,p:q.p}:q);return true;
+}
+pad.addEventListener('pointerdown',e=>{
+  if(e.pointerType==='pen')penSeen=true;if(penSeen&&e.pointerType==='touch')return; // palm rejection once a stylus is used
+  if(e.button>0)return;
+  pad.setPointerCapture(e.pointerId);cur={erase:tool==='eraser',size,pen:e.pointerType==='pen',pts:[raw(e)],drawn:1};strokes.push(cur);redraw();
+});
+pad.addEventListener('pointermove',e=>{
+  if(!cur)return;
+  for(const ev of (e.getCoalescedEvents?.()||[e]))addPoint(cur,raw(ev));
+  ctx.save();prep(ctx,cur);for(let i=cur.drawn;i<cur.pts.length-1;i++)seg(ctx,cur,i);ctx.restore();
+  cur.drawn=Math.max(cur.drawn,cur.pts.length-1);
+});
+const end=e=>{if(!cur)return;if(e&&e.type==='pointerup'){const q=raw(e),l=cur.pts[cur.pts.length-1];if(Math.hypot(q.x-l.x,q.y-l.y)>0.7)cur.pts.push(q)}cur=null;redraw()};
+pad.addEventListener('pointerup',end);pad.addEventListener('pointercancel',end);
+function clearPad(){strokes=[];padH=400;target={x:12,y:12};sizePad()}
 $('#undo').onclick=()=>{strokes.pop();redraw()};
+addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='z'&&S.mode==='draw'&&document.activeElement?.tagName!=='TEXTAREA'&&document.activeElement?.tagName!=='INPUT'){e.preventDefault();strokes.pop();redraw()}});
 $('#more').onclick=()=>{padH+=240;sizePad()};
 document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>{tool=b.dataset.tool;document.querySelectorAll('[data-tool]').forEach(x=>x.setAttribute('aria-pressed',x===b))});
+function setSize(v){size=v;document.querySelectorAll('[data-size]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.size===v));try{localStorage.setItem('mf-pen',v)}catch(e){}
+  if(tool!=='pen'){tool='pen';document.querySelectorAll('[data-tool]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.tool==='pen'))}}
+document.querySelectorAll('[data-size]').forEach(b=>b.onclick=()=>setSize(b.dataset.size));setSize(size);
+
+
+/* ---------- zoom writing ----------
+   Write large in the strip; every stroke is scaled down by Z and placed inside the blue box on
+   the page. Shaky mouse or finger movements shrink with it, so the page copy is much neater.
+   Tap the page to move the box; the box steps right when you write near the end of the strip. */
+const zpad=$('#zpad'),zctx=zpad.getContext('2d'),Z=0.4,ZH=190;
+let zoomOn=false,target={x:12,y:12},zcur=null;
+function sizeZ(){const w=zpad.parentElement.clientWidth,d=window.devicePixelRatio||1;if(!w)return;zpad.width=w*d;zpad.height=ZH*d;zpad.style.height=ZH+'px';drawZ()}
+const zW=()=>zpad.clientWidth*Z, zHt=()=>ZH*Z;
+function clampTarget(){const W=pad.clientWidth;target.x=Math.max(0,Math.min(target.x,W-zW()));target.y=Math.max(0,target.y);
+  if(target.y+zHt()>padH-10){padH=Math.ceil(target.y+zHt()+120);sizePad()}}
+function drawZ(){
+  if(!zoomOn)return;const d=window.devicePixelRatio||1;
+  zctx.setTransform(1,0,0,1,0,0);zctx.clearRect(0,0,zpad.width,zpad.height);
+  zctx.setTransform(d/Z,0,0,d/Z,-target.x*d/Z,-target.y*d/Z);
+  strokes.forEach(s=>drawStroke(s,zctx));
+}
+function drawBox(){if(!zoomOn)return;ctx.save();ctx.strokeStyle='#1B36FF';ctx.lineWidth=1.5;ctx.setLineDash([5,4]);ctx.strokeRect(target.x+.5,target.y+.5,zW(),zHt());ctx.restore()}
+const _redraw=redraw;redraw=function(){_redraw();drawBox();drawZ()};
+const zraw=e=>{const r=zpad.getBoundingClientRect();return{x:target.x+(e.clientX-r.left)*Z,y:target.y+(e.clientY-r.top)*Z,p:e.pointerType==='pen'?(e.pressure||.5):.5}};
+zpad.addEventListener('pointerdown',e=>{if(e.button>0)return;zpad.setPointerCapture(e.pointerId);
+  zcur={erase:tool==='eraser',size,pen:e.pointerType==='pen',pts:[zraw(e)],drawn:1,zoom:true};strokes.push(zcur);redraw()});
+zpad.addEventListener('pointermove',e=>{if(!zcur)return;for(const ev of (e.getCoalescedEvents?.()||[e]))addPoint(zcur,zraw(ev));redraw()});
+const zend=()=>{if(!zcur)return;
+  const maxX=Math.max(...zcur.pts.map(p=>p.x));zcur=null;
+  if(maxX>target.x+zW()*0.8&&target.x+zW()<pad.clientWidth-4){target.x+=zW()*0.55;clampTarget()}
+  redraw()};
+zpad.addEventListener('pointerup',zend);zpad.addEventListener('pointercancel',zend);
+$('#zoomBtn').onclick=()=>{zoomOn=!zoomOn;$('#zoomBtn').setAttribute('aria-pressed',zoomOn);$('#zoomWrap').hidden=!zoomOn;
+  pad.style.cursor=zoomOn?'pointer':'crosshair';if(zoomOn){sizeZ();clampTarget()}redraw();try{localStorage.setItem('mf-zoom',zoomOn?'1':'0')}catch(e){}};
+$('#zLeft').onclick=()=>{target.x-=zW()*0.5;clampTarget();redraw()};
+$('#zRight').onclick=()=>{target.x+=zW()*0.5;clampTarget();redraw()};
+$('#zLine').onclick=()=>{target.x=12;target.y+=zHt()*0.75;clampTarget();redraw()};
+// with zoom writing on, tapping the page moves the box instead of drawing
+pad.addEventListener('pointerdown',e=>{if(!zoomOn)return;e.stopImmediatePropagation();const r=pad.getBoundingClientRect();
+  target={x:e.clientX-r.left-zW()/4,y:e.clientY-r.top-zHt()/2};clampTarget();redraw()},true);
+addEventListener('resize',()=>{if(zoomOn)sizeZ()});
+try{if(localStorage.getItem('mf-zoom')==='1')requestAnimationFrame(()=>$('#zoomBtn').click())}catch(e){}
+
 // in-page confirmation (the viewer has no confirm() dialog)
 function confirmIn(wrap,label,onYes){
   const orig=wrap.innerHTML;
