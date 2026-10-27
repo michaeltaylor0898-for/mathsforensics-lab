@@ -58,7 +58,8 @@ export type Scheme = {
 //   clues     three clues, one at a time: 1 names the method, 2 gives the first line, 3 the key step.
 //             Never the final answer.
 //   traps     checks shown just before the student hands the answer in.
-//   export type Coaching = {
+export type Coaching = {
+
   keyWords: { text: string; why: string }[];
   clues: [string, string, string];
   traps: string[];
