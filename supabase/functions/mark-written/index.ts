@@ -2,6 +2,7 @@
 //
 //   GET                         -> the list of questions available for written marking (public parts only)
 //   POST {question_id, image}   -> marks the image, saves it, returns the case report
+//   POST {action:"check", question_id, image} -> "check my working": a nudge, never the answer
 //   POST {action:"dispute", mark_id, note} -> student flags a mark they think is wrong
 //   POST {action:"purge", key}  -> deletes images older than 90 days (call daily from a scheduler)
 //
@@ -13,7 +14,7 @@
 // Needs migration 007 (written_marks table + written-work storage bucket).
 import { createClient } from "npm:@supabase/supabase-js@2.45.4";
 import { byId, publicQuestion, SCHEMES } from "./schemes.ts";
-import { type AiMarking, applyRules, MARKING_TOOL, schemeText, SYSTEM_PROMPT } from "./marking.ts";
+import { type AiCheck, type AiMarking, applyCheck, applyRules, CHECK_PROMPT, CHECK_TOOL, checkText, MARKING_TOOL, schemeText, SYSTEM_PROMPT } from "./marking.ts";
 
 const MODEL = Deno.env.get("MARKING_MODEL") ?? "claude-sonnet-5-5";
 const FREE_WEEKLY = Number(Deno.env.get("FREE_WEEKLY") ?? 3);
@@ -117,36 +118,48 @@ Deno.serve(async (req) => {
       : `Free accounts get ${limit} marked answers a week. The Exam Pass gives you ${FULL_WEEKLY} a week.`, 429);
   }
 
-  // Ask the AI to mark it
   const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
   if (!apiKey) return fail("Server not set up: missing ANTHROPIC_API_KEY", 500);
   const started = Date.now();
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-    body: JSON.stringify({
-      model: MODEL,
-      max_tokens: 2000,
-      system: [{ type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } }],
-      tools: [MARKING_TOOL],
-      tool_choice: { type: "tool", name: MARKING_TOOL.name },
-      messages: [{
-        role: "user",
-        content: [
+  const ask = async (system: string, tool: typeof MARKING_TOOL | typeof CHECK_TOOL, text: string, maxTokens: number) => {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "content-type": "application/json" },
+      body: JSON.stringify({
+        model: MODEL,
+        max_tokens: maxTokens,
+        system: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }],
+        tools: [tool],
+        tool_choice: { type: "tool", name: tool.name },
+        messages: [{ role: "user", content: [
           { type: "image", source: { type: "base64", media_type: mediaType, data: b64 } },
-          { type: "text", text: schemeText(scheme) },
-        ],
-      }],
-    }),
-  });
-  if (!res.ok) {
-    console.error("Marking API error", res.status, await res.text());
-    return fail("The marker is busy. Try again in a minute.", 503);
+          { type: "text", text },
+        ] }],
+      }),
+    });
+    if (!res.ok) { console.error("AI error", res.status, await res.text()); return null; }
+    const out = await res.json();
+    const input = (out.content ?? []).find((c: any) => c.type === "tool_use")?.input;
+    return input ? { input, usage: out.usage } : null;
+  };
+
+  // "Check my working": counts towards the weekly allowance; no image is kept
+  if (body.action === "check") {
+    const got = await ask(CHECK_PROMPT, CHECK_TOOL, checkText(scheme), 600);
+    if (!got) return fail("The checker is busy. Try again in a minute.", 503);
+    const check = applyCheck(scheme, got.input as AiCheck);
+    await db.from("written_marks").insert({
+      user_id: user.id, question_id: scheme.id, topic: scheme.topic, status: "check", result: check, model: MODEL,
+      input_tokens: got.usage?.input_tokens ?? null, output_tokens: got.usage?.output_tokens ?? null, ms: Date.now() - started,
+    });
+    return json({ ...check, remaining_week: limit - (count ?? 0) - 1 });
   }
-  const out = await res.json();
-  const call = (out.content ?? []).find((c: any) => c.type === "tool_use");
-  if (!call?.input) return fail("The marker couldn't read that. Try again.", 502);
-  const result = applyRules(scheme, call.input as AiMarking);
+
+  // Mark it
+  const got = await ask(SYSTEM_PROMPT, MARKING_TOOL, schemeText(scheme), 2000);
+  if (!got) return fail("The marker is busy. Try again in a minute.", 503);
+  const out = { usage: got.usage };
+  const result = applyRules(scheme, got.input as AiMarking);
 
   // Save the image (private bucket, own folder) and the marking
   const markId = crypto.randomUUID();

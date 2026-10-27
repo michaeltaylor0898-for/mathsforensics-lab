@@ -2,9 +2,9 @@
 import { deepStrictEqual as assertEquals, ok as assert } from "node:assert/strict";
 import { SCHEMES, byId } from "./schemes.ts";
 import { ERRORS } from "./errors.ts";
-import { type AiMarking, applyRules, schemeText, MARKING_TOOL } from "./marking.ts";
+import { type AiMarking, applyCheck, applyRules, schemeText, MARKING_TOOL } from "./marking.ts";
 
-const LAB_TOPICS = ["csq", "qform", "simquad", "rev", "algfrac", "recur"];
+const LAB_TOPICS = ["csq", "qform", "simquad", "rev", "algfrac", "recur", "fracmul", "pfd", "hcf", "sf", "simlin", "anglefacts"];
 
 Deno.test("every scheme is consistent", () => {
   for (const s of SCHEMES) {
@@ -15,6 +15,12 @@ Deno.test("every scheme is consistent", () => {
     for (const e of s.errors ?? []) assert(ERRORS[e.id], `${s.id}: unknown error id ${e.id}`);
     assert(LAB_TOPICS.includes(s.topic), `${s.id}: topic ${s.topic}`);
     assert(schemeText(s).includes(s.answer));
+    if (s.coach) {
+      const text = s.prompt.replace(/<br>/g, " ").replace(/&nbsp;/g, " ").replace(/<[^>]+>/g, "");
+      for (const k of s.coach.keyWords) assert(text.includes(k.text), `${s.id}: key words "${k.text}" not in the prompt`);
+      assertEquals(s.coach.clues.length, 3);
+      for (const c of s.coach.clues) assert(!c.includes(s.answer), `${s.id}: a clue gives away the answer`);
+    }
   }
   assert(MARKING_TOOL.input_schema.properties.root_cause.properties.error_id.enum.includes("csq-half"));
 });
@@ -88,4 +94,28 @@ Deno.test("an unknown root cause becomes 'other'", () => {
   const r = applyRules(s, ai({ transcription: ["68 × 1.15"], points: s.points.map((p) => pt(p.id, false, 1)),
     root_cause: { error_id: "made-up", line: 1, explanation: "x" } }));
   assertEquals(r.root_cause?.error_id, "other");
+});
+
+Deno.test("a correct bare answer gets full marks but is flagged as unprotected", () => {
+  const s = byId("rev-01")!;
+  const r = applyRules(s, ai({ transcription: ["£80"], answer_only: true, points: s.points.map((p) => pt(p.id, true, 1)) }));
+  assertEquals(r.score, 3);
+  assert(r.unprotected?.startsWith("Full marks, but unprotected"));
+  const shown = applyRules(s, ai({ transcription: ["68 ÷ 0.85", "= 80"], points: s.points.map((p) => pt(p.id, true, 2)) }));
+  assertEquals(shown.unprotected, null);
+});
+
+Deno.test("root cause keeps a valid R/M/A category only", () => {
+  const s = byId("rev-01")!;
+  const r = applyRules(s, ai({ transcription: ["68 × 1.15"], points: s.points.map((p) => pt(p.id, false, 1)),
+    root_cause: { error_id: "reverse-pct", category: "M", line: 1, explanation: "x" } }));
+  assertEquals(r.root_cause?.category, "M");
+});
+
+Deno.test("check my working never shows the answer", () => {
+  const s = byId("rev-01")!;
+  const c = applyCheck(s, { status: "on_track", transcription: ["68 ÷ 0.85"], line: null, message: "Good, that gives £80." });
+  assert(!c.message.includes("80"));
+  const ok = applyCheck(s, { status: "problem", transcription: ["68 × 0.15"], line: 1, message: "Look at line 1: what percentage of the old price is £68?" });
+  assertEquals(ok.line, 1);
 });

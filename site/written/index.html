@@ -94,6 +94,9 @@ h1{font-family:var(--f-display);font-weight:600;font-size:clamp(22px,4.5vw,30px)
 .ev{grid-column:3;font-family:var(--f-mono);font-size:13px;color:var(--muted)}
 .ev span{color:var(--text);background:var(--ink);padding:1px 6px;border-radius:4px}
 .ft{font-family:var(--f-mono);font-size:10.5px;color:var(--cyan);border:1px solid rgba(0,252,241,.35);border-radius:4px;padding:0 4px;margin-left:6px}
+.unprot{margin-top:16px;border-left:3px solid var(--warn);background:rgba(255,200,87,.08);border-radius:0 10px 10px 0;padding:12px 14px}
+.unprot h3{font-family:var(--f-display);font-size:14px;font-weight:600;margin:0 0 4px;color:var(--warn)}
+.unprot p{margin:0}
 .cause{margin-top:16px;border-left:3px solid var(--bad);background:rgba(255,107,122,.08);border-radius:0 10px 10px 0;padding:12px 14px}
 .cause h3,.sect h3{font-family:var(--f-display);font-size:14px;font-weight:600;letter-spacing:.03em;margin:0 0 4px}
 .cause p{margin:0}
@@ -325,6 +328,7 @@ function renderReport(r){
       <div><span class="eyebrow">Finding</span><p>${esc(r.verdict)}</p></div></div>
     ${r.needs_review?`<div class="notice">Provisional mark. ${esc(r.review_note||'Some of this was hard to judge.')} If it looks wrong, use “Dispute a mark” below.</div>`:''}
     <ul class="marks">${li}</ul>
+    ${r.unprotected?`<div class="unprot"><h3>Unprotected answer</h3><p>${esc(r.unprotected)}</p></div>`:''}
     ${r.root_cause?`<div class="cause"><h3>Root cause${r.root_cause.name?': '+esc(r.root_cause.name):''}${r.root_cause.line?` · line ${r.root_cause.line}`:''}</h3><p>${esc(r.root_cause.explanation)}</p></div>`:''}
     ${list('good','What earned marks',r.went_right)}
     ${list('bad','What lost marks',r.went_wrong)}
@@ -346,7 +350,7 @@ function renderReport(r){
 }
 
 // What a real report looks like, using the completing-the-square example
-const SAMPLE={status:'marked',score:2,max:5,mark_id:null,question:FALLBACK[0],remaining_week:null,needs_review:false,review_note:null,
+const SAMPLE={status:'marked',unprotected:null,score:2,max:5,mark_id:null,question:FALLBACK[0],remaining_week:null,needs_review:false,review_note:null,
   verdict:'One sign error on line 1 cost you three marks.',
   transcription:['(x − 4)² − 16 − 4','(x − 4)² − 20 = 0','x − 4 = √20','x = 4 ± √20','x = 4 ± 2√5'],
   points:[

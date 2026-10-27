@@ -23,6 +23,8 @@
 // errors: error library ids (same ids as ERR in site/index.html) and what each one looks like here,
 // so the root cause feeds straight into the Lab's existing error tracking.
 
+import { COLD_CASE_B1 } from "./bank/cold-case-b-paper1.ts";
+
 export type MarkPoint = {
   id: string;
   code: "M1" | "A1" | "B1" | "P1" | "C1";
@@ -40,6 +42,9 @@ export type Scheme = {
   tier: "F" | "H";
   calculator: boolean;
   prompt: string;         // shown to the student; simple HTML allowed
+  promptText?: string;    // plain-text version for the marker, when the prompt uses layout (stacked fractions)
+  diagram?: string;       // inline SVG shown under the prompt (the marker gets promptText instead)
+  draft?: boolean;        // true until Mike has checked the mark scheme against the paper's own
   marks: number;
   answer: string;         // final answer, for the marker
   solution: string[];     // model solution, line by line
@@ -47,6 +52,7 @@ export type Scheme = {
   points: MarkPoint[];
   errors?: { id: string; looksLike: string }[];
   markerNotes?: string[];
+  showWorking?: string;   // how to protect the marks, shown when a correct answer has no working
   source?: { paper: string; q: string; part?: string };   // e.g. { paper: "CC-B/1H", q: "2", part: "a" }
   coach?: Coaching;
 };
@@ -218,10 +224,12 @@ export const SCHEMES: Scheme[] = [
   },
 ];
 
+SCHEMES.push(...COLD_CASE_B1);
+
 export const byId = (id: string) => SCHEMES.find((s) => s.id === id);
 
 // What the page is allowed to see.
 export const publicQuestion = (s: Scheme) => ({
   id: s.id, topic: s.topic, tier: s.tier, calculator: s.calculator, prompt: s.prompt, marks: s.marks,
-  source: s.source ?? null, coach: s.coach ?? null,
+  source: s.source ?? null, coach: s.coach ?? null, diagram: s.diagram ?? null, draft: !!s.draft,
 });
