@@ -431,6 +431,7 @@ function renderReport(){
     <div class="actions" style="margin-top:12px"><button class="btn small" id="save" ${yoursDone&&!S.example?'':'disabled'}>Save to log</button>
       <input id="note" placeholder="Note (optional), e.g. student or what went wrong" style="flex:1;min-width:160px;background:var(--ink);border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-size:14px"></div>
     ${S.example?'<p class="hint" style="margin-top:6px">This example shows the layout. Mark your own working to start logging.</p>':''}
+    ${r.unprotected?`<div class="cause" style="border-left-color:var(--warn);background:rgba(255,200,87,.08)"><h3 style="color:var(--warn)">No method seen</h3><p>${esc(r.unprotected)}</p></div>`:''}
     ${r.root_cause?`<div class="cause"><h3>Root cause${r.root_cause.name?': '+esc(r.root_cause.name):''}${r.root_cause.line?' · line '+r.root_cause.line:''}</h3><p>${esc(r.root_cause.explanation)}</p></div>`:''}
     ${list('good','What earned marks',r.went_right)}${list('bad','What lost marks',r.went_wrong)}${list('fix','How to fix it',r.fix,true)}
     ${rawBlock(r)}`;

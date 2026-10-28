@@ -101,7 +101,8 @@ ${s.solution.join("\n")}
 
 MARK SCHEME
 ${pts}
-No working: ${noWorkingRule[s.noWorking]}
+MATHS FORENSICS RULE (this decides the marks): a method mark (M, P) needs the method to be seen in the working. An accuracy mark (A) can only be awarded if a method mark before it was earned. A bare answer with no method therefore earns no M or A marks, even if it is correct. B and C marks are independent and judged on what is written.
+(For reference only, the exam board would treat no working like this: ${noWorkingRule[s.noWorking]})
 ${s.markerNotes?.length ? "\nMARKER NOTES\n" + s.markerNotes.join("\n") : ""}
 ${errs ? "\nCOMMON ERRORS ON THIS QUESTION\n" + errs : ""}
 
@@ -136,7 +137,8 @@ export type FinalMarking = {
   points: FinalPoint[];
   transcription: string[];
   root_cause: { error_id: string; name: string | null; category: "R" | "M" | "A" | null; line: number | null; explanation: string } | null;
-  unprotected: string | null;   // set when a correct answer has no working, so a wrong one would have scored 0
+  unprotected: string | null;   // set when there's no method, explaining what it cost
+  exam_board_score: number;     // what an exam board would probably give (correct answers without working usually score)
   went_right: string[];
   went_wrong: string[];
   fix: string[];
@@ -200,24 +202,44 @@ export function applyRules(s: Scheme, ai: AiMarking): FinalMarking {
     for (const fp of points) if (fp.awarded && fp.code === "M1") { fp.awarded = false; fp.overridden = "Method marks need working shown."; }
   }
 
+  // What an exam board would probably give, before the Maths Forensics rule is applied
+  const exam_board_score = points.filter((p) => p.awarded).length;
+
+  // The Maths Forensics rule: method marks need a method seen, and accuracy marks need a method mark
+  const isMethod = (c: string) => c === "M1" || c === "P1";
+  const hasMethodMarks = s.points.some((p) => isMethod(p.code));
+  const ruled = new Set<string>();
+  if (marked && hasMethodMarks) {
+    let methodEarned = false;
+    for (const fp of points) {
+      if (isMethod(fp.code)) {
+        if (fp.awarded && bareAnswer) { fp.awarded = false; fp.overridden = "No method seen, so no method mark."; ruled.add(fp.id); }
+        if (fp.awarded) methodEarned = true;
+      } else if (fp.code === "A1" && fp.awarded && !methodEarned) {
+        fp.awarded = false; fp.overridden = "An accuracy mark needs a method mark first."; ruled.add(fp.id);
+      }
+    }
+  }
   const score = points.filter((p) => p.awarded).length;
   const rc = ai.root_cause;
-  const root_cause = !marked || score === s.marks || !rc || rc.error_id === "none" ? null : {
+  const noMethodCause = marked && bareAnswer && score < s.marks && (!rc || rc.error_id === "none");
+  const root_cause = noMethodCause
+    ? { error_id: "other", name: "No method shown", category: "R" as const, line: null, explanation: "The answer was given without any working, so the method marks, and the accuracy marks that depend on them, couldn't be awarded." }
+    : !marked || score === s.marks || !rc || rc.error_id === "none" ? null : {
     error_id: ERRORS[rc.error_id] ? rc.error_id : "other",
     name: ERRORS[rc.error_id] ?? null,
     category: rc.category === "R" || rc.category === "M" || rc.category === "A" ? rc.category : null,
     line: Number.isInteger(rc.line) ? rc.line : null,
     explanation: String(rc.explanation ?? "").slice(0, 400),
   };
-  const overridden = points.some((p) => p.overridden);
-  // Full marks from a bare answer on a question that has method marks: right this time, but nothing to fall back on
-  const hasMethodMarks = s.points.some((p) => p.code === "M1");
-  const unprotected = marked && bareAnswer && score === s.marks && hasMethodMarks
-    ? `Full marks, but unprotected. There's no working, so a wrong answer here would have scored 0 out of ${s.marks}. ` +
-      (s.showWorking ?? "Write down your method and you keep the method marks even if you slip at the end.")
-    : null;
+  const overridden = points.some((p) => p.overridden && !ruled.has(p.id));
+  const tip = s.showWorking ?? "Write down your method and you bank the method marks, even if you slip at the end.";
+  const unprotected = !marked || !bareAnswer || !hasMethodMarks ? null
+    : exam_board_score > score
+      ? `No method seen, so ${score} out of ${s.marks} here. In the real exam a correct answer on its own would probably still get ${exam_board_score} out of ${s.marks}, but only because it's right: a wrong answer with no working scores 0. ${tip}`
+      : `No method seen, so no method marks could be given. With working, a slip at the end can still earn method marks. ${tip}`;
   return {
-    status: ai.status, score, max: s.marks, points, transcription, root_cause, unprotected,
+    status: ai.status, score, max: s.marks, points, transcription, root_cause, unprotected, exam_board_score,
     went_right: clean(ai.went_right), went_wrong: clean(ai.went_wrong), fix: clean(ai.fix),
     verdict: String(ai.verdict ?? "").slice(0, 300),
     confidence: ai.confidence,

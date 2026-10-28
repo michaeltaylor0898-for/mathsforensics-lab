@@ -74,9 +74,9 @@ Deno.test("answer-only rules", () => {
   assertEquals(zero.score, 0);
   const qf = byId("qform-01")!;
   const ans = applyRules(qf, ai({ transcription: ["x = 2.26, −0.59"], answer_only: true, points: qf.points.map((p) => pt(p.id, true, 1)) }));
-  // Bare answer on an "answer marks only" question: M marks go, the A1 stays
-  assertEquals(ans.score, 1);
-  assertEquals(ans.points.find((p) => p.id === "A1")!.awarded, true);
+  // Maths Forensics rule: no method seen, so no M and no A, whatever the exam board would give
+  assertEquals(ans.score, 0);
+  assertEquals(ans.exam_board_score, 1);
 });
 
 Deno.test("unreadable work scores nothing; bad line numbers are dropped; missing points count as not awarded", () => {
@@ -96,11 +96,19 @@ Deno.test("an unknown root cause becomes 'other'", () => {
   assertEquals(r.root_cause?.error_id, "other");
 });
 
-Deno.test("a correct bare answer gets full marks but is flagged as unprotected", () => {
+Deno.test("a correct bare answer scores 0 under the Maths Forensics rule, with the exam-board mark alongside", () => {
   const s = byId("rev-01")!;
   const r = applyRules(s, ai({ transcription: ["£80"], answer_only: true, points: s.points.map((p) => pt(p.id, true, 1)) }));
-  assertEquals(r.score, 3);
-  assert(r.unprotected?.startsWith("Full marks, but unprotected"));
+  assertEquals(r.score, 0);
+  assertEquals(r.exam_board_score, 3);
+  assert(r.unprotected?.startsWith("No method seen, so 0 out of 3"));
+  assertEquals(r.needs_review, false);
+  assertEquals(r.root_cause?.name, "No method shown");
+  // B marks are independent: a bare 0.0056 still earns its B1
+  const b = byId("ccb1-q3a")!;
+  const rb = applyRules(b, ai({ transcription: ["0.0056"], answer_only: true, points: [pt("B1", true, 1)] }));
+  assertEquals(rb.score, 1);
+  assertEquals(rb.unprotected, null);
   const shown = applyRules(s, ai({ transcription: ["68 ÷ 0.85", "= 80"], points: s.points.map((p) => pt(p.id, true, 2)) }));
   assertEquals(shown.unprotected, null);
 });
@@ -118,4 +126,11 @@ Deno.test("check my working never shows the answer", () => {
   assert(!c.message.includes("80"));
   const ok = applyCheck(s, { status: "problem", transcription: ["68 × 0.15"], line: 1, message: "Look at line 1: what percentage of the old price is £68?" });
   assertEquals(ok.line, 1);
+});
+
+Deno.test("an accuracy mark can't stand without a method mark, even with working", () => {
+  const s = byId("ccb1-q3b")!; // M1 then A1 with no dep in the scheme
+  const r = applyRules(s, ai({ transcription: ["2.4 × 10⁹"], answer_only: false, points: [pt("M1", false, 1), pt("A1", true, 1)] }));
+  assertEquals(r.score, 0);
+  assertEquals(r.exam_board_score, 1);
 });

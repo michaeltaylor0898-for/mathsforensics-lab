@@ -413,7 +413,7 @@ function resultHTML(p,r){
     <div class="rtop"><span class="score">${r.score}/${r.max}</span><span class="verdict">${esc(r.verdict)}</span>
       ${st.clues?`<span class="tag assist">ASSISTED · ${st.clues} CLUE${st.clues>1?'S':''}</span>`:''}${r.root_cause?.category?`<span class="tag cat">${CAT[r.root_cause.category]}</span>`:''}</div>
     <ul class="marks">${r.points.map(m=>`<li class="${m.awarded?'yes':'no'}"><span class="code">${esc(m.code)}</span><span class="mk">${m.awarded?'✓':'✗'}</span><span>${esc(m.reason)}${m.follow_through?'<span class="ft">FT</span>':''}${m.overridden?`<span class="adj">${esc(m.overridden)}</span>`:''}</span>${m.evidence?`<span class="ev">Line ${m.line}: <span>${esc(m.evidence)}</span></span>`:''}</li>`).join('')}</ul>
-    ${r.unprotected?`<div class="callout unprot"><h5>Unprotected answer</h5><p>${esc(r.unprotected)}</p></div>`:''}
+    ${r.unprotected?`<div class="callout unprot"><h5>No method seen</h5><p>${esc(r.unprotected)}</p></div>`:''}
     ${r.root_cause?`<div class="callout cause"><h5>Root cause${r.root_cause.name?': '+esc(r.root_cause.name):''}${r.root_cause.line?' · line '+r.root_cause.line:''}</h5><p>${esc(r.root_cause.explanation)}</p></div>`:''}
     ${r.fix?.length&&r.score<r.max?`<div class="callout fix"><h5>How to fix it</h5><ol>${r.fix.map(f=>`<li>${esc(f)}</li>`).join('')}</ol></div>`:''}
     ${r.needs_review?`<p class="hint" style="margin-top:8px">Provisional: ${esc(r.review_note||'confidence was '+r.confidence)}.</p>`:''}
@@ -507,7 +507,7 @@ function renderDebrief(){
   const sum=f=>rows.reduce((a,x)=>a+f(x),0),got=sum(x=>x.score),by=c=>sum(x=>x.cat===c?x.lost:0);
   const rec=by('R')+by('A')+by('T'),secs=S.started?(Date.now()-S.started)/1000:0,target=TOTAL*MIN_PER_MARK*60;
   const kw=PARTS.filter(p=>S.st[p.id].revealed),kwFound=kw.reduce((a,p)=>a+keyCount(p),0),kwAll=kw.reduce((a,p)=>a+p.coach.keyWords.length,0);
-  const clues=sum(x=>x.st.clues),unprot=rows.filter(x=>x.r?.unprotected).length;
+  const clues=sum(x=>x.st.clues),unprot=rows.filter(x=>x.r?.unprotected).length,unprotLost=sum(x=>x.r?.unprotected?Math.max(0,(x.r.exam_board_score||0)-x.score):0);
   $('#debrief').innerHTML=`<h2 style="font-family:var(--f-display);font-size:15px;margin:0">Case Debrief</h2>
     <p class="hint" style="margin-top:4px">The numbers don't lie. ${S.mode==='exam'?'Sat under exam conditions.':'Coached run: clues and checks were available.'}</p>
     <div class="dgrid">
@@ -522,9 +522,9 @@ function renderDebrief(){
       <div class="rm rec"><b>${by('A')}</b><span>A · accuracy slips</span></div>
       <div class="rm rec"><b>${by('T')}</b><span>T · time or left blank</span></div>
     </div>
-    ${unprot?`<p class="hint" style="margin-top:10px;color:var(--warn)">${unprot} correct answer${unprot>1?'s were':' was'} unprotected: no working, so a slip would have cost every mark.</p>`:''}
+    ${unprot?`<p class="hint" style="margin-top:10px;color:var(--warn)">${unprot} answer${unprot>1?'s had':' had'} no method seen.${unprotLost?` That cost ${unprotLost} mark${unprotLost>1?'s':''} here that an exam board would probably have given for a correct answer, and a wrong answer with no working scores nothing anywhere.`:''}</p>`:''}
     <div class="dtable"><table><thead><tr><th>Q</th><th>Topic</th><th>Marks</th><th>Lost to</th><th>Clues</th><th>Notes</th></tr></thead><tbody>
-    ${rows.map(x=>`<tr><td class="num">${x.p.source.q}${x.p.source.part||''}</td><td>${esc(TOPIC_N[x.p.topic]||x.p.topic)}</td><td class="num">${x.r&&x.r.status==='marked'?x.score:'–'}/${x.p.marks}</td><td>${x.lost&&x.cat?x.cat:'–'}</td><td class="num">${x.st.clues||'–'}</td><td>${x.r?.root_cause?esc(x.r.root_cause.name||x.r.root_cause.explanation):x.cat==='T'?'Not attempted':x.r?.unprotected?'Unprotected':''}</td></tr>`).join('')}
+    ${rows.map(x=>`<tr><td class="num">${x.p.source.q}${x.p.source.part||''}</td><td>${esc(TOPIC_N[x.p.topic]||x.p.topic)}</td><td class="num">${x.r&&x.r.status==='marked'?x.score:'–'}/${x.p.marks}</td><td>${x.lost&&x.cat?x.cat:'–'}</td><td class="num">${x.st.clues||'–'}</td><td>${x.r?.root_cause?esc(x.r.root_cause.name||x.r.root_cause.explanation):x.cat==='T'?'Not attempted':x.r?.unprotected?'No method seen':''}</td></tr>`).join('')}
     </tbody></table></div>
     <div class="cbtns"><button class="cbtn" id="again">Start again</button></div>`;
   $('#again').onclick=()=>{location.reload()};

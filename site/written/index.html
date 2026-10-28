@@ -328,7 +328,7 @@ function renderReport(r){
       <div><span class="eyebrow">Finding</span><p>${esc(r.verdict)}</p></div></div>
     ${r.needs_review?`<div class="notice">Provisional mark. ${esc(r.review_note||'Some of this was hard to judge.')} If it looks wrong, use “Dispute a mark” below.</div>`:''}
     <ul class="marks">${li}</ul>
-    ${r.unprotected?`<div class="unprot"><h3>Unprotected answer</h3><p>${esc(r.unprotected)}</p></div>`:''}
+    ${r.unprotected?`<div class="unprot"><h3>No method seen</h3><p>${esc(r.unprotected)}</p></div>`:''}
     ${r.root_cause?`<div class="cause"><h3>Root cause${r.root_cause.name?': '+esc(r.root_cause.name):''}${r.root_cause.line?` · line ${r.root_cause.line}`:''}</h3><p>${esc(r.root_cause.explanation)}</p></div>`:''}
     ${list('good','What earned marks',r.went_right)}
     ${list('bad','What lost marks',r.went_wrong)}
