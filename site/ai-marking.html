@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How AI marking works · Maths Forensics Lab</title>
+<meta name="description" content="How Maths Forensics uses AI to mark handwritten maths working, what it can and cannot do, and how to dispute a mark.">
+<style>
+:root{--ink:#0B122C;--panel:#111a3d;--line:#26336a;--cyan:#00FCF1;--blue:#1B36FF;--text:#E8ECF8;--muted:#a3aed3}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--text);font-family:"Josefin Sans","Avenir Next","Segoe UI",system-ui,sans-serif;font-size:17px;line-height:1.6}
+.wrap{max-width:780px;margin:0 auto;padding:32px max(18px,env(safe-area-inset-left,0px)) 64px}
+header{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+header svg{width:34px;height:39px;flex:none}
+.wm{font-weight:800;letter-spacing:.08em;font-size:15px;line-height:1.1}
+.wm small{display:block;font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:500;font-size:11px;letter-spacing:.18em;color:var(--cyan);margin-top:4px}
+h1{font-size:clamp(28px,5vw,38px);line-height:1.15;margin:0 0 6px}
+.updated{color:var(--muted);margin:0 0 24px;font-size:15px}
+h2{font-size:21px;margin:36px 0 8px;padding-top:16px;border-top:1px solid var(--line)}
+h3{font-size:17px;margin:20px 0 4px;color:var(--cyan)}
+p,li{color:var(--text)}
+ul{padding-left:22px}
+li{margin:4px 0}
+a{color:var(--cyan)}
+.summary{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:0 0 8px}
+.summary ul{margin:6px 0 0}
+table{width:100%;border-collapse:collapse;font-size:15px;margin:8px 0}
+th,td{text-align:left;vertical-align:top;padding:9px 10px;border-bottom:1px solid var(--line)}
+th{color:var(--cyan);font-weight:700}
+.tablewrap{overflow-x:auto}
+.allpol{margin-top:28px}
+.back{display:inline-block;margin-top:32px;font-weight:700}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<svg viewBox="0 0 40 46" aria-hidden="true"><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z" fill="#111a3d" stroke="#00FCF1" stroke-width="2.2" stroke-linejoin="round"/><circle cx="19" cy="21" r="6.2" fill="#111a3d" stroke="#00FCF1" stroke-width="2.6"/><circle cx="19" cy="21" r="1.6" fill="#00FCF1"/><path d="M23.4 25.4 28.8 30.8" stroke="#1B36FF" stroke-width="3.8" stroke-linecap="round"/></svg>
+<div class="wm">MATHS FORENSICS<small>LAB · GCSE MATHS</small></div>
+</header>
+
+<h1>How AI marking works</h1>
+<p class="updated">Last updated: 28 October 2026</p>
+<div class="summary">
+<b>The short version</b>
+<ul>
+<li>When you use written answers, an AI model reads a picture of your working and marks it against our mark scheme.</li>
+<li>The AI is Claude, made by Anthropic. It sees your working and the question, never your name or email, and Anthropic may not use it to train its models.</li>
+<li>Code, not the AI, applies the mark scheme's rules and adds up your score.</li>
+<li>You can see exactly what the AI read, and dispute any mark. A person reviews every dispute.</li>
+<li>Pictures of your working are deleted after 7 days. Your marks and feedback stay in your learning record.</li>
+<li>AI marks are practice marks. They are not exam results or predicted grades.</li>
+</ul>
+</div>
+
+<h2>1. Where AI is used</h2>
+<div class="tablewrap"><table>
+<tr><th>Feature</th><th>What the AI does</th><th>What it never does</th></tr>
+<tr><td>Written answers</td><td>Reads your working line by line, decides each mark against our mark scheme, finds the step where marks were lost and writes short feedback</td><td>Change the mark scheme's rules or the total (code does that)</td></tr>
+<tr><td>Check my working</td><td>Looks at your working so far, tells you if it's on track, and points to a line to look at again</td><td>Give you the answer or write the next step</td></tr>
+<tr><td>Mike mode</td><td>After each pause in your writing, sets a light: green (on track), amber (you've reached a step where students often lose marks), red (a mistake that will cost marks)</td><td>Give you the answer, or go red unless it is confident</td></tr>
+</table></div>
+<p>Everything else in the Lab, such as typed answers, topic practice and Incident Room, is marked by fixed rules, not AI. The AI never holds open conversations with students.</p>
+
+<h2>2. Who provides the AI</h2>
+<p>The AI is Claude, a model made by Anthropic, used through Anthropic's business service. Anthropic's commercial terms say it "may not train models on Customer Content", and it processes data under its data processing terms. We send it only the picture of your working, the question and our mark scheme. We never send your name, email address or school.</p>
+
+<h2>3. How marks are decided</h2>
+<ul>
+<li>Every question has a mark scheme written by Mike Taylor, a GCSE maths teacher with more than ten years of experience marking exam papers, in the style of the exam boards: method marks (M), accuracy marks (A) and independent marks (B).</li>
+<li>The AI first copies down what it reads from your working, then decides each mark and says which line earned or lost it.</li>
+<li>Code then applies the rules the AI can't override: follow-through only where the scheme allows it, marks that depend on earlier marks, and the Maths Forensics rule below. Code adds up the score.</li>
+<li><b>The Maths Forensics rule:</b> a method mark needs the method written down, and an accuracy mark needs a method mark first. A correct answer with no working therefore scores no method or accuracy marks. This is stricter than some exam boards, on purpose. When an exam board would probably give more, your report says so.</li>
+</ul>
+
+<h2>4. How accurate it is, and what we do about mistakes</h2>
+<p>AI marking can misread handwriting or misjudge a mark, as a human marker can. To catch this:</p>
+<ul>
+<li>every report shows <b>what the AI read</b> from your working, so you can see a misread straight away;</li>
+<li>marks the AI is unsure of are labelled <b>provisional</b>;</li>
+<li>you can <b>dispute any mark</b> from the report within 7 days, and Mike Taylor reviews it;</li>
+<li>we test the AI against marking done by hand before and after changes, and fix mark schemes where they disagree.</li>
+</ul>
+
+<h2>5. What happens to your data</h2>
+<ul>
+<li>The picture of your working is stored privately, where only you can see it, and deleted after 7 days. It is kept longer only while a dispute about it is open.</li>
+<li>"Check my working" and Mike mode don't keep pictures at all.</li>
+<li>Your marks, feedback and the typed copy of your working stay in your learning record, so the Lab can track which mistakes you make and target your practice.</li>
+<li>Full details are in our <a href="privacy.html">privacy policy</a>.</li>
+</ul>
+
+<h2>6. For schools</h2>
+<p>AI marks are for practice and feedback. They should not be used on their own for reports to parents, setting decisions or predicted grades. Teachers can review marks and disputes, and our data processing agreement covers how student work is handled.</p>
+
+<h2>7. Questions or concerns</h2>
+<p>Email <a href="mailto:support@mathsforensics.com">support@mathsforensics.com</a>. If you think a mark is wrong, the quickest way is "Dispute a mark" on the report.</p>
+
+<p class="allpol"><a href="policies.html">All policies</a></p>
+<a class="back" href="./">← Back to Maths Forensics Lab</a>
+</div>
+</body>
+</html>
