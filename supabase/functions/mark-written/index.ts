@@ -5,12 +5,12 @@
 //   POST {action:"check", question_id, image} -> "check my working": a nudge, never the answer
 //   POST {action:"monitor", question_id, image, shown} -> Mike mode traffic light (green / amber / red), never the answer
 //   POST {action:"dispute", mark_id, note} -> student flags a mark they think is wrong
-//   POST {action:"purge", key}  -> deletes images older than 90 days (call daily from a scheduler)
+//   POST {action:"purge", key}  -> deletes images older than IMAGE_DAYS (default 7); call daily from a scheduler
 //
 // Deploy:   supabase functions deploy mark-written --no-verify-jwt   (the function checks the sign-in itself)
 // Secrets:  ANTHROPIC_API_KEY=<key from console.anthropic.com>
 //           PURGE_KEY=<long random string> (for the daily image clean-up, see migration 007)
-//           optional: MONITOR_MODEL (default claude-haiku-5-5, the fast model for Mike mode), MIKE_WEEKLY (default 400, Exam Pass only),
+//           optional: IMAGE_DAYS (default 7), MONITOR_MODEL (default claude-haiku-5-5, the fast model for Mike mode), MIKE_WEEKLY (default 400, Exam Pass only),
 //           MARKING_MODEL (default claude-sonnet-5-5), FREE_WEEKLY (default 3), FULL_WEEKLY (default 40),
 //                     ALLOWED_ORIGINS (comma-separated; default lab.mathsforensics.com + localhost)
 // Needs migration 007 (written_marks table + written-work storage bucket).
@@ -23,6 +23,7 @@ const FREE_WEEKLY = Number(Deno.env.get("FREE_WEEKLY") ?? 3);
 const FULL_WEEKLY = Number(Deno.env.get("FULL_WEEKLY") ?? 40);
 const MONITOR_MODEL = Deno.env.get("MONITOR_MODEL") ?? "claude-haiku-5-5";
 const MIKE_WEEKLY = Number(Deno.env.get("MIKE_WEEKLY") ?? 400);
+const IMAGE_DAYS = Number(Deno.env.get("IMAGE_DAYS") ?? 7); // how long images of working are kept
 const MAX_IMAGE_BYTES = 3_000_000;
 const ORIGINS = (Deno.env.get("ALLOWED_ORIGINS") ?? "https://lab.mathsforensics.com,http://localhost:8000,http://127.0.0.1:8000")
   .split(",").map((s) => s.trim());
@@ -74,18 +75,35 @@ Deno.serve(async (req) => {
   let body: any;
   try { body = await req.json(); } catch { return fail("Bad request"); }
 
-  // Scheduled clean-up: delete images older than 90 days unless the mark is disputed (keeps the report)
+  // Scheduled clean-up (run daily): delete images older than IMAGE_DAYS (default 7). The marks, transcription and
+  // feedback stay in the student's learning profile. An image is kept only while its dispute is open.
+  // It also removes images whose rows are gone (deleted accounts), so nothing outlives the retention period.
   if (body.action === "purge") {
     const pk = Deno.env.get("PURGE_KEY");
     if (!pk || body.key !== pk) return fail("Forbidden", 403);
-    const cutoff = new Date(Date.now() - 90 * 864e5).toISOString();
+    const cutoffMs = Date.now() - IMAGE_DAYS * 864e5, cutoff = new Date(cutoffMs).toISOString();
+    const { data: open } = await db.from("written_marks").select("image_path")
+      .eq("disputed", true).is("dispute_resolved_at", null).not("image_path", "is", null);
+    const keep = new Set((open ?? []).map((o) => o.image_path));
+    // 1. Rows past the cutoff
     const { data: old } = await db.from("written_marks").select("id,image_path")
-      .not("image_path", "is", null).eq("disputed", false).lt("created_at", cutoff).limit(500);
-    if (!old?.length) return json({ purged: 0 });
-    const rm = await db.storage.from("written-work").remove(old.map((o) => o.image_path));
-    if (rm.error) return fail(rm.error.message, 500);
-    await db.from("written_marks").update({ image_path: null }).in("id", old.map((o) => o.id));
-    return json({ purged: old.length });
+      .not("image_path", "is", null).lt("created_at", cutoff).limit(1000);
+    const due = (old ?? []).filter((o) => !keep.has(o.image_path));
+    if (due.length) {
+      const rm = await db.storage.from("written-work").remove(due.map((o) => o.image_path));
+      if (rm.error) return fail(rm.error.message, 500);
+      await db.from("written_marks").update({ image_path: null }).in("id", due.map((o) => o.id));
+    }
+    // 2. Leftover files with no row (e.g. the account was deleted)
+    let orphans = 0;
+    const { data: folders } = await db.storage.from("written-work").list("", { limit: 1000 });
+    for (const f of folders ?? []) {
+      const { data: files } = await db.storage.from("written-work").list(f.name, { limit: 1000 });
+      const stale = (files ?? []).filter((x) => x.created_at && Date.parse(x.created_at) < cutoffMs)
+        .map((x) => `${f.name}/${x.name}`).filter((path) => !keep.has(path));
+      if (stale.length) { await db.storage.from("written-work").remove(stale); orphans += stale.length; }
+    }
+    return json({ purged: due.length, leftovers: orphans });
   }
 
   const { data: who } = await db.auth.getUser(token);

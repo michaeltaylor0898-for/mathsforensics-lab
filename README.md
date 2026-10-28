@@ -17,7 +17,7 @@ Live site: https://lab.mathsforensics.com
 2. Add secrets: `ANTHROPIC_API_KEY`, and `PURGE_KEY` (any long random string).
 3. Deploy: `supabase functions deploy mark-written --no-verify-jwt`
 4. Upload `site/written/` to the `lab.mathsforensics.com` folder, so it's at lab.mathsforensics.com/written/.
-5. Optional daily image clean-up (deletes images over 90 days old, keeps the marks): schedule a POST to the function with `{"action":"purge","key":"<PURGE_KEY>"}`.
+5. Daily image clean-up (required): images of working are kept for 7 days (set `IMAGE_DAYS` to change), then deleted; marks and feedback stay. Schedule a daily POST to the function with `{"action":"purge","key":"<PURGE_KEY>"}`. It also removes images left behind by deleted accounts. Mark a dispute as dealt with by setting `dispute_resolved_at`, so its image can go too.
 
 Test the scoring rules: `deno test supabase/functions/mark-written/`
 Check the AI against your marking: see the top of `eval/run-eval.ts`.

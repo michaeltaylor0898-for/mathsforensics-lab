@@ -21,6 +21,7 @@ create table if not exists public.written_marks (
   disputed boolean not null default false,
   dispute_note text,
   disputed_at timestamptz,
+  dispute_resolved_at timestamptz,    -- set when Mike has dealt with the dispute; the image can then be deleted
   teacher_score int,                  -- set when you (or later a teacher) re-mark it by hand
   teacher_note text,
   model text,
@@ -45,7 +46,9 @@ drop policy if exists "read own written work" on storage.objects;
 create policy "read own written work" on storage.objects for select
   using (bucket_id = 'written-work' and (storage.foldername(name))[1] = auth.uid()::text);
 
--- Data retention: images are only needed for disputes and for checking the marking. The mark-written
--- function deletes images older than 90 days (the score and case report stay) when it is called with
--- {"action":"purge"} and the PURGE_KEY secret. Supabase doesn't allow deleting storage files from SQL,
--- which is why this lives in the function rather than here.
+alter table public.written_marks add column if not exists dispute_resolved_at timestamptz;
+
+-- Data retention: images of working are kept for 7 days (IMAGE_DAYS), long enough to dispute a mark.
+-- The marks, transcription and feedback stay in the student's learning profile. An image is kept beyond 7 days
+-- only while its dispute is open. The mark-written function's daily {"action":"purge"} call deletes the rest,
+-- including images left behind by deleted accounts. (Supabase doesn't allow deleting storage files from SQL.)

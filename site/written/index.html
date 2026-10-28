@@ -339,7 +339,7 @@ function renderReport(r){
     ${r.mark_id?`<details id="disp"><summary>Dispute a mark</summary><div class="dispute">
       <textarea id="dnote" maxlength="500" placeholder="Which mark, and why do you think it's wrong?"></textarea>
       <button class="btn ghost" id="dsend">Send to Mike</button></div></details>`:''}
-    <p class="foot">${r.remaining_week!=null?`${r.remaining_week} marked answer${r.remaining_week===1?'':'s'} left this week. `:''}AI marking is checked against the mark scheme, but it can still get things wrong.</p>
+    <p class="foot">${r.remaining_week!=null?`${r.remaining_week} marked answer${r.remaining_week===1?'':'s'} left this week. `:''}AI marking is checked against the mark scheme, but it can still get things wrong. The picture of your working is deleted after 7 days, so dispute a mark before then; your marks and feedback stay in your Lab profile.</p>
   </div>`;
   const ds=$('#dsend');if(ds)ds.onclick=async()=>{
     ds.disabled=true;
