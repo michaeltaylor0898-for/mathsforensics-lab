@@ -164,7 +164,7 @@ button:disabled{cursor:default;opacity:.5}
 .mike{position:fixed;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:20;display:grid;justify-items:end;gap:6px}
 .mikebtn{position:relative;border:0;background:none;padding:0;border-radius:50%}
 .ring{display:grid;place-items:center;width:76px;height:76px;border-radius:50%;background:var(--mc,#56608a);box-shadow:0 8px 24px rgba(0,0,0,.45);transition:background .3s}
-.ring svg{width:64px;height:64px}
+.ring svg,.ring img{width:64px;height:64px;border-radius:50%;display:block}
 .mike[data-light="green"]{--mc:var(--good)} .mike[data-light="amber"]{--mc:var(--warn)} .mike[data-light="red"]{--mc:var(--bad)}
 .mike[data-light="red"] .ring{animation:pulse 1.2s ease-in-out 3}
 .mike[data-watching="1"] .ring{animation:look 1.6s ease-in-out infinite}
@@ -179,7 +179,7 @@ button:disabled{cursor:default;opacity:.5}
 .mikecard .lights span{padding:2px 8px;border-radius:999px;background:var(--panel2)}
 .mikemsg{margin-top:10px;font-size:14.5px;padding:9px 11px;border-radius:8px;background:var(--panel2);border-left:3px solid var(--mc,var(--line))}
 .tag.mike{background:rgba(0,252,241,.12);color:var(--cyan)}
-@media (max-width:780px){.ring{width:62px;height:62px}.ring svg{width:52px;height:52px}}
+@media (max-width:780px){.ring{width:62px;height:62px}.ring svg,.ring img{width:52px;height:52px}}
 
 /* debrief */
 .debrief{margin-top:22px}
@@ -230,7 +230,7 @@ td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
   <div class="bubble" id="mikeBubble" role="status" aria-live="polite" hidden></div>
   <button class="mikebtn" id="mikeBtn" aria-label="Mike: tap to see what he noticed">
     <span class="ring" id="mikeRing">
-      <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#111a3d"/><g fill="none" stroke="#E8ECF8" stroke-width="2.4" stroke-linecap="round"><path d="M17 27c1-9 7-14 15-14s14 5 15 14"/><circle cx="25" cy="31" r="5"/><circle cx="39" cy="31" r="5"/><path d="M30 31h4M20 31h-3M44 31h3"/><path d="M26 42c3 3 9 3 12 0"/></g><path d="M17 26c3-6 9-9 15-9s12 3 15 9c-4-3-9-5-15-5s-11 2-15 5z" fill="#E8ECF8"/></svg>
+      <!--AVATAR--><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#111a3d"/><g fill="none" stroke="#E8ECF8" stroke-width="2.4" stroke-linecap="round"><path d="M17 27c1-9 7-14 15-14s14 5 15 14"/><circle cx="25" cy="31" r="5"/><circle cx="39" cy="31" r="5"/><path d="M30 31h4M20 31h-3M44 31h3"/><path d="M26 42c3 3 9 3 12 0"/></g><path d="M17 26c3-6 9-9 15-9s12 3 15 9c-4-3-9-5-15-5s-11 2-15 5z" fill="#E8ECF8"/></svg><!--/AVATAR-->
     </span>
     <span class="mstate" id="mikeState">●</span>
   </button>
