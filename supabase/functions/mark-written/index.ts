@@ -3,22 +3,26 @@
 //   GET                         -> the list of questions available for written marking (public parts only)
 //   POST {question_id, image}   -> marks the image, saves it, returns the case report
 //   POST {action:"check", question_id, image} -> "check my working": a nudge, never the answer
+//   POST {action:"monitor", question_id, image} -> Mike mode traffic light (green / amber / red), never the answer
 //   POST {action:"dispute", mark_id, note} -> student flags a mark they think is wrong
 //   POST {action:"purge", key}  -> deletes images older than 90 days (call daily from a scheduler)
 //
 // Deploy:   supabase functions deploy mark-written --no-verify-jwt   (the function checks the sign-in itself)
 // Secrets:  ANTHROPIC_API_KEY=<key from console.anthropic.com>
 //           PURGE_KEY=<long random string> (for the daily image clean-up, see migration 007)
-//           optional: MARKING_MODEL (default claude-sonnet-5-5), FREE_WEEKLY (default 3), FULL_WEEKLY (default 40),
+//           optional: MONITOR_MODEL (default claude-haiku-5-5, the fast model for Mike mode), MIKE_WEEKLY (default 400, Exam Pass only),
+//           MARKING_MODEL (default claude-sonnet-5-5), FREE_WEEKLY (default 3), FULL_WEEKLY (default 40),
 //                     ALLOWED_ORIGINS (comma-separated; default lab.mathsforensics.com + localhost)
 // Needs migration 007 (written_marks table + written-work storage bucket).
 import { createClient } from "npm:@supabase/supabase-js@2.45.4";
 import { byId, publicQuestion, SCHEMES } from "./schemes.ts";
-import { type AiCheck, type AiMarking, applyCheck, applyRules, CHECK_PROMPT, CHECK_TOOL, checkText, MARKING_TOOL, schemeText, SYSTEM_PROMPT } from "./marking.ts";
+import { type AiCheck, type AiLight, type AiMarking, applyCheck, applyMonitor, applyRules, CHECK_PROMPT, CHECK_TOOL, checkText, MARKING_TOOL, MONITOR_PROMPT, MONITOR_TOOL, monitorText, schemeText, SYSTEM_PROMPT } from "./marking.ts";
 
 const MODEL = Deno.env.get("MARKING_MODEL") ?? "claude-sonnet-5-5";
 const FREE_WEEKLY = Number(Deno.env.get("FREE_WEEKLY") ?? 3);
 const FULL_WEEKLY = Number(Deno.env.get("FULL_WEEKLY") ?? 40);
+const MONITOR_MODEL = Deno.env.get("MONITOR_MODEL") ?? "claude-haiku-5-5";
+const MIKE_WEEKLY = Number(Deno.env.get("MIKE_WEEKLY") ?? 400);
 const MAX_IMAGE_BYTES = 3_000_000;
 const ORIGINS = (Deno.env.get("ALLOWED_ORIGINS") ?? "https://lab.mathsforensics.com,http://localhost:8000,http://127.0.0.1:8000")
   .split(",").map((s) => s.trim());
@@ -107,12 +111,15 @@ Deno.serve(async (req) => {
   const userDb = createClient(url, anonKey() ?? key, { global: { headers: { Authorization: `Bearer ${token}` } }, auth: { persistSession: false } });
   const { data: access } = await userDb.rpc("my_access");
   const full = access?.level === "full";
-  const limit = full ? FULL_WEEKLY : FREE_WEEKLY;
+  const monitor = body.action === "monitor";
+  if (monitor && !full) return fail("Mike mode comes with the Exam Pass.", 403);
+  const limit = monitor ? MIKE_WEEKLY : full ? FULL_WEEKLY : FREE_WEEKLY;
   const since = new Date(); since.setUTCHours(0, 0, 0, 0);
   since.setUTCDate(since.getUTCDate() - ((since.getUTCDay() + 6) % 7)); // back to Monday
   const { count } = await db.from("written_marks").select("id", { count: "exact", head: true })
-    .eq("user_id", user.id).gte("created_at", since.toISOString());
+    .eq("user_id", user.id).gte("created_at", since.toISOString())[monitor ? "eq" : "neq"]("status", "monitor");
   if ((count ?? 0) >= limit) {
+    if (monitor) return fail("Mike has watched a lot of working this week. He's back on Monday.", 429);
     return fail(full
       ? `You've used this week's ${limit} marked answers. Your allowance resets on Monday.`
       : `Free accounts get ${limit} marked answers a week. The Exam Pass gives you ${FULL_WEEKLY} a week.`, 429);
@@ -121,12 +128,12 @@ Deno.serve(async (req) => {
   const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
   if (!apiKey) return fail("Server not set up: missing ANTHROPIC_API_KEY", 500);
   const started = Date.now();
-  const ask = async (system: string, tool: typeof MARKING_TOOL | typeof CHECK_TOOL, text: string, maxTokens: number) => {
+  const ask = async (system: string, tool: typeof MARKING_TOOL | typeof CHECK_TOOL | typeof MONITOR_TOOL, text: string, maxTokens: number, model = MODEL) => {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "content-type": "application/json" },
       body: JSON.stringify({
-        model: MODEL,
+        model,
         max_tokens: maxTokens,
         system: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }],
         tools: [tool],
@@ -142,6 +149,18 @@ Deno.serve(async (req) => {
     const input = (out.content ?? []).find((c: any) => c.type === "tool_use")?.input;
     return input ? { input, usage: out.usage } : null;
   };
+
+  // Mike mode: a quick traffic light on the fast model; its own weekly allowance; no image is kept
+  if (monitor) {
+    const got = await ask(MONITOR_PROMPT, MONITOR_TOOL, monitorText(scheme), 500, MONITOR_MODEL);
+    if (!got) return fail("Mike is busy. Keep going.", 503);
+    const light = applyMonitor(scheme, got.input as AiLight);
+    await db.from("written_marks").insert({
+      user_id: user.id, question_id: scheme.id, topic: scheme.topic, status: "monitor", result: light, model: MONITOR_MODEL,
+      input_tokens: got.usage?.input_tokens ?? null, output_tokens: got.usage?.output_tokens ?? null, ms: Date.now() - started,
+    });
+    return json(light);
+  }
 
   // "Check my working": counts towards the weekly allowance; no image is kept
   if (body.action === "check") {

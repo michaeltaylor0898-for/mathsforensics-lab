@@ -7,7 +7,7 @@ cd "$(dirname "$0")"
 cat > entry.ts <<'TS'
 export { SCHEMES } from "../../supabase/functions/mark-written/schemes.ts";
 export { ERRORS } from "../../supabase/functions/mark-written/errors.ts";
-export { SYSTEM_PROMPT, MARKING_TOOL, schemeText, applyRules, CHECK_PROMPT, CHECK_TOOL, checkText, applyCheck } from "../../supabase/functions/mark-written/marking.ts";
+export { SYSTEM_PROMPT, MARKING_TOOL, schemeText, applyRules, CHECK_PROMPT, CHECK_TOOL, checkText, applyCheck, MONITOR_PROMPT, MONITOR_TOOL, monitorText, applyMonitor } from "../../supabase/functions/mark-written/marking.ts";
 TS
 npx --yes esbuild@0.24.2 entry.ts --bundle --format=iife --global-name=MF --target=es2020 --outfile=marking.js --log-level=warning
 node -e "const fs=require('fs');const p=fs.readFileSync('page.html','utf8');fs.writeFileSync('coached-paper.html',p.replace('/*MARKING_JS*/',()=>fs.readFileSync('marking.js','utf8').replace(/<\/script/gi,'<\\\\/script')))"

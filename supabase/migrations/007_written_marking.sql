@@ -13,7 +13,7 @@ create table if not exists public.written_marks (
   question_id text not null,
   topic text,
   image_path text,
-  status text not null,               -- marked | unreadable | blank | wrong_question | check
+  status text not null,               -- marked | unreadable | blank | wrong_question | check | monitor
   score int,
   max_marks int,
   result jsonb not null,              -- the full case report shown to the student

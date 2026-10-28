@@ -160,6 +160,27 @@ button:disabled{cursor:default;opacity:.5}
 .examnote{font-size:14.5px}
 .examnote b{color:var(--warn)}
 
+/* Mike mode: the avatar floats bottom right and changes colour */
+.mike{position:fixed;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:20;display:grid;justify-items:end;gap:6px}
+.mikebtn{position:relative;border:0;background:none;padding:0;border-radius:50%}
+.ring{display:grid;place-items:center;width:76px;height:76px;border-radius:50%;background:var(--mc,#56608a);box-shadow:0 8px 24px rgba(0,0,0,.45);transition:background .3s}
+.ring svg{width:64px;height:64px}
+.mike[data-light="green"]{--mc:var(--good)} .mike[data-light="amber"]{--mc:var(--warn)} .mike[data-light="red"]{--mc:var(--bad)}
+.mike[data-light="red"] .ring{animation:pulse 1.2s ease-in-out 3}
+.mike[data-watching="1"] .ring{animation:look 1.6s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 10px rgba(255,107,122,.25),0 8px 24px rgba(0,0,0,.45)}}
+@keyframes look{50%{transform:rotate(-6deg)}}
+@media (prefers-reduced-motion:reduce){.mike .ring{animation:none!important}}
+.mstate{position:absolute;right:-2px;bottom:-2px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--ink);border:2px solid var(--mc,#56608a);font-weight:700;font-size:14px;color:var(--mc,#93a0c8)}
+.mlabel{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.14em;color:var(--muted);margin-right:18px}
+.bubble{max-width:min(300px,calc(100vw - 32px));background:var(--panel);border:1px solid var(--mc,var(--line));border-radius:12px 12px 4px 12px;padding:10px 12px;font-size:14.5px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.bubble b{display:block;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;color:var(--mc,var(--muted));margin-bottom:2px}
+.mikecard .lights{display:flex;gap:8px;margin-top:8px;font-family:var(--f-mono);font-size:12px}
+.mikecard .lights span{padding:2px 8px;border-radius:999px;background:var(--panel2)}
+.mikemsg{margin-top:10px;font-size:14.5px;padding:9px 11px;border-radius:8px;background:var(--panel2);border-left:3px solid var(--mc,var(--line))}
+.tag.mike{background:rgba(0,252,241,.12);color:var(--cyan)}
+@media (max-width:780px){.ring{width:62px;height:62px}.ring svg{width:52px;height:52px}}
+
 /* debrief */
 .debrief{margin-top:22px}
 .dgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}
@@ -184,10 +205,11 @@ td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
 <div class="bar">
   <div class="case">
     <div class="eyebrow">Cold Case B · Higher Paper 1 · non-calculator</div>
-    <h1>Coached paper · Questions 1 to 5</h1>
+    <h1>Cold Case paper · Questions 1 to 5</h1>
   </div>
   <div class="barR">
     <div class="modes" role="group" aria-label="Mode">
+      <button id="mMike" aria-pressed="false">Mike mode</button>
       <button id="mCoached" aria-pressed="true">Coached</button>
       <button id="mExam" aria-pressed="false">Exam conditions</button>
     </div>
@@ -203,6 +225,17 @@ td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
 </div>
 
 <section class="card debrief" id="debrief" aria-live="polite"></section>
+
+<div class="mike" id="mike" hidden>
+  <div class="bubble" id="mikeBubble" role="status" aria-live="polite" hidden></div>
+  <button class="mikebtn" id="mikeBtn" aria-label="Mike: tap to see what he noticed">
+    <span class="ring" id="mikeRing">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#111a3d"/><g fill="none" stroke="#E8ECF8" stroke-width="2.4" stroke-linecap="round"><path d="M17 27c1-9 7-14 15-14s14 5 15 14"/><circle cx="25" cy="31" r="5"/><circle cx="39" cy="31" r="5"/><path d="M30 31h4M20 31h-3M44 31h3"/><path d="M26 42c3 3 9 3 12 0"/></g><path d="M17 26c3-6 9-9 15-9s12 3 15 9c-4-3-9-5-15-5s-11 2-15 5z" fill="#E8ECF8"/></svg>
+    </span>
+    <span class="mstate" id="mikeState">●</span>
+  </button>
+  <span class="mlabel" id="mikeLabel">MIKE</span>
+</div>
 </div>
 
 <script>/*MARKING_JS*/</script>
@@ -214,8 +247,8 @@ const TOPIC_N={fracmul:'Multiplying fractions',pfd:'Prime factors',hcf:'HCF',sf:
 const TITLES={1:'Mixed numbers',2:'Primes and HCF',3:'Standard form',4:'Simultaneous equations',5:'Isosceles angles'};
 const QS=[...new Set(PARTS.map(p=>p.source.q))].map(q=>({q,parts:PARTS.filter(p=>p.source.q===q)}));
 const TOTAL=PARTS.reduce((a,p)=>a+p.marks,0), MIN_PER_MARK=90/80;
-const S={mode:'coached',qi:0,active:{},started:null,finished:false,tool:'pen',
-  st:Object.fromEntries(PARTS.map(p=>[p.id,{clues:0,hl:new Set(),revealed:false,check:null,checking:false,trapsOpen:false,result:null,marking:false,err:'',exam:false,flag:false}]))};
+const S={mode:'coached',mikeOn:false,qi:0,active:{},started:null,finished:false,tool:'pen',
+  st:Object.fromEntries(PARTS.map(p=>[p.id,{clues:0,hl:new Set(),revealed:false,check:null,checking:false,trapsOpen:false,result:null,marking:false,err:'',exam:false,flag:false,light:null,watching:false,sent:0,lights:{green:0,amber:0,red:0},mike:false}]))};
 QS.forEach(q=>S.active[q.q]=q.parts[0].id);
 
 /* ---------- clock ---------- */
@@ -272,6 +305,7 @@ function makePad(id,host,zhost){
   const zpos=e=>{const r=zc.getBoundingClientRect();return{x:pad.target.x+(e.clientX-r.left)*Z,y:pad.target.y+(e.clientY-r.top)*Z,p:e.pointerType==='pen'?(e.pressure||.5):.5}};
   const begin=(e,el,at)=>{
     if(e.pointerType==='pen')pad.penSeen=true; if(pad.penSeen&&e.pointerType==='touch')return;if(e.button>0)return;
+    clearTimeout(WATCH[id]);
     el.setPointerCapture(e.pointerId);pad.cur={erase:S.tool==='eraser',size:S.size,pen:e.pointerType==='pen',pts:[at(e)],drawn:1,at,el};pad.strokes.push(pad.cur);startClock();pad.redraw();
   };
   cv.addEventListener('pointerdown',e=>{
@@ -286,7 +320,7 @@ function makePad(id,host,zhost){
   cv.addEventListener('pointermove',move);zc.addEventListener('pointermove',move);
   const end=()=>{const c=pad.cur;if(!c)return;pad.cur=null;
     if(c.el===zc){const maxX=Math.max(...c.pts.map(p=>p.x));if(maxX>pad.target.x+zW()*0.8&&pad.target.x+zW()<cv.clientWidth-4){pad.target.x+=zW()*0.55;pad.clamp()}}
-    pad.redraw();renderNav()};
+    pad.redraw();renderNav();if(S.mode==='mike')scheduleLook(id)};
   for(const el of [cv,zc]){el.addEventListener('pointerup',end);el.addEventListener('pointercancel',end)}
   zhost.querySelector('[data-zl]').onclick=()=>{pad.target.x-=zW()*0.5;pad.clamp();pad.redraw()};
   zhost.querySelector('[data-zr]').onclick=()=>{pad.target.x+=zW()*0.5;pad.clamp();pad.redraw()};
@@ -328,7 +362,7 @@ function wordify(el,part){
   });
   words.forEach((w,i)=>{if(st.hl.has(i))w.el.classList.add('mine')});
   el.addEventListener('click',e=>{
-    const w=e.target.closest('.w');if(!w||!S.hlOn||S.mode!=='coached'||st.revealed)return;
+    const w=e.target.closest('.w');if(!w||!S.hlOn||S.mode==='exam'||st.revealed)return;
     const i=+w.dataset.i;st.hl.has(i)?st.hl.delete(i):st.hl.add(i);w.classList.toggle('mine');startClock();
     if(st.revealed)renderCoach();
   });
@@ -370,7 +404,7 @@ function renderSheet(){
         <span class="sizes">${['fine','medium','bold'].map(z=>`<button class="ptool size" data-size="${z}" aria-pressed="${S.size===z}" title="${z[0].toUpperCase()+z.slice(1)} pen"><i style="width:${{fine:4,medium:6,bold:9}[z]}px;height:${{fine:4,medium:6,bold:9}[z]}px"></i>${z[0].toUpperCase()+z.slice(1)}</button>`).join('')}</span>
         <button class="ptool" data-zoomtoggle aria-pressed="${!!S.zoom}">Zoom writing</button>
         <span class="spacer"></span>
-        ${S.mode==='coached'&&!st.result?`<button class="ptool" data-flag="${p.id}">${st.flag?'Unflag':'Skip for now'}</button><button class="ptool go" data-hand="${p.id}" ${st.marking?'disabled':''}>Hand in ${p.source.part?'('+p.source.part+')':'answer'}</button>`:''}
+        ${S.mode!=='exam'&&!st.result?`<button class="ptool" data-flag="${p.id}">${st.flag?'Unflag':'Skip for now'}</button><button class="ptool go" data-hand="${p.id}" ${st.marking?'disabled':''}>Hand in ${p.source.part?'('+p.source.part+')':'answer'}</button>`:''}
         ${S.mode==='exam'&&!st.result&&!S.finished?`<span class="pstatus">Marked when you hand in the paper</span>`:''}
       </div>
       <div data-out="${p.id}">${partOut(p)}</div></section>`}).join('')}</div></div>
@@ -411,7 +445,7 @@ function resultHTML(p,r){
   if(r.status!=='marked')return `<div class="result"><b>Not marked:</b> ${esc({unreadable:'the writing couldn\'t be read. Write a little larger, one step per line.',blank:'no working was found.',wrong_question:'this looks like working for a different question.'}[r.status]||r.status)}</div>`;
   return `<div class="result">
     <div class="rtop"><span class="score">${r.score}/${r.max}</span><span class="verdict">${esc(r.verdict)}</span>
-      ${st.clues?`<span class="tag assist">ASSISTED · ${st.clues} CLUE${st.clues>1?'S':''}</span>`:''}${r.root_cause?.category?`<span class="tag cat">${CAT[r.root_cause.category]}</span>`:''}</div>
+      ${st.mike?`<span class="tag mike">COACHED BY MIKE</span>`:''}${st.clues?`<span class="tag assist">ASSISTED · ${st.clues} CLUE${st.clues>1?'S':''}</span>`:''}${r.root_cause?.category?`<span class="tag cat">${CAT[r.root_cause.category]}</span>`:''}</div>
     <ul class="marks">${r.points.map(m=>`<li class="${m.awarded?'yes':'no'}"><span class="code">${esc(m.code)}</span><span class="mk">${m.awarded?'✓':'✗'}</span><span>${esc(m.reason)}${m.follow_through?'<span class="ft">FT</span>':''}${m.overridden?`<span class="adj">${esc(m.overridden)}</span>`:''}</span>${m.evidence?`<span class="ev">Line ${m.line}: <span>${esc(m.evidence)}</span></span>`:''}</li>`).join('')}</ul>
     ${r.unprotected?`<div class="callout unprot"><h5>No method seen</h5><p>${esc(r.unprotected)}</p></div>`:''}
     ${r.root_cause?`<div class="callout cause"><h5>Root cause${r.root_cause.name?': '+esc(r.root_cause.name):''}${r.root_cause.line?' · line '+r.root_cause.line:''}</h5><p>${esc(r.root_cause.explanation)}</p></div>`:''}
@@ -420,13 +454,21 @@ function resultHTML(p,r){
   </div>`;
 }
 function renderCoach(){
+  if(typeof renderMike==='function'&&$('#mike'))setTimeout(renderMike);
   const q=QS[S.qi],p=PARTS.find(x=>x.id===S.active[q.q]),st=S.st[p.id],c=p.coach;
   if(S.mode==='exam'){
     $('#coach').innerHTML=`<div class="card"><h2>Exam conditions</h2><p class="examnote">No key words, clues or checks. <b>Work at about a mark a minute</b>: this section is ${TOTAL} marks, so aim for ${Math.round(TOTAL*MIN_PER_MARK)} minutes. Skip anything that stalls you and come back.</p><p class="hint" style="margin-top:8px">Everything is marked when you hand in the paper.</p></div>`;return;
   }
   const tabs=q.parts.length>1?`<div class="parttabs">${q.parts.map(x=>`<button data-tab="${x.id}" aria-pressed="${x.id===p.id}">(${x.source.part})</button>`).join('')}</div>`:'';
   const found=st.found||[];
-  $('#coach').innerHTML=`
+  const L=st.light,LN={green:'Looking good',amber:'Be careful',red:'Serious error',blank:'Waiting for working',unreadable:'Can\'t read it'};
+  const mikeCard=S.mode!=='mike'?'':`<div class="card mikecard" style="--mc:${L?{green:'var(--good)',amber:'var(--warn)',red:'var(--bad)'}[L.light]||'var(--line)':'var(--line)'}">
+    <h2>Mike is watching</h2>
+    <p class="hint">After each pause in your writing, Mike looks over your working. Green: on track. Amber: be careful. Red: a mistake that will cost marks. He never gives the answer.</p>
+    ${st.watching?`<div class="mikemsg">Looking at your working…</div>`:L?`<div class="mikemsg"><b>${esc(LN[L.light]||'')}${L.line&&!/^line/i.test(L.message)?' · line '+L.line:''}.</b> ${esc(L.message)}</div>`:''}
+    <div class="lights"><span style="color:var(--good)">● ${st.lights.green}</span><span style="color:var(--warn)">● ${st.lights.amber}</span><span style="color:var(--bad)">● ${st.lights.red}</span></div>
+  </div>`;
+  $('#coach').innerHTML=mikeCard+`
   <div class="card">${tabs}<h2>1 · Read the question</h2>
     <p class="hint">${st.revealed?`You marked ${found.filter(Boolean).length} of ${c.keyWords.length} key phrases.`:'Tap the words that decide what the answer must look like, then check them against the investigator\'s.'}</p>
     <div class="cbtns"><button class="cbtn" id="hlBtn" aria-pressed="${!!S.hlOn}" ${st.result||st.revealed?'disabled':''}>${S.hlOn?'Highlighter on':'Highlight key words'}</button>
@@ -449,7 +491,7 @@ function renderCoach(){
   $('#clueBtn').onclick=()=>{st.clues++;startClock();renderCoach()};
   $('#checkBtn').onclick=()=>checkWork(p);
 }
-function renderAll(){renderNav();renderSheet();renderCoach()}
+function renderAll(){renderNav();renderSheet();renderCoach();if(typeof renderMike==='function')renderMike()}
 
 /* ---------- Claude: marking and checking (same prompts and rules as the Lab function) ---------- */
 let sample=null;const ready=(async()=>{sample=await window.claude?.use?.('sample')??null})();
@@ -457,7 +499,7 @@ const COPY={not_granted:'This page needs permission to use Claude. Reload to be 
   images_unavailable:'This view can\'t send images to Claude. Open it in claude.ai or the Claude app.',rate_limited:'Claude is busy or a usage limit was reached. Wait a minute and try again.',
   invalid_json:'The reply came back in the wrong format. Try again.',session_expired:'Sign in to Claude again, then reload.'};
 const errMsg=e=>COPY[e?.code]||'Something went wrong. Try again.';
-async function ask(prompt,blob){await ready;if(!sample)throw{code:'unavailable'};return sample.json(prompt,{images:[blob],cache:false})}
+async function ask(prompt,blob,opts={}){await ready;if(!sample)throw{code:'unavailable'};return sample.json(prompt,{images:[blob],cache:false,...opts})}
 
 async function checkWork(p){
   const st=S.st[p.id];
@@ -482,7 +524,7 @@ async function markPart(id,{quiet}={}){
     const blob=await padBlob(id);
     const ai=await ask(MF.SYSTEM_PROMPT+'\n\n'+MF.schemeText(p).replace('Call record_marking once.','')+'\nThe image attached is the student\'s working. Reply with only one JSON object that matches this JSON schema, and nothing else:\n'+JSON.stringify(MF.MARKING_TOOL.input_schema),blob);
     if(!ai||!Array.isArray(ai.points))throw{code:'invalid_json'};
-    st.result=MF.applyRules(p,ai);st.exam=S.mode==='exam';
+    st.result=MF.applyRules(p,ai);st.exam=S.mode==='exam';st.mike=st.mike||S.mode==='mike';clearTimeout(WATCH[id]);
   }catch(e){st.err=e?.code==='unavailable'?'Marking works only inside Claude. Open this page in claude.ai or the Claude app.':errMsg(e)}
   st.marking=false;
   if(QS[S.qi].parts.includes(p)){if(quiet)refreshOut(id);else renderSheet();renderCoach()}
@@ -507,9 +549,11 @@ function renderDebrief(){
   const sum=f=>rows.reduce((a,x)=>a+f(x),0),got=sum(x=>x.score),by=c=>sum(x=>x.cat===c?x.lost:0);
   const rec=by('R')+by('A')+by('T'),secs=S.started?(Date.now()-S.started)/1000:0,target=TOTAL*MIN_PER_MARK*60;
   const kw=PARTS.filter(p=>S.st[p.id].revealed),kwFound=kw.reduce((a,p)=>a+keyCount(p),0),kwAll=kw.reduce((a,p)=>a+p.coach.keyWords.length,0);
+  const mikeReds=sum(x=>x.st.lights.red),mikeAmbers=sum(x=>x.st.lights.amber);
   const clues=sum(x=>x.st.clues),unprot=rows.filter(x=>x.r?.unprotected).length,unprotLost=sum(x=>x.r?.unprotected?Math.max(0,(x.r.exam_board_score||0)-x.score):0);
   $('#debrief').innerHTML=`<h2 style="font-family:var(--f-display);font-size:15px;margin:0">Case Debrief</h2>
-    <p class="hint" style="margin-top:4px">The numbers don't lie. ${S.mode==='exam'?'Sat under exam conditions.':'Coached run: clues and checks were available.'}</p>
+    <p class="hint" style="margin-top:4px">The numbers don't lie. ${S.mode==='exam'?'Sat under exam conditions.':S.mode==='mike'?'Mike mode: Mike watched your working and you could use clues and checks.':'Coached run: clues and checks were available.'}</p>
+    ${mikeReds||mikeAmbers?`<p class="hint" style="margin-top:6px">Mike went <b style="color:var(--bad)">red ${mikeReds} time${mikeReds===1?'':'s'}</b> and amber ${mikeAmbers} time${mikeAmbers===1?'':'s'}. Next time, try Coached mode and see if you can catch those yourself.</p>`:''}
     <div class="dgrid">
       <div class="stat"><b>${got}/${TOTAL}</b><span>score</span></div>
       <div class="stat"><b>${got+rec}/${TOTAL}</b><span>if R, A and T marks were recovered</span></div>
@@ -534,9 +578,56 @@ function keyCount(p){return (S.st[p.id].found||[]).filter(Boolean).length}
 /* ---------- modes ---------- */
 function setMode(m){
   if(S.finished)return;S.mode=m;S.hlOn=false;
-  $('#mCoached').setAttribute('aria-pressed',m==='coached');$('#mExam').setAttribute('aria-pressed',m==='exam');renderAll();
+  $('#mMike').setAttribute('aria-pressed',m==='mike');$('#mCoached').setAttribute('aria-pressed',m==='coached');$('#mExam').setAttribute('aria-pressed',m==='exam');
+  if(m!=='mike')Object.values(WATCH).forEach(clearTimeout);
+  renderAll();renderMike();
+  if(m==='mike'){const id=S.active[QS[S.qi].q];if(hasInk(id))scheduleLook(id,200)}
 }
-$('#mCoached').onclick=()=>setMode('coached');$('#mExam').onclick=()=>setMode('exam');
+$('#mMike').onclick=()=>setMode('mike');$('#mCoached').onclick=()=>setMode('coached');$('#mExam').onclick=()=>setMode('exam');
+
+/* ---------- Mike mode ----------
+   After each pause in writing (2.5 s with the pen up), the working so far goes to the fast checker.
+   Only new working is sent, one look at a time per part; the light belongs to the part being worked on. */
+const WATCH={},LOOK_DELAY=2500;
+function scheduleLook(id,delay=LOOK_DELAY){
+  clearTimeout(WATCH[id]);
+  WATCH[id]=setTimeout(()=>look(id),delay);
+}
+async function look(id){
+  const p=PARTS.find(x=>x.id===id),st=S.st[id],pad=PADS[id];
+  if(S.mode!=='mike'||S.finished||st.result||!pad||pad.cur)return;
+  const n=pad.strokes.length;if(!hasInk(id)||n===st.sent)return;
+  if(st.watching){st.again=true;return}
+  st.watching=true;st.sent=n;renderMike();renderCoachIf(id);
+  try{
+    const blob=await padBlob(id);
+    const ai=await ask(MF.MONITOR_PROMPT+'\n\n'+MF.monitorText(p).replace('Call record_light once.','')+'\nReply with only one JSON object matching this JSON schema:\n'+JSON.stringify(MF.MONITOR_TOOL.input_schema),blob,{modelTier:'quick'});
+    const L=MF.applyMonitor(p,ai);
+    const prev=st.light?.light;
+    st.light=L;if(st.lights[L.light]!=null&&!(prev===L.light&&L.light==='green'))st.lights[L.light]++;
+    if(L.light==='red'||(L.light==='amber'&&prev!=='amber'))openBubble(true);
+  }catch(e){st.light={light:'amber',line:null,message:e?.code==='unavailable'?'Mike mode works only inside Claude.':'Mike couldn\'t look just now. Keep going.'}}
+  st.watching=false;renderMike();renderCoachIf(id);
+  if(st.again){st.again=false;scheduleLook(id,300)}
+}
+const renderCoachIf=id=>{if(S.active[QS[S.qi].q]===id)renderCoach()};
+let bubbleTimer;
+function openBubble(auto){
+  const id=S.active[QS[S.qi].q],L=S.st[id]?.light;if(!L)return;
+  const LN={green:'LOOKING GOOD',amber:'BE CAREFUL',red:'SERIOUS ERROR',blank:'NOTHING YET',unreadable:'CAN\'T READ IT'};
+  $('#mikeBubble').innerHTML=`<b>${LN[L.light]||''}${L.line&&!/^line/i.test(L.message)?' · LINE '+L.line:''}</b>${esc(L.message)}`;$('#mikeBubble').hidden=false;
+  clearTimeout(bubbleTimer);if(auto&&L.light!=='red')bubbleTimer=setTimeout(()=>$('#mikeBubble').hidden=true,6000);
+}
+function renderMike(){
+  const box=$('#mike');box.hidden=S.mode!=='mike'||S.finished;if(box.hidden)return;
+  const id=S.active[QS[S.qi].q],st=S.st[id],L=st.result?null:st.light;
+  box.dataset.light=L?L.light:'';box.dataset.watching=st.watching?'1':'0';
+  $('#mikeState').textContent=st.watching?'…':L?{green:'✓',amber:'!',red:'✗'}[L.light]||'·':'·';
+  $('#mikeLabel').textContent=st.result?'MIKE · MARKED':st.watching?'MIKE · LOOKING':L?{green:'MIKE · GOOD',amber:'MIKE · CAREFUL',red:'MIKE · STOP'}[L.light]||'MIKE':'MIKE · WATCHING';
+  if(!L)$('#mikeBubble').hidden=true;
+}
+$('#mikeBtn').onclick=()=>{const b=$('#mikeBubble');if(!b.hidden){b.hidden=true;return}const id=S.active[QS[S.qi].q];
+  if(S.st[id].light)openBubble(false);else{b.innerHTML='<b>WATCHING</b>Write your first line. Mike looks when you pause.';b.hidden=false}};
 
 renderAll();renderDebrief();
 </script>
