@@ -55,6 +55,11 @@ export type Scheme = {
   showWorking?: string;   // how to protect the marks, shown when a correct answer has no working
   source?: { paper: string; q: string; part?: string };   // e.g. { paper: "CC-B/1H", q: "2", part: "a" }
   coach?: Coaching;
+  // Mike mode danger zones: the points in the method where students typically lose marks. Mike goes
+  // amber when the working reaches one, once per zone, with the warning written here (in Mike's words).
+  //   when  what the working looks like at that point, for the checker to recognise
+  //   warn  what Mike says (one short sentence, never the answer)
+  dangerZones?: { id: string; when: string; warn: string }[];
 };
 
 // The on-screen coaching for one question (coached-paper mode). Written once per question, so it
@@ -82,6 +87,11 @@ export const SCHEMES: Scheme[] = [
     answer: "x = −4 ± 2√5",
     solution: ["(x + 4)² − 16 − 4 = 0", "(x + 4)² = 20", "x + 4 = ±√20", "x = −4 ± √20", "x = −4 ± 2√5"],
     noWorking: "zero",
+    dangerZones: [
+      { id: "bracket", when: "the student is writing the bracket for completing the square", warn: "Half of +8, and keep the sign." },
+      { id: "plusminus", when: "the squared bracket has been isolated and the student is about to square root", warn: "Square root both sides, and don't lose the ±." },
+      { id: "surd", when: "the student has an answer containing √20", warn: "Surd form means simplified: is √20 as simple as it gets?" },
+    ],
     points: [
       { id: "B1", code: "B1", criterion: "Correct bracket (x + 4)² written.", reject: ["(x − 4)²", "(x + 8)²"] },
       {

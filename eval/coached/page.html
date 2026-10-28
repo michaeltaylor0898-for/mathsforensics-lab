@@ -248,7 +248,7 @@ const TITLES={1:'Mixed numbers',2:'Primes and HCF',3:'Standard form',4:'Simultan
 const QS=[...new Set(PARTS.map(p=>p.source.q))].map(q=>({q,parts:PARTS.filter(p=>p.source.q===q)}));
 const TOTAL=PARTS.reduce((a,p)=>a+p.marks,0), MIN_PER_MARK=90/80;
 const S={mode:'coached',mikeOn:false,qi:0,active:{},started:null,finished:false,tool:'pen',
-  st:Object.fromEntries(PARTS.map(p=>[p.id,{clues:0,hl:new Set(),revealed:false,check:null,checking:false,trapsOpen:false,result:null,marking:false,err:'',exam:false,flag:false,light:null,watching:false,sent:0,lights:{green:0,amber:0,red:0},mike:false}]))};
+  st:Object.fromEntries(PARTS.map(p=>[p.id,{clues:0,hl:new Set(),revealed:false,check:null,checking:false,trapsOpen:false,result:null,marking:false,err:'',exam:false,flag:false,light:null,watching:false,sent:0,lights:{green:0,amber:0,red:0},zones:[],mike:false}]))};
 QS.forEach(q=>S.active[q.q]=q.parts[0].id);
 
 /* ---------- clock ---------- */
@@ -461,11 +461,12 @@ function renderCoach(){
   }
   const tabs=q.parts.length>1?`<div class="parttabs">${q.parts.map(x=>`<button data-tab="${x.id}" aria-pressed="${x.id===p.id}">(${x.source.part})</button>`).join('')}</div>`:'';
   const found=st.found||[];
-  const L=st.light,LN={green:'Looking good',amber:'Be careful',red:'Serious error',blank:'Waiting for working',unreadable:'Can\'t read it'};
+  const L=st.light,LN={green:'Looking good',amber:L&&L.zone?'Danger zone':'Be careful',red:'Serious error',blank:'Waiting for working',unreadable:'Can\'t read it'};
   const mikeCard=S.mode!=='mike'?'':`<div class="card mikecard" style="--mc:${L?{green:'var(--good)',amber:'var(--warn)',red:'var(--bad)'}[L.light]||'var(--line)':'var(--line)'}">
     <h2>Mike is watching</h2>
-    <p class="hint">After each pause in your writing, Mike looks over your working. Green: on track. Amber: be careful. Red: a mistake that will cost marks. He never gives the answer.</p>
+    <p class="hint">After each pause in your writing, Mike looks over your working. Green: on track. Amber: you've reached a step where students often lose marks. Red: a mistake that will cost marks. He never gives the answer.</p>
     ${st.watching?`<div class="mikemsg">Looking at your working…</div>`:L?`<div class="mikemsg"><b>${esc(LN[L.light]||'')}${L.line&&!/^line/i.test(L.message)?' · line '+L.line:''}.</b> ${esc(L.message)}</div>`:''}
+    ${p.dangerZones?.length?`<p class="hint" style="margin-top:8px">Danger zones on this question: ${st.zones.length} of ${p.dangerZones.length} reached.</p>`:''}
     <div class="lights"><span style="color:var(--good)">● ${st.lights.green}</span><span style="color:var(--warn)">● ${st.lights.amber}</span><span style="color:var(--bad)">● ${st.lights.red}</span></div>
   </div>`;
   $('#coach').innerHTML=mikeCard+`
@@ -553,7 +554,7 @@ function renderDebrief(){
   const clues=sum(x=>x.st.clues),unprot=rows.filter(x=>x.r?.unprotected).length,unprotLost=sum(x=>x.r?.unprotected?Math.max(0,(x.r.exam_board_score||0)-x.score):0);
   $('#debrief').innerHTML=`<h2 style="font-family:var(--f-display);font-size:15px;margin:0">Case Debrief</h2>
     <p class="hint" style="margin-top:4px">The numbers don't lie. ${S.mode==='exam'?'Sat under exam conditions.':S.mode==='mike'?'Mike mode: Mike watched your working and you could use clues and checks.':'Coached run: clues and checks were available.'}</p>
-    ${mikeReds||mikeAmbers?`<p class="hint" style="margin-top:6px">Mike went <b style="color:var(--bad)">red ${mikeReds} time${mikeReds===1?'':'s'}</b> and amber ${mikeAmbers} time${mikeAmbers===1?'':'s'}. Next time, try Coached mode and see if you can catch those yourself.</p>`:''}
+    ${mikeReds||mikeAmbers?`<p class="hint" style="margin-top:6px">Mike went <b style="color:var(--bad)">red ${mikeReds} time${mikeReds===1?'':'s'}</b> and warned you at ${mikeAmbers} danger zone${mikeAmbers===1?'':'s'}. Next time, try Coached mode and see if you can catch those yourself.</p>`:''}
     <div class="dgrid">
       <div class="stat"><b>${got}/${TOTAL}</b><span>score</span></div>
       <div class="stat"><b>${got+rec}/${TOTAL}</b><span>if R, A and T marks were recovered</span></div>
@@ -601,11 +602,11 @@ async function look(id){
   st.watching=true;st.sent=n;renderMike();renderCoachIf(id);
   try{
     const blob=await padBlob(id);
-    const ai=await ask(MF.MONITOR_PROMPT+'\n\n'+MF.monitorText(p).replace('Call record_light once.','')+'\nReply with only one JSON object matching this JSON schema:\n'+JSON.stringify(MF.MONITOR_TOOL.input_schema),blob,{modelTier:'quick'});
-    const L=MF.applyMonitor(p,ai);
+    const ai=await ask(MF.MONITOR_PROMPT+'\n\n'+MF.monitorText(p,st.zones).replace('Call record_light once.','')+'\nReply with only one JSON object matching this JSON schema:\n'+JSON.stringify(MF.MONITOR_TOOL.input_schema),blob,{modelTier:'quick'});
+    const L=MF.applyMonitor(p,ai,st.zones);if(L.zone)st.zones.push(L.zone);
     const prev=st.light?.light;
     st.light=L;if(st.lights[L.light]!=null&&!(prev===L.light&&L.light==='green'))st.lights[L.light]++;
-    if(L.light==='red'||(L.light==='amber'&&prev!=='amber'))openBubble(true);
+    if(L.light==='red'||L.zone||(L.light==='amber'&&prev!=='amber'))openBubble(true);
   }catch(e){st.light={light:'amber',line:null,message:e?.code==='unavailable'?'Mike mode works only inside Claude.':'Mike couldn\'t look just now. Keep going.'}}
   st.watching=false;renderMike();renderCoachIf(id);
   if(st.again){st.again=false;scheduleLook(id,300)}
@@ -614,7 +615,7 @@ const renderCoachIf=id=>{if(S.active[QS[S.qi].q]===id)renderCoach()};
 let bubbleTimer;
 function openBubble(auto){
   const id=S.active[QS[S.qi].q],L=S.st[id]?.light;if(!L)return;
-  const LN={green:'LOOKING GOOD',amber:'BE CAREFUL',red:'SERIOUS ERROR',blank:'NOTHING YET',unreadable:'CAN\'T READ IT'};
+  const LN={green:'LOOKING GOOD',amber:L.zone?'DANGER ZONE':'BE CAREFUL',red:'SERIOUS ERROR',blank:'NOTHING YET',unreadable:'CAN\'T READ IT'};
   $('#mikeBubble').innerHTML=`<b>${LN[L.light]||''}${L.line&&!/^line/i.test(L.message)?' · LINE '+L.line:''}</b>${esc(L.message)}`;$('#mikeBubble').hidden=false;
   clearTimeout(bubbleTimer);if(auto&&L.light!=='red')bubbleTimer=setTimeout(()=>$('#mikeBubble').hidden=true,6000);
 }

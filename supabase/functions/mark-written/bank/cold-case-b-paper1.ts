@@ -38,6 +38,10 @@ export const COLD_CASE_B1: Scheme[] = [
       { id: "wrong-form", looksLike: "left the answer as 18/5 or 3.6 instead of a mixed number" },
       { id: "not-simplified", looksLike: "3 6/10 or 3 12/20 not simplified" },
     ],
+    dangerZones: [
+      { id: "convert", when: "the student is about to multiply, or has started, while the mixed numbers are still on the page unconverted", warn: "Change both mixed numbers into top-heavy fractions before you multiply." },
+      { id: "form", when: "the working has reached an improper fraction result such as 72/20 or 18/5", warn: "The question wants a mixed number in its simplest form, so don't stop at the top-heavy fraction." },
+    ],
     coach: {
       keyWords: [
         { text: "mixed number", why: "18/5 is the right value but loses the last mark. The answer must be written like 3 3/5." },
@@ -81,6 +85,10 @@ export const COLD_CASE_B1: Scheme[] = [
       { id: "wrong-form", looksLike: "listed the primes with commas instead of writing them as a product with ×" },
       { id: "stopped-early", looksLike: "left a non-prime in the answer, e.g. 4 × 3 × 7 or 2 × 6 × 7" },
     ],
+    dangerZones: [
+      { id: "primes", when: "a factor tree or repeated division has been started", warn: "Keep splitting until every branch ends in a prime number." },
+      { id: "product", when: "all the prime factors have been found and the final answer is being written", warn: "Write the answer as a product with × signs, not a list with commas." },
+    ],
     coach: {
       keyWords: [
         { text: "product", why: "Product means multiplied together. The answer must use × signs, not commas." },
@@ -119,6 +127,9 @@ export const COLD_CASE_B1: Scheme[] = [
       { id: "hcf-lcm", looksLike: "gave the lowest common multiple, 252" },
       { id: "stopped-early", looksLike: "gave a common factor that isn't the highest, e.g. 14 or 21" },
     ],
+    dangerZones: [
+      { id: "both", when: "prime factors of 126 (or of both numbers) have been written", warn: "Highest common factor: only the primes in both numbers, each with its lower power." },
+    ],
     coach: {
       keyWords: [
         { text: "highest common factor", why: "The biggest number that divides into both. It can't be bigger than 84." },
@@ -151,6 +162,9 @@ export const COLD_CASE_B1: Scheme[] = [
     errors: [
       { id: "negative-index", looksLike: "moved the decimal point the wrong way, giving 5600" },
       { id: "index-law", looksLike: "moved the decimal point the wrong number of places, e.g. 0.00056 or 0.056" },
+    ],
+    dangerZones: [
+      { id: "direction", when: "the student has started moving the decimal point or writing zeros", warn: "A negative power makes the number smaller. Count three places carefully." },
     ],
     coach: {
       keyWords: [
@@ -191,6 +205,9 @@ export const COLD_CASE_B1: Scheme[] = [
       { id: "not-standard-form", looksLike: "left the answer as 24 × 10⁸" },
       { id: "index-law", looksLike: "multiplied the powers (10¹⁵) instead of adding them" },
       { id: "sign-error", looksLike: "adjusted the power the wrong way when converting 24 × 10⁸, giving 2.4 × 10⁷" },
+    ],
+    dangerZones: [
+      { id: "adjust", when: "the front numbers and powers have been multiplied, e.g. 24 × 10⁸ is on the page", warn: "24 isn't between 1 and 10. When you fix it, the power has to change too." },
     ],
     coach: {
       keyWords: [
@@ -235,6 +252,10 @@ export const COLD_CASE_B1: Scheme[] = [
       { id: "added-squares", looksLike: "added the equations when they needed subtracting, or the other way round" },
       { id: "sign-error", looksLike: "sign slip with −3y or −6y, often giving y = 1" },
       { id: "stopped-early", looksLike: "found x but not y" },
+    ],
+    dangerZones: [
+      { id: "signs", when: "the equations have been scaled so one variable has matching coefficients", warn: "Check the signs before you combine: same signs subtract, different signs add." },
+      { id: "both", when: "one variable has been found", warn: "Now find the other one, then check both values in the second equation." },
     ],
     coach: {
       keyWords: [
@@ -282,6 +303,10 @@ export const COLD_CASE_B1: Scheme[] = [
       { id: "wrong-operation", looksLike: "assumed angle BAC equals one of the base angles, or used 112 inside the triangle" },
     ],
     markerNotes: ["Reasons must use standard wording closely enough to be clear. Accept 'sum' for 'add up to'."],
+    dangerZones: [
+      { id: "reasons", when: "the first angle (68°) has been found", warn: "Write the reason next to each angle as you go: a mark depends on them." },
+      { id: "which", when: "the base angles are known and the student is about to find the last angle", warn: "The question asks for angle BAC, the angle at A." },
+    ],
     coach: {
       keyWords: [
         { text: "AB = AC", why: "Two equal sides, so the two base angles at B and C are equal." },

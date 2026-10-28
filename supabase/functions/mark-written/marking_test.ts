@@ -2,7 +2,7 @@
 import { deepStrictEqual as assertEquals, ok as assert } from "node:assert/strict";
 import { SCHEMES, byId } from "./schemes.ts";
 import { ERRORS } from "./errors.ts";
-import { type AiMarking, applyCheck, applyMonitor, applyRules, monitorText, schemeText, MARKING_TOOL } from "./marking.ts";
+import { type AiLight, type AiMarking, applyCheck, applyMonitor, applyRules, monitorText, schemeText, MARKING_TOOL } from "./marking.ts";
 
 const LAB_TOPICS = ["csq", "qform", "simquad", "rev", "algfrac", "recur", "fracmul", "pfd", "hcf", "sf", "simlin", "anglefacts"];
 
@@ -135,15 +135,21 @@ Deno.test("an accuracy mark can't stand without a method mark, even with working
   assertEquals(r.exam_board_score, 1);
 });
 
-Deno.test("Mike mode: red needs high confidence, and the light never gives the answer", () => {
+Deno.test("Mike mode: amber only at a danger zone, once each, in Mike's words; red needs certainty", () => {
   const s = byId("csq-01")!;
-  const unsure = applyMonitor(s, { transcription: ["(x − 4)²"], light: "red", line: 1, confidence: "medium", message: "Line 1: check the sign." });
-  assertEquals(unsure.light, "amber");
-  const sure = applyMonitor(s, { transcription: ["(x − 4)²"], light: "red", line: 1, confidence: "high", message: "Line 1: expand it. Does it give +8x?" });
-  assertEquals(sure.light, "red");
-  assertEquals(sure.line, 1);
-  const leak = applyMonitor(s, { transcription: ["(x + 4)² = 20"], light: "green", line: null, confidence: "high", message: "Nearly there, it's −4 ± 2√5" });
-  assert(!leak.message.includes("2√5"));
-  assertEquals(applyMonitor(s, { transcription: [], light: "purple", line: 9, confidence: "high", message: "" }).light, "amber");
-  assert(monitorText(byId("ccb1-q1")!).includes("COMMON TRAPS"));
+  const L = (o: Partial<AiLight>, shown: string[] = []) =>
+    applyMonitor(s, { transcription: ["(x + 4)² − 16 − 4 = 0"], light: "green", zone: null, line: null, confidence: "high", message: "Good start.", ...o }, shown);
+  const zoneHit = L({ light: "amber", zone: "plusminus", message: "whatever" });
+  assertEquals(zoneHit.light, "amber");
+  assertEquals(zoneHit.zone, "plusminus");
+  assertEquals(zoneHit.message, "Square root both sides, and don't lose the ±.");
+  assertEquals(L({ light: "amber", zone: "plusminus" }, ["plusminus"]).light, "green");    // fires once
+  assertEquals(L({ light: "amber", zone: "made-up" }).light, "green");                      // not a real zone, no doubt
+  assertEquals(L({ light: "amber", zone: null, confidence: "low", message: "Hmm." }).light, "amber"); // genuine doubt
+  assertEquals(L({ light: "red", confidence: "medium" }).light, "amber");
+  const red = L({ light: "red", line: 1, message: "Line 1: expand it. Does it give +8x?" });
+  assertEquals(red.light, "red");
+  assert(!L({ message: "Nearly there, it's −4 ± 2√5" }).message.includes("2√5"));
+  assert(monitorText(s, ["bracket"]).includes("Already shown (do not report again): bracket"));
+  for (const q of SCHEMES.filter((x) => x.source?.paper === "CC-B/1H")) assert(q.dangerZones?.length, `${q.id} has no danger zones`);
 });

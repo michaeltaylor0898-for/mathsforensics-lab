@@ -3,7 +3,7 @@
 //   GET                         -> the list of questions available for written marking (public parts only)
 //   POST {question_id, image}   -> marks the image, saves it, returns the case report
 //   POST {action:"check", question_id, image} -> "check my working": a nudge, never the answer
-//   POST {action:"monitor", question_id, image} -> Mike mode traffic light (green / amber / red), never the answer
+//   POST {action:"monitor", question_id, image, shown} -> Mike mode traffic light (green / amber / red), never the answer
 //   POST {action:"dispute", mark_id, note} -> student flags a mark they think is wrong
 //   POST {action:"purge", key}  -> deletes images older than 90 days (call daily from a scheduler)
 //
@@ -152,9 +152,10 @@ Deno.serve(async (req) => {
 
   // Mike mode: a quick traffic light on the fast model; its own weekly allowance; no image is kept
   if (monitor) {
-    const got = await ask(MONITOR_PROMPT, MONITOR_TOOL, monitorText(scheme), 500, MONITOR_MODEL);
+    const shown = Array.isArray(body.shown) ? body.shown.map(String).slice(0, 20) : [];
+    const got = await ask(MONITOR_PROMPT, MONITOR_TOOL, monitorText(scheme, shown), 500, MONITOR_MODEL);
     if (!got) return fail("Mike is busy. Keep going.", 503);
-    const light = applyMonitor(scheme, got.input as AiLight);
+    const light = applyMonitor(scheme, got.input as AiLight, shown);
     await db.from("written_marks").insert({
       user_id: user.id, question_id: scheme.id, topic: scheme.topic, status: "monitor", result: light, model: MONITOR_MODEL,
       input_tokens: got.usage?.input_tokens ?? null, output_tokens: got.usage?.output_tokens ?? null, ms: Date.now() - started,
