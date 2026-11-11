@@ -4602,10 +4602,10 @@ function examBest(attempts,id){ // best total across hand-ins (parts of one hand
 const DB_KEY='mf-lab-db-v2', SESSION_KEY='mf-lab-session-v2';
 const DAY=864e5;
 
-/* Exam pass: access until 30 June of the coming exam season */
+/* Exam pass: access until 16 July of the coming exam season */
 function passExpiry(from=new Date()){
   const y=from.getMonth()>=6?from.getFullYear()+1:from.getFullYear();
-  return new Date(Date.UTC(y,5,30,20,0)).toISOString();
+  return new Date(Date.UTC(y,6,16,20,0)).toISOString();
 }
 /* School licences run to the end of the academic year */
 function schoolYearEnd(from=new Date()){
@@ -6203,7 +6203,7 @@ function helpPass(){
   <div class="panel"><div class="phead"><h2>Exam Pass</h2><span class="hint">For students studying on their own</span></div>
   ${helpStepsHTML([
     ['Start free','Create an account. You get 4 full topics, every Case briefing, the baseline diagnostic and a free Exam room question.'],
-    ['Buy the Exam Pass',`Buy with the <b>same email address</b> as your Lab account. It unlocks all ${Object.keys(TOP).length} topics and the full Exam room until 30 June, after the summer exams.`],
+    ['Buy the Exam Pass',`Buy with the <b>same email address</b> as your Lab account. It unlocks all ${Object.keys(TOP).length} topics and the full Exam room until 16 July, after the summer exams.`],
     ['Unlock it','Sign in and open Account. If it still says Free, press "I\'ve paid: check again". Payments usually arrive within a minute.'],
   ])}</div>
   <div class="panel"><h2>For parents</h2>

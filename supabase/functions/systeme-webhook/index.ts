@@ -26,7 +26,7 @@ const SYSTEME_IPS = ["185.236.142.1", "185.236.142.2", "185.236.142.3"];
 
 function passExpiry(from = new Date()): string {
   const y = from.getUTCMonth() >= 6 ? from.getUTCFullYear() + 1 : from.getUTCFullYear();
-  return new Date(Date.UTC(y, 5, 30, 20, 0)).toISOString(); // 30 June of the exam season (20:00 UTC, still 30 June in the UK and Spain)
+  return new Date(Date.UTC(y, 6, 16, 20, 0)).toISOString(); // 16 July of the exam season (20:00 UTC, still 16 July in the UK and Spain)
 }
 const get = (o: any, ...paths: string[]) => {
   for (const p of paths) {
