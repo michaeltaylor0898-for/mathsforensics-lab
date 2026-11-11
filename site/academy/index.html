@@ -1,0 +1,984 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Maths Forensics Academy</title>
+<meta name="description" content="KS3 maths for Years 7 to 9: step-by-step lessons, practice and checks on the way to Bronze, Silver, Gold and Platinum awards.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2046%22%3E%3Cpath%20d%3D%22M20%202%2037%208v14c0%2011-7.5%2018.5-17%2022C10.5%2040.5%203%2033%203%2022V8z%22%20fill%3D%22%230B122C%22%20stroke%3D%22%2300FCF1%22%20stroke-width%3D%223.2%22%20stroke-linejoin%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2219%22%20cy%3D%2221%22%20r%3D%226.6%22%20fill%3D%22none%22%20stroke%3D%22%2300FCF1%22%20stroke-width%3D%223.8%22%2F%3E%3Cpath%20d%3D%22M23.8%2025.8%2028.6%2030.6%22%20stroke%3D%22%231B36FF%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Josefin+Sans:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Same tokens as Maths Forensics Lab, so the Academy feels like part of it */
+:root{
+  --ink:#0B122C;--panel:#111a3d;--panel2:#16214b;--line:#26336a;--text:#E8ECF8;--muted:#93a0c8;
+  --cyan:#00FCF1;--blue:#1B36FF;--good:#3DDC97;--warn:#FFC857;--bad:#FF6B7A;
+  --bronze:#D8955B;--silver:#C9D2E3;--gold:#F2C94C;--platinum:#9FE7F5;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Josefin Sans","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--ink);color:var(--text);font-family:var(--f-body);font-size:18px;line-height:1.55;min-height:100vh}
+button{font:inherit;color:inherit;cursor:pointer}
+input{font:inherit}
+a{color:var(--cyan)}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.wrap{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:5;background:rgba(11,18,44,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.top .wrap{display:flex;align-items:center;gap:12px;padding-block:10px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);margin-right:auto}
+.brand svg{width:30px;height:35px;flex:none}
+.wm{font-weight:800;letter-spacing:.08em;font-size:14px;line-height:1.1}
+.wm small{display:block;font-family:var(--f-mono);font-weight:500;font-size:10.5px;letter-spacing:.18em;color:var(--cyan);margin-top:3px}
+.cadet{font-family:var(--f-mono);font-size:12.5px;color:var(--muted);text-align:right;line-height:1.3}
+.cadet b{color:var(--text);display:block;font-size:13.5px}
+
+main{padding-block:24px 60px}
+h1,h2,h3{margin:0;text-wrap:balance}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan)}
+.h1{font-family:var(--f-display);font-weight:800;font-size:clamp(24px,4.4vw,38px);line-height:1.1;margin-top:6px}
+.lede{color:var(--muted);max-width:60ch;margin:10px 0 0}
+.muted{color:var(--muted)}
+.small{font-size:15px}
+.stack{display:flex;flex-direction:column;gap:16px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--cyan);color:var(--ink);border:0;border-radius:10px;padding:12px 20px;font-weight:700;font-size:17px;min-height:46px}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.btn.ghost:hover{border-color:var(--cyan)}
+.btn.small{padding:8px 14px;min-height:38px;font-size:15px}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.linkbtn{background:none;border:0;padding:0;color:var(--cyan);text-decoration:underline;text-underline-offset:3px;font-size:16px}
+
+/* pathway */
+.hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:20px;align-items:start;margin-top:20px}
+@media (max-width:820px){.hero{grid-template-columns:minmax(0,1fr)}}
+.tiercard{position:relative;overflow:hidden}
+.tiercard .medal{width:84px;height:84px;flex:none}
+.tierhead{display:flex;gap:16px;align-items:center}
+.tierhead h2{font-family:var(--f-display);font-weight:800;font-size:24px}
+.bar{height:12px;border-radius:99px;background:var(--panel2);overflow:hidden;margin-top:14px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--bronze),#f2b37c);border-radius:99px;transition:width .4s}
+.tiers{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:560px){.tiers{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tier{border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px;align-items:flex-start;background:var(--panel)}
+.tier svg{width:40px;height:40px}
+.tier b{font-family:var(--f-display);font-size:14px;letter-spacing:.02em}
+.tier span{font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+.tier.now{border-color:var(--bronze);box-shadow:inset 0 0 0 1px var(--bronze)}
+.tier.locked{opacity:.55}
+
+.topics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:6px}
+@media (max-width:700px){.topics{grid-template-columns:minmax(0,1fr)}}
+.tcard{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.tcard:hover{border-color:var(--cyan)}
+.tcard .strand{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.tcard h3{font-size:20px;font-weight:700}
+.tcard .meta{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.chip{font-family:var(--f-mono);font-size:12px;padding:3px 9px;border-radius:99px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.chip.learning{border-color:rgba(0,252,241,.4);color:var(--cyan)}
+.chip.practising{border-color:rgba(255,200,87,.5);color:var(--warn)}
+.chip.secured{border-color:var(--good);background:rgba(61,220,151,.12);color:var(--good)}
+.steps3{display:flex;gap:6px}
+.steps3 i{width:28px;height:6px;border-radius:99px;background:var(--panel2)}
+.steps3 i.on{background:var(--cyan)}
+.steps3 i.ok{background:var(--good)}
+.lockrow{display:flex;gap:14px;align-items:center;border:1px dashed var(--line);border-radius:14px;padding:16px 18px;background:repeating-linear-gradient(135deg,var(--panel) 0 12px,#0f1736 12px 24px)}
+.lockrow svg{width:28px;height:28px;flex:none;color:var(--muted)}
+
+/* topic */
+.crumbs{display:flex;gap:8px;align-items:center;font-size:15px;color:var(--muted);flex-wrap:wrap}
+.tabs{display:flex;gap:6px;margin-top:18px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tab{background:none;border:0;border-bottom:3px solid transparent;padding:10px 14px;font-weight:700;color:var(--muted);display:flex;gap:8px;align-items:center;white-space:nowrap}
+.tab .n{font-family:var(--f-mono);font-size:12px;width:22px;height:22px;border-radius:50%;display:inline-grid;place-items:center;border:1px solid var(--line)}
+.tab.on{color:var(--text);border-bottom-color:var(--cyan)}
+.tab.on .n{background:var(--cyan);color:var(--ink);border-color:var(--cyan)}
+.tab.done .n{background:var(--good);color:var(--ink);border-color:var(--good)}
+.tabbody{margin-top:22px}
+.grid2{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:860px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.grid2>*{min-width:0}
+.idea{font-size:21px;line-height:1.45;border-left:4px solid var(--cyan);padding:4px 0 4px 16px;margin:0}
+.howto{counter-reset:s;list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+.howto li{counter-increment:s;display:grid;grid-template-columns:34px minmax(0,1fr);gap:12px;align-items:start}
+.howto li::before{content:counter(s);font-family:var(--f-mono);font-weight:700;width:30px;height:30px;border-radius:50%;background:var(--panel2);border:1px solid var(--line);display:grid;place-items:center;color:var(--cyan);font-size:14px}
+.h3{font-family:var(--f-mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.work{font-family:var(--f-mono);font-size:17px;line-height:1.6;background:#0a1030;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto}
+.wline{display:grid;grid-template-columns:minmax(0,auto) minmax(0,1fr);gap:14px;padding:6px 0;border-bottom:1px dashed rgba(38,51,106,.7);animation:in .35s both}
+.wline:last-child{border-bottom:0}
+.wline .w{white-space:pre;color:var(--text)}
+.wline .why{font-family:var(--f-body);font-size:15.5px;color:var(--muted);align-self:center}
+@keyframes in{from{opacity:0;transform:translateY(6px)}}
+.mist{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+.mist li{border-left:3px solid var(--bad);background:rgba(255,107,122,.07);padding:10px 12px;border-radius:0 10px 10px 0;font-size:16px}
+.mist b{display:block;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--bad);margin-bottom:2px}
+
+/* questions */
+.q{font-size:21px;line-height:1.45}
+.q .big{font-family:var(--f-mono);font-size:24px;white-space:nowrap}
+.diagram{margin-top:12px;background:#0a1030;border:1px solid var(--line);border-radius:10px;padding:10px;max-width:420px}
+.diagram svg{display:block;width:100%;height:auto}
+.ans{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px}
+.field{display:flex;align-items:center;background:var(--panel2);border:1px solid var(--line);border-radius:10px;min-width:0}
+.field:focus-within{border-color:var(--cyan)}
+.field input{background:transparent;border:0;color:var(--text);font-family:var(--f-mono);font-size:21px;padding:10px 14px;width:11em;max-width:58vw;outline:none}
+.field span{font-family:var(--f-mono);color:var(--muted);padding-right:14px}
+.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:16px}
+.choice{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-weight:600;text-align:left;font-size:17px}
+.choice:hover{border-color:var(--cyan)}
+.choice.picked{border-color:var(--cyan);box-shadow:inset 0 0 0 1px var(--cyan)}
+.fb{margin-top:14px;padding:12px 14px;border-radius:0 10px 10px 0;font-size:17px}
+.fb b{display:block;font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:2px}
+.fb.ok{border-left:4px solid var(--good);background:rgba(61,220,151,.08)}.fb.ok b{color:var(--good)}
+.fb.no{border-left:4px solid var(--bad);background:rgba(255,107,122,.08)}.fb.no b{color:var(--bad)}
+.fb.hint{border-left:4px solid var(--warn);background:rgba(255,200,87,.07)}.fb.hint b{color:var(--warn)}
+.tally{display:flex;gap:6px;flex-wrap:wrap}
+.tally i{width:16px;height:16px;border-radius:4px;background:var(--panel2);border:1px solid var(--line)}
+.tally i.ok{background:var(--good);border-color:var(--good)}
+.tally i.no{background:var(--bad);border-color:var(--bad)}
+.result{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.score{font-family:var(--f-display);font-weight:800;font-size:46px;line-height:1}
+.review{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+.review li{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:16px}
+.review .tag{font-family:var(--f-mono);font-size:12px;font-weight:700}
+.tag.ok{color:var(--good)}.tag.no{color:var(--bad)}
+.tryline{display:flex;flex-direction:column;gap:8px;padding:12px 0;border-bottom:1px dashed var(--line)}
+.tryline:last-child{border-bottom:0}
+.speak{display:inline-flex;align-items:center;gap:6px}
+.speak svg{width:18px;height:18px}
+.namebox{max-width:520px;margin:40px auto}
+footer{border-top:1px solid var(--line);color:var(--muted);font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:space-between;padding-block:16px calc(16px + env(safe-area-inset-bottom,0px))}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#path">
+      <svg viewBox="0 0 40 46" aria-hidden="true"><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z" fill="#111a3d" stroke="#00FCF1" stroke-width="2.2" stroke-linejoin="round"/><circle cx="19" cy="21" r="6.2" fill="#111a3d" stroke="#00FCF1" stroke-width="2.6"/><circle cx="19" cy="21" r="1.6" fill="#00FCF1"/><path d="M23.4 25.4 28.8 30.8" stroke="#1B36FF" stroke-width="3.8" stroke-linecap="round"/></svg>
+      <span class="wm">MATHS FORENSICS<small>ACADEMY · KS3</small></span>
+    </a>
+    <div class="cadet" id="cadet"></div>
+  </div>
+</header>
+<main class="wrap" id="app" tabindex="-1"></main>
+<footer><div class="wrap"><span>Maths Forensics Academy · Years 7 to 9 · Preview</span><span>Progress is saved on this device only. <a href="../privacy.html">Privacy</a></span></div></footer>
+
+<script>
+"use strict";
+/* ============================================================
+   Maths Forensics Academy (KS3) · first slice
+   Six Bronze topics: Learn → Practise → Check (4 of 5 secures)
+   Progress is stored in this browser only (no account yet).
+   ============================================================ */
+
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const R = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const MINUS = "−";
+const sgn = n => (n < 0 ? MINUS + Math.abs(n) : String(n));          // −5 for display
+const par = n => (n < 0 ? "(" + sgn(n) + ")" : String(n));           // (−5) in sums
+const fmt = n => {                                                   // 12,345.6 with a proper minus
+  const neg = n < 0; n = Math.abs(n);
+  let [i, d] = String(+n.toFixed(6)).split(".");
+  i = i.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return (neg ? MINUS : "") + i + (d ? "." + d : "");
+};
+const plain = n => String(+n.toFixed(6));                             // no commas, for typed comparison
+function parseNum(s) {
+  if (s == null) return null;
+  s = String(s).trim().replace(/[−–—]/g, "-").replace(/,/g, "").replace(/\s+/g, "").replace(/(cm|m|°c|°|c)$/i, "");
+  if (!/^-?\d*\.?\d+$/.test(s)) return null;
+  return parseFloat(s);
+}
+const near = (a, b) => a != null && Math.abs(a - b) < 1e-9 * Math.max(1, Math.abs(b));
+
+/* ---------- storage (this device only) ---------- */
+const KEY = "mfa.v1";
+let STORE = { name: "", topics: {} };
+try { const raw = localStorage.getItem(KEY); if (raw) STORE = Object.assign(STORE, JSON.parse(raw)); } catch (e) {}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(STORE)); } catch (e) {} }
+function prog(id) {
+  if (!STORE.topics[id]) STORE.topics[id] = { learned: false, practised: 0, streak: 0, secured: false, best: 0, checks: 0 };
+  return STORE.topics[id];
+}
+
+/* ---------- algebra helpers for "Simplifying" ---------- */
+function parseExpr(s) {
+  // returns {map:{a:3,b:-2,"":5}} or null. Accepts 3a+2b-4, 3a + b, a-2b, 5.
+  s = String(s).toLowerCase().replace(/[−–—]/g, "-").replace(/\s+/g, "").replace(/\*/g, "");
+  if (!s || /[+-]$/.test(s) || /[+-]{2}/.test(s)) return null;
+  if (!/^[+-]?(\d*[a-z]?|\d+)([+-](\d*[a-z]?|\d+))*$/.test(s)) return null;
+  const terms = s.match(/[+-]?[^+-]+/g);
+  if (!terms) return null;
+  const map = {};
+  for (const t of terms) {
+    const m = t.match(/^([+-]?)(\d*)([a-z]?)$/);
+    if (!m || (m[2] === "" && m[3] === "")) return null;
+    const c = (m[1] === "-" ? -1 : 1) * (m[2] === "" ? 1 : parseInt(m[2], 10));
+    map[m[3]] = (map[m[3]] || 0) + c;
+  }
+  for (const k in map) if (map[k] === 0) delete map[k];
+  return map;
+}
+const sameMap = (a, b) => { const ka = Object.keys(a), kb = Object.keys(b); return ka.length === kb.length && ka.every(k => a[k] === b[k]); };
+function showExpr(map) {
+  const keys = Object.keys(map).filter(k => k).sort();
+  if (map[""]) keys.push("");
+  let out = "";
+  keys.forEach((k, i) => {
+    const c = map[k]; if (!c) return;
+    const abs = Math.abs(c);
+    const body = k ? (abs === 1 ? k : abs + k) : String(abs);
+    out += (c < 0 ? (out ? " " + MINUS + " " : MINUS) : (out ? " + " : "")) + body;
+  });
+  return out || "0";
+}
+const termStr = (c, k, first) => {
+  const abs = Math.abs(c), body = k ? (abs === 1 ? k : abs + k) : String(abs);
+  if (first) return (c < 0 ? MINUS : "") + body;
+  return (c < 0 ? " " + MINUS + " " : " + ") + body;
+};
+
+/* ============================================================
+   TOPICS
+   Each generator returns a question:
+   { prompt, type:"num"|"mc"|"expr", answer, choices?, unit?, diagram?,
+     hints:[nudge, next line], solution:[[working, why]...], mistakes:[[test(value), message]] }
+   ============================================================ */
+
+/* ---------- 1. Place value ---------- */
+const PLACES = [[1e6,"millions"],[1e5,"hundred thousands"],[1e4,"ten thousands"],[1000,"thousands"],[100,"hundreds"],[10,"tens"],[1,"ones"],[0.1,"tenths"],[0.01,"hundredths"]];
+const placeName = v => PLACES.find(p => near(p[0], v))[1];
+function pvDigitValue(level) {
+  const decimals = level >= 2 && Math.random() < .5;
+  const intDigits = level === 1 ? R(4, 5) : R(4, 7);
+  let digits = [R(1, 9)]; for (let i = 1; i < intDigits; i++) digits.push(R(0, 9));
+  let dec = decimals ? [R(1, 9), R(1, 9)] : [];
+  // choose a target position whose digit is not 0 and is unique in the number
+  const all = digits.concat(dec);
+  const positions = all.map((d, i) => ({ d, i, val: i < digits.length ? Math.pow(10, digits.length - 1 - i) : Math.pow(10, -(i - digits.length + 1)) }))
+    .filter(p => p.d !== 0 && all.filter(x => x === p.d).length === 1 && p.val !== 1);
+  if (!positions.length) return pvDigitValue(level);
+  const t = pick(positions);
+  const n = Number(digits.join("") + (dec.length ? "." + dec.join("") : ""));
+  const value = +(t.d * t.val).toFixed(2);
+  const shown = fmt(n);
+  return {
+    prompt: `What is the value of the <b>${t.d}</b> in <span class="big">${shown}</span>?`,
+    type: "num", answer: value,
+    hints: [`Find which column the ${t.d} is in. Count the places from the decimal point (or from the right-hand end).`,
+            `The ${t.d} is in the ${placeName(t.val)} column. Its value is ${t.d} × ${fmt(t.val)}.`],
+    solution: [[shown, "Write the number out"], [`${t.d} is in the ${placeName(t.val)} column`, "Find the column"], [`${t.d} × ${fmt(t.val)} = ${fmt(value)}`, "Value = digit × column value"]],
+    mistakes: [[v => near(v, t.d), `That's the digit itself. The question asks for its value, which depends on its column.`],
+               [v => near(v, value * 10) || near(v, value / 10), `Nearly: you're one column out. Count the columns again carefully.`]]
+  };
+}
+function pvTimesDivide(level) {
+  const p = pick(level === 1 ? [10, 100] : [10, 100, 1000]);
+  const div = Math.random() < (level === 1 ? .35 : .5);
+  let n;
+  if (level === 1) n = R(3, 99) + (Math.random() < .5 ? R(1, 9) / 10 : 0);
+  else n = pick([R(11, 999) / 10, R(101, 9999) / 100, R(2, 60)]);
+  n = +n.toFixed(2);
+  const ans = +(div ? n / p : n * p).toFixed(6);
+  const moves = String(p).length - 1;
+  const opText = div ? "÷" : "×";
+  const wrongWay = +(div ? n * p : n / p).toFixed(6);
+  const zeros = parseNum(String(n) + "0".repeat(moves));
+  return {
+    prompt: `Work out <span class="big">${fmt(n)} ${opText} ${fmt(p)}</span>`,
+    type: "num", answer: ans,
+    hints: [`${opText === "×" ? "Multiplying" : "Dividing"} by ${fmt(p)} moves every digit ${moves} place${moves > 1 ? "s" : ""} ${div ? "to the right" : "to the left"}.`,
+            `Move each digit of ${fmt(n)} ${moves} place${moves > 1 ? "s" : ""} ${div ? "right" : "left"}. Fill any empty places with zeros.`],
+    solution: [[`${fmt(n)} ${opText} ${fmt(p)}`, `${fmt(p)} has ${moves} zero${moves > 1 ? "s" : ""}`], [`digits move ${moves} place${moves > 1 ? "s" : ""} ${div ? "right" : "left"}`, div ? "Dividing makes it smaller" : "Multiplying makes it bigger"], [`= ${fmt(ans)}`, "Answer"]],
+    mistakes: [[v => near(v, wrongWay), `You moved the digits the wrong way. ${div ? "Dividing" : "Multiplying"} by ${fmt(p)} should make the number ${div ? "smaller" : "bigger"}.`],
+               [v => !div && zeros != null && !Number.isInteger(n) && near(v, zeros), `Adding zeros on the end of a decimal doesn't change its value. Move the digits instead.`]]
+  };
+}
+
+/* ---------- 2. The four operations ---------- */
+function opsAdd(level) {
+  const a = R(level === 1 ? 120 : 1200, level === 1 ? 899 : 8999), b = R(level === 1 ? 110 : 340, level === 1 ? 899 : 4999);
+  const ans = a + b;
+  // "no carry" slip: add each column, drop the carried tens
+  const noCarry = Number(String(a).padStart(5, "0").split("").map((d, i) => (+d + +String(b).padStart(5, "0")[i]) % 10).join(""));
+  return {
+    prompt: `Work out <span class="big">${fmt(a)} + ${fmt(b)}</span>`, type: "num", answer: ans,
+    hints: ["Write the numbers in columns, lining up the ones. Start adding from the right.",
+            "If a column adds up to 10 or more, write the ones digit and carry the tens into the next column."],
+    solution: [[`${String(a).padStart(6)}\n+${String(b).padStart(5)}`, "Line up the ones"], ["Add each column from the right, carrying when a column makes 10 or more", "Column addition"], [`= ${fmt(ans)}`, "Answer"]],
+    mistakes: [[v => v !== ans && near(v, noCarry), "It looks like you forgot to carry. When a column adds to 10 or more, carry the tens into the next column."]]
+  };
+}
+function opsSub(level) {
+  let a, b, tries = 0;
+  // force at least one exchange (some numbers, like 999, can't have one, so pick again)
+  do {
+    if (tries++ % 20 === 0) a = R(level === 1 ? 300 : 3000, level === 1 ? 900 : 9500);
+    b = R(level === 1 ? 110 : 1100, a - 50);
+  } while (!String(b).padStart(String(a).length, "0").split("").some((d, i) => +d > +String(a)[i]));
+  const ans = a - b;
+  const A = String(a), B = String(b).padStart(A.length, "0");
+  const smallFromBig = Number(A.split("").map((d, i) => Math.abs(+d - +B[i])).join(""));
+  return {
+    prompt: `Work out <span class="big">${fmt(a)} ${MINUS} ${fmt(b)}</span>`, type: "num", answer: ans,
+    hints: ["Write the bigger number on top, lining up the ones. Work from the right.",
+            "If the top digit is smaller than the bottom digit, exchange 1 from the next column to the left (it becomes 10 in your column)."],
+    solution: [[`${A.padStart(6)}\n${MINUS}${B.replace(/^0+/, "").padStart(5)}`, "Line up the ones"], ["Subtract each column from the right, exchanging when the top digit is smaller", "Column subtraction"], [`= ${fmt(ans)}`, "Answer"]],
+    mistakes: [[v => v !== ans && near(v, smallFromBig), "You took the smaller digit from the bigger one in each column. When the top digit is smaller, exchange from the next column instead."],
+               [v => near(v, a + b), "You added. This question is a subtraction."]]
+  };
+}
+function opsMul(level) {
+  const a = level === 1 ? R(23, 98) : R(123, 489), b = level === 1 ? R(3, 9) : R(12, 39);
+  const ans = a * b;
+  const tens = Math.floor(b / 10), ones = b % 10;
+  const noZero = a * ones + a * tens;
+  const sol = b < 10
+    ? [[`${a} × ${b}`, "Multiply each digit, starting with the ones"], [`= ${fmt(ans)}`, "Answer"]]
+    : [[`${a} × ${ones} = ${fmt(a * ones)}`, "Multiply by the ones digit"], [`${a} × ${tens * 10} = ${fmt(a * tens * 10)}`, "Multiply by the tens (put a 0 in the ones column first)"], [`${fmt(a * ones)} + ${fmt(a * tens * 10)} = ${fmt(ans)}`, "Add the two rows"]];
+  return {
+    prompt: `Work out <span class="big">${a} × ${b}</span>`, type: "num", answer: ans,
+    hints: [b < 10 ? "Use short multiplication: multiply each digit by " + b + ", starting from the ones, and carry." : `Split ${b} into ${tens * 10} and ${ones}. Multiply ${a} by each, then add.`,
+            b < 10 ? `Start with ${a % 10} × ${b} = ${(a % 10) * b}.` : `${a} × ${ones} = ${fmt(a * ones)}. Now work out ${a} × ${tens * 10}.`],
+    solution: sol,
+    mistakes: [[v => b >= 10 && v !== ans && near(v, noZero), `You multiplied by ${tens} instead of ${tens * 10}. Remember the place-holder zero on the second row.`],
+               [v => near(v, a + b), "You added. This question is a multiplication."]]
+  };
+}
+function opsDiv(level) {
+  const d = R(level === 1 ? 2 : 3, 9), q = level === 1 ? R(21, 199) : R(112, 1499);
+  const n = d * q;
+  return {
+    prompt: `Work out <span class="big">${fmt(n)} ÷ ${d}</span>`, type: "num", answer: q,
+    hints: [`Use short division (the bus stop). Divide each digit of ${fmt(n)} by ${d}, starting from the left.`,
+            `${String(n)[0]} ÷ ${d}: if it doesn't go, combine it with the next digit. Carry any remainder to the next digit.`],
+    solution: [[`${d} ) ${n}`, "Set up the bus stop"], ["Divide digit by digit from the left, carrying remainders", "Short division"], [`= ${fmt(q)}`, "Answer"]],
+    mistakes: [[v => near(v, n * d), "You multiplied. This question is a division."],
+               [v => near(v, n - d), `You subtracted ${d}. Division asks how many ${d}s fit into ${fmt(n)}.`]]
+  };
+}
+
+/* ---------- 3. Negative numbers ---------- */
+function negTemp(level) {
+  const start = R(-12, 6), rise = Math.random() < .5;
+  const ch = R(3, 15);
+  const end = rise ? start + ch : start - ch;
+  const places = ["Moscow", "Oslo", "a mountain village", "Scoby at midnight", "the freezer"];
+  return {
+    prompt: `At 6 a.m. the temperature in ${pick(places)} is <b>${sgn(start)}°C</b>. By noon it has ${rise ? "risen" : "fallen"} by <b>${ch}°C</b>. What is the temperature at noon?`,
+    type: "num", unit: "°C", answer: end,
+    hints: [`Picture a number line. ${rise ? "Rising means moving up (to the right)." : "Falling means moving down (to the left)."}`,
+            `Start at ${sgn(start)} and count ${ch} ${rise ? "up" : "down"}. ${start < 0 && rise ? "Count up to 0 first, then keep going." : ""}`],
+    solution: [[`${sgn(start)} ${rise ? "+" : MINUS} ${ch}`, rise ? "Rising: add" : "Falling: subtract"], [`= ${sgn(end)}°C`, "Count along the number line"]],
+    mistakes: [[v => near(v, -end) && end !== 0, "Check the sign. Is the answer above or below zero?"],
+               [v => near(v, rise ? start - ch : start + ch), `You went the wrong way. The temperature ${rise ? "rose, so it goes up" : "fell, so it goes down"}.`]]
+  };
+}
+function negAddSub(level) {
+  const a = R(-12, 12) || -4, b = R(-12, 12) || 5;
+  const sub = Math.random() < .5;
+  const ans = sub ? a - b : a + b;
+  const rule = sub && b < 0 ? `Subtracting a negative is the same as adding: ${sgn(a)} ${MINUS} ${par(b)} = ${sgn(a)} + ${Math.abs(b)}`
+             : (!sub && b < 0 ? `Adding a negative is the same as subtracting: ${sgn(a)} + ${par(b)} = ${sgn(a)} ${MINUS} ${Math.abs(b)}` : `Start at ${sgn(a)} and move ${Math.abs(b)} ${(sub ? -b : b) > 0 ? "right" : "left"}`);
+  return {
+    prompt: `Work out <span class="big">${sgn(a)} ${sub ? MINUS : "+"} ${par(b)}</span>`, type: "num", answer: ans,
+    hints: [b < 0 ? "Two signs next to each other: same signs make +, different signs make −." : "Use a number line: adding moves right, subtracting moves left.",
+            rule],
+    solution: [[`${sgn(a)} ${sub ? MINUS : "+"} ${par(b)}`, "The question"], [rule, b < 0 ? "Replace the two signs with one" : "Use the number line"], [`= ${sgn(ans)}`, "Answer"]],
+    mistakes: [[v => near(v, sub ? a + b : a - b) && ans !== (sub ? a + b : a - b), "Look at the two signs in the middle again. Same signs make +; different signs make −."],
+               [v => near(v, -ans) && ans !== 0, "Right size, wrong sign. Check whether you end up above or below zero."]]
+  };
+}
+function negMulDiv(level) {
+  let a = R(2, 12) * pick([1, -1]), b = R(2, 9) * pick([1, -1]);
+  if (a > 0 && b > 0) a = -a;
+  const div = Math.random() < .5;
+  const top = div ? a * b : a;
+  const ans = div ? a : a * b;
+  const same = (top > 0) === (b > 0);
+  return {
+    prompt: `Work out <span class="big">${par(top)} ${div ? "÷" : "×"} ${par(b)}</span>`, type: "num", answer: ans,
+    hints: ["First ignore the signs and do the calculation. Then sort out the sign.",
+            "Same signs give a positive answer. Different signs give a negative answer."],
+    solution: [[`${Math.abs(top)} ${div ? "÷" : "×"} ${Math.abs(b)} = ${Math.abs(ans)}`, "Ignore the signs"], [same ? "same signs → positive" : "different signs → negative", "Decide the sign"], [`= ${sgn(ans)}`, "Answer"]],
+    mistakes: [[v => near(v, -ans), "Right number, wrong sign. Same signs give +, different signs give −."]]
+  };
+}
+
+/* ---------- 4. Simplifying expressions ---------- */
+function simpCollect(level) {
+  const letters = shuffle(["a", "b", "x", "y", "m", "n", "p", "t"]).slice(0, 2).sort();
+  const nTerms = level === 1 ? 4 : 5;
+  const terms = [];
+  // two of each letter, plus maybe numbers
+  letters.forEach(L => { terms.push([R(1, 9), L]); terms.push([R(1, 7) * (level >= 2 && Math.random() < .55 ? -1 : 1), L]); });
+  if (level >= 2) terms.push([R(2, 9) * pick([1, -1]), ""]);
+  if (level === 3) terms.push([R(1, 5), ""]);
+  let order = shuffle(terms);
+  // the first term must be positive so the expression reads naturally
+  const fi = order.findIndex(t => t[0] > 0); [order[0], order[fi]] = [order[fi], order[0]];
+  const exp = order.map((t, i) => termStr(t[0], t[1], i === 0)).join("");
+  const map = {}; order.forEach(([c, k]) => map[k] = (map[k] || 0) + c);
+  for (const k in map) if (map[k] === 0) delete map[k];
+  const ansText = showExpr(map);
+  const allTogether = order.reduce((s, t) => s + t[0], 0);
+  const signsIgnored = {}; order.forEach(([c, k]) => signsIgnored[k] = (signsIgnored[k] || 0) + Math.abs(c));
+  return {
+    prompt: `Simplify <span class="big">${exp}</span>`, type: "expr", answer: map, answerText: ansText,
+    hints: [`Like terms have the same letter. Group the ${letters[0]} terms, the ${letters[1]} terms${level >= 2 ? " and the numbers" : ""}. Each term keeps the sign in front of it.`,
+            `${letters.map(L => `${L} terms: ${order.filter(t => t[1] === L).map((t, i) => termStr(t[0], L, i === 0)).join("")}`).join(". ")}.`],
+    solution: letters.map(L => [`${order.filter(t => t[1] === L).map((t, i) => termStr(t[0], L, i === 0)).join("")} = ${showExpr({ [L]: map[L] || 0 })}`, `Collect the ${L} terms`])
+      .concat(level >= 2 ? [[`${order.filter(t => !t[1]).map((t, i) => termStr(t[0], "", i === 0)).join("")} = ${map[""] ? sgn(map[""]) : 0}`, "Collect the numbers"]] : [])
+      .concat([[`= ${ansText}`, "Write the terms in order: letters first, then the number"]]),
+    mistakes: [[(v, m) => m && Object.keys(m).length === 1 && Object.values(m)[0] === allTogether && Object.keys(map).length > 1, `You can only add like terms. ${letters[0]} and ${letters[1]} are different, so they stay separate.`],
+               [(v, m) => m && sameMap(m, signsIgnored) && !sameMap(signsIgnored, map), "Watch the signs. Each term keeps the sign in front of it, so subtract the terms with a minus."]]
+  };
+}
+function simpMultiply(level) {
+  const a = R(2, 9), b = R(2, 9), L = pick(["a", "b", "m", "x", "y", "t"]);
+  const ans = { [L]: a * b };
+  return {
+    prompt: `Simplify <span class="big">${a} × ${L} × ${b}</span>`, type: "expr", answer: ans, answerText: `${a * b}${L}`,
+    hints: ["Multiply the numbers together first.", `${a} × ${b} = ${a * b}. Then write the letter straight after the number, with no × sign.`],
+    solution: [[`${a} × ${b} = ${a * b}`, "Multiply the numbers"], [`= ${a * b}${L}`, "Number first, then the letter"]],
+    mistakes: [[(v, m) => m && m[L] === a + b, `You added ${a} and ${b}. The signs are ×, so multiply them.`]]
+  };
+}
+
+/* ---------- 5. Perimeter ---------- */
+function rectSVG(w, h, lw, lh) {
+  const W = 260, H = Math.max(80, Math.min(170, 260 * h / w));
+  return `<svg viewBox="-50 -30 ${W + 130} ${H + 70}" role="img" aria-label="Rectangle ${lw} by ${lh}">
+    <rect x="0" y="0" width="${W}" height="${H}" fill="rgba(0,252,241,.08)" stroke="#00FCF1" stroke-width="2.5"/>
+    <text x="${W / 2}" y="-10" fill="#E8ECF8" font-family="JetBrains Mono, monospace" font-size="17" text-anchor="middle">${lw}</text>
+    <text x="${W + 12}" y="${H / 2 + 6}" fill="#E8ECF8" font-family="JetBrains Mono, monospace" font-size="17">${lh}</text>
+    <text x="${W / 2}" y="${H + 30}" fill="#93a0c8" font-family="JetBrains Mono, monospace" font-size="13" text-anchor="middle">Not drawn to scale</text></svg>`;
+}
+function lSVG(A, B, C, D, unit) {
+  // L shape: total width A, total height B; cut-out from top-right: width A-C (top part width C), height B-D (right part height D)
+  const s = 260 / A, W = A * s, H = Math.max(140, B * s), cw = C * s, dh = Math.max(50, Math.min(H - 50, D * s));
+  const pts = `0,0 ${cw},0 ${cw},${H - dh} ${W},${H - dh} ${W},${H} 0,${H}`;
+  const t = (x, y, txt, anchor = "middle", col = "#E8ECF8") => `<text x="${x}" y="${y}" fill="${col}" font-family="JetBrains Mono, monospace" font-size="16" text-anchor="${anchor}">${txt}</text>`;
+  return `<svg viewBox="-60 -30 ${W + 120} ${H + 70}" role="img" aria-label="L-shaped room">
+    <polygon points="${pts}" fill="rgba(0,252,241,.08)" stroke="#00FCF1" stroke-width="2.5" stroke-linejoin="round"/>
+    ${t(cw / 2, -10, C + " " + unit)}${t(-10, H / 2, B + " " + unit, "end")}${t(W / 2, H + 26, A + " " + unit)}${t(W + 10, H - dh / 2 + 5, D + " " + unit, "start")}
+    ${t(W / 2, H + 50, "Not drawn to scale", "middle", "#93a0c8").replace('font-size="16"', 'font-size="13"')}</svg>`;
+}
+function perRect(level) {
+  const w = R(4, 15), h = R(2, w - 1), unit = pick(["cm", "m"]);
+  const ans = 2 * (w + h);
+  return {
+    prompt: `Find the perimeter of this rectangle.`, diagram: rectSVG(w, h, w + " " + unit, h + " " + unit),
+    type: "num", unit, answer: ans,
+    hints: ["Perimeter is the distance all the way round. A rectangle has 4 sides.", `Opposite sides are equal: ${w} + ${h} + ${w} + ${h}.`],
+    solution: [[`${w} + ${h} + ${w} + ${h}`, "Add all four sides"], [`= ${ans} ${unit}`, "Answer, with units"]],
+    mistakes: [[v => near(v, w * h), `${w * h} is the area (length × width). Perimeter is the distance round the edge, so add the sides.`],
+               [v => near(v, w + h), "You've only added two sides. A rectangle has four."]]
+  };
+}
+function perL(level) {
+  const unit = pick(["m", "cm"]);
+  const A = R(8, 16), B = R(6, 12), C = R(3, A - 3), D = R(2, B - 3);
+  const ans = 2 * (A + B);
+  const given = A + B + C + D;
+  return {
+    prompt: `This is the plan of a room. Find its perimeter.`, diagram: lSVG(A, B, C, D, unit),
+    type: "num", unit, answer: ans,
+    hints: ["Two of the six sides have no label. Use the opposite sides to work them out.",
+            `Missing across: ${A} ${MINUS} ${C} = ${A - C}. Missing up: ${B} ${MINUS} ${D} = ${B - D}.`],
+    solution: [[`${A} ${MINUS} ${C} = ${A - C}`, "The missing horizontal side"], [`${B} ${MINUS} ${D} = ${B - D}`, "The missing vertical side"],
+               [`${A} + ${B} + ${C} + ${D} + ${A - C} + ${B - D}`, "Add all six sides"], [`= ${ans} ${unit}`, "Answer, with units"]],
+    mistakes: [[v => near(v, given), "You've added only the labelled sides. The shape has six sides, so find the two missing ones first."],
+               [v => near(v, A * B), "That's the area of the whole rectangle. Perimeter means adding the sides."]]
+  };
+}
+function perPoly(level) {
+  const shapes = [[5, "regular pentagon"], [6, "regular hexagon"], [8, "regular octagon"], [3, "equilateral triangle"]];
+  const [n, name] = pick(shapes); const s = R(3, 14), unit = pick(["cm", "m"]);
+  return {
+    prompt: `A <b>${name}</b> has sides of <b>${s} ${unit}</b>. What is its perimeter?`, type: "num", unit, answer: n * s,
+    hints: [`"Regular" means every side is the same length. How many sides does a ${name.replace("regular ", "")} have?`, `A ${name.replace("regular ", "")} has ${n} sides. Work out ${n} × ${s}.`],
+    solution: [[`${n} sides × ${s}`, "All sides are equal"], [`= ${n * s} ${unit}`, "Answer, with units"]],
+    mistakes: [[v => near(v, s * (n - 1)) || near(v, s * (n + 1)), `Count the sides again. A ${name.replace("regular ", "")} has ${n} sides.`]]
+  };
+}
+
+/* ---------- 6. Probability words and the scale ---------- */
+const PW = ["Impossible", "Unlikely", "Even chance", "Likely", "Certain"];
+const pwFromP = p => p === 0 ? 0 : p === 1 ? 4 : Math.abs(p - .5) < 1e-9 ? 2 : p < .5 ? 1 : 3;
+const PW_WHY = ["it can never happen (probability 0)", "it's less likely than not (between 0 and ½)", "it's exactly as likely as not (probability ½)", "it's more likely than not (between ½ and 1)", "it will definitely happen (probability 1)"];
+function probBag(level) {
+  const colours = ["red", "blue", "green", "yellow"];
+  const total = pick([4, 6, 8, 10, 12]);
+  const target = pick(colours);
+  const kind = pick([0, 1, 2, 3, 4]);
+  let k = [0, R(1, Math.floor((total - 1) / 2)), total / 2, R(Math.floor(total / 2) + 1, total - 1), total][kind];
+  if (kind === 1 && k * 2 === total) k--;
+  const other = colours.filter(c => c !== target)[0];
+  const desc = k === 0 ? `${total} ${other} counters` : k === total ? `${total} ${target} counters` : `${k} ${target} and ${total - k} ${other} counters`;
+  const ans = pwFromP(k / total);
+  return {
+    prompt: `A bag has <b>${desc}</b>. Ali takes one counter without looking. Which word describes the chance it is <b>${target}</b>?`,
+    type: "mc", choices: PW, answer: ans,
+    hints: [`How many of the ${total} counters are ${target}? Compare that with half of ${total}.`, `${k} out of ${total} are ${target}. Half of ${total} is ${total / 2}.`],
+    solution: [[`${k} out of ${total} are ${target}`, "Count the ones you want"], [`${PW[ans]}`, `Because ${PW_WHY[ans]}`]],
+    mistakes: PW.map((w, i) => [v => v === i, `Not quite. "${w}" would mean ${PW_WHY[i]}.`])
+  };
+}
+function probValue(level) {
+  const options = [[0, "0"], [1, "1"], [.5, "0.5"], [.5, "½"], [.1, "0.1"], [.25, "¼"], [.3, "0.3"], [.75, "¾"], [.8, "0.8"], [.95, "0.95"], [.05, "0.05"], [.6, "60%"], [.2, "20%"], [.9, "90%"]];
+  const [p, txt] = pick(options);
+  const ans = pwFromP(p);
+  return {
+    prompt: `The probability that it snows tomorrow is <span class="big">${txt}</span>. Which word fits best?`,
+    type: "mc", choices: PW, answer: ans,
+    hints: ["Probabilities go from 0 (impossible) to 1 (certain). ½ = 0.5 = 50% is the middle.", `Is ${txt} below, at or above ½?`],
+    solution: [[`${txt} ${p === .5 ? "=" : p < .5 ? "<" : ">"} ½`, "Compare with the middle of the scale"], [PW[ans], `Because ${PW_WHY[ans]}`]],
+    mistakes: PW.map((w, i) => [v => v === i, `Not quite. "${w}" would mean ${PW_WHY[i]}.`])
+  };
+}
+function probEvent(level) {
+  const ev = [["rolling a 7 on an ordinary dice", 0], ["the sun rising tomorrow", 4], ["getting heads when you flip a fair coin", 2],
+    ["rolling an even number on an ordinary dice", 2], ["rolling a 6 on an ordinary dice", 1], ["rolling a number less than 6 on a dice", 3],
+    ["picking a vowel from the letters of MATHS", 1], ["a day of the week ending in \"day\"", 4], ["picking a red card from a normal pack of cards", 2],
+    ["rolling a number greater than 1 on a dice", 3], ["a cat learning to drive", 0]];
+  const [e, ans] = pick(ev);
+  return {
+    prompt: `Which word best describes the chance of <b>${e}</b>?`, type: "mc", choices: PW, answer: ans,
+    hints: ["Think about all the things that could happen, and how many of them give the event.", "Can it happen at all? If it can, is it more or less than half the time?"],
+    solution: [[e, "The event"], [PW[ans], `Because ${PW_WHY[ans]}`]],
+    mistakes: PW.map((w, i) => [v => v === i, `Not quite. "${w}" would mean ${PW_WHY[i]}.`])
+  };
+}
+
+/* ---------- topic definitions ---------- */
+const TOPICS = [
+  { id: "place-value", name: "Place value", strand: "Number",
+    gens: [pvDigitValue, pvTimesDivide],
+    learn: {
+      idea: "Every digit has a value that depends on its place in the number. The same 7 is worth 7, 70 or 0.7 depending on its column.",
+      steps: ["Write the number in a place value table: … thousands, hundreds, tens, ones . tenths, hundredths.",
+              "Find the column your digit sits in.",
+              "Its value is the digit × the column value. A 4 in the hundreds column is worth 4 × 100 = 400.",
+              "× 10, × 100, × 1000 move every digit 1, 2 or 3 places to the left. ÷ moves them to the right."],
+      example: { q: "What is the value of the 7 in 3,472.5?",
+        lines: [["3 | 4 | 7 | 2 . 5", "Put each digit in its column"], ["Th | H | T | O . t", "Thousands, hundreds, tens, ones, tenths"], ["7 is in the tens column", "Find the column"], ["7 × 10 = 70", "Value = digit × column value"]] },
+      tryOne: { q: "Work out 4.25 × 100",
+        steps: [{ ask: "How many places do the digits move?", type: "num", answer: 2, tip: "100 has two zeros, so two places." },
+                { ask: "Do they move left or right?", type: "mc", choices: ["Left", "Right"], answer: 0, tip: "Multiplying makes the number bigger, so the digits move left." },
+                { ask: "So what is 4.25 × 100?", type: "num", answer: 425, tip: "4 . 2 5 → 4 2 5 . 0 0 = 425" }] },
+      mistakes: [["Saying the digit, not its value", "The 7 in 3,472 is worth 70, not 7."],
+                 ["Adding zeros to a decimal", "4.25 × 10 is not 4.250. The digits move: 42.5."],
+                 ["Moving the wrong way", "Dividing makes numbers smaller, so digits move right."]]
+    } },
+  { id: "four-operations", name: "The four operations", strand: "Number",
+    gens: [opsAdd, opsSub, opsMul, opsDiv],
+    learn: {
+      idea: "Written methods let you add, subtract, multiply and divide big numbers without a calculator, one column at a time.",
+      steps: ["Adding and subtracting: line up the ones, then work from the right.",
+              "Adding: if a column makes 10 or more, carry the tens. Subtracting: if the top digit is smaller, exchange 1 from the next column.",
+              "Multiplying by a 2-digit number: multiply by the ones, then by the tens (start that row with a 0), then add the rows.",
+              "Dividing: use the bus stop. Divide each digit from the left and carry the remainder to the next digit."],
+      example: { q: "Work out 347 × 26",
+        lines: [["347 × 6 = 2,082", "Multiply by the ones digit"], ["347 × 20 = 6,940", "Multiply by the tens: put a 0 first, then × 2"], ["2,082 + 6,940", "Add the two rows"], ["= 9,022", "Answer"]] },
+      tryOne: { q: "Work out 528 ÷ 4 with the bus stop",
+        steps: [{ ask: "5 ÷ 4 = 1 remainder what?", type: "num", answer: 1, tip: "4 goes into 5 once, with 1 left over. Carry it to the 2, making 12." },
+                { ask: "Now 12 ÷ 4 =", type: "num", answer: 3, tip: "4 × 3 = 12, no remainder." },
+                { ask: "Last digit: 8 ÷ 4 =", type: "num", answer: 2, tip: "So the answer reads 1, 3, 2." },
+                { ask: "So 528 ÷ 4 =", type: "num", answer: 132, tip: "Check: 132 × 4 = 528." }] },
+      mistakes: [["Forgetting to carry", "In 58 + 37, 8 + 7 = 15: write 5, carry 1."],
+                 ["Smaller from bigger", "In 52 − 18 you can't do 2 − 8, so exchange: 12 − 8."],
+                 ["Missing the place-holder zero", "When multiplying by the tens digit, start the row with a 0."]]
+    } },
+  { id: "negative-numbers", name: "Negative numbers", strand: "Number",
+    gens: [negTemp, negAddSub, negMulDiv],
+    learn: {
+      idea: "Negative numbers are less than zero. On a number line they sit to the left of 0, and the further left, the smaller they are.",
+      steps: ["Adding a positive number moves you right on the number line. Subtracting moves you left.",
+              "Two signs next to each other: same signs (+ + or − −) make +. Different signs (+ − or − +) make −.",
+              "So subtracting a negative is the same as adding: 3 − (−5) = 3 + 5 = 8.",
+              "Multiplying or dividing: do the sum without the signs, then use the same rule. Same signs → positive, different → negative."],
+      example: { q: "Work out −3 − (−8)",
+        lines: [["−3 − (−8)", "Two minus signs next to each other"], ["−3 + 8", "Same signs make +"], ["Start at −3, move 8 right", "Use the number line"], ["= 5", "Answer"]] },
+      tryOne: { q: "It's −4°C. The temperature rises by 9°C. What is it now?",
+        steps: [{ ask: "How many degrees up to reach 0?", type: "num", answer: 4, tip: "From −4 up to 0 is 4 degrees." },
+                { ask: "How many degrees are left after that?", type: "num", answer: 5, tip: "9 − 4 = 5 more degrees to go." },
+                { ask: "So the temperature is now (°C):", type: "num", answer: 5, tip: "0 + 5 = 5°C." }] },
+      mistakes: [["Ignoring the double sign", "8 − (−3) is 11, not 5."],
+                 ["Right size, wrong sign", "−4 × 3 is −12, not 12: different signs give a negative."],
+                 ["Counting the wrong way", "A temperature that falls goes down the number line."]]
+    } },
+  { id: "simplifying", name: "Simplifying expressions", strand: "Algebra",
+    gens: [simpCollect, simpMultiply], level3Gens: [simpCollect],
+    learn: {
+      idea: "Simplifying means collecting like terms: terms with exactly the same letter can be added together, just like 3 apples + 2 apples = 5 apples.",
+      steps: ["Find the like terms. Each term keeps the sign in front of it.",
+              "Add or subtract the numbers in front of each letter. A letter on its own, like a, means 1a.",
+              "Different letters stay separate: 3a + 2b can't be simplified.",
+              "Write the answer with letters in alphabetical order and the number at the end. Multiplying? Write 3 × a as 3a."],
+      example: { q: "Simplify 5a + 3b − 2a + b",
+        lines: [["5a − 2a = 3a", "Collect the a terms (the 2a has a minus in front)"], ["3b + b = 4b", "Collect the b terms (b means 1b)"], ["= 3a + 4b", "Write them together"]] },
+      tryOne: { q: "Simplify 4x + 7 − x + 2",
+        steps: [{ ask: "Collect the x terms: 4x − x =", type: "expr", answer: { x: 3 }, answerText: "3x", tip: "x means 1x, so 4x − 1x = 3x." },
+                { ask: "Collect the numbers: 7 + 2 =", type: "num", answer: 9, tip: "7 + 2 = 9." },
+                { ask: "So the simplified expression is", type: "expr", answer: { x: 3, "": 9 }, answerText: "3x + 9", tip: "Letter term first, then the number." }] },
+      mistakes: [["Adding unlike terms", "3a + 2b is not 5ab. Different letters stay separate."],
+                 ["Losing the minus sign", "In 5a + 3 − 2a, the 2a is subtracted: 3a + 3."],
+                 ["Forgetting a means 1a", "a + a + a = 3a, not a³."]]
+    } },
+  { id: "perimeter", name: "Perimeter", strand: "Geometry",
+    gens: [perRect, perL, perPoly],
+    learn: {
+      idea: "Perimeter is the total distance all the way round the outside of a shape, like walking round the edge of a field.",
+      steps: ["Find the length of every side. Count the sides so you don't miss any.",
+              "If a side has no label, work it out from the opposite sides.",
+              "Add all the sides together.",
+              "Write the units (cm, m) with your answer."],
+      example: { q: "An L-shaped room: 10 m along the bottom, 8 m up the left side, 4 m across the top and 3 m down the right side.",
+        lines: [["10 − 4 = 6 m", "The missing horizontal side"], ["8 − 3 = 5 m", "The missing vertical side"], ["10 + 8 + 4 + 3 + 6 + 5", "Add all six sides"], ["= 36 m", "Answer, with units"]] },
+      tryOne: { q: "Find the perimeter of a rectangle 7 cm long and 4 cm wide.",
+        steps: [{ ask: "How many sides does a rectangle have?", type: "num", answer: 4, tip: "Two long sides and two short sides." },
+                { ask: "Add them: 7 + 4 + 7 + 4 =", type: "num", answer: 22, tip: "So the perimeter is 22 cm." }] },
+      mistakes: [["Working out the area", "7 × 4 = 28 is the area. Perimeter adds the sides."],
+                 ["Missing sides", "An L-shape has six sides, not four."],
+                 ["No units", "Always write cm or m."]]
+    } },
+  { id: "probability-words", name: "Probability words and the scale", strand: "Probability",
+    gens: [probBag, probValue, probEvent],
+    learn: {
+      idea: "Probability measures how likely something is, on a scale from 0 (impossible) to 1 (certain). Halfway, ½, is an even chance.",
+      steps: ["Impossible = 0. It can never happen.",
+              "Unlikely = between 0 and ½. Even chance = exactly ½. Likely = between ½ and 1.",
+              "Certain = 1. It will definitely happen.",
+              "Compare with half: if fewer than half the outcomes give the event, it's unlikely; more than half, likely."],
+      example: { q: "A bag has 3 red and 7 blue counters. How likely is picking red?",
+        lines: [["3 out of 10 are red", "Count the ones you want"], ["Half of 10 is 5", "Find the middle"], ["3 is less than 5", "Compare"], ["Unlikely", "Answer"]] },
+      tryOne: { q: "You roll an ordinary dice. How likely is an even number?",
+        steps: [{ ask: "How many even numbers are on a dice?", type: "num", answer: 3, tip: "2, 4 and 6." },
+                { ask: "Out of how many numbers altogether?", type: "num", answer: 6, tip: "1 to 6." },
+                { ask: "So the chance is…", type: "mc", choices: PW, answer: 2, tip: "3 out of 6 is exactly half: an even chance." }] },
+      mistakes: [["Mixing up unlikely and impossible", "Unlikely things can still happen. Impossible things can't."],
+                 ["Forgetting the middle", "½, 0.5 and 50% all mean an even chance."],
+                 ["Probabilities above 1", "Nothing is more than certain, so no probability is bigger than 1."]]
+    } }
+];
+const TOPIC = id => TOPICS.find(t => t.id === id);
+const genQ = (t, level) => pick(t.gens)(level);
+
+/* ---------- answer checking ---------- */
+function mark(q, raw) {
+  if (q.type === "mc") {
+    const v = raw;
+    if (v === q.answer) return { ok: true };
+    const m = q.mistakes.find(([f]) => f(v)); return { ok: false, msg: m ? m[1] : "Not quite." };
+  }
+  if (q.type === "expr") {
+    const m = parseExpr(raw);
+    if (!m) return { ok: false, invalid: true, msg: "Type your answer like 3a + 4b or 5x − 2." };
+    if (sameMap(m, q.answer)) return { ok: true };
+    const k = q.mistakes.find(([f]) => f(raw, m)); return { ok: false, msg: k ? k[1] : "Not quite." };
+  }
+  const v = parseNum(raw);
+  if (v == null) return { ok: false, invalid: true, msg: "Type a number, for example 42 or −7 or 3.5." };
+  if (near(v, q.answer)) return { ok: true };
+  const m = q.mistakes.find(([f]) => f(v)); return { ok: false, msg: m ? m[1] : "Not quite." };
+}
+const answerText = q => q.type === "mc" ? q.choices[q.answer] : q.type === "expr" ? q.answerText : fmt(q.answer) + (q.unit ? " " + q.unit : "");
+
+/* ---------- read aloud ---------- */
+function speak(text) {
+  try {
+    if (!("speechSynthesis" in window)) return;
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text.replace(/−/g, " minus ").replace(/×/g, " times ").replace(/÷/g, " divided by "));
+    u.lang = "en-GB"; u.rate = .95; speechSynthesis.speak(u);
+  } catch (e) {}
+}
+const SPEAK_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12"/></svg>`;
+
+/* ---------- medals ---------- */
+function medal(col, label, locked) {
+  return `<svg viewBox="0 0 84 84" class="medal" aria-hidden="true">
+    <path d="M28 4h12l-6 22h-12z" fill="${locked ? "#26336a" : "#1B36FF"}"/><path d="M44 4h12l6 22h-12z" fill="${locked ? "#26336a" : "#00FCF1"}" opacity=".85"/>
+    <circle cx="42" cy="52" r="26" fill="${locked ? "#16214b" : col}" stroke="${locked ? "#26336a" : "#0B122C"}" stroke-width="3"/>
+    <circle cx="42" cy="52" r="19" fill="none" stroke="${locked ? "#26336a" : "rgba(11,18,44,.35)"}" stroke-width="2"/>
+    <text x="42" y="58" text-anchor="middle" font-family="Unbounded, sans-serif" font-weight="800" font-size="15" fill="${locked ? "#93a0c8" : "#0B122C"}">${label}</text></svg>`;
+}
+const LOCK = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>`;
+
+/* ============================================================
+   SCREENS
+   ============================================================ */
+const app = $("#app");
+let VIEW = {};   // per-screen state (current question etc.)
+
+function status(id) {
+  const p = prog(id);
+  if (p.secured) return ["secured", "Secured"];
+  if (p.practised > 0) return ["practising", "Practising"];
+  if (p.learned) return ["learning", "Learning"];
+  return ["", "Not started"];
+}
+function renderCadet() {
+  const n = STORE.topics ? TOPICS.filter(t => prog(t.id).secured).length : 0;
+  $("#cadet").innerHTML = STORE.name ? `<b>Cadet ${esc(STORE.name)}</b>Bronze: ${n} of ${TOPICS.length} secured` : "";
+}
+
+function screenName() {
+  app.innerHTML = `<section class="namebox panel stack">
+    <div class="eyebrow">Welcome to the Academy</div>
+    <h1 class="h1">Every detective starts as a cadet.</h1>
+    <p class="muted">Learn each topic step by step, practise until it clicks, then pass the check. Secure every topic to unlock your Bronze award test.</p>
+    <form id="nameform" class="stack">
+      <label for="cadetname" class="small muted">Your first name (it stays on this device)</label>
+      <div class="field"><input id="cadetname" maxlength="20" autocomplete="off" placeholder="First name" required></div>
+      <div><button class="btn" type="submit">Start training</button></div>
+    </form></section>`;
+  $("#nameform").onsubmit = e => { e.preventDefault(); const v = $("#cadetname").value.trim(); if (!v) return; STORE.name = v.slice(0, 20); save(); location.hash = "#path"; };
+  setTimeout(() => $("#cadetname").focus(), 50);
+}
+
+function screenPath() {
+  const secured = TOPICS.filter(t => prog(t.id).secured).length;
+  const pct = Math.round(secured / TOPICS.length * 100);
+  const allDone = secured === TOPICS.length;
+  const next = TOPICS.find(t => !prog(t.id).secured);
+  app.innerHTML = `
+    <div class="eyebrow">Your training pathway</div>
+    <h1 class="h1">Working towards Bronze</h1>
+    <p class="lede">Secure every topic by getting 4 out of 5 in its check. Then sit the Bronze award test and score 80% or more to earn your certificate.</p>
+    <div class="hero">
+      <section class="panel tiercard stack" aria-label="Bronze progress">
+        <div class="tierhead">${medal("var(--bronze)", "B", false)}
+          <div><div class="eyebrow" style="color:var(--bronze)">Current award</div><h2>Bronze</h2><div class="muted small">${secured} of ${TOPICS.length} topics secured</div></div></div>
+        <div class="bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><i style="width:${pct}%"></i></div>
+        <div class="row">${next ? `<a class="btn" href="#t-${next.id}-${prog(next.id).learned ? "practise" : "learn"}">${prog(next.id).learned || prog(next.id).practised ? "Continue" : "Start"}: ${esc(next.name)}</a>` : `<span class="chip secured">All topics secured</span>`}</div>
+      </section>
+      <section class="stack">
+        <div class="tiers">
+          <div class="tier now">${medal("var(--bronze)", "B")}<b>Bronze</b><span>Core Year 7</span></div>
+          <div class="tier locked">${medal("var(--silver)", "S", true)}<b>Silver</b><span>Years 7–8</span></div>
+          <div class="tier locked">${medal("var(--gold)", "G", true)}<b>Gold</b><span>Years 8–9</span></div>
+          <div class="tier locked">${medal("var(--platinum)", "P", true)}<b>Platinum</b><span>Year 9 · GCSE ready</span></div>
+        </div>
+        <div class="lockrow">${LOCK}<div><b>Bronze award test</b><div class="muted small">${allDone ? "Coming soon in this preview. You've secured every topic." : "Opens when every Bronze topic is secured. 30 questions · 80% to pass."}</div></div></div>
+        <div class="lockrow">${LOCK}<div><b>Case File 01: The Scoby Stop</b><div class="muted small">Unlocks with your Bronze award.</div></div></div>
+      </section>
+    </div>
+    <h2 class="eyebrow" style="margin:34px 0 12px">Bronze topics</h2>
+    <div class="topics">${TOPICS.map(t => {
+      const [cls, label] = status(t.id); const p = prog(t.id);
+      return `<a class="tcard" href="#t-${t.id}-learn" style="text-decoration:none;color:inherit">
+        <span class="strand">${t.strand}</span><h3>${esc(t.name)}</h3>
+        <span class="meta"><span class="steps3" aria-label="Learn, practise, check"><i class="${p.learned ? "on" : ""}"></i><i class="${p.practised ? "on" : ""}"></i><i class="${p.secured ? "ok" : ""}"></i></span><span class="chip ${cls}">${label}</span></span></a>`;
+    }).join("")}</div>
+    <p class="muted small" style="margin-top:14px">This preview has the first six Bronze topics. More Bronze topics, and Silver to Platinum, follow.</p>`;
+}
+
+/* ---------- topic screen ---------- */
+function screenTopic(id, tab) {
+  const t = TOPIC(id); if (!t) { location.hash = "#path"; return; }
+  const p = prog(id);
+  const tabs = [["learn", "Learn", p.learned], ["practise", "Practise", p.practised >= 5 || p.secured], ["check", "Check", p.secured]];
+  app.innerHTML = `
+    <nav class="crumbs"><a href="#path">Bronze pathway</a><span>›</span><span>${t.strand}</span></nav>
+    <h1 class="h1" style="margin-top:8px">${esc(t.name)}</h1>
+    <div class="tabs" role="tablist">${tabs.map(([k, label, done], i) =>
+      `<button class="tab ${k === tab ? "on" : ""} ${done && k !== tab ? "done" : ""}" role="tab" aria-selected="${k === tab}" data-tab="${k}"><span class="n">${done && k !== tab ? "✓" : i + 1}</span>${label}</button>`).join("")}</div>
+    <div class="tabbody" id="tabbody"></div>`;
+  app.querySelectorAll("[data-tab]").forEach(b => b.onclick = () => location.hash = `#t-${id}-${b.dataset.tab}`);
+  if (tab === "learn") tabLearn(t);
+  else if (tab === "practise") tabPractise(t);
+  else tabCheck(t);
+}
+
+/* ---------- Learn ---------- */
+function tabLearn(t) {
+  const L = t.learn, body = $("#tabbody");
+  VIEW = { shown: 1, tryStep: 0, tryFb: null };
+  const speakText = `${t.name}. ${L.idea} How to do it. ${L.steps.join(" ")}`;
+  body.innerHTML = `
+    <div class="grid2">
+      <div class="stack">
+        <section class="panel stack">
+          <div class="row" style="justify-content:space-between"><div class="h3" style="margin:0">The idea</div><button class="btn ghost small speak" id="speak">${SPEAK_ICON}Read aloud</button></div>
+          <p class="idea">${esc(L.idea)}</p>
+        </section>
+        <section class="panel"><div class="h3">How to do it</div><ol class="howto">${L.steps.map(s => `<li><span>${esc(s)}</span></li>`).join("")}</ol></section>
+        <section class="panel"><div class="h3">Where marks go missing</div><ul class="mist">${L.mistakes.map(([a, b]) => `<li><b>${esc(a)}</b>${esc(b)}</li>`).join("")}</ul></section>
+      </div>
+      <div class="stack">
+        <section class="panel stack" id="example"></section>
+        <section class="panel stack" id="tryone"></section>
+      </div>
+    </div>`;
+  $("#speak").onclick = () => speak(speakText);
+  drawExample(t); drawTry(t);
+}
+function drawExample(t) {
+  const ex = t.learn.example, el = $("#example");
+  const lines = ex.lines.slice(0, VIEW.shown);
+  const more = VIEW.shown < ex.lines.length;
+  el.innerHTML = `<div class="h3" style="margin:0">Worked example</div>
+    <p class="q" style="font-size:19px;margin:0">${esc(ex.q)}</p>
+    <div class="work" aria-live="polite">${lines.map(([w, why]) => `<div class="wline"><span class="w">${esc(w)}</span><span class="why">${esc(why)}</span></div>`).join("")}</div>
+    <div class="row">${more ? `<button class="btn small" id="exnext">Show the next step</button><span class="muted small">Step ${VIEW.shown} of ${ex.lines.length}</span>` : `<button class="btn ghost small" id="exagain">Start again</button><span class="muted small">All ${ex.lines.length} steps shown</span>`}</div>`;
+  if (more) $("#exnext").onclick = () => { VIEW.shown++; drawExample(t); $("#exnext") ? $("#exnext").focus() : null; };
+  else $("#exagain").onclick = () => { VIEW.shown = 1; drawExample(t); };
+}
+function inputHTML(id, s) {
+  if (s.type === "mc") return `<div class="choices">${s.choices.map((c, i) => `<button class="choice" data-mc="${i}">${esc(c)}</button>`).join("")}</div>`;
+  return `<form class="ans" data-form="${id}"><label class="field"><input id="${id}" inputmode="${s.type === "num" ? "decimal" : "text"}" autocomplete="off" aria-label="Your answer" ${s.type === "expr" ? 'placeholder="e.g. 3a + 4b"' : ""}>${s.unit ? `<span>${esc(s.unit)}</span>` : ""}</label><button class="btn" type="submit">Check</button></form>`;
+}
+function drawTry(t) {
+  const tr = t.learn.tryOne, el = $("#tryone"), i = VIEW.tryStep;
+  const done = i >= tr.steps.length;
+  el.innerHTML = `<div class="h3" style="margin:0">Try one with me</div>
+    <p class="q" style="font-size:19px;margin:0">${esc(tr.q)}</p>
+    <div>${tr.steps.slice(0, i).map(s => `<div class="tryline"><span class="muted small">${esc(s.ask)}</span><b>✓ ${esc(s.type === "mc" ? s.choices[s.answer] : s.type === "expr" ? s.answerText : fmt(s.answer))}</b><span class="muted small">${esc(s.tip)}</span></div>`).join("")}
+    ${done ? "" : `<div class="tryline"><b>${esc(tr.steps[i].ask)}</b>${inputHTML("tryin", tr.steps[i])}${VIEW.tryFb ? `<div class="fb no"><b>Have another go</b>${esc(VIEW.tryFb)}</div>` : ""}</div>`}</div>
+    ${done ? `<div class="fb ok"><b>Nicely done</b>You've worked through it step by step. Now practise on your own.</div><div class="row"><a class="btn" href="#t-${t.id}-practise">Go to Practise</a></div>` : ""}`;
+  if (done) { const p = prog(t.id); if (!p.learned) { p.learned = true; save(); renderCadet(); } return; }
+  const s = tr.steps[i];
+  const submit = raw => {
+    const r = mark({ type: s.type, answer: s.answer, mistakes: [] }, raw);
+    if (r.ok) { VIEW.tryStep++; VIEW.tryFb = null; }
+    else VIEW.tryFb = r.invalid ? r.msg : "Not quite. " + (VIEW.tryFb ? "Hint: " + s.tip : "Look at the question again.");
+    drawTry(t);
+    const inp = $("#tryin"); if (inp) inp.focus();
+  };
+  if (s.type === "mc") el.querySelectorAll("[data-mc]").forEach(b => b.onclick = () => submit(+b.dataset.mc));
+  else el.querySelector("form").onsubmit = e => { e.preventDefault(); submit($("#tryin").value); };
+}
+
+/* ---------- Practise ---------- */
+function tabPractise(t) {
+  const p = prog(t.id);
+  VIEW = { q: null, hints: 0, fb: null, answered: false, level: 1, run: 0 };
+  const level = () => Math.min(3, 1 + Math.floor(VIEW.run / 3));
+  const newQ = () => { VIEW.q = genQ(t, level()); VIEW.hints = 0; VIEW.fb = null; VIEW.answered = false; VIEW.wrongs = 0; draw(); };
+  const draw = () => {
+    const q = VIEW.q, body = $("#tabbody");
+    body.innerHTML = `<div class="grid2">
+      <section class="panel stack" aria-live="polite">
+        <div class="row" style="justify-content:space-between"><span class="eyebrow">Question · level ${level()}</span><span class="muted small">${p.streak} in a row · ${p.practised} answered</span></div>
+        <div class="q">${q.prompt}</div>${q.diagram ? `<div class="diagram">${q.diagram}</div>` : ""}
+        ${VIEW.answered ? "" : inputHTML("pin", q)}
+        ${VIEW.fb ? `<div class="fb ${VIEW.fb.ok ? "ok" : "no"}"><b>${VIEW.fb.ok ? "Correct" : "Not yet"}</b>${VIEW.fb.msg}</div>` : ""}
+        ${!VIEW.answered && VIEW.hints > 0 ? `<div class="fb hint"><b>Hint ${VIEW.hints}</b>${esc(q.hints[VIEW.hints - 1])}</div>` : ""}
+        ${VIEW.answered ? `<div class="work">${q.solution.map(([w, why]) => `<div class="wline"><span class="w">${esc(w)}</span><span class="why">${esc(why)}</span></div>`).join("")}</div>
+            <div class="row"><button class="btn" id="nextq">Next question</button>${p.streak >= 5 && !p.secured ? `<a class="btn ghost" href="#t-${t.id}-check">Ready for the check</a>` : ""}</div>`
+          : `<div class="row">${VIEW.hints < 2 ? `<button class="linkbtn" id="hint">${VIEW.hints ? "Show the next step" : "Give me a hint"}</button>` : ""}${VIEW.wrongs >= 2 || VIEW.hints >= 2 ? `<button class="linkbtn" id="reveal">Show me the answer</button>` : ""}</div>`}
+      </section>
+      <aside class="stack">
+        <section class="panel stack"><div class="h3" style="margin:0">How to do it</div><ol class="howto">${t.learn.steps.map(s => `<li><span class="small">${esc(s)}</span></li>`).join("")}</ol></section>
+        <section class="panel stack"><div class="h3" style="margin:0">When you're ready</div><p class="small muted" style="margin:0">Get 5 in a row, then take the check: 5 questions, no hints, 4 right to secure the topic.</p><div class="row"><a class="btn ${p.streak >= 5 ? "" : "ghost"} small" href="#t-${t.id}-check">Take the check</a></div></section>
+      </aside></div>`;
+    if (!VIEW.answered) {
+      const submit = raw => {
+        const r = mark(q, raw);
+        if (r.invalid) { VIEW.fb = { ok: false, msg: esc(r.msg) }; draw(); focusIn(); return; }
+        if (r.ok) {
+          p.practised++; p.streak++; VIEW.run++; VIEW.answered = true; save(); renderCadet();
+          VIEW.fb = { ok: true, msg: VIEW.hints ? "Well worked out with the hint. Try the next one without." : pick(["Spot on.", "Exactly right.", "Correct, and well set out.", "Good detective work."]) };
+        } else {
+          VIEW.wrongs++; p.streak = 0; save();
+          VIEW.fb = { ok: false, msg: esc(r.msg) + (VIEW.wrongs === 1 && VIEW.hints === 0 ? " Have another go, or ask for a hint." : "") };
+        }
+        draw(); focusIn();
+      };
+      if (q.type === "mc") app.querySelectorAll("[data-mc]").forEach(b => b.onclick = () => submit(+b.dataset.mc));
+      else app.querySelector("[data-form]").onsubmit = e => { e.preventDefault(); submit($("#pin").value); };
+      const h = $("#hint"); if (h) h.onclick = () => { VIEW.hints++; draw(); focusIn(); };
+      const rv = $("#reveal"); if (rv) rv.onclick = () => { p.practised++; p.streak = 0; VIEW.answered = true; VIEW.fb = { ok: false, msg: `The answer is <b>${esc(answerText(q))}</b>. Read the working below, then try another.` }; save(); draw(); };
+    } else {
+      $("#nextq").onclick = newQ; $("#nextq").focus();
+    }
+  };
+  const focusIn = () => { const i = $("#pin"); if (i) i.focus(); };
+  newQ(); focusIn();
+}
+
+/* ---------- Check ---------- */
+const CHECK_N = 5, CHECK_PASS = 4;
+function tabCheck(t) {
+  const p = prog(t.id);
+  VIEW = { qs: [1, 1, 2, 2, 3].map(l => genQ(t, l)), i: 0, results: [], started: false };
+  const body = $("#tabbody");
+  const intro = () => {
+    body.innerHTML = `<section class="panel stack" style="max-width:640px">
+      <div class="eyebrow">Topic check</div>
+      <h2 style="font-size:24px">${CHECK_N} questions · no hints · ${CHECK_PASS} right to secure</h2>
+      <p class="muted" style="margin:0">${p.secured ? "You've already secured this topic. Take it again to keep it sharp." : p.streak >= 5 ? "You're on a run of 5 or more. Good time to take it." : "Tip: practise until you get 5 in a row first. You can take the check any time."}</p>
+      <div class="row"><button class="btn" id="go">Start the check</button><a class="btn ghost" href="#t-${t.id}-practise">More practice first</a></div></section>`;
+    $("#go").onclick = () => { VIEW.started = true; draw(); };
+  };
+  const draw = () => {
+    const q = VIEW.qs[VIEW.i];
+    body.innerHTML = `<section class="panel stack" style="max-width:760px" aria-live="polite">
+      <div class="row" style="justify-content:space-between"><span class="eyebrow">Question ${VIEW.i + 1} of ${CHECK_N}</span>
+        <span class="tally">${VIEW.qs.map((_, k) => `<i class="${k < VIEW.results.length ? (VIEW.results[k].ok ? "ok" : "no") : ""}"></i>`).join("")}</span></div>
+      <div class="q">${q.prompt}</div>${q.diagram ? `<div class="diagram">${q.diagram}</div>` : ""}
+      ${inputHTML("cin", q)}
+      ${VIEW.invalid ? `<div class="fb hint"><b>Check the format</b>${esc(VIEW.invalid)}</div>` : ""}
+    </section>`;
+    const submit = raw => {
+      const r = mark(q, raw);
+      if (r.invalid) { VIEW.invalid = r.msg; draw(); const i = $("#cin"); if (i) i.focus(); return; }
+      VIEW.invalid = null;
+      VIEW.results.push({ ok: r.ok, given: q.type === "mc" ? q.choices[raw] : raw, msg: r.msg });
+      VIEW.i++;
+      if (VIEW.i >= CHECK_N) finish(); else { draw(); const i = $("#cin"); if (i) i.focus(); }
+    };
+    if (q.type === "mc") body.querySelectorAll("[data-mc]").forEach(b => b.onclick = () => submit(+b.dataset.mc));
+    else { body.querySelector("[data-form]").onsubmit = e => { e.preventDefault(); submit($("#cin").value); }; $("#cin").focus(); }
+  };
+  const finish = () => {
+    const score = VIEW.results.filter(r => r.ok).length;
+    const pass = score >= CHECK_PASS;
+    p.checks++; p.best = Math.max(p.best, score);
+    const firstSecure = pass && !p.secured;
+    if (pass) p.secured = true;
+    save(); renderCadet();
+    const left = TOPICS.filter(x => !prog(x.id).secured);
+    body.innerHTML = `<section class="panel stack" style="max-width:820px">
+      <div class="result"><div class="score" style="color:${pass ? "var(--good)" : "var(--warn)"}">${score}/${CHECK_N}</div>
+        <div><div class="eyebrow">${pass ? "Topic secured" : "Not secured yet"}</div><h2 style="font-size:22px;margin-top:4px">${pass ? (firstSecure ? `${esc(t.name)} is secured.` : "Secured again. Well kept.") : `You need ${CHECK_PASS} of ${CHECK_N}. Practise the ones below, then try again.`}</h2>
+        ${pass && firstSecure ? `<p class="muted small" style="margin:4px 0 0">${left.length ? `${TOPICS.length - left.length} of ${TOPICS.length} Bronze topics secured.` : "Every Bronze topic is secured. The Bronze award test is next."}</p>` : ""}</div></div>
+      <ul class="review">${VIEW.qs.map((q, k) => { const r = VIEW.results[k]; return `<li><span class="tag ${r.ok ? "ok" : "no"}">${r.ok ? "✓ Correct" : "✗ Not this time"}</span><div style="margin-top:4px">${q.prompt}</div>
+        ${r.ok ? "" : `<div class="small" style="margin-top:6px">You answered <b>${esc(r.given)}</b>. The answer is <b>${esc(answerText(q))}</b>. ${esc(r.msg && r.msg !== "Not quite." ? r.msg : "")}</div>`}</li>`; }).join("")}</ul>
+      <div class="row">${pass ? (left.length ? `<a class="btn" href="#t-${left[0].id}-learn">Next topic: ${esc(left[0].name)}</a>` : "") + `<a class="btn ghost" href="#path">Back to the pathway</a>`
+        : `<a class="btn" href="#t-${t.id}-practise">Practise more</a><button class="btn ghost" id="again">Try the check again</button>`}</div></section>`;
+    const a = $("#again"); if (a) a.onclick = () => tabCheck(t);
+  };
+  intro();
+}
+
+/* ---------- router ---------- */
+function route() {
+  try { speechSynthesis.cancel(); } catch (e) {}
+  renderCadet();
+  if (!STORE.name) { screenName(); return; }
+  // routes: #path, #t-<topic-id>-<learn|practise|check>
+  const m = location.hash.match(/^#t-([a-z0-9-]+)-(learn|practise|check)$/);
+  if (m && TOPIC(m[1])) screenTopic(m[1], m[2]);
+  else screenPath();
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", route);
+route();
+</script>
+</body>
+</html>
