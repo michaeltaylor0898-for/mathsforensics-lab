@@ -25,6 +25,7 @@
 
 import { COLD_CASE_B1 } from "./bank/cold-case-b-paper1.ts";
 import { COLD_CASE_B2 } from "./bank/cold-case-b-paper2.ts";
+import { COLD_CASE_B3 } from "./bank/cold-case-b-paper3.ts";
 
 export type MarkPoint = {
   id: string;
@@ -235,7 +236,7 @@ export const SCHEMES: Scheme[] = [
   },
 ];
 
-SCHEMES.push(...COLD_CASE_B1, ...COLD_CASE_B2);
+SCHEMES.push(...COLD_CASE_B1, ...COLD_CASE_B2, ...COLD_CASE_B3);
 
 export const byId = (id: string) => SCHEMES.find((s) => s.id === id);
 

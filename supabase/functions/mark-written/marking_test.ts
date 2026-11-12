@@ -162,7 +162,7 @@ Deno.test("Mike mode: amber only at a danger zone, once each, in Mike's words; r
 });
 
 // Each Cold Case paper in the bank must add up to the paper's total
-const PAPER_TOTALS: Record<string, number> = { "CC-B/1H": 80, "CC-B/2H": 80 };
+const PAPER_TOTALS: Record<string, number> = { "CC-B/1H": 80, "CC-B/2H": 80, "CC-B/3H": 80 };
 Deno.test("loaded papers add up to their totals", () => {
   for (const [paper, total] of Object.entries(PAPER_TOTALS)) {
     const parts = SCHEMES.filter((s) => s.source?.paper === paper);
