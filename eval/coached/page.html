@@ -205,7 +205,7 @@ td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
 <div class="bar">
   <div class="case">
     <div class="eyebrow">Cold Case B · Higher Paper 1 · non-calculator</div>
-    <h1>Cold Case paper · Questions 1 to 5</h1>
+    <h1>Cold Case B · Higher Paper 1</h1>
   </div>
   <div class="barR">
     <div class="modes" role="group" aria-label="Mode">
@@ -216,7 +216,7 @@ td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
     <div class="clock" aria-live="off"><span class="eyebrow">Time</span><b id="clock">0:00</b><span class="pace idle" id="pace">STARTS WITH YOUR FIRST LINE</span></div>
   </div>
 </div>
-<p class="draftnote">PROTOTYPE · questions are from your paper; the mark schemes are drafts until you check them</p>
+<p class="draftnote">PROTOTYPE · all 23 questions, marked to the Cold Case B Paper 1 Forensic Mark Scheme</p>
 
 <div class="desk">
   <nav class="nav" id="nav" aria-label="Questions"></nav>
@@ -243,8 +243,8 @@ td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const PARTS=MF.SCHEMES.filter(s=>s.source&&s.source.paper==='CC-B/1H');
-const TOPIC_N={fracmul:'Multiplying fractions',pfd:'Prime factors',hcf:'HCF',sf:'Standard form',simlin:'Simultaneous equations',anglefacts:'Angle facts'};
-const TITLES={1:'Mixed numbers',2:'Primes and HCF',3:'Standard form',4:'Simultaneous equations',5:'Isosceles angles'};
+const TOPIC_N={fracmul:'Multiplying fractions',pfd:'Prime factors',hcf:'HCF',sf:'Standard form',simlin:'Simultaneous equations',anglefacts:'Angle facts',sdp:'Density',pct:'Percentage change',ratio:'Ratio',errint:'Error intervals',cumfreq:'Cumulative frequency',venn:'Venn diagrams',dirprop:'Direct proportion',nthquad:'Quadratic sequences',surd:'Surds',arcs:'Arcs and sectors',volcone:'Spheres and cones',perp:'Perpendicular lines',rearr:'Rearranging formulae',siner:'Sine rule',circthm:'Circle theorems',quadgraph:'Quadratic graphs',algfrac:'Algebraic fractions',tangent:'Tangent to a circle'};
+const TITLES={1:'Mixed numbers',2:'Primes and HCF',3:'Standard form',4:'Simultaneous equations',5:'Isosceles angles',6:'Density',7:'Percentage change',8:'Combining ratios',9:'Error intervals',10:'Cumulative frequency',11:'Venn diagrams',12:'Direct proportion',13:'Quadratic sequences',14:'Surds',15:'Arcs and sectors',16:'Spheres and cones',17:'Perpendicular lines',18:'Rearranging formulae',19:'Sine rule',20:'Circle theorems',21:'Sketching quadratics',22:'Algebraic fractions',23:'Tangent to a circle'};
 const QS=[...new Set(PARTS.map(p=>p.source.q))].map(q=>({q,parts:PARTS.filter(p=>p.source.q===q)}));
 const TOTAL=PARTS.reduce((a,p)=>a+p.marks,0), MIN_PER_MARK=90/80;
 const S={mode:'coached',mikeOn:false,qi:0,active:{},started:null,finished:false,tool:'pen',
@@ -385,11 +385,11 @@ function renderNav(){
 }
 function renderSheet(){
   const q=QS[S.qi];
-  $('#sheet').innerHTML=`<div class="qhead"><span class="qnum">${q.q}</span><div style="min-width:0;flex:1">${q.parts.map(p=>{
+  $('#sheet').innerHTML=`<div class="qhead"><span class="qnum">${q.q}</span><div style="min-width:0;flex:1">${q.parts.map((p,i)=>{
     const st=S.st[p.id],lbl=p.source.part?`<span class="plabel">(${p.source.part})</span>`:'';
     return `<section class="part" data-part="${p.id}"><span class="pmarks">[${p.marks} mark${p.marks>1?'s':''}]</span>
       <div class="prompt ${S.hlOn&&S.active[q.q]===p.id?'hlon':''} ${st.revealed?'revealed':''}" data-prompt="${p.id}">${lbl}${p.prompt}</div>
-      ${p.diagram?`<div class="diagram">${p.diagram}</div>`:''}
+      ${p.diagram&&(i===0||p.diagram!==q.parts[i-1].diagram)?`<div class="diagram">${p.diagram}</div>`:''}
       <div class="pad" data-pad="${p.id}"></div>
       <div class="zoomwrap" data-zoom="${p.id}" hidden>
         <div class="ztools"><span>Write big here. Tap the page to choose where it goes.</span><span class="spacer"></span>

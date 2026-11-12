@@ -4,7 +4,13 @@ import { SCHEMES, byId } from "./schemes.ts";
 import { ERRORS } from "./errors.ts";
 import { type AiLight, type AiMarking, applyCheck, applyMonitor, applyRules, monitorText, schemeText, MARKING_TOOL } from "./marking.ts";
 
-const LAB_TOPICS = ["csq", "qform", "simquad", "rev", "algfrac", "recur", "fracmul", "pfd", "hcf", "sf", "simlin", "anglefacts"];
+// Lab topic ids (TOP in site/index.html)
+const LAB_TOPICS = ("place negnum powroot fdp round frac fracmul hcf pfd ind errint sf surd fracind recur bounds ratio pct bestbuy sdp rev cint " +
+  "dirprop growth invprop simp subst brackets lin formeq rearr exp factq simlin linineq triple factq2 qform aproof csq qineq simquad algfrac " +
+  "nthlin geoseq nthquad graphshape sline quadgraph perp gradarea graphtrans circleeq tangent funcmach comp inv iter anglefacts parallel " +
+  "polygon transform loci bearing circthm congproof vecproof area circum units scale circ volprism surface simlen arcs similar volcone trig " +
+  "exacttrig siner cosr areasin trig3d mean twoway pie stem scatter freqtab compare gmean sampling cumfreq hist prob freqtree relfreq " +
+  "counting venn tree cond").split(" ");
 
 Deno.test("every scheme is consistent", () => {
   for (const s of SCHEMES) {
@@ -129,7 +135,8 @@ Deno.test("check my working never shows the answer", () => {
 });
 
 Deno.test("an accuracy mark can't stand without a method mark, even with working", () => {
-  const s = byId("ccb1-q3b")!; // M1 then A1 with no dep in the scheme
+  const b = byId("ccb1-q3b")!;
+  const s = { ...b, points: b.points.map((p) => ({ ...p, dep: undefined })) }; // M1 then A1 with no dep in the scheme
   const r = applyRules(s, ai({ transcription: ["2.4 × 10⁹"], answer_only: false, points: [pt("M1", false, 1), pt("A1", true, 1)] }));
   assertEquals(r.score, 0);
   assertEquals(r.exam_board_score, 1);
@@ -152,4 +159,15 @@ Deno.test("Mike mode: amber only at a danger zone, once each, in Mike's words; r
   assert(!L({ message: "Nearly there, it's −4 ± 2√5" }).message.includes("2√5"));
   assert(monitorText(s, ["bracket"]).includes("Already shown (do not report again): bracket"));
   for (const q of SCHEMES.filter((x) => x.source?.paper === "CC-B/1H")) assert(q.dangerZones?.length, `${q.id} has no danger zones`);
+});
+
+// Each Cold Case paper in the bank must add up to the paper's total
+const PAPER_TOTALS: Record<string, number> = { "CC-B/1H": 80 };
+Deno.test("loaded papers add up to their totals", () => {
+  for (const [paper, total] of Object.entries(PAPER_TOTALS)) {
+    const parts = SCHEMES.filter((s) => s.source?.paper === paper);
+    assertEquals(parts.reduce((n, s) => n + s.marks, 0), total, `${paper} marks`);
+    assertEquals(new Set(parts.map((s) => s.id)).size, parts.length, `${paper} duplicate ids`);
+    for (const s of parts) assert(!s.draft, `${s.id} is still a draft`);
+  }
 });
