@@ -24,6 +24,7 @@
 // so the root cause feeds straight into the Lab's existing error tracking.
 
 import { COLD_CASE_B1 } from "./bank/cold-case-b-paper1.ts";
+import { COLD_CASE_B2 } from "./bank/cold-case-b-paper2.ts";
 
 export type MarkPoint = {
   id: string;
@@ -234,7 +235,7 @@ export const SCHEMES: Scheme[] = [
   },
 ];
 
-SCHEMES.push(...COLD_CASE_B1);
+SCHEMES.push(...COLD_CASE_B1, ...COLD_CASE_B2);
 
 export const byId = (id: string) => SCHEMES.find((s) => s.id === id);
 

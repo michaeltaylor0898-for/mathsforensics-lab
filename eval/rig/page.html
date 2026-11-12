@@ -136,6 +136,8 @@ td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:n
 .pill.bad{background:rgba(255,107,122,.15);color:var(--bad)}
 .emptylog{color:var(--muted);font-size:14px;padding:14px 0 4px}
 .confirm{display:inline-flex;gap:6px;align-items:center;font-size:14px;color:var(--warn)}
+.diagram{margin:12px 0 4px;max-width:340px}.diagram svg{width:100%;height:auto;display:block}
+.qtext table.qt,.prompt table.qt{border-collapse:collapse;margin:10px 0;font-size:15px;line-height:1.35}.qtext .qt th,.qtext .qt td,.prompt .qt th,.prompt .qt td{border:1px solid currentColor;padding:3px 10px;text-align:center}.prompt .qt th{font-weight:700}
 </style>
 
 <div class="wrap">
@@ -152,7 +154,7 @@ td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:n
   <div class="col">
     <section class="card">
       <div class="qrow"><label class="eyebrow" for="qsel">Question</label><select id="qsel"></select><span id="qmarks" class="cmp"></span></div>
-      <p class="qtext" id="qtext"></p>
+      <div class="qtext" id="qtext"></div>
       <div class="tags" id="qtags"></div>
       <details class="scheme"><summary>Mark scheme</summary><ol id="qscheme"></ol></details>
     </section>
@@ -229,11 +231,11 @@ const SCHEMES=MF.SCHEMES, byId=id=>SCHEMES.find(s=>s.id===id);
 const S={q:SCHEMES[0],mode:'draw',result:null,yours:{},example:true,photoBlob:null,ms:0,raw:null,ctl:null};
 
 /* ---------- question ---------- */
-$('#qsel').innerHTML=SCHEMES.map(s=>`<option value="${s.id}">${esc(s.id)} · ${esc(strip(s.prompt).slice(0,48))}${strip(s.prompt).length>48?'…':''}</option>`).join('');
+$('#qsel').innerHTML=SCHEMES.map(s=>`<option value="${s.id}">${esc(s.source?`${s.source.paper} Q${s.source.q}${s.source.part||''}`:s.id)} · ${esc(strip(s.prompt).slice(0,48))}${strip(s.prompt).length>48?'…':''}</option>`).join('');
 function renderQ(){
   const q=S.q;
   $('#qmarks').textContent=`[${q.marks} marks]`;
-  $('#qtext').innerHTML=q.prompt;
+  $('#qtext').innerHTML=q.prompt+(q.diagram?`<div class="diagram">${q.diagram}</div>`:'');
   $('#qtags').innerHTML=`<span class="tag">${q.tier==='H'?'HIGHER':'FOUNDATION'}</span><span class="tag">${q.calculator?'CALCULATOR':'NON-CALCULATOR'}</span><span class="tag">ANSWER: ${esc(q.answer)}</span>`;
   $('#qscheme').innerHTML=q.points.map(p=>`<li><span class="code">${p.code}</span><span>${esc(p.criterion)}${p.ft?' <span class="ft">FT</span>':''}${p.dep?.length?` <span class="cmp">dep ${p.dep.join(', ')}</span>`:''}</span></li>`).join('');
 }

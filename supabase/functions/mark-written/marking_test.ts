@@ -158,11 +158,11 @@ Deno.test("Mike mode: amber only at a danger zone, once each, in Mike's words; r
   assertEquals(red.light, "red");
   assert(!L({ message: "Nearly there, it's −4 ± 2√5" }).message.includes("2√5"));
   assert(monitorText(s, ["bracket"]).includes("Already shown (do not report again): bracket"));
-  for (const q of SCHEMES.filter((x) => x.source?.paper === "CC-B/1H")) assert(q.dangerZones?.length, `${q.id} has no danger zones`);
+  for (const q of SCHEMES.filter((x) => x.source?.paper.startsWith("CC-"))) assert(q.dangerZones?.length, `${q.id} has no danger zones`);
 });
 
 // Each Cold Case paper in the bank must add up to the paper's total
-const PAPER_TOTALS: Record<string, number> = { "CC-B/1H": 80 };
+const PAPER_TOTALS: Record<string, number> = { "CC-B/1H": 80, "CC-B/2H": 80 };
 Deno.test("loaded papers add up to their totals", () => {
   for (const [paper, total] of Object.entries(PAPER_TOTALS)) {
     const parts = SCHEMES.filter((s) => s.source?.paper === paper);
