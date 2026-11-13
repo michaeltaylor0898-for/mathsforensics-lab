@@ -175,8 +175,8 @@ begin
   select s.* into sch from class_members m join classes c on c.id = m.class_id join schools s on s.id = c.school_id
     where m.user_id = p.id and c.academy_on and s.expires_at > now() limit 1;
   if sch.id is not null then return jsonb_build_object('level', 'full', 'source', 'school', 'school', sch.name, 'expires_at', sch.expires_at); end if;
-  select * into e from entitlements where email = p.email and kind = 'academy_pass' and expires_at > now() order by expires_at desc limit 1;
-  if e.id is not null then return jsonb_build_object('level', 'full', 'source', 'pass', 'expires_at', e.expires_at); end if;
+  -- An Academy Pass only ever unlocks the child it's given to. A pass on a student's own email
+  -- means a parent who hasn't added their child yet, so the Academy prompts them to do that.
   return jsonb_build_object('level', 'free');
 end $$;
 

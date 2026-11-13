@@ -186,7 +186,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:space-betw
   </div>
 </header>
 <main class="wrap" id="app" tabindex="-1"></main>
-<footer><div class="wrap"><span>Maths Forensics Academy · Years 7 to 9 · Preview</span><span>Progress is saved on this device only. <a href="../privacy.html">Privacy</a></span></div></footer>
+<footer><div class="wrap"><span>Maths Forensics Academy · Years 7 to 9 · Preview</span><span><span id="footnote">Progress is saved on this device only.</span> <a href="../privacy.html">Privacy</a></span></div></footer>
 
 <script>
 "use strict";
@@ -224,7 +224,7 @@ const near = (a, b) => a != null && Math.abs(a - b) < 1e-9 * Math.max(1, Math.ab
 const KEY = "mfa.v1";
 let STORE = { name: "", topics: {} };
 try { const raw = localStorage.getItem(KEY); if (raw) STORE = Object.assign(STORE, JSON.parse(raw)); } catch (e) {}
-function save() { try { localStorage.setItem(KEY, JSON.stringify(STORE)); } catch (e) {} }
+function save() { if (ACC.on) { accSave(); return; } try { localStorage.setItem(KEY, JSON.stringify(STORE)); } catch (e) {} }
 function prog(id) {
   if (!STORE.topics[id]) STORE.topics[id] = { learned: false, practised: 0, streak: 0, secured: false, best: 0, checks: 0 };
   return STORE.topics[id];
@@ -1517,7 +1517,17 @@ function status(id) {
 }
 function renderCadet() {
   const n = STORE.topics ? TOPICS.filter(t => prog(t.id).secured).length : 0;
-  $("#cadet").innerHTML = STORE.name ? `<b>Cadet ${esc(STORE.name)}</b>Bronze: ${n} of ${TOPICS.length} secured<br><button class="linkbtn" id="newcadet" style="font-size:12.5px">New cadet</button>` : "";
+  const ft = $("#footnote");
+  if (ACC.on) {
+    const parent = ACC.me.role === "parent";
+    const st = ACC.state === "error" ? `<br><span style="color:var(--warn)">Not saved yet: check your connection</span>` : "";
+    $("#cadet").innerHTML = `<b>Cadet ${esc(STORE.name)}</b>Bronze: ${n} of ${TOPICS.length} secured${st}<br>${parent ? `<a class="linkbtn" href="#children" style="font-size:12.5px">Switch child</a> · ` : ""}<button class="linkbtn" id="signout2" style="font-size:12.5px">Sign out</button>`;
+    $("#signout2").onclick = accSignOut;
+    if (ft) ft.textContent = "Progress is saved to your account.";
+    return;
+  }
+  if (LIVE && ACC.me && ACC.me.role === "parent") { $("#cadet").innerHTML = `<button class="linkbtn" id="signout2" style="font-size:12.5px">Sign out</button>`; $("#signout2").onclick = accSignOut; return; }
+  $("#cadet").innerHTML = STORE.name ? `<b>Cadet ${esc(STORE.name)}</b>Bronze: ${n} of ${TOPICS.length} secured<br>${LIVE ? `<a class="linkbtn" href="${SIGN_IN_URL}" style="font-size:12.5px">Sign in</a> · ` : ""}<button class="linkbtn" id="newcadet" style="font-size:12.5px">New cadet</button>` : "";
   const nc = $("#newcadet");
   if (nc) nc.onclick = () => {
     if (nc.dataset.sure) { STORE = { name: "", topics: {} }; save(); location.hash = "#path"; route(); return; }
@@ -1536,7 +1546,7 @@ function screenName() {
       <div class="field"><input id="cadetname" maxlength="20" autocomplete="off" placeholder="First name" required></div>
       <div><button class="btn" type="submit">Start training</button></div>
     </form></section>`;
-  $("#nameform").onsubmit = e => { e.preventDefault(); const v = $("#cadetname").value.trim(); if (!v) return; STORE.name = v.slice(0, 20); save(); location.hash = "#path"; };
+  $("#nameform").onsubmit = e => { e.preventDefault(); const v = $("#cadetname").value.trim(); if (!v) return; STORE.name = v.slice(0, 20); save(); location.hash = "#path"; route(); };
   setTimeout(() => $("#cadetname").focus(), 50);
 }
 
@@ -1544,8 +1554,10 @@ function screenPath() {
   const secured = TOPICS.filter(t => prog(t.id).secured).length;
   const pct = Math.round(secured / TOPICS.length * 100);
   const allDone = secured === TOPICS.length;
-  const next = TOPICS.find(t => !prog(t.id).secured);
-  app.innerHTML = `
+  const next = TOPICS.find(t => !prog(t.id).secured && isOpen(t.id)) || TOPICS.find(t => !prog(t.id).secured);
+  const parentHint = LIVE && ACC.on && ACC.me.role === "student" && ACC.access.level !== "full" && !Object.values(STORE.topics).some(p => p.learned || p.practised || p.secured)
+    ? `<section class="panel stack" style="margin-bottom:18px${ACC.me.spare_passes ? ";border-color:var(--cyan)" : ""}"><div class="h3" style="margin:0">${ACC.me.spare_passes ? "Your Academy Pass is ready" : "Setting this up for your child?"}</div><p class="small muted" style="margin:0">${ACC.me.spare_passes ? "Add your child to this account to use it. They don't need an email." : "Add your child to this account instead. They don't need an email."}</p><div><a class="btn small ghost" href="#add-child">Add my child</a></div></section>` : "";
+  app.innerHTML = `${importBanner()}${parentHint}
     <div class="eyebrow">Your training pathway</div>
     <h1 class="h1">Working towards Bronze</h1>
     <p class="lede">Secure every topic by getting 4 out of 5 in its check. Then sit the Bronze award test and score 80% or more to earn your certificate.</p>
@@ -1570,9 +1582,10 @@ function screenPath() {
     <h2 class="eyebrow" style="margin:34px 0 12px">Bronze topics</h2>
     <div class="topics">${TOPICS.map(t => {
       const [cls, label] = status(t.id); const p = prog(t.id);
-      return `<a class="tcard" href="#t-${t.id}-learn" style="text-decoration:none;color:inherit">
-        <span class="strand">${t.strand}</span><h3>${esc(t.name)}</h3>
-        <span class="meta"><span class="steps3" aria-label="Learn, practise, check"><i class="${p.learned ? "on" : ""}"></i><i class="${p.practised ? "on" : ""}"></i><i class="${p.secured ? "ok" : ""}"></i></span><span class="chip ${cls}">${label}</span></span></a>`;
+      const open = isOpen(t.id);
+      return `<a class="tcard${open ? "" : " locked"}" href="#t-${t.id}-learn" style="text-decoration:none;color:inherit${open ? "" : ";opacity:.6"}">
+        <span class="strand">${t.strand}${LIVE && FREE_TOPICS.has(t.id) && !(ACC.access && ACC.access.level === "full") ? " · free" : ""}</span><h3>${esc(t.name)}</h3>
+        <span class="meta"><span class="steps3" aria-label="Learn, practise, check"><i class="${p.learned ? "on" : ""}"></i><i class="${p.practised ? "on" : ""}"></i><i class="${p.secured ? "ok" : ""}"></i></span>${open ? `<span class="chip ${cls}">${label}</span>` : `<span class="chip">Academy Pass</span>`}</span></a>`;
     }).join("")}</div>
     <p class="muted small" style="margin-top:14px">All ${TOPICS.length} Bronze topics are ready. <a href="#map">See the full KS3 curriculum map</a>: ${Object.values(MAP).flat().length} topics from Bronze to Platinum.</p>
     <h2 class="eyebrow" style="margin:34px 0 12px">Training games</h2>
@@ -1580,6 +1593,7 @@ function screenPath() {
       <span class="strand">Time · Number</span><h3>Departures</h3>
       <span class="muted small">Read train, bus and flight timetables to track the courier: journey times, waiting times, connections and time zones.</span>
       <span class="meta"><span class="chip">3 levels · 10 questions</span><span class="chip learning">Play</span></span></a></div>`;
+  wireImport();
 }
 
 
@@ -1603,6 +1617,7 @@ function screenMap() {
 /* ---------- topic screen ---------- */
 function screenTopic(id, tab) {
   const t = TOPIC(id); if (!t) { location.hash = "#path"; return; }
+  if (!isOpen(id)) { app.innerHTML = `<nav class="crumbs"><a href="#path">Bronze pathway</a><span>›</span><span>${t.strand}</span></nav><h1 class="h1" style="margin-top:8px">${esc(t.name)}</h1>${lockedPanel(t)}`; return; }
   const p = prog(id);
   const tabs = [["learn", "Learn", p.learned], ["practise", "Practise", p.practised >= 5 || p.secured], ["check", "Check", p.secured]];
   app.innerHTML = `
@@ -1779,10 +1794,248 @@ function tabCheck(t) {
   intro();
 }
 
+/* ============================================================
+   ACCOUNTS (lab.mathsforensics.com/academy/ only)
+   The pilot folder and previews stay on this device only, with every topic open.
+   Signing in happens on the Lab (same site, same session), which sends people back here.
+   ============================================================ */
+const CFG = { supabaseUrl: "https://duvxykqlrekqhfvsvnrj.supabase.co", supabaseAnonKey: "sb_publishable_llHxDDCcByPpdbi5G2Hqtg_DqGcnuHn",
+              academyCheckoutUrl: "" };   // fill in when the Academy Pass checkout exists in Systeme.io
+const LIVE = /(^|\.)mathsforensics\.com$/.test(location.hostname) && !/academy-pilot/.test(location.pathname);
+const SIGN_IN_URL = "/?return=academy";
+const FREE_TOPICS = new Set(["place-value", "notation", "fractions-of-amounts", "perimeter", "probability-words", "charts-tables"]);
+const DEVICE_STORE = (() => { try { return JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { return null; } })();
+const ACC = { on: false, ready: !LIVE, sb: null, me: null, learner: null, access: null, synced: {}, state: "saved", err: null };
+const pj = p => JSON.stringify([!!p.learned, p.practised | 0, p.streak | 0, !!p.secured, p.best | 0, p.checks | 0]);
+const deviceMode = () => { try { return localStorage.getItem("mfa.device") === "1"; } catch (e) { return false; } };
+
+function isOpen(id) {
+  if (!LIVE) return true;
+  if (ACC.on && ACC.access && ACC.access.level === "full") return true;
+  return FREE_TOPICS.has(id);
+}
+async function rpc(name, args) {
+  const { data, error } = await ACC.sb.rpc(name, args || {});
+  if (error) throw new Error(String(error.message || "Something went wrong.").replace(/^.*?ERROR:\s*/, ""));
+  return data;
+}
+async function accBoot() {
+  if (!LIVE) return;
+  try {
+    await new Promise((res, rej) => { const s = document.createElement("script"); s.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
+    ACC.sb = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey, { auth: { persistSession: true, detectSessionInUrl: true, flowType: "implicit" } });
+    const { data: { session } } = await ACC.sb.auth.getSession();
+    if (session) await accLoadMe();
+  } catch (e) { ACC.err = "We couldn't reach your account just now. Check your connection and refresh the page."; }
+  ACC.ready = true;
+}
+async function accLoadMe() {
+  const me = await rpc("academy_me");
+  if (!me || !me.signed_in) { ACC.me = null; return; }
+  ACC.me = me;
+  if (me.role === "parent") {
+    let id = null; try { id = sessionStorage.getItem("mfa.child"); } catch (e) {}
+    const kid = me.children.find(c => c.id === id);
+    if (kid) await accUse(kid); else { ACC.learner = null; ACC.on = false; }
+  } else if (me.learner) await accUse(me.learner);
+}
+async function accUse(l) {
+  const { data, error } = await ACC.sb.from("academy_progress").select("topic,learned,practised,streak,secured,best,checks,secured_at").eq("learner_id", l.id);
+  if (error) throw new Error(error.message);
+  ACC.learner = l; ACC.access = l.access || { level: "free" }; ACC.on = true; ACC.synced = {}; ACC.state = "saved";
+  STORE = { name: l.first_name, topics: {} };
+  data.forEach(r => { const { topic, ...rest } = r; STORE.topics[topic] = rest; ACC.synced[topic] = pj(rest); });
+  try { if (ACC.me && ACC.me.role === "parent") sessionStorage.setItem("mfa.child", l.id); } catch (e) {}
+}
+let accTimer = null;
+function accSave() { clearTimeout(accTimer); accTimer = setTimeout(accFlush, 500); }
+async function accFlush() {
+  if (!ACC.on || !ACC.learner) return;
+  const rows = [], keys = {};
+  for (const [topic, p] of Object.entries(STORE.topics)) {
+    const k = pj(p); if (ACC.synced[topic] === k) continue;
+    if (ACC.synced[topic] === undefined && k === pj({})) continue;   // untouched topic: nothing to save
+    if (p.secured && !p.secured_at) p.secured_at = new Date().toISOString();
+    rows.push({ learner_id: ACC.learner.id, topic, learned: !!p.learned, practised: p.practised | 0, streak: p.streak | 0, secured: !!p.secured,
+                best: p.best | 0, checks: p.checks | 0, secured_at: p.secured_at || null, updated_at: new Date().toISOString() });
+    keys[topic] = k;
+  }
+  if (!rows.length) return;
+  ACC.state = "saving";
+  const { error } = await ACC.sb.from("academy_progress").upsert(rows, { onConflict: "learner_id,topic" });
+  if (error) { ACC.state = "error"; setTimeout(accSave, 8000); }
+  else { Object.assign(ACC.synced, keys); ACC.state = "saved"; }
+  renderCadet();
+}
+window.addEventListener("pagehide", () => { if (ACC.on) accFlush(); });
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden" && ACC.on) accFlush(); });
+async function accSignOut() {
+  await accFlush();
+  try { await ACC.sb.auth.signOut(); sessionStorage.removeItem("mfa.child"); } catch (e) {}
+  location.hash = "#welcome"; location.reload();
+}
+const deviceHasProgress = () => !!(DEVICE_STORE && DEVICE_STORE.topics && Object.values(DEVICE_STORE.topics).some(p => p && (p.learned || p.practised || p.secured)));
+
+/* ---------- account screens ---------- */
+function screenLoading() { app.innerHTML = `<section class="panel" style="max-width:520px;margin:60px auto"><p class="muted" style="margin:0">Opening the Academy…</p></section>`; }
+
+function screenWelcome() {
+  app.innerHTML = `<section class="namebox panel stack">
+    <div class="eyebrow">Welcome to the Academy</div>
+    <h1 class="h1">Every detective starts as a cadet.</h1>
+    <p class="muted">Step-by-step maths for Years 7 to 9. Learn, practise, pass the check, and earn your Bronze, Silver, Gold and Platinum awards.</p>
+    ${ACC.err ? `<div class="fb no"><b>Can't connect</b>${esc(ACC.err)}</div>` : ""}
+    <div class="stack" style="gap:10px">
+      <div><a class="btn" href="${SIGN_IN_URL}">Sign in</a></div>
+      <p class="small muted" style="margin:0"><b>At school?</b> Sign in with your school Google or Microsoft account.<br>
+      <b>Parent?</b> Choose <i>Create account</i> on the next screen with your own email. You'll add your child after that: children don't need an email.</p>
+    </div>
+    <hr style="border:0;border-top:1px solid var(--line);margin:6px 0">
+    <div class="stack" style="gap:6px"><b>Just looking?</b><p class="small muted" style="margin:0">Try the ${FREE_TOPICS.size} free topics on this device. Nothing is saved to an account.</p>
+      <div><button class="btn ghost" id="trydev">Try the free topics</button></div></div>
+  </section>`;
+  $("#trydev").onclick = () => { try { localStorage.setItem("mfa.device", "1"); } catch (e) {} location.hash = "#path"; route(); };
+}
+
+function passLine(c) {
+  const a = c.access || {};
+  return a.level === "full" ? `<span class="chip secured">Academy Pass${a.expires_at ? " · until " + new Date(a.expires_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : ""}</span>` : `<span class="chip">Free topics</span>`;
+}
+function screenChildren(msg) {
+  const me = ACC.me, kids = me.children;
+  if (!kids.length) { location.hash = "#add-child"; return; }
+  const spare = me.spare_passes | 0, freeKids = kids.filter(c => (c.access || {}).level !== "full");
+  app.innerHTML = `<div class="eyebrow">Parent account · ${esc(me.name || "")}</div>
+    <h1 class="h1">Who's training today?</h1>
+    ${msg ? `<div class="fb ok" style="max-width:640px"><b>Done</b>${esc(msg)}</div>` : ""}
+    <div class="topics" style="margin-top:18px">${kids.map(c => `
+      <div class="tcard" data-kid="${c.id}">
+        <span class="strand">${c.year_group ? "Year " + c.year_group : "KS3"}</span><h3>${esc(c.first_name)}</h3>
+        <span class="meta">${passLine(c)}<span class="row" style="gap:12px">${(c.access || {}).level !== "full" && spare > 0 ? `<button class="linkbtn" data-give="${c.id}">Give a pass</button>` : ""}<a class="linkbtn" href="#edit-${c.id}">Edit</a></span></span>
+        <div class="pinrow" hidden><form class="ans" data-pin="${c.id}"><label class="field"><input inputmode="numeric" maxlength="4" autocomplete="off" aria-label="${esc(c.first_name)}'s PIN" placeholder="PIN"></label><button class="btn" type="submit">Open</button></form><div class="small" data-pinmsg></div></div>
+        <div><button class="btn" data-open="${c.id}">Start training</button></div>
+      </div>`).join("")}</div>
+    <div class="row" style="margin-top:18px;gap:16px"><a class="btn ghost" href="#add-child">Add a child</a><button class="linkbtn" id="signout">Sign out</button></div>
+    <section class="panel stack" style="margin-top:26px;max-width:720px">
+      <div class="h3" style="margin:0">Academy Passes</div>
+      <p class="small muted" style="margin:0">One Academy Pass opens every topic, award test and case for one child for 12 months. Without one, each child can use the ${FREE_TOPICS.size} free topics.
+      ${spare ? `You have <b>${spare}</b> pass${spare > 1 ? "es" : ""} not yet given to a child.` : ""}</p>
+      ${freeKids.length && !spare ? (CFG.academyCheckoutUrl ? `<div><a class="btn small" href="${CFG.academyCheckoutUrl}">Get an Academy Pass</a></div>` : `<p class="small muted" style="margin:0">Academy Passes go on sale soon.</p>`) : ""}
+    </section>`;
+  const open = async (c, pin) => {
+    if (c.has_pin) {
+      const ok = await rpc("academy_check_pin", { p_learner: c.id, p_pin: pin || "" }).catch(() => false);
+      if (!ok) return false;
+    }
+    await accUse(c); maybeImport(); location.hash = "#path"; route(); return true;
+  };
+  app.querySelectorAll("[data-open]").forEach(b => b.onclick = async () => {
+    const c = kids.find(k => k.id === b.dataset.open), card = b.closest(".tcard");
+    if (c.has_pin) { const r = card.querySelector(".pinrow"); r.hidden = false; b.parentElement.hidden = true; r.querySelector("input").focus(); return; }
+    b.disabled = true; try { await open(c); } catch (e) { b.disabled = false; alertMsg(e.message); }
+  });
+  app.querySelectorAll("[data-pin]").forEach(f => f.onsubmit = async e => {
+    e.preventDefault(); const c = kids.find(k => k.id === f.dataset.pin), inp = f.querySelector("input");
+    const ok = await open(c, inp.value.trim());
+    if (!ok) { f.parentElement.querySelector("[data-pinmsg]").innerHTML = `<span style="color:var(--warn)">That PIN isn't right. A parent can change it with Edit.</span>`; inp.value = ""; inp.focus(); }
+  });
+  app.querySelectorAll("[data-give]").forEach(b => b.onclick = async () => {
+    b.disabled = true;
+    try { await rpc("academy_assign_pass", { p_learner: b.dataset.give }); await accLoadMe(); screenChildren("The pass is now on that child's account."); }
+    catch (e) { b.disabled = false; alertMsg(e.message); }
+  });
+  $("#signout").onclick = accSignOut;
+}
+
+function screenAddChild(editId) {
+  const me = ACC.me, c = editId ? me.children.find(k => k.id === editId) : null;
+  if (editId && !c) { location.hash = "#children"; return; }
+  const becomingParent = me.role !== "parent";
+  app.innerHTML = `<section class="namebox panel stack">
+    <div class="eyebrow">${c ? "Edit child" : "Add a child"}</div>
+    <h1 class="h1" style="font-size:30px">${c ? esc(c.first_name) : "Who's going to train?"}</h1>
+    ${becomingParent ? `<div class="fb hint"><b>This becomes a parent account</b>Your child trains through it, and you'll see a "Who's training?" screen each time. If you're a student, go back: this isn't for you.</div>` : ""}
+    <p class="small muted" style="margin:0">We only store a first name and year group. No email, no photo, nothing else.</p>
+    <form id="kidform" class="stack">
+      <label class="small muted" for="kname">First name</label>
+      <div class="field"><input id="kname" maxlength="20" autocomplete="off" required value="${c ? esc(c.first_name) : ""}"></div>
+      <label class="small muted" for="kyear">Year group</label>
+      <div class="field"><select id="kyear" style="background:transparent;color:inherit;border:0;font:inherit;width:100%">${[7, 8, 9].map(y => `<option value="${y}" ${c && c.year_group === y ? "selected" : ""} style="color:#000">Year ${y}</option>`).join("")}</select></div>
+      <label class="small muted" for="kpin">PIN (optional, 4 digits). Stops brothers and sisters opening each other's training${c && c.has_pin ? ". Leave blank to keep the current one" : ""}.</label>
+      <div class="field"><input id="kpin" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="e.g. 4821"></div>
+      ${c && c.has_pin ? `<label class="small"><input type="checkbox" id="kclear"> Remove the PIN</label>` : ""}
+      <div id="kerr"></div>
+      <div class="row"><button class="btn" type="submit">${c ? "Save" : "Add child"}</button><a class="btn ghost" href="${me.role === "parent" ? "#children" : "#path"}">Cancel</a></div>
+    </form>
+    ${c ? `<hr style="border:0;border-top:1px solid var(--line);margin:6px 0"><div class="stack" style="gap:6px"><b>Remove ${esc(c.first_name)}</b><p class="small muted" style="margin:0">This deletes ${esc(c.first_name)}'s progress and awards for good. Any Academy Pass comes back to you to give to another child.</p><div><button class="btn ghost small" id="kremove">Remove ${esc(c.first_name)}</button></div></div>` : ""}
+  </section>`;
+  $("#kidform").onsubmit = async e => {
+    e.preventDefault();
+    const name = $("#kname").value.trim(), year = +$("#kyear").value, pin = $("#kpin").value.trim() || null;
+    const btn = e.target.querySelector("button[type=submit]"); btn.disabled = true;
+    try {
+      if (pin && !/^\d{4}$/.test(pin)) throw new Error("The PIN must be 4 digits.");
+      if (c) await rpc("academy_update_child", { p_learner: c.id, p_first_name: name, p_year: year, p_pin: pin, p_clear_pin: !!($("#kclear") && $("#kclear").checked) });
+      else await rpc("academy_add_child", { p_first_name: name, p_year: year, p_pin: pin });
+      try { sessionStorage.removeItem("mfa.child"); } catch (er) {}
+      ACC.on = false; ACC.learner = null; await accLoadMe();
+      location.hash = "#children"; screenChildren(c ? "Changes saved." : `${name} is ready to train.`);
+    } catch (er) { btn.disabled = false; $("#kerr").innerHTML = `<div class="fb no"><b>Not saved</b>${esc(er.message)}</div>`; }
+  };
+  const rm = $("#kremove");
+  if (rm) rm.onclick = async () => {
+    if (!rm.dataset.sure) { rm.dataset.sure = "1"; rm.textContent = `Tap again to delete ${c.first_name}'s progress`; return; }
+    rm.disabled = true;
+    try { await rpc("academy_remove_child", { p_learner: c.id }); try { sessionStorage.removeItem("mfa.child"); } catch (er) {} ACC.on = false; ACC.learner = null; await accLoadMe(); location.hash = "#children"; route(); }
+    catch (er) { rm.disabled = false; alertMsg(er.message); }
+  };
+  setTimeout(() => $("#kname").focus(), 50);
+}
+
+let importOffer = false;
+function maybeImport() { importOffer = ACC.on && deviceHasProgress() && !(ACC.me.role === "student" && ACC.me.spare_passes > 0) && (() => { try { return localStorage.getItem("mfa.import.no") !== "1"; } catch (e) { return true; } })(); }
+function importBanner() {
+  if (!importOffer) return "";
+  const n = Object.values(DEVICE_STORE.topics).filter(p => p && p.secured).length;
+  return `<section class="panel stack" id="importbox" style="margin-bottom:18px;border-color:var(--cyan)">
+    <div class="h3" style="margin:0">Practice saved on this device</div>
+    <p class="small muted" style="margin:0">This device has practice from ${DEVICE_STORE.name ? "Cadet " + esc(DEVICE_STORE.name) : "before you signed in"}${n ? `, with ${n} topic${n > 1 ? "s" : ""} secured` : ""}. Add it to ${esc(STORE.name)}'s account?</p>
+    <div class="row"><button class="btn small" id="impyes">Add it</button><button class="btn ghost small" id="impno">No thanks</button></div></section>`;
+}
+function wireImport() {
+  const y = $("#impyes"), n = $("#impno"); if (!y) return;
+  y.onclick = async () => {
+    y.disabled = true;
+    try { await rpc("academy_import", { p_learner: ACC.learner.id, p_topics: Object.fromEntries(Object.entries(DEVICE_STORE.topics).filter(([, p]) => p && pj(p) !== pj({}))) }); await accUse(ACC.learner); try { localStorage.removeItem(KEY); } catch (e) {} DEVICE_STORE.topics = {}; importOffer = false; route(); }
+    catch (e) { y.disabled = false; alertMsg(e.message); }
+  };
+  n.onclick = () => { try { localStorage.setItem("mfa.import.no", "1"); } catch (e) {} importOffer = false; $("#importbox").remove(); };
+}
+function lockedPanel(t) {
+  const parent = ACC.me && ACC.me.role === "parent";
+  const what = !ACC.me ? `<p class="muted" style="margin:0">Sign in to unlock every topic. Parents can create an account and get an Academy Pass.</p><div class="row"><a class="btn" href="${SIGN_IN_URL}">Sign in</a></div>`
+    : parent ? `<p class="muted" style="margin:0">An Academy Pass opens every topic, award test and case for ${esc(STORE.name)} for 12 months.</p><div class="row">${(ACC.me.spare_passes | 0) ? `<a class="btn" href="#children">Give ${esc(STORE.name)} a pass</a>` : CFG.academyCheckoutUrl ? `<a class="btn" href="${CFG.academyCheckoutUrl}">Get an Academy Pass</a>` : `<span class="small muted">Academy Passes go on sale soon.</span>`}</div>`
+    : `<p class="muted" style="margin:0">Ask a parent to get you an Academy Pass, or ask your teacher to open the Academy for your class.</p>`;
+  return `<section class="panel stack" style="max-width:640px;margin-top:18px"><div class="row" style="gap:10px">${LOCK}<div class="h3" style="margin:0">Part of the Academy Pass</div></div>
+    <p style="margin:0">${esc(t.name)} isn't one of the free topics.</p>${what}
+    <div><a class="linkbtn" href="#path">Back to the free topics</a></div></section>`;
+}
+function alertMsg(m) { const d = document.createElement("div"); d.className = "fb no"; d.style.cssText = "position:fixed;left:16px;right:16px;bottom:16px;max-width:560px;margin:auto;z-index:50"; d.innerHTML = `<b>Something went wrong</b>${esc(m)}`; document.body.appendChild(d); setTimeout(() => d.remove(), 6000); }
+
 /* ---------- router ---------- */
 function route() {
   try { speechSynthesis.cancel(); } catch (e) {}
+  if (LIVE && !ACC.ready) { screenLoading(); return; }
   renderCadet();
+  const h = location.hash;
+  if (LIVE && ACC.me) {
+    const ed = h.match(/^#edit-([0-9a-f-]{36})$/);
+    if (h === "#add-child") { screenAddChild(); window.scrollTo(0, 0); return; }
+    if (ACC.me.role === "parent") {
+      if (ed) { screenAddChild(ed[1]); window.scrollTo(0, 0); return; }
+      if (!ACC.learner || h === "#children") { if (ACC.on && h === "#children") { accFlush(); ACC.on = false; ACC.learner = null; try { sessionStorage.removeItem("mfa.child"); } catch (e) {} renderCadet(); } screenChildren(); window.scrollTo(0, 0); return; }
+    }
+  } else if (LIVE && !deviceMode()) { screenWelcome(); return; }
   if (!STORE.name) { screenName(); return; }
   // routes: #path, #t-<topic-id>-<learn|practise|check>
   const m = location.hash.match(/^#t-([a-z0-9-]+)-(learn|practise|check)$/);
@@ -1793,6 +2046,7 @@ function route() {
 }
 window.addEventListener("hashchange", route);
 route();
+accBoot().then(() => { maybeImport(); renderCadet(); route(); });
 </script>
 </body>
 </html>

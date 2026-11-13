@@ -4898,6 +4898,7 @@ function supabaseStore(cfg){
   // newer email links: ?token_hash=…&type=… are only used when the person presses Continue,
   // so email security scanners that open links automatically can't use them up
   const qs=new URLSearchParams(location.search);
+  if(qs.get('return')==='academy'){try{localStorage.setItem('mf-return-academy',String(Date.now()))}catch(e){} history.replaceState(null,'',location.pathname+location.hash)}
   const pendingLink=qs.get('token_hash')&&qs.get('type')?{token_hash:qs.get('token_hash'),type:qs.get('type')}:null;
   const sb=window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseAnonKey,{auth:{persistSession:true,detectSessionInUrl:true,flowType:'implicit'}});
   const redirect=location.origin+location.pathname;
@@ -6291,6 +6292,9 @@ function renderSetPassword(kind){
   const f=$('#fPw'); f.onsubmit=e=>{e.preventDefault();busy(f,async()=>{await api.setPassword($('#pw-new').value);api.linkType=null;alertBox('Password saved');await afterLogin()})};
 }
 async function afterLogin(){
+  // Parents live in the Academy, and anyone who came from the Academy to sign in goes back there
+  let back=false; try{const t=+localStorage.getItem('mf-return-academy')||0; back=Date.now()-t<864e5; localStorage.removeItem('mf-return-academy')}catch(e){}
+  if(S.user&&(S.user.role==='parent'||back)&&api.mode==='live'){location.replace('/academy/');return}
   S.access=await api.access(S.user);
   S.attempts=await api.attempts(S.user.id);
   S.assignments=S.user.role==='student'?await api.studentAssignments(S.user.id):[];

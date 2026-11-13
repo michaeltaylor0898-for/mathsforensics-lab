@@ -50,7 +50,7 @@ select 'stranger reads PIN check: ' || academy_check_pin((select id from learner
 select as_user('00000000-0000-0000-0000-0000000000b1');
 select 'exam pass kid, Lab: ' || (my_access()->>'level') || ', Academy: ' || (academy_me()->'learner'->'access'->>'level');
 select as_user('00000000-0000-0000-0000-0000000000b2');
-select 'academy pass only, Lab (must be free): ' || (my_access()->>'level') || ', Academy: ' || (academy_me()->'learner'->'access'->>'level');
+select 'academy pass on own email, Lab (must be free): ' || (my_access()->>'level') || ', Academy for self (must be free): ' || (academy_me()->'learner'->'access'->>'level') || ', spare passes: ' || (academy_me()->>'spare_passes');
 
 \echo '--- 4. School class'
 select as_user('00000000-0000-0000-0000-0000000000c1');
