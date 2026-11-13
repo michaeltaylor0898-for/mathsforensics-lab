@@ -1,8 +1,10 @@
-// Supabase Edge Function: receives Systeme.io "sale completed" webhooks and records an Exam Pass.
-// When the buyer signs in (or signs up) with the same email, my_access() returns full access.
+// Supabase Edge Function: receives Systeme.io "sale completed" webhooks and records an Exam Pass
+// (unlocks the Lab) or an Academy Pass (unlocks the Academy for one child, for 12 months).
+// When the buyer signs in (or signs up) with the same email, my_access() / academy_me() see it.
 //
 // Deploy:   supabase functions deploy systeme-webhook --no-verify-jwt
 // Secrets:  WEBHOOK_KEY=<long random string>  EXAM_PASS_PLANS=<comma-separated product / price plan names that unlock the Lab>
+//           ACADEMY_PASS_PLANS=<comma-separated product / price plan names that unlock the Academy>
 // Systeme.io → Automations → workflow "Sale completed" → Send webhook to:
 //           https://<project-ref>.supabase.co/functions/v1/systeme-webhook?key=<WEBHOOK_KEY>
 //
@@ -28,6 +30,10 @@ function passExpiry(from = new Date()): string {
   const y = from.getUTCMonth() >= 6 ? from.getUTCFullYear() + 1 : from.getUTCFullYear();
   return new Date(Date.UTC(y, 6, 16, 20, 0)).toISOString(); // 16 July of the exam season (20:00 UTC, still 16 July in the UK and Spain)
 }
+function academyExpiry(from = new Date()): string {
+  const d = new Date(from); d.setUTCFullYear(d.getUTCFullYear() + 1); // 12 months from the day of purchase
+  return d.toISOString();
+}
 const get = (o: any, ...paths: string[]) => {
   for (const p of paths) {
     const v = p.split(".").reduce((x, k) => (x == null ? x : x[k]), o);
@@ -52,22 +58,26 @@ Deno.serve(async (req) => {
   const email = get(data, "customer.email", "contact.email", "email");
   const orderRef = String(get(data, "order.id", "order_item.id", "id") ?? crypto.randomUUID());
   if (!email) return new Response("No customer email in payload", { status: 422 });
-  // Systeme.io sends EVERY sale here, so only unlock the Lab for the products listed in EXAM_PASS_PLANS
+  // Systeme.io sends EVERY sale here, so only record a pass for the products listed in the secrets
   // (comma-separated price plan or product names, e.g. "Maths Forensics Lab Exam Pass, Mark Recovery System").
-  // If it isn't set, nothing is unlocked: safer than giving the Lab to every buyer of every product.
-  const wanted = (Deno.env.get("EXAM_PASS_PLANS") ?? Deno.env.get("EXAM_PASS_PLAN") ?? "")
-    .split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
-  if (!wanted.length) return new Response("EXAM_PASS_PLANS secret not set: sale ignored", { status: 200 });
+  // If neither is set, nothing is unlocked: safer than giving access to every buyer of every product.
+  const plans = (name: string) => (Deno.env.get(name) ?? "").split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
+  const examPlans = plans("EXAM_PASS_PLANS").length ? plans("EXAM_PASS_PLANS") : plans("EXAM_PASS_PLAN");
+  const academyPlans = plans("ACADEMY_PASS_PLANS");
+  if (!examPlans.length && !academyPlans.length) return new Response("EXAM_PASS_PLANS / ACADEMY_PASS_PLANS secrets not set: sale ignored", { status: 200 });
   const text = JSON.stringify(data).toLowerCase();
-  if (!wanted.some((w) => text.includes(w))) return new Response("Not an Exam Pass sale", { status: 200 });
+  const isExam = examPlans.some((w) => text.includes(w));
+  const isAcademy = academyPlans.some((w) => text.includes(w));
+  if (!isExam && !isAcademy) return new Response("Not a pass sale", { status: 200 });
 
   const key = serviceKey();
   if (!key) return new Response("No server key: add an Edge Function secret called SERVICE_KEY", { status: 500 });
   const db = createClient(Deno.env.get("SUPABASE_URL")!, key);
-  const { error } = await db.from("entitlements").upsert(
-    { email: String(email).toLowerCase(), kind: "exam_pass", expires_at: passExpiry(), source: "systeme.io", order_ref: `SIO-${orderRef}`, payload: body },
-    { onConflict: "order_ref" },
-  );
+  const rows = [];
+  if (isExam) rows.push({ email: String(email).toLowerCase(), kind: "exam_pass", expires_at: passExpiry(), source: "systeme.io", order_ref: `SIO-${orderRef}`, payload: body });
+  // One Academy Pass covers one child for 12 months. The parent gives it to a child in the Academy.
+  if (isAcademy) rows.push({ email: String(email).toLowerCase(), kind: "academy_pass", expires_at: academyExpiry(), source: "systeme.io", order_ref: `SIO-${orderRef}${isExam ? "-ACADEMY" : ""}`, payload: body });
+  const { error } = await db.from("entitlements").upsert(rows, { onConflict: "order_ref", ignoreDuplicates: true }); // a resent sale never overwrites a pass already given to a child
   if (error) return new Response("Database error: " + error.message, { status: 500 }); // Systeme.io will retry
   return new Response("OK", { status: 200 });
 });
