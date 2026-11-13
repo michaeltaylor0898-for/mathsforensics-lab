@@ -1,0 +1,1007 @@
+{
+ "nc": {
+  "N1": "Place value for decimals, measures and integers of any size",
+  "N2": "Order integers, decimals and fractions; number line; = ≠ < > ≤ ≥",
+  "N3": "Primes, factors, multiples, HCF, LCM, prime factorisation",
+  "N4": "Four operations with integers, decimals, fractions and mixed numbers, positive and negative",
+  "N5": "Priority of operations: brackets, powers, roots, reciprocals",
+  "N6": "Relationships between operations, including inverse operations",
+  "N7": "Integer powers and real roots; powers of 2, 3, 4, 5; exact roots vs decimal approximations",
+  "N8": "Standard form A × 10ⁿ",
+  "N9": "Terminating decimals and their fractions",
+  "N10": "Percentages: parts per hundred, percentage change as fraction/decimal, one quantity as a % of another, over 100%",
+  "N11": "Fractions and percentages as operators",
+  "N12": "Standard units of mass, length, time, money and other measures",
+  "N13": "Rounding to decimal places and significant figures",
+  "N14": "Estimating by rounding; error intervals a < x ≤ b",
+  "N15": "Using a calculator and interpreting the result",
+  "N16": "The infinite nature of integers, real and rational numbers",
+  "A1": "Algebraic notation (ab, 3y, a², a/b, brackets)",
+  "A2": "Substitution into formulae and expressions, including scientific formulae",
+  "A3": "Vocabulary: expressions, equations, inequalities, terms, factors",
+  "A4": "Simplify: collect like terms, single brackets, common factors, two binomials",
+  "A5": "Standard formulae; rearranging to change the subject",
+  "A6": "Modelling situations with expressions, formulae and graphs",
+  "A7": "Solving linear equations in one variable",
+  "A8": "Coordinates in all four quadrants",
+  "A9": "Graphs of linear and quadratic functions",
+  "A10": "Interpreting relationships algebraically and graphically",
+  "A11": "y = mx + c; gradients and intercepts",
+  "A12": "Reading values from graphs; approximate solutions of simultaneous equations",
+  "A13": "Contextual graphs: piece-wise linear, exponential, reciprocal",
+  "A14": "Sequences from term-to-term and position-to-term rules",
+  "A15": "Arithmetic sequences and the nth term",
+  "A16": "Geometric and other sequences",
+  "R1": "Converting between related standard units (time, length, area, volume, mass)",
+  "R2": "Scale factors, scale diagrams and maps",
+  "R3": "One quantity as a fraction of another",
+  "R4": "Ratio notation and simplest form",
+  "R5": "Dividing a quantity in a ratio",
+  "R6": "Multiplicative relationships as a ratio or a fraction",
+  "R7": "Ratio linked to fractions and linear functions",
+  "R8": "Percentage increase, decrease, original value and simple interest",
+  "R9": "Direct and inverse proportion, including graphs and algebra",
+  "R10": "Compound units: speed, unit pricing, density",
+  "G1": "Area of triangles, parallelograms, trapezia; volume of cuboids and prisms",
+  "G2": "Perimeter of 2-D shapes and circles; area of circles and composite shapes",
+  "G3": "Drawing and measuring lines and angles; scale drawings",
+  "G4": "Ruler and compass constructions; shortest distance to a line",
+  "G5": "Conventional terms: parallel, perpendicular, polygons, symmetry",
+  "G6": "Labelling triangle ABC; congruence criteria",
+  "G7": "Properties of triangles, quadrilaterals, circles and other plane figures",
+  "G8": "Translations, rotations and reflections",
+  "G9": "Congruent triangles; enlargement and similar shapes",
+  "G10": "Angles at a point, on a straight line, vertically opposite",
+  "G11": "Parallel lines: alternate and corresponding angles",
+  "G12": "Angle sum of a triangle and of any polygon; regular polygons",
+  "G13": "Deriving results, including Pythagoras' theorem; simple proofs",
+  "G14": "Pythagoras and trigonometric ratios in right-angled triangles",
+  "G15": "Faces, edges and vertices of 3-D solids",
+  "G16": "Interpreting relationships algebraically and geometrically",
+  "P1": "Probability experiments, fairness, language and the 0–1 scale",
+  "P2": "Probabilities of all outcomes sum to 1",
+  "P3": "Sets, unions and intersections: tables, grids and Venn diagrams",
+  "P4": "Sample spaces for single and combined events",
+  "S1": "Distributions: mean, mode, median, range, outliers",
+  "S2": "Tables and charts: frequency tables, bar charts, pie charts, pictograms, line charts",
+  "S3": "Bivariate data and scatter graphs"
+ },
+ "tiers": {
+  "bronze": [
+   {
+    "id": "place-value",
+    "name": "Place value",
+    "strand": "Number",
+    "nc": [
+     "N1"
+    ]
+   },
+   {
+    "id": "four-operations",
+    "name": "The four operations",
+    "strand": "Number",
+    "nc": [
+     "N4"
+    ]
+   },
+   {
+    "id": "negative-numbers",
+    "name": "Negative numbers",
+    "strand": "Number",
+    "nc": [
+     "N2",
+     "N4"
+    ]
+   },
+   {
+    "id": "rounding",
+    "name": "Rounding",
+    "strand": "Number",
+    "nc": [
+     "N13"
+    ]
+   },
+   {
+    "id": "factors-multiples",
+    "name": "Factors, multiples and primes",
+    "strand": "Number",
+    "nc": [
+     "N3"
+    ]
+   },
+   {
+    "id": "order-of-operations",
+    "name": "Order of operations",
+    "strand": "Number",
+    "nc": [
+     "N5",
+     "N6"
+    ]
+   },
+   {
+    "id": "notation",
+    "name": "Algebraic notation",
+    "strand": "Algebra",
+    "nc": [
+     "A1",
+     "A3"
+    ]
+   },
+   {
+    "id": "simplifying",
+    "name": "Simplifying expressions",
+    "strand": "Algebra",
+    "nc": [
+     "A4"
+    ]
+   },
+   {
+    "id": "substitution",
+    "name": "Substitution",
+    "strand": "Algebra",
+    "nc": [
+     "A2"
+    ]
+   },
+   {
+    "id": "fractions-of-amounts",
+    "name": "Fractions of amounts",
+    "strand": "Ratio",
+    "nc": [
+     "N11",
+     "R3"
+    ]
+   },
+   {
+    "id": "metric-units",
+    "name": "Metric units",
+    "strand": "Ratio",
+    "nc": [
+     "N12",
+     "R1"
+    ]
+   },
+   {
+    "id": "perimeter",
+    "name": "Perimeter",
+    "strand": "Geometry",
+    "nc": [
+     "G2"
+    ]
+   },
+   {
+    "id": "area-rectangles",
+    "name": "Area of rectangles",
+    "strand": "Geometry",
+    "nc": [
+     "G1",
+     "G2"
+    ]
+   },
+   {
+    "id": "angle-facts",
+    "name": "Angle facts",
+    "strand": "Geometry",
+    "nc": [
+     "G10",
+     "G3"
+    ]
+   },
+   {
+    "id": "probability-words",
+    "name": "Probability words and the scale",
+    "strand": "Probability",
+    "nc": [
+     "P1"
+    ]
+   },
+   {
+    "id": "charts-tables",
+    "name": "Tables and charts",
+    "strand": "Statistics",
+    "nc": [
+     "S2"
+    ]
+   }
+  ],
+  "silver": [
+   {
+    "id": "ordering-numbers",
+    "name": "Ordering numbers",
+    "strand": "Number",
+    "nc": [
+     "N2"
+    ]
+   },
+   {
+    "id": "hcf-lcm",
+    "name": "HCF, LCM and prime factors",
+    "strand": "Number",
+    "nc": [
+     "N3"
+    ]
+   },
+   {
+    "id": "fractions-add-sub",
+    "name": "Adding and subtracting fractions",
+    "strand": "Number",
+    "nc": [
+     "N4"
+    ]
+   },
+   {
+    "id": "fractions-mul-div",
+    "name": "Multiplying and dividing fractions",
+    "strand": "Number",
+    "nc": [
+     "N4"
+    ]
+   },
+   {
+    "id": "decimal-calculations",
+    "name": "Calculating with decimals",
+    "strand": "Number",
+    "nc": [
+     "N4",
+     "N15"
+    ]
+   },
+   {
+    "id": "powers-roots",
+    "name": "Powers and roots",
+    "strand": "Number",
+    "nc": [
+     "N7",
+     "N5"
+    ]
+   },
+   {
+    "id": "fdp",
+    "name": "Fractions, decimals and percentages",
+    "strand": "Number",
+    "nc": [
+     "N9",
+     "N10"
+    ]
+   },
+   {
+    "id": "expanding-brackets",
+    "name": "Expanding brackets",
+    "strand": "Algebra",
+    "nc": [
+     "A4"
+    ]
+   },
+   {
+    "id": "equations-1",
+    "name": "Solving equations",
+    "strand": "Algebra",
+    "nc": [
+     "A7",
+     "A3",
+     "N6"
+    ]
+   },
+   {
+    "id": "sequences",
+    "name": "Sequences",
+    "strand": "Algebra",
+    "nc": [
+     "A14"
+    ]
+   },
+   {
+    "id": "coordinates",
+    "name": "Coordinates",
+    "strand": "Algebra",
+    "nc": [
+     "A8"
+    ]
+   },
+   {
+    "id": "ratio-simplify",
+    "name": "Ratio",
+    "strand": "Ratio",
+    "nc": [
+     "R4",
+     "R6",
+     "R3"
+    ]
+   },
+   {
+    "id": "ratio-share",
+    "name": "Sharing in a ratio",
+    "strand": "Ratio",
+    "nc": [
+     "R5"
+    ]
+   },
+   {
+    "id": "percentages-of-amounts",
+    "name": "Percentages of amounts",
+    "strand": "Ratio",
+    "nc": [
+     "N10",
+     "N11"
+    ]
+   },
+   {
+    "id": "area-triangles",
+    "name": "Area of triangles and parallelograms",
+    "strand": "Geometry",
+    "nc": [
+     "G1"
+    ]
+   },
+   {
+    "id": "angles-shapes",
+    "name": "Angles in triangles and quadrilaterals",
+    "strand": "Geometry",
+    "nc": [
+     "G12",
+     "G7",
+     "G6"
+    ]
+   },
+   {
+    "id": "polygons-symmetry",
+    "name": "Polygons and symmetry",
+    "strand": "Geometry",
+    "nc": [
+     "G5",
+     "G7"
+    ]
+   },
+   {
+    "id": "probability-single",
+    "name": "Calculating probability",
+    "strand": "Probability",
+    "nc": [
+     "P1",
+     "P2"
+    ]
+   },
+   {
+    "id": "averages",
+    "name": "Averages and range",
+    "strand": "Statistics",
+    "nc": [
+     "S1"
+    ]
+   }
+  ],
+  "gold": [
+   {
+    "id": "standard-form",
+    "name": "Standard form",
+    "strand": "Number",
+    "nc": [
+     "N8"
+    ]
+   },
+   {
+    "id": "estimation",
+    "name": "Estimation",
+    "strand": "Number",
+    "nc": [
+     "N14",
+     "N15"
+    ]
+   },
+   {
+    "id": "percentage-compare",
+    "name": "One number as a percentage of another",
+    "strand": "Number",
+    "nc": [
+     "N10",
+     "R3"
+    ]
+   },
+   {
+    "id": "factorising",
+    "name": "Factorising",
+    "strand": "Algebra",
+    "nc": [
+     "A4",
+     "A3"
+    ]
+   },
+   {
+    "id": "equations-2",
+    "name": "Equations with unknowns on both sides",
+    "strand": "Algebra",
+    "nc": [
+     "A7"
+    ]
+   },
+   {
+    "id": "nth-term",
+    "name": "The nth term",
+    "strand": "Algebra",
+    "nc": [
+     "A15"
+    ]
+   },
+   {
+    "id": "linear-graphs",
+    "name": "Straight-line graphs",
+    "strand": "Algebra",
+    "nc": [
+     "A9",
+     "A10"
+    ]
+   },
+   {
+    "id": "formulae",
+    "name": "Writing and using formulae",
+    "strand": "Algebra",
+    "nc": [
+     "A2",
+     "A5",
+     "A6"
+    ]
+   },
+   {
+    "id": "percentage-change",
+    "name": "Percentage change and simple interest",
+    "strand": "Ratio",
+    "nc": [
+     "R8",
+     "N10"
+    ]
+   },
+   {
+    "id": "direct-proportion",
+    "name": "Direct proportion and best buys",
+    "strand": "Ratio",
+    "nc": [
+     "R9",
+     "R10",
+     "R7"
+    ]
+   },
+   {
+    "id": "speed-distance-time",
+    "name": "Speed, distance and time",
+    "strand": "Ratio",
+    "nc": [
+     "R10",
+     "A13"
+    ]
+   },
+   {
+    "id": "scale-drawings",
+    "name": "Scale drawings and maps",
+    "strand": "Ratio",
+    "nc": [
+     "R2",
+     "G3"
+    ]
+   },
+   {
+    "id": "parallel-angles",
+    "name": "Angles in parallel lines",
+    "strand": "Geometry",
+    "nc": [
+     "G11"
+    ]
+   },
+   {
+    "id": "polygon-angles",
+    "name": "Angles in polygons",
+    "strand": "Geometry",
+    "nc": [
+     "G12"
+    ]
+   },
+   {
+    "id": "circles",
+    "name": "Circles",
+    "strand": "Geometry",
+    "nc": [
+     "G2",
+     "G7"
+    ]
+   },
+   {
+    "id": "volume-prisms",
+    "name": "Volume of prisms",
+    "strand": "Geometry",
+    "nc": [
+     "G1",
+     "G15"
+    ]
+   },
+   {
+    "id": "transformations",
+    "name": "Transformations",
+    "strand": "Geometry",
+    "nc": [
+     "G8"
+    ]
+   },
+   {
+    "id": "sample-spaces",
+    "name": "Sample spaces",
+    "strand": "Probability",
+    "nc": [
+     "P4",
+     "P2"
+    ]
+   },
+   {
+    "id": "venn-diagrams",
+    "name": "Venn diagrams",
+    "strand": "Probability",
+    "nc": [
+     "P3"
+    ]
+   },
+   {
+    "id": "pie-charts",
+    "name": "Pie charts",
+    "strand": "Statistics",
+    "nc": [
+     "S2"
+    ]
+   },
+   {
+    "id": "grouped-data",
+    "name": "Frequency tables and grouped data",
+    "strand": "Statistics",
+    "nc": [
+     "S1",
+     "S2"
+    ]
+   }
+  ],
+  "platinum": [
+   {
+    "id": "index-laws",
+    "name": "Index laws",
+    "strand": "Number",
+    "nc": [
+     "N7"
+    ]
+   },
+   {
+    "id": "exact-values",
+    "name": "Exact values, roots and recurring decimals",
+    "strand": "Number",
+    "nc": [
+     "N7",
+     "N9",
+     "N16"
+    ]
+   },
+   {
+    "id": "bounds",
+    "name": "Error intervals",
+    "strand": "Number",
+    "nc": [
+     "N14"
+    ]
+   },
+   {
+    "id": "double-brackets",
+    "name": "Expanding double brackets",
+    "strand": "Algebra",
+    "nc": [
+     "A4"
+    ]
+   },
+   {
+    "id": "rearranging",
+    "name": "Rearranging formulae",
+    "strand": "Algebra",
+    "nc": [
+     "A5"
+    ]
+   },
+   {
+    "id": "inequalities",
+    "name": "Inequalities",
+    "strand": "Algebra",
+    "nc": [
+     "A3",
+     "N2"
+    ]
+   },
+   {
+    "id": "y-mx-c",
+    "name": "y = mx + c",
+    "strand": "Algebra",
+    "nc": [
+     "A11",
+     "A10"
+    ]
+   },
+   {
+    "id": "simultaneous-graphs",
+    "name": "Simultaneous equations with graphs",
+    "strand": "Algebra",
+    "nc": [
+     "A12"
+    ]
+   },
+   {
+    "id": "quadratic-graphs",
+    "name": "Quadratic graphs",
+    "strand": "Algebra",
+    "nc": [
+     "A9",
+     "A12"
+    ]
+   },
+   {
+    "id": "real-life-graphs",
+    "name": "Real-life graphs",
+    "strand": "Algebra",
+    "nc": [
+     "A13",
+     "A6"
+    ]
+   },
+   {
+    "id": "geometric-sequences",
+    "name": "Geometric sequences",
+    "strand": "Algebra",
+    "nc": [
+     "A16"
+    ]
+   },
+   {
+    "id": "reverse-percentages",
+    "name": "Reverse percentages",
+    "strand": "Ratio",
+    "nc": [
+     "R8"
+    ]
+   },
+   {
+    "id": "inverse-proportion",
+    "name": "Inverse proportion",
+    "strand": "Ratio",
+    "nc": [
+     "R9"
+    ]
+   },
+   {
+    "id": "compound-measures",
+    "name": "Density and compound measures",
+    "strand": "Ratio",
+    "nc": [
+     "R10"
+    ]
+   },
+   {
+    "id": "pythagoras",
+    "name": "Pythagoras' theorem",
+    "strand": "Geometry",
+    "nc": [
+     "G13",
+     "G14",
+     "G16"
+    ]
+   },
+   {
+    "id": "trigonometry",
+    "name": "Trigonometry",
+    "strand": "Geometry",
+    "nc": [
+     "G14"
+    ]
+   },
+   {
+    "id": "congruence-similarity",
+    "name": "Congruence and similarity",
+    "strand": "Geometry",
+    "nc": [
+     "G6",
+     "G9",
+     "R7"
+    ]
+   },
+   {
+    "id": "constructions",
+    "name": "Constructions and loci",
+    "strand": "Geometry",
+    "nc": [
+     "G4",
+     "G3"
+    ]
+   },
+   {
+    "id": "surface-area",
+    "name": "3-D shapes and surface area",
+    "strand": "Geometry",
+    "nc": [
+     "G15",
+     "G1",
+     "G16"
+    ]
+   },
+   {
+    "id": "relative-frequency",
+    "name": "Relative frequency",
+    "strand": "Probability",
+    "nc": [
+     "P1"
+    ]
+   },
+   {
+    "id": "scatter-graphs",
+    "name": "Scatter graphs",
+    "strand": "Statistics",
+    "nc": [
+     "S3"
+    ]
+   },
+   {
+    "id": "comparing-distributions",
+    "name": "Comparing distributions",
+    "strand": "Statistics",
+    "nc": [
+     "S1"
+    ]
+   }
+  ]
+ },
+ "coverage": {
+  "N1": [
+   "place-value"
+  ],
+  "N4": [
+   "four-operations",
+   "negative-numbers",
+   "fractions-add-sub",
+   "fractions-mul-div",
+   "decimal-calculations"
+  ],
+  "N2": [
+   "negative-numbers",
+   "ordering-numbers",
+   "inequalities"
+  ],
+  "N13": [
+   "rounding"
+  ],
+  "N3": [
+   "factors-multiples",
+   "hcf-lcm"
+  ],
+  "N5": [
+   "order-of-operations",
+   "powers-roots"
+  ],
+  "N6": [
+   "order-of-operations",
+   "equations-1"
+  ],
+  "A1": [
+   "notation"
+  ],
+  "A3": [
+   "notation",
+   "equations-1",
+   "factorising",
+   "inequalities"
+  ],
+  "A4": [
+   "simplifying",
+   "expanding-brackets",
+   "factorising",
+   "double-brackets"
+  ],
+  "A2": [
+   "substitution",
+   "formulae"
+  ],
+  "N11": [
+   "fractions-of-amounts",
+   "percentages-of-amounts"
+  ],
+  "R3": [
+   "fractions-of-amounts",
+   "ratio-simplify",
+   "percentage-compare"
+  ],
+  "N12": [
+   "metric-units"
+  ],
+  "R1": [
+   "metric-units"
+  ],
+  "G2": [
+   "perimeter",
+   "area-rectangles",
+   "circles"
+  ],
+  "G1": [
+   "area-rectangles",
+   "area-triangles",
+   "volume-prisms",
+   "surface-area"
+  ],
+  "G10": [
+   "angle-facts"
+  ],
+  "G3": [
+   "angle-facts",
+   "scale-drawings",
+   "constructions"
+  ],
+  "P1": [
+   "probability-words",
+   "probability-single",
+   "relative-frequency"
+  ],
+  "S2": [
+   "charts-tables",
+   "pie-charts",
+   "grouped-data"
+  ],
+  "N15": [
+   "decimal-calculations",
+   "estimation"
+  ],
+  "N7": [
+   "powers-roots",
+   "index-laws",
+   "exact-values"
+  ],
+  "N9": [
+   "fdp",
+   "exact-values"
+  ],
+  "N10": [
+   "fdp",
+   "percentages-of-amounts",
+   "percentage-compare",
+   "percentage-change"
+  ],
+  "A7": [
+   "equations-1",
+   "equations-2"
+  ],
+  "A14": [
+   "sequences"
+  ],
+  "A8": [
+   "coordinates"
+  ],
+  "R4": [
+   "ratio-simplify"
+  ],
+  "R6": [
+   "ratio-simplify"
+  ],
+  "R5": [
+   "ratio-share"
+  ],
+  "G12": [
+   "angles-shapes",
+   "polygon-angles"
+  ],
+  "G7": [
+   "angles-shapes",
+   "polygons-symmetry",
+   "circles"
+  ],
+  "G6": [
+   "angles-shapes",
+   "congruence-similarity"
+  ],
+  "G5": [
+   "polygons-symmetry"
+  ],
+  "P2": [
+   "probability-single",
+   "sample-spaces"
+  ],
+  "S1": [
+   "averages",
+   "grouped-data",
+   "comparing-distributions"
+  ],
+  "N8": [
+   "standard-form"
+  ],
+  "N14": [
+   "estimation",
+   "bounds"
+  ],
+  "A15": [
+   "nth-term"
+  ],
+  "A9": [
+   "linear-graphs",
+   "quadratic-graphs"
+  ],
+  "A10": [
+   "linear-graphs",
+   "y-mx-c"
+  ],
+  "A5": [
+   "formulae",
+   "rearranging"
+  ],
+  "A6": [
+   "formulae",
+   "real-life-graphs"
+  ],
+  "R8": [
+   "percentage-change",
+   "reverse-percentages"
+  ],
+  "R9": [
+   "direct-proportion",
+   "inverse-proportion"
+  ],
+  "R10": [
+   "direct-proportion",
+   "speed-distance-time",
+   "compound-measures"
+  ],
+  "R7": [
+   "direct-proportion",
+   "congruence-similarity"
+  ],
+  "A13": [
+   "speed-distance-time",
+   "real-life-graphs"
+  ],
+  "R2": [
+   "scale-drawings"
+  ],
+  "G11": [
+   "parallel-angles"
+  ],
+  "G15": [
+   "volume-prisms",
+   "surface-area"
+  ],
+  "G8": [
+   "transformations"
+  ],
+  "P4": [
+   "sample-spaces"
+  ],
+  "P3": [
+   "venn-diagrams"
+  ],
+  "N16": [
+   "exact-values"
+  ],
+  "A11": [
+   "y-mx-c"
+  ],
+  "A12": [
+   "simultaneous-graphs",
+   "quadratic-graphs"
+  ],
+  "A16": [
+   "geometric-sequences"
+  ],
+  "G13": [
+   "pythagoras"
+  ],
+  "G14": [
+   "pythagoras",
+   "trigonometry"
+  ],
+  "G16": [
+   "pythagoras",
+   "surface-area"
+  ],
+  "G9": [
+   "congruence-similarity"
+  ],
+  "G4": [
+   "constructions"
+  ],
+  "S3": [
+   "scatter-graphs"
+  ]
+ }
+}

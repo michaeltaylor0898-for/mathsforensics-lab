@@ -125,6 +125,22 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .q .big{font-family:var(--f-mono);font-size:24px;white-space:nowrap}
 .diagram{margin-top:12px;background:#0a1030;border:1px solid var(--line);border-radius:10px;padding:10px;max-width:420px}
 .diagram svg{display:block;width:100%;height:auto}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;font-family:var(--f-mono);font-size:.85em;line-height:1.05;margin:0 2px}
+.frac sup{border-bottom:2px solid currentColor;padding:0 3px;font-size:1em;vertical-align:baseline}.frac sub{padding:0 3px;font-size:1em;vertical-align:baseline}
+.ftable{border-collapse:collapse;font-size:16px;min-width:240px}
+.ftable th,.ftable td{border:1px solid var(--line);padding:7px 12px;text-align:left}
+.ftable thead th{font-family:var(--f-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.ftable tbody th{font-weight:600}.ftable tr.tot th,.ftable tr.tot td{font-weight:700;border-top:2px solid var(--muted)}
+.diagram .ftable svg,.diagram p svg{display:inline-block;width:auto;height:22px;vertical-align:middle}
+.mapgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(230px,44vw),1fr));gap:10px}
+.mapcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;color:inherit;text-decoration:none;min-width:0}
+a.mapcard:hover{border-color:var(--cyan)}
+.mapcard.soon{opacity:.62}
+.mapcard b{font-size:16px}
+.mapcard .codes{font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+.tierhd{display:flex;align-items:center;gap:12px;margin:30px 0 12px}.tierhd .medal{width:44px;height:44px}
+.nclist{columns:2 320px;column-gap:28px;font-size:14px}.nclist div{break-inside:avoid;margin:0 0 6px}.nclist code{font-family:var(--f-mono);color:var(--cyan);margin-right:6px}
+a.tier{color:inherit;text-decoration:none}
 .ans{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px}
 .field{display:flex;align-items:center;background:var(--panel2);border:1px solid var(--line);border-radius:10px;min-width:0}
 .field:focus-within{border-color:var(--cyan)}
@@ -198,7 +214,7 @@ const fmt = n => {                                                   // 12,345.6
 const plain = n => String(+n.toFixed(6));                             // no commas, for typed comparison
 function parseNum(s) {
   if (s == null) return null;
-  s = String(s).trim().replace(/[−–—]/g, "-").replace(/,/g, "").replace(/\s+/g, "").replace(/(cm|m|°c|°|c)$/i, "");
+  s = String(s).trim().replace(/[−–—]/g, "-").replace(/,/g, "").replace(/\s+/g, "").replace(/^£/, "").replace(/(mm|cm|km|kg|ml|m\/s|km\/h|m|g|l|litres?|°c|°f|°|c|p|s|mins?|minutes|hours?)(²|³)?$/i, "");
   if (!/^-?\d*\.?\d+$/.test(s)) return null;
   return parseFloat(s);
 }
@@ -564,6 +580,596 @@ function probEvent(level) {
   };
 }
 
+
+/* ---------- shared drawing helpers ---------- */
+const SVGT = (x, y, txt, o = {}) => `<text x="${x}" y="${y}" fill="${o.col || "#E8ECF8"}" font-family="JetBrains Mono, monospace" font-size="${o.size || 16}" text-anchor="${o.anchor || "middle"}"${o.weight ? ` font-weight="${o.weight}"` : ""}>${txt}</text>`;
+const frac = (n, d) => `<span class="frac"><sup>${n}</sup><sub>${d}</sub></span>`;
+const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) [a, b] = [b, a % b]; return a; };
+const MC = (correct, wrong) => {            // build choices with the correct one shuffled in
+  const all = shuffle([correct, ...wrong]);
+  return { choices: all.map(String), answer: all.indexOf(correct), at: v => all[v] };
+};
+
+/* ---------- 7. Rounding ---------- */
+function rndNearest(level) {
+  const step = level === 1 ? pick([10, 100]) : pick([10, 100, 1000]);
+  let n = level === 1 ? R(101, 989) : R(1001, 98999);
+  if (n % step === 0) n += R(1, step - 1);
+  if (n < step) n += step;
+  const down = Math.floor(n / step) * step, up = down + step;
+  const ans = Math.round(n / step) * step;
+  const decider = Math.floor((n % step) / (step / 10));
+  const col = { 10: "tens", 100: "hundreds", 1000: "thousands" }[step];
+  const next = { 10: "ones", 100: "tens", 1000: "hundreds" }[step];
+  return {
+    prompt: `Round <span class="big">${fmt(n)}</span> to the nearest <b>${fmt(step)}</b>.`, type: "num", answer: ans,
+    hints: [`Which two multiples of ${fmt(step)} is ${fmt(n)} between?`, `It's between ${fmt(down)} and ${fmt(up)}. Look at the ${next} digit: it's ${decider}. 5 or more rounds up.`],
+    solution: [[`${fmt(down)} < ${fmt(n)} < ${fmt(up)}`, `Find the multiples of ${fmt(step)} either side`], [`The ${next} digit is ${decider}`, "This digit decides"], [`${decider >= 5 ? "5 or more, so round up" : "Less than 5, so round down"}: ${fmt(ans)}`, "Answer"]],
+    mistakes: [[v => ans === up && near(v, down), `You rounded down. The ${next} digit is ${decider}, which is 5 or more, so round up.`],
+               [v => ans === down && near(v, up), `You rounded up. The ${next} digit is ${decider}, which is less than 5, so round down.`],
+               [v => near(v, ans / step), `Keep the place-holder zeros. Rounding ${fmt(n)} gives a number about the same size: ${fmt(ans)}.`]]
+  };
+}
+function rndDP(level) {
+  const d = level === 1 ? 1 : pick([1, 2]);
+  const e = d + (level === 3 ? R(1, 2) : 1);              // decimals in the question
+  const P = Math.pow(10, e);
+  let m; do { m = R(P + 1, (level === 1 ? 20 : 60) * P); } while (m % 10 === 0);
+  const n = m / P, drop = Math.pow(10, e - d);
+  const ans = Math.round(m / drop) / Math.pow(10, d);
+  const trunc = Math.floor(m / drop) / Math.pow(10, d);
+  const decider = Math.floor((m % drop) / (drop / 10));
+  const shown = n.toFixed(e), ansTxt = ans.toFixed(d);
+  return {
+    prompt: `Round <span class="big">${shown}</span> to <b>${DPW[d]}</b>.`, type: "num", answer: ans, answerText: ansTxt,
+    hints: [`Count ${d} digit${d > 1 ? "s" : ""} after the decimal point. Draw a line after ${d > 1 ? "them" : "it"}.`, `The digit after your line is ${decider}. 5 or more: round up. Less than 5: leave it.`],
+    solution: [[`${shown.slice(0, shown.indexOf(".") + d + 1)} | ${shown.slice(shown.indexOf(".") + d + 1)}`, `Cut after ${d} decimal place${d > 1 ? "s" : ""}`], [`The next digit is ${decider}`, decider >= 5 ? "5 or more, so round up" : "Less than 5, so round down"], [`= ${ansTxt}`, "Answer"]],
+    mistakes: [[v => !near(ans, trunc) && near(v, trunc), `You've chopped off the digits instead of rounding. The next digit is ${decider}, so round up.`],
+               [v => { const o = d === 1 ? 2 : 1; const r2 = Math.round(m / Math.pow(10, e - o)) / Math.pow(10, o); return e > o && !near(r2, ans) && near(v, r2); }, `Check how many decimal places: the question asks for ${DPW[d]}.`],
+               [v => !near(Math.round(n), ans) && near(v, Math.round(n)), "That's rounded to the nearest whole number. Keep the decimal places the question asks for."]]
+  };
+}
+const DPW = ["", "1 decimal place", "2 decimal places", "3 decimal places"];
+function rndSF(level) {
+  if (level === 1) return rndNearest(level);
+  const s = level === 2 ? 1 : pick([1, 2]);
+  const m = R(101, 999), k = pick(level === 2 ? [0, 1, 2, -3, -4] : [0, 1, 2, -3, -4, -5]);
+  const L = 3, step = Math.pow(10, L - s);
+  let r = Math.round(m / step) * step;
+  const dec = Math.max(0, -k);
+  const val = x => +(x * Math.pow(10, k)).toFixed(dec);
+  const n = val(m), ans = val(r);
+  const shown = n.toFixed(dec), ansTxt = ans.toFixed(Math.max(0, -(k + L - s)));
+  const dpSlip = +n.toFixed(s);
+  return {
+    prompt: `Round <span class="big">${fmt(n)}</span> to <b>${s} significant figure${s > 1 ? "s" : ""}</b>.`, type: "num", answer: ans, answerText: fmt(+ansTxt),
+    hints: ["Significant figures start at the first digit that isn't zero.", `Keep ${s} digit${s > 1 ? "s" : ""} from there, look at the next one to decide up or down, then fill with zeros${k < 0 ? " (before the point only)" : ""}.`],
+    solution: [[`First significant figure: ${String(m)[0]}`, "Start at the first non-zero digit"], [`Next digit: ${String(m)[s]}`, +String(m)[s] >= 5 ? "5 or more, so round up" : "Less than 5, so round down"], [`= ${fmt(ans)}`, "Answer, keeping the number the same size"]],
+    mistakes: [[v => k < 0 && !near(dpSlip, ans) && near(v, dpSlip), `That's ${s} decimal place${s > 1 ? "s" : ""}. Significant figures start at the first non-zero digit, so the zeros at the front don't count.`],
+               [v => k > 0 && near(v, r / step), `Keep the number the same size. ${fmt(n)} rounds to ${fmt(ans)}, not ${fmt(r / step)}.`],
+               [v => !near(ans, val(Math.floor(m / step) * step)) && near(v, val(Math.floor(m / step) * step)), "You've chopped the digits off. Look at the next digit: it's 5 or more, so round up."]]
+  };
+}
+
+/* ---------- 8. Factors, multiples and primes ---------- */
+const factorsOf = n => { const f = []; for (let i = 1; i <= n; i++) if (n % i === 0) f.push(i); return f; };
+const isPrime = n => n > 1 && factorsOf(n).length === 2;
+function fmFactor(level) {
+  const n = pick(level === 1 ? [12, 18, 20, 24, 30, 36] : [36, 42, 48, 56, 60, 72, 84, 90, 96]);
+  const correct = pick(factorsOf(n).filter(f => f > 2 && f < n));
+  const non = []; for (let i = 4; i < Math.min(n, 30); i++) if (n % i) non.push(i);
+  const wrong = shuffle(non).slice(0, 2).concat([n * 2]);
+  const c = MC(correct, wrong);
+  return {
+    prompt: `Which of these is a <b>factor</b> of <span class="big">${n}</span>?`, type: "mc", choices: c.choices, answer: c.answer,
+    hints: [`A factor of ${n} divides into ${n} exactly, with nothing left over.`, `Try dividing ${n} by each one. Which gives a whole number?`],
+    solution: [[`${n} ÷ ${correct} = ${n / correct}`, "No remainder"], [`${correct} is a factor of ${n}`, "Answer"]],
+    mistakes: c.choices.map((_, i) => [v => v === i, (() => { const x = c.at(i); return x === n * 2 ? `${x} is a multiple of ${n} (it's in the ${n} times table). A factor goes into ${n}.` : `${n} ÷ ${x} = ${Math.floor(n / x)} remainder ${n % x}, so ${x} isn't a factor.`; })()])
+  };
+}
+function fmMultiple(level) {
+  const k = level === 1 ? R(3, 9) : R(6, 15);
+  const correct = k * R(level === 1 ? 3 : 7, level === 1 ? 12 : 15);
+  const pool = new Set();
+  while (pool.size < 3) { const x = correct + pick([-1, 1]) * R(1, k - 1); if (x > 0 && x % k) pool.add(x); }
+  const wrong = [...pool]; if (level >= 2 && k > 2) wrong[2] = factorsOf(k).filter(f => f > 1 && f < k)[0] || wrong[2];
+  const c = MC(correct, wrong);
+  return {
+    prompt: `Which of these is a <b>multiple</b> of <span class="big">${k}</span>?`, type: "mc", choices: c.choices, answer: c.answer,
+    hints: [`A multiple of ${k} is in the ${k} times table.`, `Divide each number by ${k}. A multiple gives a whole number.`],
+    solution: [[`${correct} = ${k} × ${correct / k}`, `It's in the ${k} times table`], [`${correct} is a multiple of ${k}`, "Answer"]],
+    mistakes: c.choices.map((_, i) => [v => v === i, (() => { const x = c.at(i); return k % x === 0 ? `${x} is a factor of ${k}, not a multiple. Multiples are bigger: ${k}, ${2 * k}, ${3 * k}…` : `${x} ÷ ${k} = ${Math.floor(x / k)} remainder ${x % k}, so it's not in the ${k} times table.`; })()])
+  };
+}
+function fmPrime(level) {
+  const primes = []; for (let i = 2; i < 100; i++) if (isPrime(i)) primes.push(i);
+  const correct = pick(primes.filter(p => level === 1 ? p < 30 : p > 10));
+  const comps = level === 1 ? [1, 9, 15, 21, 25, 27, 4, 8] : [1, 21, 27, 33, 39, 49, 51, 57, 63, 69, 77, 87, 91];
+  const c = MC(correct, shuffle(comps).slice(0, 3));
+  const why = x => { if (x === 1) return "1 isn't prime. A prime has exactly two factors: 1 and itself. 1 only has one."; const f = factorsOf(x).find(f => f > 1 && f < x); return `${x} = ${f} × ${x / f}, so it has more than two factors.`; };
+  return {
+    prompt: `Which of these is a <b>prime number</b>?`, type: "mc", choices: c.choices, answer: c.answer,
+    hints: ["A prime number has exactly two factors: 1 and itself.", "For each number, try dividing by 2, 3, 5 and 7. If any of them go in exactly, it isn't prime."],
+    solution: [[`${correct}: factors 1 and ${correct}`, "Only two factors"], [`${correct} is prime`, "Answer"]],
+    mistakes: c.choices.map((_, i) => [v => v === i, why(c.at(i))])
+  };
+}
+function fmCount(level) {
+  if (level === 1) return fmFactor(level);
+  const n = pick([12, 16, 18, 20, 24, 28, 30, 36, 40, 42, 48]);
+  const f = factorsOf(n), pairs = [];
+  for (let i = 0; i < Math.ceil(f.length / 2); i++) pairs.push(`${f[i]} × ${f[f.length - 1 - i]}`);
+  return {
+    prompt: `How many factors does <span class="big">${n}</span> have?`, type: "num", answer: f.length,
+    hints: ["Find the factors in pairs that multiply to make the number. Start with 1 × the number.", `Start: 1 × ${n}, 2 × ${n / 2 === Math.floor(n / 2) ? n / 2 : "?"}… Stop when the pairs meet in the middle.`],
+    solution: [[pairs.join(", "), "Factor pairs"], [f.join(", "), "List them"], [`${f.length} factors`, "Count them"]],
+    mistakes: [[v => v === f.length - 2, `Don't forget 1 and ${n} itself. They are factors too.`],
+               [v => v === pairs.length, "Each pair gives you two factors (unless it's a square number pair like 6 × 6)."]]
+  };
+}
+
+/* ---------- 9. Order of operations ---------- */
+function booCalc(level) {
+  const pats = {
+    1: [() => { const a = R(2, 20), b = R(2, 9), c = R(2, 9); return [`${a} + ${b} × ${c}`, a + b * c, (a + b) * c]; },
+        () => { const b = R(2, 9), c = R(2, 9), a = b * c + R(2, 20); return [`${a} ${MINUS} ${b} × ${c}`, a - b * c, (a - b) * c]; },
+        () => { const a = R(2, 9), b = R(2, 9), c = R(2, 20); return [`${c} + ${a} × ${b}`, c + a * b, (c + a) * b]; },
+        () => { const a = R(2, 12), b = R(2, 12), c = R(2, 6); return [`(${a} + ${b}) × ${c}`, (a + b) * c, a + b * c]; }],
+    2: [() => { const a = R(2, 20), b = R(2, 9), c = R(2, 9), d = R(1, 9); return [`${a} + ${b} × ${c} ${MINUS} ${d}`, a + b * c - d, (a + b) * c - d]; },
+        () => { const a = R(2, 9), c = R(2, 9), b = c + R(2, 9); return [`${a} × (${b} ${MINUS} ${c})`, a * (b - c), a * b - c]; },
+        () => { const b = R(2, 9), q = R(2, 9), a = b * q, c = R(2, 9), d = R(2, 9); return [`${a} ÷ ${b} + ${c} × ${d}`, q + c * d, (q + c) * d]; },
+        () => { const c = R(2, 9), s = R(3, 12), a = R(1, s * c - 1), b = s * c - a; return [`(${a} + ${b}) ÷ ${c}`, s, a + b / c]; }],
+    3: [() => { const a = R(2, 9), b = R(2, 9), c = R(2, 9); return [`${a}² + ${b} × ${c}`, a * a + b * c, (a * a + b) * c]; },
+        () => { const a = R(2, 20), b = R(2, 9); return [`${a} + ${b}²`, a + b * b, (a + b) * (a + b)]; },
+        () => { const a = R(5, 15), b = R(1, a - 2); return [`(${a} ${MINUS} ${b})²`, (a - b) * (a - b), a * a - b * b]; },
+        () => { const a = R(2, 9); return [`2 × ${a}²`, 2 * a * a, (2 * a) * (2 * a)]; },
+        () => { const c = R(2, 9), q = R(2, 9), b = c * q, a = q + R(2, 20); return [`${a} ${MINUS} ${b} ÷ ${c}`, a - q, (a - b) / c]; }]
+  };
+  const [e, ans, wrong] = pick(pats[level])();
+  return {
+    prompt: `Work out <span class="big">${e}</span>`, type: "num", answer: ans,
+    hints: ["Use the order: Brackets, then Indices (powers), then Division and Multiplication, then Addition and Subtraction.", "Find the part to do first and work that out. Then rewrite the calculation with the answer in its place."],
+    solution: [[e, "The calculation"], [/\(/.test(e) ? "Brackets first" : /²/.test(e) ? "Powers first" : "× and ÷ before + and −", "BIDMAS"], [`= ${fmt(ans)}`, "Answer"]],
+    mistakes: [[v => Number.isFinite(wrong) && !near(wrong, ans) && near(v, wrong), "You worked from left to right. Do brackets, then powers, then × and ÷, before + and −."]]
+  };
+}
+function booThink(level) {
+  const x = R(2, 15);
+  let steps;
+  if (level === 1) steps = pick([[["add", R(3, 20)]], [["multiply by", R(2, 9)]], [["subtract", R(2, x - 1)]]]);
+  else if (level === 2) steps = [["multiply by", R(2, 9)], pick([["add", R(2, 20)], ["subtract", R(1, 9)]])];
+  else { const d = pick([2, 3, 4, 5]); steps = [["add", R(1, 9)], ["multiply by", d], ["subtract", R(1, 9)]]; }
+  const ap = (v, [op, k]) => op === "add" ? v + k : op === "subtract" ? v - k : op === "multiply by" ? v * k : v / k;
+  const inv = (v, [op, k]) => op === "add" ? v - k : op === "subtract" ? v + k : op === "multiply by" ? v / k : v * k;
+  const res = steps.reduce(ap, x);
+  const forward = steps.reduce(ap, res);
+  const wrongOrder = steps.reduce(inv, res);   // undoing in the same order, not reverse
+  const invName = ([op, k]) => op === "add" ? `subtract ${k}` : op === "subtract" ? `add ${k}` : op === "multiply by" ? `divide by ${k}` : `multiply by ${k}`;
+  const txt = steps.map(([op, k]) => `${op} ${k}`).join(", then ");
+  const back = steps.slice().reverse();
+  let v = res; const lines = back.map(s => { const nv = inv(v, s); const l = [`${fmt(v)} → ${invName(s)} → ${fmt(nv)}`, "Undo the last step first"]; v = nv; return l; });
+  return {
+    prompt: `I think of a number. I ${txt}. My answer is <b>${res}</b>. What number did I start with?`, type: "num", answer: x,
+    hints: ["Work backwards from the answer, undoing each step with its inverse.", `Inverses: add ↔ subtract, multiply ↔ divide. Start by undoing "${back[0][0]} ${back[0][1]}".`],
+    solution: lines.concat([[`= ${x}`, "Answer: check by going forwards through the steps"]]),
+    mistakes: [[v => !near(forward, x) && near(v, forward), "You did the steps again instead of undoing them. Work backwards using the inverse of each step."],
+               [v => steps.length > 1 && !near(wrongOrder, x) && near(v, wrongOrder), "Undo the steps in reverse order: undo the last thing first."]]
+  };
+}
+
+/* ---------- 10. Algebraic notation ---------- */
+const LET = ["a", "b", "c", "m", "n", "p", "t", "x", "y"];
+function notWrite(level) {
+  const v = pick(LET), w = pick(LET.filter(l => l !== v)), k = R(3, 9), c = R(2, 9);
+  const items = [
+    [`${v} + ${v} + ${v}${k > 3 ? " + " + v : ""}`, `${k > 3 ? 4 : 3}${v}`, [`${v}${k > 3 ? "⁴" : "³"}`, `${k > 3 ? 4 : 3} + ${v}`, `${v}${k > 3 ? 4 : 3}`]],
+    [`${v} × ${w}`, `${[v, w].sort().join("")}`, [`${v} + ${w}`, `2${[v, w].sort().join("")}`, `${v}²${w}`]],
+    [`${v} × ${v}`, `${v}²`, [`2${v}`, `${v} + 2`, `${v}2`]],
+    [`${k} × ${v}`, `${k}${v}`, [`${v}${k}`, `${k} + ${v}`, `${v}^${k}`]],
+    [`${v} × ${v} × ${w}`, `${v}²${w}`, [`2${v}${w}`, `${v}${w}²`, `${v}² + ${w}`]],
+    [`${v} ÷ ${k}`, `${v}/${k}`, [`${k}/${v}`, `${v} − ${k}`, `${k}${v}`]],
+    [`${k} × (${v} + ${c})`, `${k}(${v} + ${c})`, [`${k}${v} + ${c}`, `${v} + ${k * c}`, `${k} + ${v} + ${c}`]],
+    [`${v} × ${k} ${MINUS} ${c}`, `${k}${v} ${MINUS} ${c}`, [`${k}(${v} ${MINUS} ${c})`, `${v}${k} ${MINUS} ${c}`, `${k} ${MINUS} ${c}${v}`]]
+  ];
+  const pool = level === 1 ? items.slice(0, 4) : level === 2 ? items.slice(1, 7) : items.slice(4);
+  const [plain, right, wrong] = pick(pool);
+  const cc = MC(right, wrong);
+  return {
+    prompt: `Write <span class="big">${plain}</span> using algebraic notation.`, type: "mc", choices: cc.choices, answer: cc.answer,
+    hints: ["Leave out the × sign. Write the number first, then letters in alphabetical order.", "A letter times itself uses a power: a × a = a². Repeated adding uses a number: a + a + a = 3a. Division is written as a fraction."],
+    solution: [[plain, "Start"], [right, "Drop the ×, number first, powers for repeated letters"]],
+    mistakes: cc.choices.map((_, i) => [v2 => v2 === i, (() => { const x = cc.at(i); if (/[²³⁴]/.test(x) && /\+/.test(plain) && !/×/.test(plain)) return "Powers are for multiplying a letter by itself. Adding the same letter again and again is a number in front: 3a."; if (/^\d+ \+/.test(x) || / \+ /.test(x) && !/\+/.test(plain)) return "That's adding. The question is multiplying, so drop the × sign and write them together."; if (/^[a-z]\d/.test(x)) return "Write the number in front of the letter: 3a, not a3."; return `Not quite. ${right} is the standard way to write ${plain}.`; })()])
+  };
+}
+function notMeaning(level) {
+  const v = pick(LET), w = pick(LET.filter(l => l !== v)), k = R(3, 9), c = R(2, 6);
+  const items = [
+    [`${k}${v}`, `${k} × ${v}`, [`${k} + ${v}`, `${v} × ${v} × ${v}`, `${k}0 + ${v}`]],
+    [`${v}²`, `${v} × ${v}`, [`2 × ${v}`, `${v} + 2`, `${v} + ${v}`]],
+    [`${[v, w].sort().join("")}`, `${[v, w].sort()[0]} × ${[v, w].sort()[1]}`, [`${v} + ${w}`, `${v} ÷ ${w}`, `${v} ${MINUS} ${w}`]],
+    [`${v}/${k}`, `${v} ÷ ${k}`, [`${k} ÷ ${v}`, `${v} ${MINUS} ${k}`, `${k} × ${v}`]],
+    [`${c}(${v} + ${k})`, `${c} × (${v} + ${k})`, [`${c}${v} + ${k}`, `${c} + ${v} + ${k}`, `${v} + ${c * k}${v}`]],
+    [`${v}³`, `${v} × ${v} × ${v}`, [`3 × ${v}`, `${v} + ${v} + ${v}`, `${v} + 3`]]
+  ];
+  const pool = level === 1 ? items.slice(0, 3) : level === 2 ? items.slice(1, 5) : items.slice(3);
+  const [expr, right, wrong] = pick(pool);
+  const cc = MC(right, wrong);
+  return {
+    prompt: `What does <span class="big">${expr}</span> mean?`, type: "mc", choices: cc.choices, answer: cc.answer,
+    hints: ["When a number and a letter are written together, they are multiplied.", "A small raised number is a power: it tells you how many times to multiply the letter by itself."],
+    solution: [[`${expr} = ${right}`, "Read the notation"]],
+    mistakes: cc.choices.map((_, i) => [v2 => v2 === i, (() => { const x = cc.at(i); if (/\+/.test(x) && !/\+/.test(expr)) return "Letters and numbers written next to each other are multiplied, not added."; if (/2 × |3 × /.test(x) && /[²³]/.test(expr)) return `A power means multiply the letter by itself: ${v}² = ${v} × ${v}, not 2 × ${v}.`; return `${expr} means ${right}.`; })()])
+  };
+}
+function notVocab(level) {
+  const v = pick(["x", "n", "y", "a"]), k = R(2, 9), c = R(1, 9), r = k * R(2, 9) + c;
+  if (level >= 2 && Math.random() < .4) {
+    const t = R(2, 4);
+    const termsArr = [`${k}${v}`, `${R(2, 9)}${pick(["b", "m", "p"])}`, `${c}`, `${v}²`].slice(0, t);
+    const e = termsArr.map((s, i) => (i ? (Math.random() < .5 ? " + " : ` ${MINUS} `) : "") + s).join("");
+    return {
+      prompt: `How many <b>terms</b> are there in <span class="big">${e}</span>?`, type: "num", answer: t,
+      hints: ["Terms are the parts separated by + and − signs.", "Count the separate pieces, including any number on its own."],
+      solution: [[termsArr.join(" | "), "Split at each + or −"], [`${t} terms`, "Count them"]],
+      mistakes: [[x => x === t - 1, "Count the number on its own as a term too."], [x => x === t * 2 - 1, "Count the terms, not the signs as well."]]
+    };
+  }
+  const forms = [[`${k}${v} + ${c}`, 0], [`${k}${v} + ${c} = ${r}`, 1], [`${k}${v} + ${c} ${pick([">", "<", "≤", "≥"])} ${r}`, 2]];
+  const [e, ans] = pick(forms);
+  const names = ["Expression", "Equation", "Inequality"];
+  const why = ["no equals or inequality sign: it's a collection of terms", "it has an equals sign, so it can be solved", "it has an inequality sign (< > ≤ ≥), comparing two sides"];
+  return {
+    prompt: `Is <span class="big">${esc(e)}</span> an expression, an equation or an inequality?`, type: "mc", choices: names, answer: ans,
+    hints: ["Look for the sign in the middle. Is there one, and which is it?", "= means equation. < > ≤ ≥ mean inequality. No sign: expression."],
+    solution: [[e, "Look for the sign"], [names[ans], `Because ${why[ans]}`]],
+    mistakes: names.map((nm, i) => [x => x === i, `An ${nm.toLowerCase()} has ${why[i].replace(/:.*/, "").replace("it has ", "")}. Look at the sign again.`])
+  };
+}
+
+/* ---------- 11. Substitution ---------- */
+function subExpr(level) {
+  const v = pick(["a", "x", "n", "p"]), w = pick(["b", "y", "m", "t"]);
+  let e, ans, vals, mistakes = [];
+  if (level === 1) {
+    const k = R(2, 9), c = R(1, 15), a = R(2, 9);
+    const op = pick(["+", MINUS]); const cc = op === "+" ? c : Math.min(c, k * a - 1);
+    e = `${k}${v} ${op} ${cc}`; ans = op === "+" ? k * a + cc : k * a - cc; vals = `${v} = ${a}`;
+    const cat = Number(`${k}${a}`); mistakes.push([x => near(x, op === "+" ? cat + cc : cat - cc), `${k}${v} means ${k} × ${v}, so ${k}${v} = ${k} × ${a} = ${k * a}, not ${cat}.`], [x => near(x, op === "+" ? k + a + cc : k + a - cc), `${k}${v} means ${k} × ${v}. You added instead.`]);
+  } else if (level === 2) {
+    const k = R(2, 6), m = R(2, 5), a = R(3, 9), b = R(1, Math.max(1, Math.floor(k * a / m) - 1));
+    const kind = pick([0, 1]);
+    if (kind === 0) { e = `${k}${v} ${MINUS} ${m}${w}`; ans = k * a - m * b; }
+    else { e = `${v}${w} + ${k}`; ans = a * b + k; }
+    vals = `${v} = ${a} and ${w} = ${b}`;
+    if (kind === 1) mistakes.push([x => near(x, a + b + k), `${v}${w} means ${v} × ${w}, not ${v} + ${w}.`]);
+  } else {
+    const kind = pick([0, 1, 2]), a = R(3, 7), k = R(2, 6), c = R(1, 9);
+    if (kind === 0) { e = `${v}² + ${c}`; ans = a * a + c; vals = `${v} = ${a}`; mistakes.push([x => near(x, 2 * a + c), `${v}² means ${v} × ${v} = ${a} × ${a}, not 2 × ${a}.`]); }
+    else if (kind === 1) { e = `${k}${v} + ${c}`; ans = -k * a + c; vals = `${v} = ${MINUS}${a}`; mistakes.push([x => near(x, k * a + c), `${v} is negative here: ${k} × (${MINUS}${a}) = ${MINUS}${k * a}.`]); }
+    else { e = `${k}${v}²`; ans = k * a * a; vals = `${v} = ${a}`; mistakes.push([x => near(x, (k * a) * (k * a)), `Only the ${v} is squared: ${k} × ${a}² = ${k} × ${a * a}. Powers come before multiplying.`], [x => near(x, k * 2 * a), `${v}² means ${v} × ${v}, not 2 × ${v}.`]); }
+  }
+  return {
+    prompt: `Find the value of <span class="big">${e}</span> when ${vals.replace(/(\w) = /g, "<b>$1</b> = ")}.`, type: "num", answer: ans,
+    hints: ["Replace each letter with its number. Put the number in brackets, and put back the × sign.", "Then work it out using the order of operations: powers, then ×, then + and −."],
+    solution: [[`${e} with ${vals}`, "Write the values"], [e.replace(new RegExp(`(\\d)${v}`, "g"), `$1 × ${v}`).replace(/(\d)([a-z])/g, "$1 × $2"), "Put the × signs back"], [`= ${fmt(ans)}`, "Work it out"]],
+    mistakes
+  };
+}
+function subFormula(level) {
+  const f = pick(level === 1 ? [0, 1, 2] : level === 2 ? [1, 2, 3, 4] : [3, 4, 5]);
+  let prompt, ans, unit, sol, mistakes = [];
+  if (f === 0) { const l = R(3, 15), w = R(2, l); prompt = `The perimeter of a rectangle is <b>P = 2l + 2w</b>. Find P when l = ${l} and w = ${w}.`; ans = 2 * l + 2 * w; unit = "cm"; sol = `2 × ${l} + 2 × ${w}`; mistakes.push([x => near(x, l + w), "2l means 2 × l. Multiply both values by 2 before adding."]); }
+  if (f === 1) { const h = R(1, 6), r = pick([25, 30, 35, 40, 45]), c = pick([20, 30, 40, 50]); prompt = `A plumber charges <b>C = ${r}h + ${c}</b> pounds, where h is the number of hours. Find C for ${h} hours.`; ans = r * h + c; unit = "£"; sol = `${r} × ${h} + ${c}`; mistakes.push([x => near(x, r * (h + c)), `Multiply first: ${r} × ${h}, then add ${c}.`]); }
+  if (f === 2) { const m = pick([1, 2, 3, 4]), a = pick([20, 30, 40]), b = pick([20, 25, 30]); prompt = `The time to roast a chicken is <b>T = ${a}m + ${b}</b> minutes, where m is its mass in kg. Find T for a ${m} kg chicken.`; ans = a * m + b; unit = "min"; sol = `${a} × ${m} + ${b}`; }
+  if (f === 3) { const u = R(1, 10), a = R(2, 9), t = R(2, 8); prompt = `In science, <b>v = u + at</b>. Find v when u = ${u}, a = ${a} and t = ${t}.`; ans = u + a * t; unit = "m/s"; sol = `${u} + ${a} × ${t}`; mistakes.push([x => near(x, (u + a) * t), `Multiply a × t first, then add u.`]); }
+  if (f === 4) { const t = R(2, 6), s = R(3, 12) * 5; const d = s * t; prompt = `Speed <b>s = d ÷ t</b>. Find s when d = ${d} km and t = ${t} hours.`; ans = s; unit = "km/h"; sol = `${d} ÷ ${t}`; mistakes.push([x => near(x, d * t), "Divide the distance by the time, don't multiply."]); }
+  if (f === 5) { const C = pick([-10, -5, 0, 5, 10, 15, 20, 25, 30, 35, 40]); prompt = `To change °C to °F, use <b>F = 1.8C + 32</b>. Find F when C = ${sgn(C)}.`; ans = +(1.8 * C + 32).toFixed(1); unit = "°F"; sol = `1.8 × ${par(C)} + 32`; mistakes.push([x => near(x, 1.8 * (C + 32)), "Multiply 1.8 × C first, then add 32."]); }
+  return {
+    prompt, type: "num", answer: ans, unit: unit === "£" ? "" : unit,
+    hints: ["Write the formula, then replace each letter with its value.", `That gives ${sol}. Now use the order of operations.`],
+    solution: [[sol, "Substitute the values"], [`= ${unit === "£" ? "£" : ""}${fmt(ans)}${unit !== "£" ? " " + unit : ""}`, "× and ÷ before + and −"]],
+    mistakes
+  };
+}
+
+/* ---------- 12. Fractions of amounts ---------- */
+function foaFind(level) {
+  let n = 1, d = R(2, 10), k = R(2, 12), unit = "", pre = "";
+  if (level >= 2) { d = R(3, 10); n = R(2, d - 1); while (gcd(n, d) > 1) n = R(1, d - 1); }
+  if (level === 3) { const u = pick([["£", ""], ["", "kg"], ["", "m"], ["", "km"]]); pre = u[0]; unit = u[1]; k = R(2, 15) + pick([0, .5]); }
+  const amount = +(d * k).toFixed(2), ans = +(n * k).toFixed(2);
+  const show = x => pre + fmt(x) + (unit ? " " + unit : "");
+  return {
+    prompt: `Find ${frac(n, d)} of <span class="big">${show(amount)}</span>`, type: "num", answer: ans, unit,
+    hints: [`Divide by the bottom number (${d}) to find ${frac(1, d)}.`, n > 1 ? `${frac(1, d)} of ${show(amount)} is ${show(k)}. Now multiply by the top number (${n}).` : `${show(amount)} ÷ ${d} = ?`],
+    solution: [[`${show(amount)} ÷ ${d} = ${show(k)}`, `Divide by ${d} to find one part`]].concat(n > 1 ? [[`${show(k)} × ${n} = ${show(ans)}`, `Multiply by ${n} for ${n} parts`]] : [[`= ${show(ans)}`, "Answer"]]),
+    mistakes: [[v => n > 1 && near(v, k), `That's ${1}/${d}. You need ${n}/${d}, so multiply by ${n}.`],
+               [v => n > 1 && near(v, amount / n), `Divide by the bottom number (${d}), then multiply by the top (${n}).`],
+               [v => near(v, amount * d) || near(v, amount * n), "Finding a fraction of an amount makes it smaller. Divide by the bottom number first."]]
+  };
+}
+function foaWhat(level) {
+  let d = R(3, 10), n = R(1, d - 1); while (gcd(n, d) > 1) n = R(1, d - 1);
+  const m = R(2, 6);
+  let A = d * m, B = n * m, over = false;
+  const ctx = pick([["stickers", "are gold"], ["pupils", "walk to school"], ["cars", "are electric"], ["songs", "are on repeat"]]);
+  if (level === 3 && Math.random() < .5) { over = true; while (n < 2 || gcd(n, d) > 1) { d = R(5, 10); n = R(2, d - 1); } A = d * m; B = n * m; }
+  const right = over ? `${d}/${n}` : `${n}/${d}`;
+  const wrong = over ? [`${n}/${d}`, `${A}/${B}`, `${d - n}/${n}`] : [`${d}/${n}`, `${B}/${A}`, n < d - n ? `${n}/${d - n}` : `${n + 1}/${d}`];
+  const c = MC(right, [...new Set(wrong)].filter(w => w !== right).slice(0, 3));
+  const prompt = over ? `Track A is <b>${A} m</b> long. Track B is <b>${B} m</b> long. Write the length of track A as a fraction of track B, in its simplest form.`
+    : `Out of <b>${A}</b> ${ctx[0]}, <b>${B}</b> ${ctx[1]}. What fraction ${ctx[1]}? Give it in its simplest form.`;
+  const top = over ? A : B, bot = over ? B : A, g = gcd(top, bot);
+  return {
+    prompt, type: "mc", choices: c.choices, answer: c.answer,
+    hints: [over ? "Put track A on top, track B underneath." : "Put the part on top and the total underneath.", `${top}/${bot}. Now divide the top and bottom by ${g}.`],
+    solution: [[`${top}/${bot}`, over ? "A as a fraction of B" : "Part over total"], [`÷ ${g} top and bottom`, "Simplify"], [`= ${right}`, "Simplest form"]],
+    mistakes: c.choices.map((_, i) => [v => v === i, (() => { const x = c.at(i); if (x === `${B}/${A}` || x === `${A}/${B}`) return `That's the right size but not in its simplest form. Divide top and bottom by ${g}.`; if (x === (over ? `${n}/${d}` : `${d}/${n}`)) return over ? "That's B as a fraction of A. Put the one you're asked about on top." : "That's upside down. The part goes on top, the total underneath."; return over ? `Not quite. Start with ${A}/${B}, then simplify.` : `The bottom of the fraction should be the total (${A}), not the ones left over.`; })()])
+  };
+}
+function foaContext(level) {
+  if (level === 1) return foaFind(level);
+  let d = pick([3, 4, 5, 6, 8, 10]), n = R(1, d - 1); while (gcd(n, d) > 1) n = R(1, d - 1);
+  const k = R(3, 8), total = d * k, part = n * k;
+  const ctx = pick([[`There are ${total} pupils in a year group.`, "of them walk to school", "do <b>not</b> walk to school"], [`A box holds ${total} chocolates.`, "are dark chocolate", "are <b>not</b> dark chocolate"], [`A cinema has ${total} seats.`, "are already booked", "are still free"]]);
+  return {
+    prompt: `${ctx[0]} ${frac(n, d)} ${ctx[1]}. How many ${ctx[2]}?`, type: "num", answer: total - part,
+    hints: [`First find ${frac(n, d)} of ${total}.`, `${frac(n, d)} of ${total} = ${part}. The question asks for the rest.`],
+    solution: [[`${total} ÷ ${d} × ${n} = ${part}`, `${n}/${d} of ${total}`], [`${total} ${MINUS} ${part} = ${total - part}`, "Take it away to find the rest"]],
+    mistakes: [[v => near(v, part), `${part} is the fraction the question gives you. It asks for the others, so take ${part} away from ${total}.`],
+               [v => near(v, total / d), `That's 1/${d}. Find ${n}/${d} first, then take it away.`]]
+  };
+}
+
+/* ---------- 13. Metric units ---------- */
+const CONV = [["mm", "cm", 10, "length"], ["cm", "m", 100, "length"], ["m", "km", 1000, "length"], ["g", "kg", 1000, "mass"], ["ml", "l", 1000, "capacity"], ["mm", "m", 1000, "length"]];
+function muConvert(level) {
+  const [sm, bg, f] = pick(level === 1 ? CONV.slice(0, 5) : CONV);
+  let s;
+  if (level === 1) s = f * R(2, 15);
+  else if (level === 2) s = f >= 100 ? R(11, 99) * f / 10 : R(11, 99);
+  else s = f === 1000 ? R(1, 999) * (Math.random() < .5 ? 1 : 10) : R(1, 99);
+  const big = +(s / f).toFixed(4);
+  const toSmall = Math.random() < .5;
+  const [given, gu, want, wu] = toSmall ? [big, bg, s, sm] : [s, sm, big, bg];
+  const factors = [10, 100, 1000].filter(x => x !== f);
+  return {
+    prompt: `Convert <span class="big">${fmt(given)} ${gu}</span> into <b>${wu}</b>.`, type: "num", answer: want, unit: wu,
+    hints: [`How many ${sm} are in 1 ${bg}?`, `1 ${bg} = ${fmt(f)} ${sm}. Going to a smaller unit, multiply. Going to a bigger unit, divide.`],
+    solution: [[`1 ${bg} = ${fmt(f)} ${sm}`, "The conversion"], [`${fmt(given)} ${toSmall ? "×" : "÷"} ${fmt(f)}`, toSmall ? "Smaller unit, so more of them: multiply" : "Bigger unit, so fewer of them: divide"], [`= ${fmt(want)} ${wu}`, "Answer"]],
+    mistakes: [[v => near(v, toSmall ? given / f : given * f), `Wrong way. ${toSmall ? `${wu} are smaller than ${gu}, so you need more of them: multiply.` : `${wu} are bigger than ${gu}, so you need fewer of them: divide.`}`],
+               [v => factors.some(x => near(v, toSmall ? given * x : given / x)), `Check the conversion: 1 ${bg} = ${fmt(f)} ${sm}.`]]
+  };
+}
+function muAdd(level) {
+  const [sm, bg, f, kind] = pick(CONV.slice(1, 5));
+  const a = level === 1 ? R(1, 5) : R(11, 49) / 10;
+  const b = f === 100 ? R(5, 95) : R(50, 950);
+  const aS = +(a * f).toFixed(4);
+  const inBig = level === 3 && Math.random() < .6;
+  const ans = inBig ? +((aS + b) / f).toFixed(4) : aS + b;
+  const things = { length: ["A rope", "a second rope", "are tied end to end. What is the total length"], mass: ["A bag of flour", "a bag of sugar", "go in a box. What is their total mass"], capacity: ["A jug holds", "a bottle holds", "are poured into a bowl. What is the total"] }[kind];
+  return {
+    prompt: kind === "capacity" ? `A jug holds <b>${fmt(a)} ${bg}</b> of water and a bottle holds <b>${fmt(b)} ${sm}</b>. Both are poured into a bowl. How much water is in the bowl, in <b>${inBig ? bg : sm}</b>?`
+      : `${things[0]} is <b>${fmt(a)} ${bg}</b> and ${things[1]} is <b>${fmt(b)} ${sm}</b>. They ${things[2]} in <b>${inBig ? bg : sm}</b>?`.replace("They are tied", "They are tied").replace("They go", "They go"),
+    type: "num", answer: ans, unit: inBig ? bg : sm,
+    hints: ["The two amounts are in different units. Convert one so they match before adding.", `1 ${bg} = ${fmt(f)} ${sm}, so ${fmt(a)} ${bg} = ${fmt(aS)} ${sm}.`],
+    solution: [[`${fmt(a)} ${bg} = ${fmt(aS)} ${sm}`, "Make the units match"], [`${fmt(aS)} + ${fmt(b)} = ${fmt(aS + b)} ${sm}`, "Add"]].concat(inBig ? [[`${fmt(aS + b)} ÷ ${fmt(f)} = ${fmt(ans)} ${bg}`, `Convert back to ${bg}`]] : []),
+    mistakes: [[v => near(v, a + b), "You've added numbers in different units. Convert them to the same unit first."]]
+  };
+}
+function muTime(level) {
+  if (level === 1) {
+    const h = R(2, 9), kind = pick([0, 1]);
+    if (kind === 0) return { prompt: `How many minutes are there in <span class="big">${h} hours</span>?`, type: "num", answer: 60 * h, unit: "min", hints: ["There are 60 minutes in 1 hour.", `${h} × 60 = ?`], solution: [[`${h} × 60`, "60 minutes in each hour"], [`= ${60 * h} minutes`, "Answer"]], mistakes: [[v => near(v, 100 * h), "Time doesn't work in hundreds: there are 60 minutes in an hour."]] };
+    const m = R(2, 9); return { prompt: `How many seconds are there in <span class="big">${m} minutes</span>?`, type: "num", answer: 60 * m, unit: "s", hints: ["There are 60 seconds in 1 minute.", `${m} × 60 = ?`], solution: [[`${m} × 60`, "60 seconds in each minute"], [`= ${60 * m} seconds`, "Answer"]], mistakes: [[v => near(v, 100 * m), "There are 60 seconds in a minute, not 100."]] };
+  }
+  const h = R(1, 5), q = pick(level === 2 ? [.5, .25, .75] : [.1, .2, .4, .6, .8, .25, .75]);
+  if (Math.random() < .5) {
+    const ans = Math.round((h + q) * 60);
+    return { prompt: `How many minutes are there in <span class="big">${fmt(h + q)} hours</span>?`, type: "num", answer: ans, unit: "min",
+      hints: [`${fmt(h + q)} hours is ${h} hours and ${fmt(q)} of an hour.`, `${fmt(q)} of an hour = ${fmt(q)} × 60 = ${Math.round(q * 60)} minutes.`],
+      solution: [[`${h} × 60 = ${h * 60}`, "The whole hours"], [`${fmt(q)} × 60 = ${Math.round(q * 60)}`, "The part of an hour"], [`= ${ans} minutes`, "Add them"]],
+      mistakes: [[v => near(v, h * 60 + Math.round(q * 100)), `${fmt(q)} of an hour isn't ${Math.round(q * 100)} minutes. An hour has 60 minutes, so work out ${fmt(q)} × 60.`], [v => near(v, (h + q) * 100), "There are 60 minutes in an hour, not 100."]] };
+  }
+  const mins = Math.round((h + q) * 60), mm = Math.round(q * 60);
+  return { prompt: `Write <span class="big">${mins} minutes</span> in hours, as a decimal.`, type: "num", answer: +(h + q).toFixed(2), unit: "hours",
+    hints: [`${mins} minutes = ${h} hours and ${mm} minutes.`, `${mm} minutes as a decimal of an hour is ${mm} ÷ 60.`],
+    solution: [[`${mins} = ${h * 60} + ${mm}`, "Whole hours and minutes left over"], [`${mm} ÷ 60 = ${fmt(q)}`, "Minutes into a decimal of an hour"], [`= ${fmt(h + q)} hours`, "Answer"]],
+    mistakes: [[v => near(v, +(h + mm / 100).toFixed(2)), `${h} hours ${mm} minutes is not ${h}.${String(mm).padStart(2, "0")} hours. ${mm} minutes is ${mm} ÷ 60 = ${fmt(q)} of an hour.`], [v => near(v, mins / 100), "There are 60 minutes in an hour. Divide by 60, not 100."]] };
+}
+
+/* ---------- 14. Area of rectangles ---------- */
+function arRect(level) {
+  const unit = pick(["cm", "m"]);
+  if (level === 3 && Math.random() < .5) {
+    const s = R(3, 12), P = 4 * s;
+    return { prompt: `A square has a perimeter of <b>${P} ${unit}</b>. What is its area?`, type: "num", answer: s * s, unit: unit + "²",
+      hints: ["A square has 4 equal sides. Use the perimeter to find one side.", `${P} ÷ 4 = ${s}. Area = side × side.`],
+      solution: [[`${P} ÷ 4 = ${s} ${unit}`, "One side"], [`${s} × ${s} = ${s * s} ${unit}²`, "Area of the square"]],
+      mistakes: [[v => near(v, P), "That's the perimeter. Find one side first, then multiply side × side."], [v => near(v, P * P / 4) || near(v, P * P), "Find the side length first: perimeter ÷ 4."], [v => near(v, s * 2), `Area is ${s} × ${s}, not ${s} × 2.`]] };
+  }
+  const w = level === 1 ? R(3, 12) : R(4, 15) + (level === 2 ? pick([0, .5]) : 0), h = R(2, 9);
+  const ans = +(w * h).toFixed(2);
+  return { prompt: `Find the area of this rectangle.`, diagram: rectSVG(w, h, fmt(w) + " " + unit, h + " " + unit), type: "num", answer: ans, unit: unit + "²",
+    hints: ["Area is the space inside. For a rectangle, area = length × width.", `${fmt(w)} × ${h} = ?`],
+    solution: [[`${fmt(w)} × ${h}`, "Length × width"], [`= ${fmt(ans)} ${unit}²`, "Area is in square units"]],
+    mistakes: [[v => near(v, 2 * (w + h)), "That's the perimeter (the distance round). Area is length × width."], [v => near(v, w + h), "Multiply the length and width, don't add them."]] };
+}
+function arMissing(level) {
+  if (level === 1) return arRect(level);
+  const unit = pick(["cm", "m"]), w = R(3, 12), h = R(2, 9), A = w * h;
+  return { prompt: `This rectangle has an area of <b>${A} ${unit}²</b>. Find the missing length.`, diagram: rectSVG(w, h, "?", h + " " + unit), type: "num", answer: w, unit,
+    hints: ["Area = length × width. You know the area and one side.", `${h} × ? = ${A}. Divide: ${A} ÷ ${h}.`],
+    solution: [[`${h} × ? = ${A}`, "Area = length × width"], [`${A} ÷ ${h} = ${w}`, "Divide to undo the multiplication"], [`= ${w} ${unit}`, "Answer"]],
+    mistakes: [[v => near(v, A - h), "You subtracted. Area is length × width, so divide the area by the side you know."], [v => near(v, A * h), "Divide the area by the side you know, don't multiply."], [v => near(v, A / 2 - h), "That's using perimeter. This question gives the area: divide by the known side."]] };
+}
+function arCompound(level) {
+  if (level === 1) return arRect(level);
+  const unit = pick(["m", "cm"]);
+  const A = R(8, 16), B = R(6, 12), C = R(3, A - 3), D = R(2, B - 3);
+  const ans = C * B + (A - C) * D;
+  return { prompt: `This is the plan of a room. Find its area.`, diagram: lSVG(A, B, C, D, unit), type: "num", answer: ans, unit: unit + "²",
+    hints: ["Split the shape into two rectangles with one straight line.", `Try a tall rectangle ${C} by ${B} on the left, and a rectangle ${A - C} by ${D} on the right.`],
+    solution: [[`${C} × ${B} = ${C * B}`, "Left rectangle"], [`(${A} ${MINUS} ${C}) × ${D} = ${A - C} × ${D} = ${(A - C) * D}`, "Right rectangle: find its width first"], [`${C * B} + ${(A - C) * D} = ${ans} ${unit}²`, "Add the two areas"]],
+    mistakes: [[v => near(v, A * B), "That's the area of the whole big rectangle, including the missing corner. Split the shape into two rectangles."],
+               [v => near(v, C * B + A * D), `The bottom-right rectangle is ${A - C} wide, not ${A}: take away the ${C} you've already used.`],
+               [v => near(v, 2 * (A + B)), "That's the perimeter. Area means the space inside: split it into rectangles and multiply."]] };
+}
+
+/* ---------- 15. Angle facts ---------- */
+function angSVG(rays, arcs, opts = {}) {
+  // rays: degrees (0 = right, anticlockwise). arcs: [from, to, label, radius?]
+  const cx = 170, L = opts.L || 115, cy = opts.cy || L + 12, H = opts.h || 2 * L + 46;
+  const P = (deg, r) => [cx + r * Math.cos(deg * Math.PI / 180), cy - r * Math.sin(deg * Math.PI / 180)];
+  let s = `<svg viewBox="0 0 340 ${H}" role="img" aria-label="Angle diagram">`;
+  rays.forEach(d => { const [x, y] = P(d, L); s += `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#00FCF1" stroke-width="2.5" stroke-linecap="round"/>`; });
+  arcs.forEach(([a, b, lab, r0], i) => {
+    const r = r0 || 30 + (i % 2) * 8; const span = ((b - a) % 360 + 360) % 360;
+    const [x1, y1] = P(a, r), [x2, y2] = P(b, r);
+    s += `<path d="M${x1.toFixed(1)} ${y1.toFixed(1)} A${r} ${r} 0 ${span > 180 ? 1 : 0} 0 ${x2.toFixed(1)} ${y2.toFixed(1)}" fill="none" stroke="${lab === "x" ? "#FFC857" : "#93a0c8"}" stroke-width="2"/>`;
+    const [tx, ty] = P(a + span / 2, r + (span < 40 ? 34 : 24));
+    s += SVGT(tx.toFixed(1), (ty + 5).toFixed(1), lab, { col: lab === "x" ? "#FFC857" : "#E8ECF8", weight: lab === "x" ? 700 : 400 });
+  });
+  s += `<circle cx="${cx}" cy="${cy}" r="3.5" fill="#E8ECF8"/>` + SVGT(330, H - 6, "Not drawn accurately", { col: "#93a0c8", size: 12, anchor: "end" }) + `</svg>`;
+  return s;
+}
+function afLine(level) {
+  if (level === 1) {
+    const a = R(25, 155);
+    return { prompt: "The angles meet on a straight line. Find <b>x</b>.", diagram: angSVG([0, 180, a], [[0, a, a + "°"], [a, 180, "x"]], { h: 172, cy: 140, L: 130 }), type: "num", answer: 180 - a, unit: "°",
+      hints: ["Angles on a straight line add up to 180°.", `x + ${a} = 180.`], solution: [[`180 ${MINUS} ${a}`, "Angles on a straight line add to 180°"], [`x = ${180 - a}°`, "Answer"]],
+      mistakes: [[v => near(v, 360 - a), "Angles on a straight line add to 180°, not 360°. 360° is for angles all the way round a point."], [v => near(v, a), "x isn't equal to the other angle here. They add up to 180°."]] };
+  }
+  const a = R(25, 70), b = R(25, 70), x = 180 - a - b;
+  const order = level === 3 ? pick([0, 1]) : 0;
+  const arcs = order ? [[0, a, a + "°"], [a, a + x, "x"], [a + x, 180, b + "°"]] : [[0, a, a + "°"], [a, a + b, b + "°"], [a + b, 180, "x"]];
+  const rays = order ? [0, 180, a, a + x] : [0, 180, a, a + b];
+  return { prompt: "These angles meet on a straight line. Find <b>x</b>.", diagram: angSVG(rays, arcs, { h: 172, cy: 140, L: 130 }), type: "num", answer: x, unit: "°",
+    hints: ["Angles on a straight line add up to 180°.", `Add the angles you know: ${a} + ${b} = ${a + b}. Then take that from 180.`],
+    solution: [[`${a} + ${b} = ${a + b}`, "Add the known angles"], [`180 ${MINUS} ${a + b} = ${x}`, "Angles on a straight line add to 180°"], [`x = ${x}°`, "Answer"]],
+    mistakes: [[v => near(v, 360 - a - b), "Angles on a straight line add to 180°, not 360°."], [v => near(v, 180 - a) || near(v, 180 - b), "Take away both of the known angles from 180."]] };
+}
+function afPoint(level) {
+  if (level === 3) {
+    const a = R(50, 120), b = R(50, 120), twoX = 360 - a - b; let x = twoX / 2;
+    if (!Number.isInteger(x) || x < 30) return afPoint(2);
+    const r1 = a, r2 = a + b, r3 = a + b + x;
+    return { prompt: "Find <b>x</b>.", diagram: angSVG([0, r1, r2, r3], [[0, r1, a + "°"], [r1, r2, b + "°"], [r2, r3, "x"], [r3, 360, "x"]]), type: "num", answer: x, unit: "°",
+      hints: ["Angles around a point add up to 360°. There are two angles marked x.", `${a} + ${b} + x + x = 360, so 2x = ${twoX}.`],
+      solution: [[`${a} + ${b} = ${a + b}`, "Add the known angles"], [`360 ${MINUS} ${a + b} = ${twoX}`, "That's what the two x angles make"], [`x = ${twoX} ÷ 2 = ${x}°`, "Two equal angles share it"]],
+      mistakes: [[v => near(v, twoX), "That's both x angles together. Halve it to get one."], [v => near(v, (180 - a - b) / 2) || near(v, 180 - a - b), "Angles around a point add to 360°, not 180°."]] };
+  }
+  const n = level === 1 ? 2 : 3;
+  let parts; do { parts = Array.from({ length: n }, () => R(40, 130)); } while (360 - parts.reduce((s, v) => s + v, 0) < 30);
+  const x = 360 - parts.reduce((s, v) => s + v, 0);
+  const rays = [0]; parts.forEach(p => rays.push(rays[rays.length - 1] + p));
+  const arcs = parts.map((p, i) => [rays[i], rays[i + 1], p + "°"]).concat([[rays[rays.length - 1], 360, "x"]]);
+  const sum = parts.reduce((s, v) => s + v, 0);
+  return { prompt: "These angles are around a point. Find <b>x</b>.", diagram: angSVG(rays, arcs), type: "num", answer: x, unit: "°",
+    hints: ["Angles around a point add up to 360°.", `Add the angles you know (${parts.join(" + ")}), then take that from 360.`],
+    solution: [[`${parts.join(" + ")} = ${sum}`, "Add the known angles"], [`360 ${MINUS} ${sum} = ${x}`, "Angles around a point add to 360°"], [`x = ${x}°`, "Answer"]],
+    mistakes: [[v => near(v, 180 - sum) || near(v, Math.abs(180 - sum)), "Angles around a point add to 360°, not 180°. 180° is for a straight line."]] };
+}
+function afVert(level) {
+  const t = R(15, 40), a = R(40, 140);
+  const askOpp = level === 1 ? true : Math.random() < .5;
+  const arcs = askOpp ? [[t, t + a, a + "°"], [t + 180, t + 180 + a, "x"]] : [[t, t + a, a + "°"], [t + a, t + 180, "x"]];
+  const ans = askOpp ? a : 180 - a;
+  return { prompt: "Two straight lines cross. Find <b>x</b>.", diagram: angSVG([t, t + 180, t + a, t + a + 180], arcs), type: "num", answer: ans, unit: "°",
+    hints: [askOpp ? "x is opposite the marked angle, where the lines cross." : "x and the marked angle sit next to each other on one straight line.", askOpp ? "Vertically opposite angles are equal." : "Angles on a straight line add up to 180°."],
+    solution: askOpp ? [["x is vertically opposite " + a + "°", "Opposite angles where two lines cross"], [`x = ${a}°`, "Vertically opposite angles are equal"]] : [[`x + ${a} = 180`, "They're on a straight line"], [`x = ${180 - a}°`, "Angles on a straight line add to 180°"]],
+    mistakes: [[v => askOpp && near(v, 180 - a), "x is opposite the marked angle, not next to it. Vertically opposite angles are equal."], [v => !askOpp && near(v, a), "x is next to the marked angle, not opposite it. Together they make a straight line: 180°."], [v => near(v, 360 - a), "Check which fact to use: these angles aren't all the way round a point."]] };
+}
+function afType(level) {
+  const kinds = ["Acute", "Right angle", "Obtuse", "Reflex"];
+  const k = pick([0, 0, 1, 2, 2, 3, 3]);
+  const a = [R(5, 85), 90, R(95, 175), R(185, 355)][k];
+  const why = ["less than 90°", "exactly 90°", "between 90° and 180°", "between 180° and 360°"];
+  return { prompt: `What type of angle is <span class="big">${a}°</span>?`, type: "mc", choices: kinds, answer: k,
+    hints: ["Compare it with 90° (a right angle) and 180° (a straight line).", "Acute < 90°. Obtuse: between 90° and 180°. Reflex: more than 180°."],
+    solution: [[`${a}°`, "The angle"], [kinds[k], `Because it's ${why[k]}`]],
+    mistakes: kinds.map((nm, i) => [v => v === i, `${nm === "Right angle" ? "A right angle" : "An " + nm.toLowerCase() + " angle"} is ${why[i]}. ${a}° is ${why[k]}.`]) };
+}
+
+/* ---------- 16. Tables and charts ---------- */
+const CHART_SETS = [["Favourite sport", ["Football", "Netball", "Tennis", "Swimming", "Rugby"]], ["Favourite fruit", ["Apple", "Banana", "Mango", "Grapes", "Kiwi"]], ["How pupils travel", ["Walk", "Bus", "Car", "Bike", "Train"]], ["Pets owned", ["Dog", "Cat", "Fish", "Rabbit", "None"]]];
+function barSVG(cats, vals, step, top) {
+  const W = 400, H = 220, x0 = 46, y0 = 190, ch = 170, bw = Math.min(54, (W - x0 - 10) / cats.length - 14);
+  let s = `<svg viewBox="0 0 ${W} ${H + 34}" role="img" aria-label="Bar chart">`;
+  for (let v = 0; v <= top; v += step) { const y = y0 - v / top * ch; s += `<line x1="${x0}" y1="${y}" x2="${W - 6}" y2="${y}" stroke="rgba(147,160,200,.25)"/>` + SVGT(x0 - 8, y + 5, v, { anchor: "end", size: 13, col: "#93a0c8" }); }
+  cats.forEach((c, i) => { const x = x0 + 12 + i * ((W - x0 - 10) / cats.length), h = vals[i] / top * ch; s += `<rect x="${x}" y="${y0 - h}" width="${bw}" height="${h}" fill="rgba(0,252,241,.35)" stroke="#00FCF1" stroke-width="1.5"/>` + SVGT(x + bw / 2, y0 + 20, c, { size: 12 }); });
+  s += `<line x1="${x0}" y1="${y0}" x2="${W - 6}" y2="${y0}" stroke="#E8ECF8" stroke-width="1.5"/><line x1="${x0}" y1="${y0}" x2="${x0}" y2="${y0 - ch}" stroke="#E8ECF8" stroke-width="1.5"/>` + SVGT(x0 - 34, y0 - ch / 2, "Frequency", { size: 12, col: "#93a0c8" }).replace("<text", `<text transform="rotate(-90 ${x0 - 34} ${y0 - ch / 2})"`) + `</svg>`;
+  return s;
+}
+function ctBar(level) {
+  const [title, all] = pick(CHART_SETS), n = level === 1 ? 4 : 5, cats = all.slice(0, n);
+  const step = level === 1 ? pick([1, 2]) : level === 2 ? 5 : pick([2, 10]);
+  const unitV = level === 3 ? step / 2 : step;           // level 3 bars can stop halfway between lines
+  let vals; do { vals = cats.map(() => unitV * R(1, Math.floor((step * 8) / unitV))); } while (new Set(vals).size < n);
+  const top = Math.ceil(Math.max(...vals) / step) * step + step;
+  const kind = level === 1 ? pick([0, 1]) : level === 2 ? pick([1, 2]) : pick([1, 2]);
+  const i = R(0, n - 1); let j = R(0, n - 1); while (j === i || vals[j] === vals[i]) j = R(0, n - 1);
+  const [bi, si] = vals[i] > vals[j] ? [i, j] : [j, i];
+  let prompt, ans, sol, mistakes = [];
+  if (kind === 0) { prompt = `The bar chart shows "${title}". How many chose <b>${cats[i]}</b>?`; ans = vals[i]; sol = [[`The ${cats[i]} bar ends at ${vals[i]}`, `Read across to the scale (each line is ${step})`]]; mistakes.push([v => vals.some((x, k) => k !== i && near(v, x)), "That's a different bar. Find the right label along the bottom first."], [v => near(v, vals[i] / step), `Each gridline is worth ${step}, not 1. Read the number on the scale.`]); }
+  if (kind === 1) { prompt = `The bar chart shows "${title}". How many more chose <b>${cats[bi]}</b> than <b>${cats[si]}</b>?`; ans = vals[bi] - vals[si]; sol = [[`${cats[bi]}: ${vals[bi]}, ${cats[si]}: ${vals[si]}`, "Read both bars"], [`${vals[bi]} ${MINUS} ${vals[si]} = ${ans}`, "\"How many more\" means subtract"]]; mistakes.push([v => near(v, vals[bi]) || near(v, vals[si]), "That's just one bar. \"How many more\" means find the difference between the two."], [v => near(v, vals[bi] + vals[si]), "\"How many more\" means subtract, not add."]); }
+  if (kind === 2) { const tot = vals.reduce((s, v) => s + v, 0); prompt = `The bar chart shows "${title}". How many people were asked altogether?`; ans = tot; sol = [[vals.join(" + "), "Read every bar"], [`= ${tot}`, "Add them up"]]; mistakes.push([v => near(v, n), "That's the number of bars. Add up the heights of the bars."]); }
+  return { prompt, diagram: barSVG(cats, vals, step, top), type: "num", answer: ans,
+    hints: [`Look at the scale up the side first. Each gridline is worth ${step}.`, level === 3 ? "Some bars stop halfway between two lines. Halfway between is half a step." : "Read across from the top of each bar to the scale."], solution: sol, mistakes };
+}
+const ICON = (part = 1) => `<svg viewBox="0 0 20 20" width="22" height="22" aria-hidden="true">${part === 1 ? `<circle cx="10" cy="10" r="8" fill="#00FCF1"/>` : `<path d="M10 2 A8 8 0 0 0 10 18 Z" fill="#00FCF1"/>`}</svg>`;
+function ctPicto(level) {
+  const [title, all] = pick(CHART_SETS), cats = all.slice(0, 4);
+  const key = level === 1 ? 2 : level === 2 ? 4 : pick([6, 10]);
+  const halves = level >= 2;
+  const icons = cats.map(() => R(1, 7) + (halves && Math.random() < .5 ? .5 : 0));
+  const vals = icons.map(c => c * key);
+  const row = c => ICON(1).repeat(Math.floor(c)) + (c % 1 ? ICON(.5) : "");
+  const table = `<table class="ftable picto"><tbody>${cats.map((c, i) => `<tr><th>${c}</th><td>${row(icons[i])}</td></tr>`).join("")}</tbody></table><p class="small muted" style="margin:8px 0 0">Key: ${ICON(1)} = ${key} people</p>`;
+  const i = R(0, 3), kind = level === 1 ? 0 : pick([0, 1]);
+  const tot = vals.reduce((s, v) => s + v, 0);
+  const ans = kind === 0 ? vals[i] : tot;
+  return { prompt: kind === 0 ? `The pictogram shows "${title}". How many people chose <b>${cats[i]}</b>?` : `The pictogram shows "${title}". How many people are shown altogether?`,
+    diagram: `<div style="padding:6px">${table}</div>`, type: "num", answer: ans,
+    hints: [`Check the key: each whole symbol stands for ${key} people.${halves ? ` Half a symbol is ${key / 2}.` : ""}`, kind === 0 ? `Count the symbols for ${cats[i]} (${icons[i]}) and multiply by ${key}.` : `Count all the symbols (${icons.reduce((s, v) => s + v, 0)}) and multiply by ${key}.`],
+    solution: kind === 0 ? [[`${icons[i]} symbols`, `Count ${cats[i]}'s row`], [`${icons[i]} × ${key} = ${vals[i]}`, "Use the key"]] : [[`${icons.join(" + ")} = ${icons.reduce((s, v) => s + v, 0)} symbols`, "Count every symbol"], [`× ${key} = ${tot}`, "Use the key"]],
+    mistakes: [[v => near(v, kind === 0 ? icons[i] : icons.reduce((s, x) => s + x, 0)), `That's the number of symbols. Each symbol stands for ${key} people, so multiply by ${key}.`], [v => kind === 0 && halves && near(v, Math.ceil(icons[i]) * key), `The last symbol is only half, so it's worth ${key / 2}, not ${key}.`]] };
+}
+const tallySVG = n => { let s = `<svg viewBox="0 0 ${Math.ceil(n / 5) * 34 + 10} 26" height="24" aria-label="${n} tally marks">`; for (let g = 0; g * 5 < n; g++) { const m = Math.min(5, n - g * 5); for (let k = 0; k < Math.min(4, m); k++) s += `<line x1="${6 + g * 34 + k * 6}" y1="3" x2="${6 + g * 34 + k * 6}" y2="23" stroke="#E8ECF8" stroke-width="2"/>`; if (m === 5) s += `<line x1="${2 + g * 34}" y1="20" x2="${28 + g * 34}" y2="6" stroke="#E8ECF8" stroke-width="2"/>`; } return s + `</svg>`; };
+function ctFreq(level) {
+  const [title, all] = pick(CHART_SETS), cats = all.slice(0, 4), f = cats.map(() => R(2, level === 1 ? 14 : 30));
+  if (level === 1) {
+    const i = R(0, 3);
+    return { prompt: `The tally chart shows "${title}". What is the frequency for <b>${cats[i]}</b>?`,
+      diagram: `<table class="ftable"><thead><tr><th>${title.split(" ").slice(-1)[0] === "sport" ? "Sport" : "Choice"}</th><th>Tally</th></tr></thead><tbody>${cats.map((c, k) => `<tr><th>${c}</th><td>${tallySVG(f[k])}</td></tr>`).join("")}</tbody></table>`,
+      type: "num", answer: f[i], hints: ["Each group with a line across is 5.", `Count the groups of 5 for ${cats[i]}, then add the single marks.`],
+      solution: [[`${Math.floor(f[i] / 5)} group${Math.floor(f[i] / 5) === 1 ? "" : "s"} of 5 and ${f[i] % 5} more`, "Count in fives"], [`= ${f[i]}`, "Frequency"]],
+      mistakes: [[v => near(v, Math.floor(f[i] / 5) * 4 + f[i] % 5), "The line across each group counts too: each group is 5, not 4."]] };
+  }
+  const miss = R(0, 3);
+  let other = -1;
+  if (level === 3) { other = (miss + R(1, 3)) % 4; if (f[other] === f[miss]) f[other]++; }
+  const tot = f.reduce((s, v) => s + v, 0);
+  const known = f.filter((_, k) => k !== miss), ks = known.reduce((s, v) => s + v, 0);
+  let prompt = `The frequency table shows "${title}". Find the missing frequency for <b>${cats[miss]}</b>.`, ans = f[miss];
+  const sol = [[`${known.join(" + ")} = ${ks}`, "Add the frequencies you know"], [`${tot} ${MINUS} ${ks} = ${f[miss]}`, "Take it from the total"]];
+  if (level === 3) {
+    const big = f[miss] > f[other] ? miss : other, small = big === miss ? other : miss;
+    prompt = `The frequency table shows "${title}". How many more chose <b>${cats[big]}</b> than <b>${cats[small]}</b>?`;
+    ans = f[big] - f[small]; sol.push([`${f[big]} ${MINUS} ${f[small]} = ${ans}`, "Then find the difference"]);
+  }
+  const rows = cats.map((c, k) => `<tr><th>${c}</th><td>${k === miss ? "?" : f[k]}</td></tr>`).join("") + `<tr class="tot"><th>Total</th><td>${tot}</td></tr>`;
+  return { prompt, diagram: `<table class="ftable"><thead><tr><th>Choice</th><th>Frequency</th></tr></thead><tbody>${rows}</tbody></table>`, type: "num", answer: ans,
+    hints: ["The frequencies must add up to the total.", `Add the ones you know, then take that away from the total.${level === 3 ? " Then answer the question." : ""}`],
+    solution: sol,
+    mistakes: [[v => near(v, ks), "That's the frequencies you know added up. Take it away from the total to find the missing one."], [v => level === 3 && near(v, f[miss]), "That's the missing frequency. Now use it to answer the question: how many more?"]] };
+}
+
+/* ---------- curriculum map (KS3 programme of study, DfE-00179-2013) ---------- */
+const NC = {"N1": "Place value for decimals, measures and integers of any size", "N2": "Order integers, decimals and fractions; number line; = ≠ < > ≤ ≥", "N3": "Primes, factors, multiples, HCF, LCM, prime factorisation", "N4": "Four operations with integers, decimals, fractions and mixed numbers, positive and negative", "N5": "Priority of operations: brackets, powers, roots, reciprocals", "N6": "Relationships between operations, including inverse operations", "N7": "Integer powers and real roots; powers of 2, 3, 4, 5; exact roots vs decimal approximations", "N8": "Standard form A × 10ⁿ", "N9": "Terminating decimals and their fractions", "N10": "Percentages: parts per hundred, percentage change as fraction/decimal, one quantity as a % of another, over 100%", "N11": "Fractions and percentages as operators", "N12": "Standard units of mass, length, time, money and other measures", "N13": "Rounding to decimal places and significant figures", "N14": "Estimating by rounding; error intervals a < x ≤ b", "N15": "Using a calculator and interpreting the result", "N16": "The infinite nature of integers, real and rational numbers", "A1": "Algebraic notation (ab, 3y, a², a/b, brackets)", "A2": "Substitution into formulae and expressions, including scientific formulae", "A3": "Vocabulary: expressions, equations, inequalities, terms, factors", "A4": "Simplify: collect like terms, single brackets, common factors, two binomials", "A5": "Standard formulae; rearranging to change the subject", "A6": "Modelling situations with expressions, formulae and graphs", "A7": "Solving linear equations in one variable", "A8": "Coordinates in all four quadrants", "A9": "Graphs of linear and quadratic functions", "A10": "Interpreting relationships algebraically and graphically", "A11": "y = mx + c; gradients and intercepts", "A12": "Reading values from graphs; approximate solutions of simultaneous equations", "A13": "Contextual graphs: piece-wise linear, exponential, reciprocal", "A14": "Sequences from term-to-term and position-to-term rules", "A15": "Arithmetic sequences and the nth term", "A16": "Geometric and other sequences", "R1": "Converting between related standard units (time, length, area, volume, mass)", "R2": "Scale factors, scale diagrams and maps", "R3": "One quantity as a fraction of another", "R4": "Ratio notation and simplest form", "R5": "Dividing a quantity in a ratio", "R6": "Multiplicative relationships as a ratio or a fraction", "R7": "Ratio linked to fractions and linear functions", "R8": "Percentage increase, decrease, original value and simple interest", "R9": "Direct and inverse proportion, including graphs and algebra", "R10": "Compound units: speed, unit pricing, density", "G1": "Area of triangles, parallelograms, trapezia; volume of cuboids and prisms", "G2": "Perimeter of 2-D shapes and circles; area of circles and composite shapes", "G3": "Drawing and measuring lines and angles; scale drawings", "G4": "Ruler and compass constructions; shortest distance to a line", "G5": "Conventional terms: parallel, perpendicular, polygons, symmetry", "G6": "Labelling triangle ABC; congruence criteria", "G7": "Properties of triangles, quadrilaterals, circles and other plane figures", "G8": "Translations, rotations and reflections", "G9": "Congruent triangles; enlargement and similar shapes", "G10": "Angles at a point, on a straight line, vertically opposite", "G11": "Parallel lines: alternate and corresponding angles", "G12": "Angle sum of a triangle and of any polygon; regular polygons", "G13": "Deriving results, including Pythagoras' theorem; simple proofs", "G14": "Pythagoras and trigonometric ratios in right-angled triangles", "G15": "Faces, edges and vertices of 3-D solids", "G16": "Interpreting relationships algebraically and geometrically", "P1": "Probability experiments, fairness, language and the 0–1 scale", "P2": "Probabilities of all outcomes sum to 1", "P3": "Sets, unions and intersections: tables, grids and Venn diagrams", "P4": "Sample spaces for single and combined events", "S1": "Distributions: mean, mode, median, range, outliers", "S2": "Tables and charts: frequency tables, bar charts, pie charts, pictograms, line charts", "S3": "Bivariate data and scatter graphs"};
+const MAP = {"bronze": [["place-value", "Place value", "Number", ["N1"]], ["four-operations", "The four operations", "Number", ["N4"]], ["negative-numbers", "Negative numbers", "Number", ["N2", "N4"]], ["rounding", "Rounding", "Number", ["N13"]], ["factors-multiples", "Factors, multiples and primes", "Number", ["N3"]], ["order-of-operations", "Order of operations", "Number", ["N5", "N6"]], ["notation", "Algebraic notation", "Algebra", ["A1", "A3"]], ["simplifying", "Simplifying expressions", "Algebra", ["A4"]], ["substitution", "Substitution", "Algebra", ["A2"]], ["fractions-of-amounts", "Fractions of amounts", "Ratio", ["N11", "R3"]], ["metric-units", "Metric units", "Ratio", ["N12", "R1"]], ["perimeter", "Perimeter", "Geometry", ["G2"]], ["area-rectangles", "Area of rectangles", "Geometry", ["G1", "G2"]], ["angle-facts", "Angle facts", "Geometry", ["G10", "G3"]], ["probability-words", "Probability words and the scale", "Probability", ["P1"]], ["charts-tables", "Tables and charts", "Statistics", ["S2"]]], "silver": [["ordering-numbers", "Ordering numbers", "Number", ["N2"]], ["hcf-lcm", "HCF, LCM and prime factors", "Number", ["N3"]], ["fractions-add-sub", "Adding and subtracting fractions", "Number", ["N4"]], ["fractions-mul-div", "Multiplying and dividing fractions", "Number", ["N4"]], ["decimal-calculations", "Calculating with decimals", "Number", ["N4", "N15"]], ["powers-roots", "Powers and roots", "Number", ["N7", "N5"]], ["fdp", "Fractions, decimals and percentages", "Number", ["N9", "N10"]], ["expanding-brackets", "Expanding brackets", "Algebra", ["A4"]], ["equations-1", "Solving equations", "Algebra", ["A7", "A3", "N6"]], ["sequences", "Sequences", "Algebra", ["A14"]], ["coordinates", "Coordinates", "Algebra", ["A8"]], ["ratio-simplify", "Ratio", "Ratio", ["R4", "R6", "R3"]], ["ratio-share", "Sharing in a ratio", "Ratio", ["R5"]], ["percentages-of-amounts", "Percentages of amounts", "Ratio", ["N10", "N11"]], ["area-triangles", "Area of triangles and parallelograms", "Geometry", ["G1"]], ["angles-shapes", "Angles in triangles and quadrilaterals", "Geometry", ["G12", "G7", "G6"]], ["polygons-symmetry", "Polygons and symmetry", "Geometry", ["G5", "G7"]], ["probability-single", "Calculating probability", "Probability", ["P1", "P2"]], ["averages", "Averages and range", "Statistics", ["S1"]]], "gold": [["standard-form", "Standard form", "Number", ["N8"]], ["estimation", "Estimation", "Number", ["N14", "N15"]], ["percentage-compare", "One number as a percentage of another", "Number", ["N10", "R3"]], ["factorising", "Factorising", "Algebra", ["A4", "A3"]], ["equations-2", "Equations with unknowns on both sides", "Algebra", ["A7"]], ["nth-term", "The nth term", "Algebra", ["A15"]], ["linear-graphs", "Straight-line graphs", "Algebra", ["A9", "A10"]], ["formulae", "Writing and using formulae", "Algebra", ["A2", "A5", "A6"]], ["percentage-change", "Percentage change and simple interest", "Ratio", ["R8", "N10"]], ["direct-proportion", "Direct proportion and best buys", "Ratio", ["R9", "R10", "R7"]], ["speed-distance-time", "Speed, distance and time", "Ratio", ["R10", "A13"]], ["scale-drawings", "Scale drawings and maps", "Ratio", ["R2", "G3"]], ["parallel-angles", "Angles in parallel lines", "Geometry", ["G11"]], ["polygon-angles", "Angles in polygons", "Geometry", ["G12"]], ["circles", "Circles", "Geometry", ["G2", "G7"]], ["volume-prisms", "Volume of prisms", "Geometry", ["G1", "G15"]], ["transformations", "Transformations", "Geometry", ["G8"]], ["sample-spaces", "Sample spaces", "Probability", ["P4", "P2"]], ["venn-diagrams", "Venn diagrams", "Probability", ["P3"]], ["pie-charts", "Pie charts", "Statistics", ["S2"]], ["grouped-data", "Frequency tables and grouped data", "Statistics", ["S1", "S2"]]], "platinum": [["index-laws", "Index laws", "Number", ["N7"]], ["exact-values", "Exact values, roots and recurring decimals", "Number", ["N7", "N9", "N16"]], ["bounds", "Error intervals", "Number", ["N14"]], ["double-brackets", "Expanding double brackets", "Algebra", ["A4"]], ["rearranging", "Rearranging formulae", "Algebra", ["A5"]], ["inequalities", "Inequalities", "Algebra", ["A3", "N2"]], ["y-mx-c", "y = mx + c", "Algebra", ["A11", "A10"]], ["simultaneous-graphs", "Simultaneous equations with graphs", "Algebra", ["A12"]], ["quadratic-graphs", "Quadratic graphs", "Algebra", ["A9", "A12"]], ["real-life-graphs", "Real-life graphs", "Algebra", ["A13", "A6"]], ["geometric-sequences", "Geometric sequences", "Algebra", ["A16"]], ["reverse-percentages", "Reverse percentages", "Ratio", ["R8"]], ["inverse-proportion", "Inverse proportion", "Ratio", ["R9"]], ["compound-measures", "Density and compound measures", "Ratio", ["R10"]], ["pythagoras", "Pythagoras' theorem", "Geometry", ["G13", "G14", "G16"]], ["trigonometry", "Trigonometry", "Geometry", ["G14"]], ["congruence-similarity", "Congruence and similarity", "Geometry", ["G6", "G9", "R7"]], ["constructions", "Constructions and loci", "Geometry", ["G4", "G3"]], ["surface-area", "3-D shapes and surface area", "Geometry", ["G15", "G1", "G16"]], ["relative-frequency", "Relative frequency", "Probability", ["P1"]], ["scatter-graphs", "Scatter graphs", "Statistics", ["S3"]], ["comparing-distributions", "Comparing distributions", "Statistics", ["S1"]]]};
+
 /* ---------- topic definitions ---------- */
 const TOPICS = [
   { id: "place-value", name: "Place value", strand: "Number",
@@ -673,8 +1279,185 @@ const TOPICS = [
       mistakes: [["Mixing up unlikely and impossible", "Unlikely things can still happen. Impossible things can't."],
                  ["Forgetting the middle", "½, 0.5 and 50% all mean an even chance."],
                  ["Probabilities above 1", "Nothing is more than certain, so no probability is bigger than 1."]]
+    } },
+  { id: "rounding", name: "Rounding", strand: "Number",
+    gens: [rndNearest, rndDP, rndSF],
+    learn: {
+      idea: "Rounding gives a simpler number that is close to the real one. You keep the important digits and look at the next digit to decide whether to round up or down.",
+      steps: ["Find the column you're rounding to (nearest 10, 1 decimal place, 1 significant figure…).",
+              "Look at the next digit along, to the right. This is the deciding digit.",
+              "5 or more: round up. Less than 5: leave the digit as it is.",
+              "Keep the number the same size: fill empty places before the decimal point with zeros. Significant figures start at the first digit that isn't zero."],
+      example: { q: "Round 0.04762 to 2 significant figures.",
+        lines: [["0.04762", "The first non-zero digit is 4: that's the 1st significant figure"], ["0.047 | 62", "Keep 2 significant figures: 4 and 7"], ["The next digit is 6", "6 is 5 or more, so round up"], ["= 0.048", "Answer"]] },
+      tryOne: { q: "Round 3,748 to the nearest hundred.",
+        steps: [{ ask: "Which two hundreds is 3,748 between? The lower one:", type: "num", answer: 3700, tip: "3,748 is between 3,700 and 3,800." },
+                { ask: "What is the deciding digit (the tens digit)?", type: "num", answer: 4, tip: "3,7[4]8: the tens digit is 4." },
+                { ask: "So 3,748 to the nearest hundred is", type: "num", answer: 3700, tip: "4 is less than 5, so round down to 3,700." }] },
+      mistakes: [["Chopping instead of rounding", "2.67 to 1 decimal place is 2.7, not 2.6."],
+                 ["Losing the zeros", "4,682 to the nearest 100 is 4,700, not 47."],
+                 ["Counting leading zeros", "In 0.0352, the first significant figure is 3, not 0."]]
+    } },
+  { id: "factors-multiples", name: "Factors, multiples and primes", strand: "Number",
+    gens: [fmFactor, fmMultiple, fmPrime, fmCount],
+    learn: {
+      idea: "Factors divide into a number exactly. Multiples are in its times table. A prime number has exactly two factors: 1 and itself.",
+      steps: ["Factors: find them in pairs that multiply to make the number. 12 = 1 × 12, 2 × 6, 3 × 4.",
+              "Multiples: the times table. Multiples of 6 are 6, 12, 18, 24…",
+              "Primes have exactly two factors. 2, 3, 5, 7, 11, 13… 2 is the only even prime.",
+              "1 is not prime: it only has one factor."],
+      example: { q: "List all the factors of 18.",
+        lines: [["1 × 18", "Start with 1 and the number itself"], ["2 × 9", "Try 2"], ["3 × 6", "Try 3. 4 and 5 don't go in"], ["1, 2, 3, 6, 9, 18", "The pairs met, so list them in order"]] },
+      tryOne: { q: "Is 51 a prime number?",
+        steps: [{ ask: "Does 2 go into 51 exactly?", type: "mc", choices: ["Yes", "No"], answer: 1, tip: "51 is odd, so 2 doesn't go in." },
+                { ask: "Does 3 go into 51 exactly?", type: "mc", choices: ["Yes", "No"], answer: 0, tip: "5 + 1 = 6, which is in the 3 times table, so 3 goes in: 51 = 3 × 17." },
+                { ask: "So is 51 prime?", type: "mc", choices: ["Prime", "Not prime"], answer: 1, tip: "51 = 3 × 17, so it has more than two factors." }] },
+      mistakes: [["Mixing up factors and multiples", "Factors of 12 go into 12. Multiples of 12 are 12, 24, 36…"],
+                 ["Thinking 1 is prime", "A prime has exactly two factors. 1 has only one."],
+                 ["Every odd number is prime", "9, 15, 21 and 51 are odd but not prime."]]
+    } },
+  { id: "order-of-operations", name: "Order of operations", strand: "Number",
+    gens: [booCalc, booCalc, booThink],
+    learn: {
+      idea: "When a calculation has more than one operation, there's an agreed order, so everyone gets the same answer: BIDMAS.",
+      steps: ["B: brackets first.",
+              "I: indices (powers and roots), like 3² or √16.",
+              "D and M: division and multiplication, working from left to right.",
+              "A and S: addition and subtraction, working from left to right. To work backwards, undo each step with its inverse: + and − undo each other, × and ÷ undo each other."],
+      example: { q: "Work out 20 − 3 × 4 + 2²",
+        lines: [["2² = 4", "Indices first"], ["3 × 4 = 12", "Then multiplication"], ["20 − 12 + 4", "Rewrite it"], ["= 12", "Then + and − from left to right"]] },
+      tryOne: { q: "Work out (6 + 4) × 3 − 5",
+        steps: [{ ask: "Brackets first: 6 + 4 =", type: "num", answer: 10, tip: "Brackets come first." },
+                { ask: "Now 10 × 3 =", type: "num", answer: 30, tip: "Multiplication before subtraction." },
+                { ask: "So (6 + 4) × 3 − 5 =", type: "num", answer: 25, tip: "30 − 5 = 25." }] },
+      mistakes: [["Working left to right", "2 + 3 × 4 is 14, not 20. Multiply first."],
+                 ["Squaring too much", "2 × 3² is 2 × 9 = 18, not 6² = 36."],
+                 ["Undoing in the wrong order", "To undo × 2 then + 3, take away 3 first, then ÷ 2."]]
+    } },
+  { id: "notation", name: "Algebraic notation", strand: "Algebra",
+    gens: [notWrite, notMeaning, notVocab],
+    learn: {
+      idea: "Algebra uses letters for numbers, with a short way of writing things: we leave out the × sign and write powers for a letter times itself.",
+      steps: ["3 × a is written 3a: the number goes first. a × b is written ab.",
+              "a + a + a is 3a. a × a is a², and a × a × a is a³.",
+              "a ÷ b is written as a fraction, a/b. 3 × (a + 2) is written 3(a + 2).",
+              "An expression has no equals sign (3a + 2). An equation has one (3a + 2 = 11). An inequality uses < > ≤ ≥. Terms are the parts between + and − signs."],
+      example: { q: "Write 4 × m × m − 3 in algebraic notation.",
+        lines: [["4 × m × m − 3", "Start"], ["m × m = m²", "A letter times itself is a power"], ["4 × m² = 4m²", "Drop the ×, number first"], ["= 4m² − 3", "Answer"]] },
+      tryOne: { q: "What does 5n mean when n = 3?",
+        steps: [{ ask: "5n means…", type: "mc", choices: ["5 + n", "5 × n", "n⁵"], answer: 1, tip: "A number next to a letter means multiply." },
+                { ask: "So 5n when n = 3 is", type: "num", answer: 15, tip: "5 × 3 = 15, not 53." }] },
+      mistakes: [["Writing a³ for a + a + a", "a + a + a = 3a. a³ means a × a × a."],
+                 ["Letter before number", "Write 3a, not a3."],
+                 ["Reading 3a as thirty-something", "If a = 4, 3a = 12, not 34."]]
+    } },
+  { id: "substitution", name: "Substitution", strand: "Algebra",
+    gens: [subExpr, subExpr, subFormula],
+    learn: {
+      idea: "Substitution means swapping each letter for its number, then working the answer out. It's how formulae in maths and science are used.",
+      steps: ["Write the expression or formula out.",
+              "Replace each letter with its value, in brackets. Put back any hidden × signs: 3a becomes 3 × (a).",
+              "Work it out using the order of operations: powers first, then × and ÷, then + and −.",
+              "Take care with negatives: if a = −2, then 3a = 3 × (−2) = −6."],
+      example: { q: "Find 4a + 3b when a = 5 and b = −2.",
+        lines: [["4 × (5) + 3 × (−2)", "Substitute, in brackets"], ["20 + (−6)", "Multiply first"], ["= 14", "Adding −6 is the same as taking away 6"]] },
+      tryOne: { q: "Use v = u + at to find v when u = 3, a = 2 and t = 5.",
+        steps: [{ ask: "First, at = a × t =", type: "num", answer: 10, tip: "2 × 5 = 10. Multiplication comes before addition." },
+                { ask: "So v = u + at =", type: "num", answer: 13, tip: "3 + 10 = 13." }] },
+      mistakes: [["Writing the digits side by side", "If a = 4, 3a is 3 × 4 = 12, not 34."],
+                 ["Doubling instead of squaring", "If a = 5, a² = 25, not 10."],
+                 ["Dropping the negative", "If x = −3, 2x = −6, not 6."]]
+    } },
+  { id: "fractions-of-amounts", name: "Fractions of amounts", strand: "Ratio",
+    gens: [foaFind, foaWhat, foaContext],
+    learn: {
+      idea: "To find a fraction of an amount, split it into equal parts (the bottom number) and take some of the parts (the top number).",
+      steps: ["Divide the amount by the bottom number (the denominator). That gives one part.",
+              "Multiply by the top number (the numerator) to get that many parts.",
+              "To write one amount as a fraction of another: put the part on top and the total underneath.",
+              "Simplify: divide the top and bottom by the same number until you can't any more."],
+      example: { q: "Find 3/5 of 40.",
+        lines: [["40 ÷ 5 = 8", "One fifth"], ["8 × 3 = 24", "Three fifths"], ["= 24", "Answer"]] },
+      tryOne: { q: "In a class of 28, 12 pupils have a pet. What fraction have a pet?",
+        steps: [{ ask: "Write it as part over total. What goes on the bottom?", type: "num", answer: 28, tip: "The total, 28, goes on the bottom: 12/28." },
+                { ask: "What is the biggest number that divides both 12 and 28?", type: "num", answer: 4, tip: "12 = 4 × 3 and 28 = 4 × 7." },
+                { ask: "So 12/28 simplifies to 3 over…", type: "num", answer: 7, tip: "12/28 = 3/7." }] },
+      mistakes: [["Dividing by the top number", "For 3/5 of 40, divide by 5 (the bottom), not 3."],
+                 ["Stopping at one part", "1/5 of 40 is 8, but 3/5 is 24."],
+                 ["Answering the wrong part", "If 2/5 walk, the question might ask about the 3/5 who don't."]]
+    } },
+  { id: "metric-units", name: "Metric units", strand: "Ratio",
+    gens: [muConvert, muAdd, muTime],
+    learn: {
+      idea: "Metric units go up in tens, hundreds and thousands, so converting means multiplying or dividing by 10, 100 or 1000. Time is different: it goes in 60s.",
+      steps: ["Length: 10 mm = 1 cm, 100 cm = 1 m, 1000 m = 1 km.",
+              "Mass: 1000 g = 1 kg. Capacity: 1000 ml = 1 litre.",
+              "Big unit to small unit: multiply (you need more of them). Small unit to big unit: divide.",
+              "Time: 60 seconds = 1 minute, 60 minutes = 1 hour. So 1.5 hours is 90 minutes, not 150."],
+      example: { q: "Convert 2.4 kg into grams.",
+        lines: [["1 kg = 1000 g", "The conversion"], ["Grams are smaller, so multiply", "Big to small"], ["2.4 × 1000", "Digits move 3 places left"], ["= 2,400 g", "Answer"]] },
+      tryOne: { q: "Convert 350 cm into metres.",
+        steps: [{ ask: "How many cm are in 1 m?", type: "num", answer: 100, tip: "100 cm = 1 m." },
+                { ask: "Metres are bigger. Do you multiply or divide?", type: "mc", choices: ["Multiply", "Divide"], answer: 1, tip: "Bigger units means fewer of them: divide." },
+                { ask: "So 350 cm =", type: "num", answer: 3.5, tip: "350 ÷ 100 = 3.5 m." }] },
+      mistakes: [["Converting the wrong way", "3 m is 300 cm, not 0.03 cm. Check your answer makes sense."],
+                 ["Using the wrong number", "There are 1000 m in a km, not 100."],
+                 ["Treating time as decimal", "2 hours 30 minutes is 2.5 hours, not 2.3 hours."]]
+    } },
+  { id: "area-rectangles", name: "Area of rectangles", strand: "Geometry",
+    gens: [arRect, arMissing, arCompound],
+    learn: {
+      idea: "Area is the amount of space inside a flat shape, measured in squares: cm², m². A rectangle's area is its length × its width.",
+      steps: ["Area of a rectangle = length × width. A square's area is side × side.",
+              "Write the units squared: cm², m².",
+              "If you know the area and one side, divide to find the other side.",
+              "For L-shapes, split into rectangles, find each area, then add them. Work out any missing lengths first."],
+      example: { q: "An L-shape is 10 m along the bottom and 8 m up the left. The top is 4 m across, and the right side is 3 m tall.",
+        lines: [["4 × 8 = 32", "Left rectangle: 4 m wide, 8 m tall"], ["10 − 4 = 6", "Width of the bottom-right rectangle"], ["6 × 3 = 18", "Bottom-right rectangle"], ["32 + 18 = 50 m²", "Add the areas"]] },
+      tryOne: { q: "A rectangle has an area of 42 cm² and a width of 6 cm. How long is it?",
+        steps: [{ ask: "Which do you do: 42 × 6 or 42 ÷ 6?", type: "mc", choices: ["42 × 6", "42 ÷ 6"], answer: 1, tip: "Area = length × width, so length = area ÷ width." },
+                { ask: "So the length is", type: "num", answer: 7, tip: "42 ÷ 6 = 7 cm." }] },
+      mistakes: [["Working out the perimeter", "A 5 by 3 rectangle has area 15 cm², but perimeter 16 cm."],
+                 ["Forgetting squared units", "Area is in cm² or m², not cm or m."],
+                 ["Counting the missing corner", "For an L-shape, don't use the whole big rectangle."]]
+    } },
+  { id: "angle-facts", name: "Angle facts", strand: "Geometry",
+    gens: [afLine, afPoint, afVert, afType],
+    learn: {
+      idea: "Three facts let you find missing angles without measuring: angles on a straight line, angles around a point, and vertically opposite angles.",
+      steps: ["Angles on a straight line add up to 180°.",
+              "Angles around a point add up to 360°.",
+              "Where two straight lines cross, the opposite angles are equal (vertically opposite).",
+              "Names: acute is less than 90°, a right angle is 90°, obtuse is between 90° and 180°, reflex is more than 180°."],
+      example: { q: "Three angles on a straight line are 48°, 75° and x. Find x.",
+        lines: [["48 + 75 = 123", "Add the known angles"], ["180 − 123 = 57", "Angles on a straight line add to 180°"], ["x = 57°", "Answer"]] },
+      tryOne: { q: "Angles around a point are 120°, 95°, 80° and x. Find x.",
+        steps: [{ ask: "What do angles around a point add up to?", type: "num", answer: 360, tip: "All the way round is 360°." },
+                { ask: "Add the known angles: 120 + 95 + 80 =", type: "num", answer: 295, tip: "120 + 95 = 215, + 80 = 295." },
+                { ask: "So x =", type: "num", answer: 65, tip: "360 − 295 = 65°." }] },
+      mistakes: [["Mixing up 180° and 360°", "Straight line: 180°. All the way round a point: 360°."],
+                 ["Measuring the diagram", "Diagrams are usually not drawn accurately. Use the facts."],
+                 ["Opposite or next to?", "Opposite angles are equal. Angles next to each other on a line add to 180°."]]
+    } },
+  { id: "charts-tables", name: "Tables and charts", strand: "Statistics",
+    gens: [ctBar, ctPicto, ctFreq],
+    learn: {
+      idea: "Tables and charts show data so you can read it quickly. Always check the scale or the key before you read anything.",
+      steps: ["Tally charts: each group of five is four lines with a line across. Count in fives.",
+              "Frequency tables: the frequencies add up to the total.",
+              "Bar charts: read across from the top of the bar to the scale. Check what each gridline is worth.",
+              "Pictograms: check the key. Multiply the number of symbols by what each one stands for. Half a symbol is half the value."],
+      example: { q: "In a pictogram, ● = 4 pupils. The Bus row shows ● ● ● and a half ●.",
+        lines: [["3 whole symbols = 3 × 4 = 12", "Use the key"], ["Half a symbol = 2", "Half of 4"], ["12 + 2 = 14 pupils", "Answer"]] },
+      tryOne: { q: "A frequency table: Walk 12, Bus 9, Car ?, Total 30. Find Car.",
+        steps: [{ ask: "Add the ones you know: 12 + 9 =", type: "num", answer: 21, tip: "12 + 9 = 21." },
+                { ask: "So Car =", type: "num", answer: 9, tip: "30 − 21 = 9." }] },
+      mistakes: [["Ignoring the scale", "If each gridline is worth 5, a bar 3 lines high is 15, not 3."],
+                 ["Counting symbols, not people", "4 symbols with a key of 5 means 20 people."],
+                 ["\"How many more\" means subtract", "Find the difference between the two values."]]
     } }
 ];
+TOPICS.sort((a, b) => MAP.bronze.findIndex(m => m[0] === a.id) - MAP.bronze.findIndex(m => m[0] === b.id));
 const TOPIC = id => TOPICS.find(t => t.id === id);
 const genQ = (t, level) => pick(t.gens)(level);
 
@@ -696,7 +1479,7 @@ function mark(q, raw) {
   if (near(v, q.answer)) return { ok: true };
   const m = q.mistakes.find(([f]) => f(v)); return { ok: false, msg: m ? m[1] : "Not quite." };
 }
-const answerText = q => q.type === "mc" ? q.choices[q.answer] : q.type === "expr" ? q.answerText : fmt(q.answer) + (q.unit ? " " + q.unit : "");
+const answerText = q => q.type === "mc" ? q.choices[q.answer] : q.type === "expr" ? q.answerText : (q.answerText || fmt(q.answer)) + (q.unit ? (q.unit === "°" ? "" : " ") + q.unit : "");
 
 /* ---------- read aloud ---------- */
 function speak(text) {
@@ -775,10 +1558,10 @@ function screenPath() {
       </section>
       <section class="stack">
         <div class="tiers">
-          <div class="tier now">${medal("var(--bronze)", "B")}<b>Bronze</b><span>Core Year 7</span></div>
-          <div class="tier locked">${medal("var(--silver)", "S", true)}<b>Silver</b><span>Years 7–8</span></div>
-          <div class="tier locked">${medal("var(--gold)", "G", true)}<b>Gold</b><span>Years 8–9</span></div>
-          <div class="tier locked">${medal("var(--platinum)", "P", true)}<b>Platinum</b><span>Year 9 · GCSE ready</span></div>
+          <a class="tier now" href="#map">${medal("var(--bronze)", "B")}<b>Bronze</b><span>Core Year 7 · ${MAP.bronze.length} topics</span></a>
+          <a class="tier locked" href="#map">${medal("var(--silver)", "S", true)}<b>Silver</b><span>Years 7–8 · ${MAP.silver.length} topics</span></a>
+          <a class="tier locked" href="#map">${medal("var(--gold)", "G", true)}<b>Gold</b><span>Years 8–9 · ${MAP.gold.length} topics</span></a>
+          <a class="tier locked" href="#map">${medal("var(--platinum)", "P", true)}<b>Platinum</b><span>Year 9 · ${MAP.platinum.length} topics</span></a>
         </div>
         <div class="lockrow">${LOCK}<div><b>Bronze award test</b><div class="muted small">${allDone ? "Coming soon in this preview. You've secured every topic." : "Opens when every Bronze topic is secured. 30 questions · 80% to pass."}</div></div></div>
         <div class="lockrow">${LOCK}<div><b>Case File 01: The Scoby Stop</b><div class="muted small">Unlocks with your Bronze award.</div></div></div>
@@ -791,12 +1574,30 @@ function screenPath() {
         <span class="strand">${t.strand}</span><h3>${esc(t.name)}</h3>
         <span class="meta"><span class="steps3" aria-label="Learn, practise, check"><i class="${p.learned ? "on" : ""}"></i><i class="${p.practised ? "on" : ""}"></i><i class="${p.secured ? "ok" : ""}"></i></span><span class="chip ${cls}">${label}</span></span></a>`;
     }).join("")}</div>
-    <p class="muted small" style="margin-top:14px">This preview has the first six Bronze topics. More Bronze topics, and Silver to Platinum, follow.</p>
+    <p class="muted small" style="margin-top:14px">All ${TOPICS.length} Bronze topics are ready. <a href="#map">See the full KS3 curriculum map</a>: ${Object.values(MAP).flat().length} topics from Bronze to Platinum.</p>
     <h2 class="eyebrow" style="margin:34px 0 12px">Training games</h2>
     <div class="topics"><a class="tcard" href="timetables.html" style="text-decoration:none;color:inherit">
       <span class="strand">Time · Number</span><h3>Departures</h3>
       <span class="muted small">Read train, bus and flight timetables to track the courier: journey times, waiting times, connections and time zones.</span>
       <span class="meta"><span class="chip">3 levels · 10 questions</span><span class="chip learning">Play</span></span></a></div>`;
+}
+
+
+/* ---------- curriculum map ---------- */
+const TIERINFO = { bronze: ["Bronze", "var(--bronze)", "B", "Core Year 7"], silver: ["Silver", "var(--silver)", "S", "Years 7–8"], gold: ["Gold", "var(--gold)", "G", "Years 8–9"], platinum: ["Platinum", "var(--platinum)", "P", "Year 9 · GCSE ready"] };
+function screenMap() {
+  const all = Object.values(MAP).flat().length;
+  app.innerHTML = `<nav class="crumbs"><a href="#path">Bronze pathway</a><span>›</span><span>Curriculum map</span></nav>
+    <h1 class="h1" style="margin-top:8px">The KS3 curriculum map</h1>
+    <p class="lede">${all} topics covering every statement in the KS3 national curriculum for maths, in four award tiers. Each topic is tagged with the curriculum statements it covers. Topics in white are ready to play.</p>
+    ${Object.entries(MAP).map(([tier, list]) => { const [nm, col, l, yrs] = TIERINFO[tier]; return `
+      <div class="tierhd">${medal(col, l, tier !== "bronze")}<div><h2 style="font-size:22px">${nm}</h2><div class="muted small">${yrs} · ${list.length} topics</div></div></div>
+      <div class="mapgrid">${list.map(([id, name, strand, codes]) => { const t = TOPIC(id); const st = t ? status(id) : null;
+        return t ? `<a class="mapcard" href="#t-${id}-learn"><span class="strand muted small" style="font-family:var(--f-mono);letter-spacing:.1em;text-transform:uppercase;font-size:11px">${strand}</span><b>${esc(name)}</b><span class="codes">${codes.join(" · ")}</span><span><span class="chip ${st[0]}">${st[1]}</span></span></a>`
+                 : `<div class="mapcard soon"><span class="strand muted small" style="font-family:var(--f-mono);letter-spacing:.1em;text-transform:uppercase;font-size:11px">${strand}</span><b>${esc(name)}</b><span class="codes">${codes.join(" · ")}</span><span><span class="chip">Coming soon</span></span></div>`; }).join("")}</div>`; }).join("")}
+    <details class="panel" style="margin-top:30px"><summary class="h3" style="cursor:pointer;margin:0">Curriculum statement codes</summary>
+      <p class="muted small">From the KS3 programme of study (DfE-00179-2013). N Number · A Algebra · R Ratio, proportion and rates of change · G Geometry and measures · P Probability · S Statistics.</p>
+      <div class="nclist">${Object.entries(NC).map(([c, d]) => `<div><code>${c}</code>${esc(d)}</div>`).join("")}</div></details>`;
 }
 
 /* ---------- topic screen ---------- */
@@ -986,6 +1787,7 @@ function route() {
   // routes: #path, #t-<topic-id>-<learn|practise|check>
   const m = location.hash.match(/^#t-([a-z0-9-]+)-(learn|practise|check)$/);
   if (m && TOPIC(m[1])) screenTopic(m[1], m[2]);
+  else if (location.hash === "#map") screenMap();
   else screenPath();
   window.scrollTo(0, 0);
 }
