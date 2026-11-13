@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Departures · Maths Forensics Academy</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="A timetable game for KS3: read train, bus and flight timetables and work out journey times, waiting times and connections.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Josefin+Sans:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Departure-board look on the Academy's navy: amber dot-matrix board, cyan for the player */
+:root{
+  --ink:#0B122C;--panel:#111a3d;--panel2:#16214b;--line:#26336a;--text:#E8ECF8;--muted:#93a0c8;
+  --cyan:#00FCF1;--blue:#1B36FF;--good:#3DDC97;--warn:#FFC857;--bad:#FF6B7A;
+  --board:#06080f;--led:#FFB547;--led-dim:#7a5a24;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Josefin Sans","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--ink);color:var(--text);font-family:var(--f-body);font-size:18px;line-height:1.5;min-height:100vh}
+button{font:inherit;color:inherit;cursor:pointer}
+input{font:inherit}
+a{color:var(--cyan)}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.top{border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.top .wrap{display:flex;align-items:center;gap:12px;padding-block:10px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);margin-right:auto}
+.brand svg{width:28px;height:33px}
+.wm{font-weight:800;letter-spacing:.08em;font-size:14px;line-height:1.1}
+.wm small{display:block;font-family:var(--f-mono);font-weight:500;font-size:10.5px;letter-spacing:.18em;color:var(--cyan);margin-top:3px}
+.best{font-family:var(--f-mono);font-size:12.5px;color:var(--muted);text-align:right}
+.best b{color:var(--led)}
+main{padding-block:22px 60px}
+h1,h2,h3{margin:0;text-wrap:balance}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan)}
+.muted{color:var(--muted)}
+.small{font-size:15px}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--cyan);color:var(--ink);border:0;border-radius:10px;padding:12px 20px;font-weight:700;font-size:17px;min-height:46px}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.btn.ghost:hover{border-color:var(--cyan)}
+.linkbtn{background:none;border:0;padding:0;color:var(--cyan);text-decoration:underline;text-underline-offset:3px;font-size:16px}
+
+/* title board */
+.title{background:var(--board);border:1px solid #1a2140;border-radius:14px;padding:22px 24px;position:relative;overflow:hidden}
+.title::after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,181,71,.06) 1px,transparent 1.2px);background-size:5px 5px;pointer-events:none}
+.title h1{font-family:var(--f-mono);font-weight:700;font-size:clamp(30px,6vw,58px);letter-spacing:.14em;color:var(--led);text-shadow:0 0 14px rgba(255,181,71,.45)}
+.title p{color:#c8b48f;max-width:62ch;margin:8px 0 0;font-size:17px}
+.ticker{font-family:var(--f-mono);font-size:13px;color:var(--led-dim);letter-spacing:.12em;margin-top:12px;white-space:nowrap;overflow:hidden}
+
+.modes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:820px){.modes{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.mode{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:left;display:flex;flex-direction:column;gap:6px;min-width:0}
+.mode:hover{border-color:var(--cyan)}
+.mode.on{border-color:var(--cyan);box-shadow:inset 0 0 0 1px var(--cyan)}
+.mode svg{width:34px;height:34px;color:var(--led)}
+.mode b{font-size:19px}
+.mode span{font-size:14.5px;color:var(--muted)}
+.levels{display:flex;gap:8px;flex-wrap:wrap}
+.lvl{background:var(--panel2);border:1px solid var(--line);border-radius:99px;padding:8px 16px;font-weight:700;font-size:15.5px}
+.lvl small{font-weight:400;color:var(--muted);margin-left:6px}
+.lvl.on{background:var(--cyan);color:var(--ink);border-color:var(--cyan)}
+.lvl.on small{color:var(--ink)}
+
+/* play */
+.play{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:900px){.play{grid-template-columns:minmax(0,1fr)}}
+.play>*{min-width:0}
+.board{background:var(--board);border:1px solid #1a2140;border-radius:14px;padding:14px 14px 10px;position:relative}
+.board::after{content:"";position:absolute;inset:0;border-radius:14px;background-image:radial-gradient(rgba(255,181,71,.05) 1px,transparent 1.2px);background-size:4px 4px;pointer-events:none}
+.bhead{display:flex;justify-content:space-between;gap:10px;align-items:baseline;font-family:var(--f-mono);color:var(--led);letter-spacing:.12em;font-size:13px;margin:2px 4px 10px;flex-wrap:wrap}
+.bhead b{font-size:16px}
+.tt{overflow-x:auto}
+table.t{border-collapse:collapse;width:100%;font-family:var(--f-mono);font-variant-numeric:tabular-nums;color:var(--led);font-size:16px}
+.t th,.t td{padding:7px 9px;text-align:center;white-space:nowrap;border-bottom:1px solid rgba(255,181,71,.12)}
+.t th{font-size:12px;letter-spacing:.1em;color:#c8b48f;font-weight:500}
+.t td.stop,.t th.stop{text-align:left;color:#f3e1bd;font-family:var(--f-body);font-weight:600;font-size:15.5px;position:sticky;left:0;background:var(--board)}
+.t td.skip{color:var(--led-dim)}
+.t td.hi{background:rgba(0,252,241,.14);color:var(--cyan);border-radius:4px}
+.t tr:last-child td{border-bottom:0}
+.bnote{font-family:var(--f-mono);font-size:12px;color:#c8b48f;margin:8px 4px 0;letter-spacing:.04em}
+.qhead{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.pips{display:flex;gap:5px}
+.pips i{width:14px;height:14px;border-radius:4px;background:var(--panel2);border:1px solid var(--line)}
+.pips i.ok{background:var(--good);border-color:var(--good)}
+.pips i.no{background:var(--bad);border-color:var(--bad)}
+.pips i.now{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan)}
+.score{font-family:var(--f-mono);font-size:14px;color:var(--muted)}
+.score b{color:var(--text);font-size:18px}
+.q{font-size:21px;line-height:1.45}
+.q b{color:#fff}
+.q .tm{font-family:var(--f-mono);color:var(--led);white-space:nowrap}
+.ans{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.field{display:flex;align-items:center;background:var(--panel2);border:1px solid var(--line);border-radius:10px}
+.field:focus-within{border-color:var(--cyan)}
+.field input{background:transparent;border:0;color:var(--text);font-family:var(--f-mono);font-size:22px;padding:10px 14px;width:8.5em;max-width:56vw;outline:none}
+.field span{font-family:var(--f-mono);color:var(--muted);padding-right:14px;font-size:15px}
+.format{font-size:14px;color:var(--muted)}
+.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.choice{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px;font-family:var(--f-mono);font-size:19px;color:var(--led)}
+.choice:hover{border-color:var(--cyan)}
+.fb{padding:12px 14px;border-radius:0 10px 10px 0;font-size:17px}
+.fb b{display:block;font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:2px}
+.fb.ok{border-left:4px solid var(--good);background:rgba(61,220,151,.08)}.fb.ok b{color:var(--good)}
+.fb.no{border-left:4px solid var(--bad);background:rgba(255,107,122,.08)}.fb.no b{color:var(--bad)}
+.fb.hint{border-left:4px solid var(--warn);background:rgba(255,200,87,.07)}.fb.hint b{color:var(--warn)}
+.countline{font-family:var(--f-mono);font-size:15.5px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:6px}
+.countline .stopt{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--led)}
+.countline .jump{color:var(--cyan);font-size:13.5px}
+.work{font-family:var(--f-mono);font-size:16px;background:#0a1030;border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.work .why{font-family:var(--f-body);color:var(--muted);font-size:15px}
+.end{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+@media (max-width:760px){.end{grid-template-columns:minmax(0,1fr)}}
+.big{font-family:var(--f-display);font-weight:800;font-size:54px;line-height:1;color:var(--led)}
+.rank{font-family:var(--f-display);font-weight:600;font-size:20px}
+.mlist{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+.mlist li{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:16px}
+.mlist b{font-family:var(--f-mono);font-size:12px;color:var(--bad);letter-spacing:.08em;text-transform:uppercase;display:block}
+footer{border-top:1px solid var(--line);color:var(--muted);font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:space-between;padding-block:16px calc(16px + env(safe-area-inset-bottom,0px))}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="index.html">
+    <svg viewBox="0 0 40 46" aria-hidden="true"><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z" fill="#111a3d" stroke="#00FCF1" stroke-width="2.2" stroke-linejoin="round"/><circle cx="19" cy="21" r="6.2" fill="#111a3d" stroke="#00FCF1" stroke-width="2.6"/><circle cx="19" cy="21" r="1.6" fill="#00FCF1"/><path d="M23.4 25.4 28.8 30.8" stroke="#1B36FF" stroke-width="3.8" stroke-linecap="round"/></svg>
+    <span class="wm">MATHS FORENSICS<small>ACADEMY · TRAINING GAME</small></span>
+  </a>
+  <div class="best" id="best"></div>
+</div></header>
+<main class="wrap" id="app"></main>
+<footer><div class="wrap"><span>Departures · time and timetables · KS3</span><span><a href="index.html">Back to the Academy</a></span></div></footer>
+
+<script>
+"use strict";
+/* ============================================================
+   DEPARTURES · a timetable game for Maths Forensics Academy
+   Every shift builds fresh timetables, then asks 10 questions
+   about them. Times are stored as minutes after midnight.
+   ============================================================ */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const R = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const DAY = 1440;
+const md = m => ((m % DAY) + DAY) % DAY;
+const T = m => { m = md(m); return String(Math.floor(m / 60)).padStart(2, "0") + ":" + String(m % 60).padStart(2, "0"); };
+const T12 = m => { m = md(m); let h = Math.floor(m / 60); const ap = h < 12 ? "am" : "pm"; h = h % 12 || 12; return `${h}:${String(m % 60).padStart(2, "0")} ${ap}`; };
+const D = n => { const h = Math.floor(n / 60), m = n % 60; return h ? `${h} h${m ? " " + m + " min" : ""}` : `${m} min`; };
+const tm = m => `<span class="tm">${T(m)}</span>`;
+
+/* ---------- reading answers ---------- */
+function parseTime(s) {
+  s = String(s).trim().toLowerCase().replace(/\s+/g, "");
+  let ap = null; const am = s.match(/(am|pm|a\.m\.|p\.m\.)$/);
+  if (am) { ap = am[1][0]; s = s.slice(0, -am[1].length); }
+  let h, m;
+  let k = s.match(/^(\d{1,2})[:.h](\d{2})$/);
+  if (k) { h = +k[1]; m = +k[2]; }
+  else if ((k = s.match(/^(\d{3,4})$/))) { const v = k[1].padStart(4, "0"); h = +v.slice(0, 2); m = +v.slice(2); }
+  else if (ap && (k = s.match(/^(\d{1,2})$/))) { h = +k[1]; m = 0; }
+  else return { bad: true };
+  if (m > 59) return { bad: true, overflow: true };
+  if (ap) { if (h < 1 || h > 12) return { bad: true }; h = h % 12 + (ap === "p" ? 12 : 0); }
+  if (h > 24 || (h === 24 && m > 0)) return { bad: true };
+  return { v: md(h * 60 + m) };
+}
+function parseDur(s) {
+  s = String(s).trim().toLowerCase().replace(/\s+/g, "").replace(/minutes?|mins?/g, "m").replace(/hours?|hrs?/g, "h");
+  let k;
+  if ((k = s.match(/^(\d+)m?$/))) return { v: +k[1] };
+  if ((k = s.match(/^(\d+)h(\d+)?m?$/))) { const mm = +(k[2] || 0); if (mm > 59) return { bad: true, overflow: true }; return { v: +k[1] * 60 + mm }; }
+  if ((k = s.match(/^(\d+)[:.](\d{2})$/))) { if (+k[2] > 59) return { bad: true, overflow: true }; return { v: +k[1] * 60 + +k[2] }; }
+  return { bad: true };
+}
+
+/* the classic slip: subtracting clock times as if they were decimals (10:15 − 9:50 = 65) */
+function decimalSlip(a, b) {           // a, b minutes after midnight, b later
+  const ha = Math.floor(md(a) / 60) * 100 + md(a) % 60, hb = Math.floor(md(b) / 60) * 100 + md(b) % 60;
+  const diff = hb - ha;                // e.g. 1015 − 950 = 65
+  return diff > 0 ? [diff, Math.floor(diff / 100) * 60 + diff % 100] : [];
+}
+
+/* "count on" breakdown: 09:50 → 10:00 → 10:15 */
+function countOn(a, b, reveal = true) {
+  const steps = []; let t = a;
+  const toHour = (60 - md(t) % 60) % 60;
+  if (toHour && t + toHour <= b) { steps.push([t + toHour, toHour]); t += toHour; }
+  const hours = Math.floor((b - t) / 60);
+  if (hours) { steps.push([t + hours * 60, hours * 60]); t += hours * 60; }
+  if (b > t) steps.push([b, b - t]);
+  const lab = n => n >= 60 && n % 60 === 0 ? n / 60 + " h" : n + " min";
+  if (!reveal) return `<div class="countline"><span class="stopt">${T(a)}</span>${steps.map(([to]) => `<span class="jump">+ ? →</span><span class="stopt">${T(to)}</span>`).join("")}</div>
+    <div class="small muted" style="margin-top:4px">Work out each jump, then add them up.</div>`;
+  return `<div class="countline"><span class="stopt">${T(a)}</span>${steps.map(([to, n]) => `<span class="jump">+${lab(n)} →</span><span class="stopt">${T(to)}</span>`).join("")}</div>
+    <div class="small muted" style="margin-top:4px">Total: ${steps.map(s => lab(s[1])).join(" + ")} = ${D(b - a)}</div>`;
+}
+
+/* ---------- networks ---------- */
+const NETS = {
+  train: { label: "Train", unit: "train", stops: ["Scoby", "Oakwood", "Mill Lane", "Riverside", "Anton City Central"], leg: [9, 24], gap: [18, 50], first: [6 * 60, 14 * 60], board: "SCOBY LINE · WEEKDAYS", express: true },
+  bus: { label: "Bus", unit: "bus", stops: ["Market Square", "Victoria Road", "Pinecrest Park", "Hospital", "Scoby Station"], leg: [3, 11], gap: [12, 35], first: [7 * 60, 15 * 60], board: "ROUTE 41 · MONDAY TO FRIDAY", express: false }
+};
+const AIRPORTS = [
+  { city: "London", code: "LHR", off: 0 }, { city: "Madrid", code: "MAD", off: 1 }, { city: "Paris", code: "CDG", off: 1 },
+  { city: "Zurich", code: "ZRH", off: 1 }, { city: "Athens", code: "ATH", off: 2 }, { city: "Lisbon", code: "LIS", off: 0 },
+  { city: "Dubai", code: "DXB", off: 4 }, { city: "New York", code: "JFK", off: -5 }
+];
+
+function makeTimetable(kind, level) {
+  const N = NETS[kind];
+  const legs = N.stops.slice(1).map(() => R(N.leg[0], N.leg[1]));
+  const services = [];
+  let dep = level === 3 && Math.random() < .4 ? R(21 * 60 + 30, 22 * 60 + 40) : R(N.first[0], N.first[1]);
+  dep -= dep % 5 - (Math.random() < .5 ? 0 : R(1, 4)) ; // a mix of round and odd minutes
+  const count = 5;
+  for (let s = 0; s < count; s++) {
+    const express = N.express && level >= 2 && s % 2 === 1 && Math.random() < .7;
+    const skip = express ? R(1, N.stops.length - 2) : -1;
+    const times = []; let t = dep;
+    N.stops.forEach((_, i) => {
+      if (i > 0) t += legs[i - 1] - (express ? 2 : 0) + (s === 2 && level >= 2 ? R(0, 3) : 0);
+      times.push(i === skip ? null : t);
+    });
+    services.push(times);
+    dep += R(N.gap[0], N.gap[1]);
+  }
+  return { kind, stops: N.stops, services, board: N.board, unit: N.unit };
+}
+
+function makeFlights(level) {
+  const pool = level === 1 ? AIRPORTS.filter(a => a.off === 0 || a.off === 1) : level === 2 ? AIRPORTS.filter(a => Math.abs(a.off) <= 2) : AIRPORTS;
+  const home = level === 1 ? AIRPORTS[0] : pick(pool.slice(0, 4));
+  const dests = shuffle(pool.filter(a => a.code !== home.code)).slice(0, 5);
+  const flights = dests.map((d, i) => {
+    const dur = d.off === -5 ? R(470, 520) : d.off === 4 ? R(400, 440) : R(95, 205);
+    const dep = (level === 3 && i === 4 ? R(21 * 60, 23 * 60) : R(6 * 60, 20 * 60));
+    const depR = dep - dep % 5;
+    const arrLocal = depR + dur + (d.off - home.off) * 60;
+    return { no: "MF" + R(101, 989), to: d, dep: depR, dur, arr: arrLocal };
+  }).sort((a, b) => a.dep - b.dep);
+  return { kind: "plane", home, flights, board: `DEPARTURES · ${home.city.toUpperCase()} ${home.code}` };
+}
+
+/* ---------- questions ----------
+   Each: { text, type: "time"|"dur"|"mc", answer, choices?, hi:[[row,col]], hint: html, work: [[line, why]], slips: [[test(v), msg]] } */
+const svcLabel = (tt, j) => T(tt.services[j].find(x => x != null));
+
+function qArrive(tt, level) {
+  const j = R(0, tt.services.length - 1), s = tt.services[j];
+  const from = s.findIndex(x => x != null);
+  const options = s.map((x, i) => i).filter(i => i > from && s[i] != null);
+  const to = pick(options);
+  return {
+    text: `The courier catches the <b>${T(s[from])}</b> ${tt.unit} from <b>${tt.stops[from]}</b>. What time does it reach <b>${tt.stops[to]}</b>?`,
+    type: "time", answer: s[to], hi: [[from, j], [to, j]],
+    hint: `Find the column that starts at ${T(s[from])}, then go down it to the ${tt.stops[to]} row.`,
+    work: [[`${T(s[from])} column → ${tt.stops[to]} row`, "Read down one column only"], [T(s[to]), "Arrival time"]],
+    slips: [[v => tt.services.some((x, k) => k !== j && x[to] != null && md(x[to]) === v), "That time is in a different column. Stay in the column that leaves at " + T(s[from]) + "."],
+            [v => v === md(s[to] + 720), "Use the 24-hour clock, the way the timetable shows it."]]
+  };
+}
+function qDuration(tt, level) {
+  let j, a, b, s;
+  for (let tries = 0; tries < 30; tries++) {
+    j = R(0, tt.services.length - 1); s = tt.services[j];
+    const idx = s.map((x, i) => (x != null ? i : -1)).filter(i => i >= 0);
+    a = idx[0]; b = level === 1 ? pick(idx.slice(1)) : idx[idx.length - 1];
+    if (level > 1 || Math.random() < .5 || md(s[a]) % 60 > md(s[b]) % 60) break;   // favour hour-crossing journeys
+  }
+  const ans = s[b] - s[a];
+  const [d1, d2] = decimalSlip(s[a], s[b]);
+  return {
+    text: `How long does the <b>${T(s[a])}</b> ${tt.unit} from <b>${tt.stops[a]}</b> take to reach <b>${tt.stops[b]}</b>?`,
+    type: "dur", answer: ans, hi: [[a, j], [b, j]],
+    hint: `Count on from ${T(s[a])} to ${T(s[b])}: first to the next o'clock, then the whole hours, then the minutes left.${countOn(s[a], s[b], false)}`,
+    work: [[`${T(s[a])} → ${T(s[b])}`, "Leaves and arrives"], [countOn(s[a], s[b]), ""]],
+    slips: [[v => (v === d1 || v === d2) && v !== ans, "It looks like you subtracted the times like decimals. An hour has 60 minutes, not 100, so count on to the next hour instead."],
+            [v => Math.abs(v - ans) === 60, "Out by exactly an hour. Count the whole hours again."]]
+  };
+}
+function qLatest(tt, level) {
+  const to = tt.stops.length - 1;
+  const col = tt.services.map((s, j) => ({ j, dep: s[0], arr: s[to] })).filter(x => x.dep != null && x.arr != null);
+  if (col.length < 3) return qArrive(tt, level);
+  const k = R(1, col.length - 2);
+  const need = col[k].arr + R(1, Math.max(2, col[k + 1].arr - col[k].arr - 2));
+  const ok = col.filter(c => c.arr <= need).pop();
+  const late = col.find(c => c.arr > need);
+  return {
+    text: `The courier must be at <b>${tt.stops[to]}</b> by <b>${T(need)}</b>. What is the latest ${tt.unit} she can catch from <b>${tt.stops[0]}</b>?`,
+    type: "time", answer: ok.dep, hi: [[0, ok.j], [to, ok.j]], hintHi: [],
+    hint: `Look along the ${tt.stops[to]} row. Find the last arrival that is ${T(need)} or earlier, then go up that column to ${tt.stops[0]}.`,
+    work: [[`Arrivals at ${tt.stops[to]}: ${col.map(c => T(c.arr)).join(", ")}`, "Read the arrival row"], [`${T(ok.arr)} is the last one by ${T(need)}`, "Latest that's still on time"], [`It leaves ${tt.stops[0]} at ${T(ok.dep)}`, "Go up the same column"]],
+    slips: [[v => late && v === md(late.dep), `That ${tt.unit} reaches ${tt.stops[to]} at ${T(late.arr)}, which is after ${T(need)}.`],
+            [v => v === md(ok.arr), "That's when it arrives. The question asks when to catch it, so give the departure time."],
+            [v => col.some(c => md(c.dep) === v && c.arr <= need && c !== ok), "That one works, but there's a later one that still arrives in time."]]
+  };
+}
+function qWait(tt, level) {
+  const at = R(0, tt.stops.length - 2);
+  const times = tt.services.map(s => s[at]).filter(x => x != null);
+  if (times.length < 2) return qArrive(tt, level);
+  const k = R(1, times.length - 1);
+  const arrive = times[k] - R(4, Math.min(38, times[k] - times[k - 1] - 1));
+  const wait = times[k] - arrive;
+  const [d1, d2] = decimalSlip(arrive, times[k]);
+  return {
+    text: `You reach <b>${tt.stops[at]}</b> at <b>${T(arrive)}</b>. How long do you wait for the next ${tt.unit}?`,
+    type: "dur", answer: wait, hintHi: [], hi: tt.services.map((s, j) => [at, j]).filter(([r, j]) => tt.services[j][at] === times[k]),
+    hint: `Find the first ${tt.unit} at ${tt.stops[at]} after ${T(arrive)}, then count on to it.${countOn(arrive, times[k], false)}`,
+    work: [[`Next ${tt.unit} at ${tt.stops[at]}: ${T(times[k])}`, `First one after ${T(arrive)}`], [countOn(arrive, times[k]), ""]],
+    slips: [[v => (v === d1 || v === d2) && v !== wait, "Times aren't decimals: there are 60 minutes in an hour. Count on to the next o'clock first."],
+            [v => times[k - 1] && v === md(times[k - 1] - arrive), "That one has already gone. Look for the first one after you arrive."]]
+  };
+}
+function qConvert(tt, level) {
+  const m = R(0, 23) * 60 + R(0, 11) * 5 + (Math.random() < .3 ? R(1, 4) : 0);
+  const to24 = Math.random() < .6;
+  if (to24) return {
+    text: `A poster says the last ${tt.unit} leaves at <b>${T12(m)}</b>. Write this in the 24-hour clock.`,
+    type: "time", answer: m, hi: [], strict24: true,
+    hint: m >= 720 ? "For pm times after 12:59, add 12 to the hours." : (m < 60 ? "12 am is midnight, which is 00 on the 24-hour clock." : "Morning times stay the same; just use 4 digits."),
+    work: [[T12(m), "12-hour clock"], [T(m), m >= 780 ? "pm: add 12 to the hours" : "24-hour clock"]],
+    slips: [[v => v === md(m + 720) || v === md(m - 720), "Check am and pm. Afternoon and evening hours are 12 more in the 24-hour clock."]]
+  };
+  return {
+    text: `The timetable says <b>${T(m)}</b>. What is that in the 12-hour clock?`,
+    type: "mc", choices: shuffle([T12(m), T12(m + 720), T12(m + (m % 60 < 50 ? 10 : -10)), T12(m + 120)]).slice(0, 4),
+    answer: T12(m), hi: [],
+    hint: m >= 780 ? "Take 12 off the hours and it's pm." : m >= 720 ? "12:00 to 12:59 is just after midday, so pm." : "Before 12:00 it's am.",
+    work: [[T(m), "24-hour clock"], [T12(m), "12-hour clock"]],
+    slips: [[v => v === T12(m + 720), "Check am and pm."]]
+  };
+}
+function qConnect(tt, level) {
+  // arrive at the last stop, then change to a bus (or walk) that leaves a few minutes later
+  const to = tt.stops.length - 1;
+  const j = R(0, tt.services.length - 2), s = tt.services[j];
+  const buses = []; let b = s[to] + R(3, 9); for (let i = 0; i < 3; i++) { buses.push(b); b += R(12, 25); }
+  const change = R(5, 9);
+  const catchIdx = buses.findIndex(x => x >= s[to] + change);
+  const busRide = R(12, 34);
+  const arrive = buses[catchIdx] + busRide;
+  return {
+    text: `The courier catches the <b>${T(s[0])}</b> ${tt.unit} from <b>${tt.stops[0]}</b>. At ${tt.stops[to]} she needs <b>${change} minutes</b> to change. Buses to the docks leave at <b>${buses.map(T).join(", ")}</b> and take <b>${busRide} minutes</b>. When does she reach the docks?`,
+    type: "time", answer: arrive, hi: [[0, j], [to, j]],
+    hint: `Arrives ${T(s[to])}. Add ${change} minutes to change: ${T(s[to] + change)}. Which bus is the first one at or after that?`,
+    work: [[`Arrives ${tt.stops[to]} ${T(s[to])}`, "Read the timetable"], [`${T(s[to])} + ${change} min = ${T(s[to] + change)}`, "Time to change"], [`First bus at or after: ${T(buses[catchIdx])}`, "Catch that bus"], [`${T(buses[catchIdx])} + ${busRide} min = ${T(arrive)}`, "Add the bus journey"]],
+    slips: [[v => catchIdx > 0 && v === md(buses[catchIdx - 1] + busRide), "She can't catch that bus. She needs time to change first."],
+            [v => v === md(s[to] + busRide), "You forgot to wait for the bus. Find the first bus she can catch."]]
+  };
+}
+
+/* flights */
+function fArrive(ft, level) {
+  const f = pick(ft.flights), diff = f.to.off - ft.home.off;
+  const sameZone = diff === 0;
+  return {
+    text: `Flight <b>${f.no}</b> leaves ${ft.home.city} at <b>${T(f.dep)}</b> and the flight takes <b>${D(f.dur)}</b>. ${sameZone ? "" : `${f.to.city} is <b>${Math.abs(diff)} hour${Math.abs(diff) > 1 ? "s" : ""} ${diff > 0 ? "ahead of" : "behind"}</b> ${ft.home.city}. `}What is the local time when it lands in <b>${f.to.city}</b>?`,
+    type: "time", answer: md(f.arr), hi: [], flightHi: f.no,
+    hint: `First add the flight time to ${T(f.dep)}.${sameZone ? "" : ` Then ${diff > 0 ? "add" : "take off"} ${Math.abs(diff)} hour${Math.abs(diff) > 1 ? "s" : ""} for the time difference.`}`,
+    work: [[`${T(f.dep)} + ${D(f.dur)} = ${T(f.dep + f.dur)}`, `Time in ${ft.home.city} on landing`]].concat(sameZone ? [] : [[`${T(f.dep + f.dur)} ${diff > 0 ? "+" : "−"} ${Math.abs(diff)} h = ${T(f.arr)}`, `Local time in ${f.to.city}`]]),
+    slips: [[v => !sameZone && v === md(f.dep + f.dur), `That's the time in ${ft.home.city}. Now change it to ${f.to.city} time.`],
+            [v => !sameZone && v === md(f.dep + f.dur - diff * 60), `Time difference the wrong way: ${f.to.city} is ${diff > 0 ? "ahead, so add" : "behind, so take away"}.`]]
+  };
+}
+function fCheckin(ft, level) {
+  const f = pick(ft.flights), before = pick([90, 120, 150, 180].slice(0, level + 1)), travel = R(25, 70);
+  const ans = f.dep - before - travel;
+  return {
+    text: `To catch flight <b>${f.no}</b> to ${f.to.city}, the courier must be at the airport <b>${D(before)}</b> before take-off. The taxi takes <b>${travel} minutes</b>. What is the latest time she can leave her hotel?`,
+    type: "time", answer: md(ans), hi: [], flightHi: f.no,
+    hint: `Work backwards from ${T(f.dep)}: take off ${D(before)}, then take off ${travel} minutes.`,
+    work: [[`${T(f.dep)} − ${D(before)} = ${T(f.dep - before)}`, "Be at the airport"], [`${T(f.dep - before)} − ${travel} min = ${T(ans)}`, "Leave the hotel"]],
+    slips: [[v => v === md(f.dep - before), "That's when she must be at the airport. She still has the taxi ride."],
+            [v => v === md(f.dep - travel), `Don't forget the ${D(before)} she must be there early.`]]
+  };
+}
+function fDuration(ft, level) {
+  const f = pick(ft.flights), diff = f.to.off - ft.home.off;
+  return {
+    text: `Flight <b>${f.no}</b> leaves ${ft.home.city} at <b>${T(f.dep)}</b> and lands in ${f.to.city} at <b>${T(f.arr)}</b> local time. ${diff ? `${f.to.city} is <b>${Math.abs(diff)} h ${diff > 0 ? "ahead of" : "behind"}</b> ${ft.home.city}.` : "Both are in the same time zone."} How long is the flight?`,
+    type: "dur", answer: f.dur, hi: [], flightHi: f.no,
+    hint: diff ? `Change the landing time to ${ft.home.city} time first: ${T(f.arr)} ${diff > 0 ? "−" : "+"} ${Math.abs(diff)} h = ${T(f.arr - diff * 60)}. Then count on from ${T(f.dep)}.` : `Count on from ${T(f.dep)} to ${T(f.arr)}.`,
+    work: (diff ? [[`${T(f.arr)} ${diff > 0 ? "−" : "+"} ${Math.abs(diff)} h = ${T(f.arr - diff * 60)}`, `Landing time in ${ft.home.city} time`]] : []).concat([[countOn(f.dep, f.dep + f.dur), ""]]),
+    slips: [[v => diff && v === f.dur + diff * 60, "You've included the time difference. Change both times to the same zone first."],
+            [v => { const [a, b] = decimalSlip(f.dep, f.dep + f.dur); return v !== f.dur && (v === a || v === b); }, "Times aren't decimals: an hour has 60 minutes. Count on instead."]]
+  };
+}
+
+/* ---------- game set-up ---------- */
+const LEVELS = [null, { name: "Securing", rank: "Constable", note: "Reading timetables, simple durations, 12 and 24-hour clock" },
+  { name: "Extending", rank: "Inspector", note: "Longer journeys, latest trains, waiting times, connections" },
+  { name: "Excelling", rank: "Chief Inspector", note: "Journeys past midnight, flights across time zones" }];
+const MODES = { train: "Train", bus: "Bus", plane: "Plane", mixed: "Mixed" };
+const ICONS = {
+  train: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M9 21l-2-3M15 21l2-3"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/></svg>`,
+  bus: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="3" width="16" height="15" rx="2"/><path d="M4 11h16M8 18v3M16 18v3"/><circle cx="8" cy="14.5" r="1"/><circle cx="16" cy="14.5" r="1"/></svg>`,
+  plane: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 13l8-2 4-8h2l-1 8 6 1v2l-6 1 1 7h-2l-4-7-8-1z"/></svg>`,
+  mixed: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 7h11l-3-3M20 17H9l3 3"/></svg>`
+};
+const ROUNDS = 10;
+let BEST = {};
+try { BEST = JSON.parse(localStorage.getItem("mfa.departures") || "{}"); } catch (e) {}
+const saveBest = () => { try { localStorage.setItem("mfa.departures", JSON.stringify(BEST)); } catch (e) {} };
+let G = null, CHOICE = { mode: "train", level: 1 };
+
+function buildQuestions(mode, level) {
+  const qs = [];
+  for (let r = 0; r < ROUNDS; r++) {
+    const kind = mode === "mixed" ? ["train", "bus", "plane"][r % 3] : mode;
+    if (kind === "plane") {
+      const ft = makeFlights(level);
+      const gens = level === 1 ? [fArrive, fCheckin, fArrive] : [fArrive, fCheckin, fDuration];
+      qs.push({ src: ft, ...pick(gens)(ft, level) });
+    } else {
+      const tt = makeTimetable(kind, level);
+      const gens = level === 1 ? [qArrive, qDuration, qWait, qConvert, qDuration] : level === 2 ? [qDuration, qLatest, qWait, qConnect, qArrive] : [qDuration, qLatest, qConnect, qWait];
+      qs.push({ src: tt, ...pick(gens)(tt, level) });
+    }
+  }
+  return qs;
+}
+
+/* ---------- screens ---------- */
+const app = $("#app");
+function showBest() {
+  const k = CHOICE.mode + CHOICE.level, b = BEST[k];
+  $("#best").innerHTML = b ? `Best · ${MODES[CHOICE.mode]} · ${LEVELS[CHOICE.level].name}<br><b>${b}</b> points` : "";
+}
+function screenStart() {
+  G = null;
+  app.innerHTML = `
+    <section class="title"><div class="eyebrow" style="color:#c8b48f">Training game · time and timetables</div>
+      <h1>DEPARTURES</h1>
+      <p>The courier is moving across the network by train, bus and plane. Read the timetables faster than she does: journey times, waiting times, connections, the latest train she can catch. Ten questions a shift.</p>
+      <div class="ticker">SCOBY 09:41 · ON TIME ··· ANTON CITY 10:12 · DELAYED ··· ZRH MF417 · BOARDING ··· ROUTE 41 · ON TIME ···</div></section>
+    <h2 class="eyebrow" style="margin:26px 0 10px">Choose your transport</h2>
+    <div class="modes">${Object.keys(MODES).map(m => `<button class="mode ${CHOICE.mode === m ? "on" : ""}" data-mode="${m}">${ICONS[m]}<b>${MODES[m]}</b><span>${{ train: "Station timetables, express trains", bus: "Bus routes and waiting times", plane: "Flights, check-in and time zones", mixed: "A bit of everything" }[m]}</span></button>`).join("")}</div>
+    <h2 class="eyebrow" style="margin:22px 0 10px">Choose your level</h2>
+    <div class="levels">${[1, 2, 3].map(l => `<button class="lvl ${CHOICE.level === l ? "on" : ""}" data-level="${l}">${LEVELS[l].name}<small>${LEVELS[l].rank}</small></button>`).join("")}</div>
+    <p class="muted small" style="margin:10px 0 0">${LEVELS[CHOICE.level].note}.</p>
+    <div class="row" style="margin-top:20px"><button class="btn" id="go">Start the shift</button><a class="btn ghost" href="index.html">Back to the Academy</a></div>`;
+  app.querySelectorAll("[data-mode]").forEach(b => b.onclick = () => { CHOICE.mode = b.dataset.mode; screenStart(); });
+  app.querySelectorAll("[data-level]").forEach(b => b.onclick = () => { CHOICE.level = +b.dataset.level; screenStart(); });
+  $("#go").onclick = startGame;
+  showBest();
+}
+function startGame() {
+  G = { qs: buildQuestions(CHOICE.mode, CHOICE.level), i: 0, score: 0, streak: 0, results: [], hint: false, tries: 0, fb: null, done: false, slips: {} };
+  drawQ();
+}
+function boardHTML(q) {
+  const s = q.src;
+  if (s.kind === "plane") {
+    return `<div class="board"><div class="bhead"><b>${esc(s.board)}</b><span>LOCAL TIMES</span></div><div class="tt"><table class="t">
+      <thead><tr><th class="stop">To</th><th>Flight</th><th>Departs</th><th>Flight time</th><th>Zone</th></tr></thead>
+      <tbody>${s.flights.map(f => `<tr><td class="stop">${f.to.city} ${f.to.code}</td><td class="${q.flightHi === f.no ? "hi" : ""}">${f.no}</td><td class="${q.flightHi === f.no ? "hi" : ""}">${T(f.dep)}</td><td>${D(f.dur)}</td><td>${f.to.off - s.home.off === 0 ? "same" : (f.to.off - s.home.off > 0 ? "+" : "−") + Math.abs(f.to.off - s.home.off) + " h"}</td></tr>`).join("")}</tbody></table></div>
+      <div class="bnote">Zone: hours ahead (+) or behind (−) ${esc(s.home.city)}.</div></div>`;
+  }
+  // after answering: show every cell used. With a hint: only cells that don't give the answer away.
+  const cells = G && G.done ? (q.hi || []) : (q.hintHi || (q.hi || []).filter(([r, c]) => q.type !== "time" || s.services[c][r] == null || md(s.services[c][r]) !== md(q.answer)));
+  const hi = new Set(cells.map(([r, c]) => r + "," + c));
+  return `<div class="board"><div class="bhead"><b>${esc(s.board)}</b><span>${s.kind === "train" ? "— = DOES NOT STOP" : "ALL STOPS"}</span></div><div class="tt"><table class="t">
+    <thead><tr><th class="stop">${s.kind === "train" ? "Station" : "Stop"}</th>${s.services.map(() => "<th></th>").join("")}</tr></thead>
+    <tbody>${s.stops.map((st, r) => `<tr><td class="stop">${esc(st)}</td>${s.services.map((sv, c) => sv[r] == null ? `<td class="skip">—</td>` : `<td class="${G && G.showHi && hi.has(r + "," + c) ? "hi" : ""}">${T(sv[r])}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
+    <div class="bnote">All times use the 24-hour clock.</div></div>`;
+}
+function drawQ() {
+  const q = G.qs[G.i];
+  const answered = G.done;
+  app.innerHTML = `<div class="play">
+    <div>${boardHTML(q)}</div>
+    <section class="panel stack" aria-live="polite">
+      <div class="qhead"><span class="pips">${G.qs.map((_, k) => `<i class="${k < G.results.length ? (G.results[k].ok ? "ok" : "no") : k === G.i ? "now" : ""}"></i>`).join("")}</span>
+        <span class="score">Score <b>${G.score}</b>${G.streak > 1 ? ` · streak ×${G.streak}` : ""}</span></div>
+      <div class="eyebrow">Question ${G.i + 1} of ${ROUNDS} · ${LEVELS[CHOICE.level].name}</div>
+      <div class="q">${q.text}</div>
+      ${answered ? "" : q.type === "mc" ? `<div class="choices">${q.choices.map(c => `<button class="choice" data-c="${esc(c)}">${esc(c)}</button>`).join("")}</div>`
+        : `<form class="ans" id="form"><label class="field"><input id="inp" inputmode="${q.type === "time" ? "numeric" : "text"}" autocomplete="off" aria-label="Your answer" placeholder="${q.type === "time" ? "hh:mm" : "e.g. 1 h 25 min"}">${q.type === "dur" ? "<span>time</span>" : ""}</label><button class="btn" type="submit">Check</button></form>
+           <div class="format">${q.type === "time" ? "Write times like 09:05 or 21:40." : "Write durations like 45 min, 1 h 25 min or 85."}</div>`}
+      ${G.fb ? `<div class="fb ${G.fb.cls}"><b>${G.fb.title}</b>${G.fb.msg}</div>` : ""}
+      ${!answered && G.hint ? `<div class="fb hint"><b>Hint</b>${q.hint}</div>` : ""}
+      ${answered ? `<div class="work">${q.work.map(([w, why]) => `<div>${w.startsWith("<") ? w : esc(w)}${why ? ` <span class="why">· ${esc(why)}</span>` : ""}</div>`).join("")}</div>
+          <div class="row"><button class="btn" id="next">${G.i + 1 < ROUNDS ? "Next question" : "See your result"}</button></div>`
+        : `<div class="row">${G.hint ? "" : `<button class="linkbtn" id="hint">Hint (−50 points)</button>`}${G.tries >= 1 ? `<button class="linkbtn" id="skip">Show me the answer</button>` : ""}</div>`}
+    </section></div>`;
+  if (answered) { $("#next").onclick = () => { G.i++; G.hint = false; G.tries = 0; G.fb = null; G.done = false; G.showHi = false; G.i < ROUNDS ? drawQ() : screenEnd(); }; $("#next").focus(); return; }
+  const submit = raw => {
+    let v;
+    if (q.type === "mc") v = raw;
+    else {
+      const p = q.type === "time" ? parseTime(raw) : parseDur(raw);
+      if (p.bad) {
+        G.fb = { cls: "hint", title: "Check the format", msg: p.overflow ? "There are only 60 minutes in an hour, so the minutes can't be more than 59. Carry the extra into the hours." : (q.type === "time" ? "Write a time like 09:05 or 21:40." : "Write a duration like 45 min, 1 h 25 min or 85.") };
+        drawQ(); $("#inp") && $("#inp").focus(); return;
+      }
+      v = p.v;
+      if (q.strict24 && /(am|pm)/i.test(raw)) { G.fb = { cls: "hint", title: "24-hour clock", msg: "Write it without am or pm, using the 24-hour clock, like 17:45." }; drawQ(); $("#inp").focus(); return; }
+    }
+    const ok = q.type === "mc" ? v === q.answer : q.type === "time" ? md(v) === md(q.answer) : v === q.answer;
+    if (ok) {
+      G.streak++; const pts = (G.tries ? 50 : 100) + (G.streak > 1 ? 20 * (G.streak - 1) : 0) - (G.hint ? 50 : 0);
+      G.score += Math.max(10, pts); G.results.push({ ok: true }); G.done = true; G.showHi = true;
+      G.fb = { cls: "ok", title: `Correct · +${Math.max(10, pts)}`, msg: pick(["Right on time.", "Spot on.", "The courier won't get away.", "Exactly right."]) };
+      drawQ(); return;
+    }
+    const slip = (q.slips || []).find(([f]) => { try { return f(v); } catch (e) { return false; } });
+    if (slip) { const key = slip[1].split(".")[0]; G.slips[key] = (G.slips[key] || 0) + 1; }
+    G.tries++; G.streak = 0;
+    if (G.tries >= 2) { G.results.push({ ok: false }); G.done = true; G.showHi = true; G.fb = { cls: "no", title: "Missed this one", msg: `${slip ? esc(slip[1]) + " " : ""}The answer is <b>${q.type === "dur" ? D(q.answer) : q.type === "mc" ? esc(q.answer) : T(q.answer)}</b>.` }; }
+    else G.fb = { cls: "no", title: "Not quite · one more try", msg: slip ? esc(slip[1]) : "Look at the timetable again." };
+    drawQ(); $("#inp") && $("#inp").focus();
+  };
+  if (q.type === "mc") app.querySelectorAll("[data-c]").forEach(b => b.onclick = () => submit(b.dataset.c));
+  else { $("#form").onsubmit = e => { e.preventDefault(); submit($("#inp").value); }; $("#inp").focus(); }
+  const h = $("#hint"); if (h) h.onclick = () => { G.hint = true; G.showHi = true; drawQ(); };
+  const sk = $("#skip"); if (sk) sk.onclick = () => { G.results.push({ ok: false }); G.streak = 0; G.done = true; G.showHi = true; G.fb = { cls: "no", title: "Answer", msg: `The answer is <b>${q.type === "dur" ? D(q.answer) : q.type === "mc" ? esc(q.answer) : T(q.answer)}</b>. Read the working below.` }; drawQ(); };
+}
+function screenEnd() {
+  const right = G.results.filter(r => r.ok).length;
+  const k = CHOICE.mode + CHOICE.level, newBest = !BEST[k] || G.score > BEST[k];
+  if (newBest) { BEST[k] = G.score; saveBest(); }
+  const rank = right >= 9 ? "Courier caught" : right >= 7 ? "Hot on her trail" : right >= 5 ? "She's one stop ahead" : "She got away this time";
+  const slips = Object.entries(G.slips).sort((a, b) => b[1] - a[1]);
+  app.innerHTML = `<div class="end">
+    <section class="panel stack"><div class="eyebrow">Shift complete · ${MODES[CHOICE.mode]} · ${LEVELS[CHOICE.level].name}</div>
+      <div class="big">${G.score}</div><div class="rank">${rank}</div>
+      <div class="muted">${right} of ${ROUNDS} right${newBest ? " · new best score on this device" : ` · best ${BEST[k]}`}</div>
+      <div class="pips">${G.results.map(r => `<i class="${r.ok ? "ok" : "no"}"></i>`).join("")}</div>
+      <div class="row"><button class="btn" id="again">Play again</button><button class="btn ghost" id="change">Change transport or level</button></div>
+      ${right >= 8 && CHOICE.level < 3 ? `<p class="small muted" style="margin:0">Ready for a harder shift? Try <b>${LEVELS[CHOICE.level + 1].name}</b>.</p>` : ""}</section>
+    <section class="panel stack"><div class="eyebrow">Where time went missing</div>
+      ${slips.length ? `<ul class="mlist">${slips.map(([m, n]) => `<li><b>× ${n}</b>${esc(m)}.</li>`).join("")}</ul>` : `<p class="muted" style="margin:0">No common slips this shift. Nice clean timekeeping.</p>`}
+      <p class="small muted" style="margin:0">Tip: to find how long a journey takes, count on. Go to the next o'clock first, then add the whole hours, then the minutes left.</p></section></div>`;
+  $("#again").onclick = startGame; $("#change").onclick = screenStart; $("#again").focus(); showBest();
+}
+screenStart();
+</script>
+</body>
+</html>
