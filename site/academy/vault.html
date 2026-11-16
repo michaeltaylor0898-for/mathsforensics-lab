@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Suspect's Vault · Maths Forensics Academy</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="A KS3 safe-cracking game: sequences, prime factors and index laws.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Josefin+Sans:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* The Suspect's Vault: crack tumblers with sequences, prime factors and index laws */
+:root{
+  --ink:#0B122C;--panel:#111a3d;--panel2:#16214b;--line:#26336a;--text:#E8ECF8;--muted:#93a0c8;
+  --cyan:#00FCF1;--blue:#1B36FF;--good:#3DDC97;--warn:#FFC857;--bad:#FF6B7A;
+  --board:#06080f;--led:#FFB547;--led-dim:#7a5a24;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Josefin Sans","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--ink);color:var(--text);font-family:var(--f-body);font-size:18px;line-height:1.5;min-height:100vh}
+button{font:inherit;color:inherit;cursor:pointer}
+input{font:inherit}
+a{color:var(--cyan)}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.top{border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.top .wrap{display:flex;align-items:center;gap:12px;padding-block:10px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);margin-right:auto}
+.brand svg{width:28px;height:33px}
+.wm{font-weight:800;letter-spacing:.08em;font-size:14px;line-height:1.1}
+.wm small{display:block;font-family:var(--f-mono);font-weight:500;font-size:10.5px;letter-spacing:.18em;color:var(--cyan);margin-top:3px}
+.best{font-family:var(--f-mono);font-size:12.5px;color:var(--muted);text-align:right}
+.best b{color:var(--led)}
+main{padding-block:22px 60px}
+h1,h2,h3{margin:0;text-wrap:balance}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan)}
+.muted{color:var(--muted)}
+.small{font-size:15px}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--cyan);color:var(--ink);border:0;border-radius:10px;padding:12px 20px;font-weight:700;font-size:17px;min-height:46px}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.btn.ghost:hover{border-color:var(--cyan)}
+.linkbtn{background:none;border:0;padding:0;color:var(--cyan);text-decoration:underline;text-underline-offset:3px;font-size:16px}
+
+
+
+/* ---------- The Suspect's Vault ---------- */
+.hero{background:linear-gradient(135deg,#111a3d,#0d1430);border:1px solid var(--line);border-radius:14px;padding:22px 24px;position:relative;overflow:hidden}
+.hero h1{font-family:var(--f-display);font-weight:800;font-size:clamp(28px,5vw,46px);letter-spacing:.02em}
+.hero p{max-width:64ch;margin:10px 0 0;color:#c4cbe4}
+.levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.levels{grid-template-columns:1fr}}
+.lvl{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:left;display:flex;flex-direction:column;gap:8px;color:var(--text)}
+.lvl:hover{border-color:var(--cyan)}.lvl b{font-size:19px}.lvl .bs{font-family:var(--f-mono);font-size:12.5px;color:var(--muted)}
+.brief{background:#f4ecd8;color:#2a2418;border-radius:12px;padding:16px 18px;box-shadow:0 18px 30px -18px #000}
+.brief .tag{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.14em;color:#6b5d43;text-transform:uppercase}
+.brief p{margin:6px 0 0;font-size:17px;line-height:1.45}
+.sus{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+@media (max-width:760px){.sus{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.scard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:4px;text-align:left;color:var(--text)}
+.scard .av{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-mono);font-weight:700;color:var(--ink)}
+.scard b{font-size:16px}.scard span{font-size:13.5px;color:var(--muted)}
+.scard.done{border-color:var(--good)}.scard.now{border-color:var(--cyan);box-shadow:0 0 0 2px rgba(0,252,241,.25)}
+.scard .ev{font-size:13.5px;color:#c4cbe4;margin-top:4px}
+button.scard{cursor:pointer}button.scard:hover{border-color:var(--cyan)}
+
+/* laser timer */
+.laser{position:relative;height:16px;border-radius:8px;background:#1a1030;overflow:hidden;border:1px solid #3a2050}
+.laser i{position:absolute;left:0;top:0;bottom:0;background:repeating-linear-gradient(90deg,#ff2d55 0 6px,#ff6b7a 6px 8px);box-shadow:0 0 14px #ff2d55;transition:width .25s linear}
+.laser.over{animation:alarm .6s infinite}
+@keyframes alarm{50%{background:#5a0f20}}
+.hud{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;font-family:var(--f-mono);font-size:13px;color:var(--muted);letter-spacing:.06em}
+.hud b{color:var(--text)}
+.codes{display:flex;gap:8px;align-items:center}
+.codes span{min-width:46px;height:40px;border-radius:8px;border:1px dashed var(--line);display:grid;place-items:center;font-family:var(--f-mono);font-weight:700;font-size:18px;color:var(--muted)}
+.codes span.got{border-style:solid;border-color:var(--cyan);color:var(--cyan)}
+.tums{display:flex;gap:8px}
+.tums i{width:34px;height:34px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-style:normal;font-size:15px;color:var(--muted)}
+.tums i.now{border-color:var(--cyan);color:var(--cyan)}.tums i.ok{border-color:var(--good);background:var(--good);color:var(--ink)}
+.key{display:inline-flex;align-items:center;gap:8px;background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:7px 14px;font-family:var(--f-mono);font-size:13px}
+.key.on{border-color:var(--warn);color:var(--warn);box-shadow:0 0 12px rgba(255,200,87,.35)}
+.key .pips{display:flex;gap:3px}.key .pips b{width:8px;height:8px;border-radius:50%;background:var(--line)}.key .pips b.f{background:var(--warn)}
+
+.tumbler{background:radial-gradient(ellipse at 50% 0%,#1a2a66,var(--panel) 70%);border:1px solid var(--line);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:16px;align-items:center;text-align:center;position:relative;overflow:hidden}
+.tumbler .tt{font-family:var(--f-mono);font-size:12px;letter-spacing:.16em;color:var(--cyan);text-transform:uppercase}
+.tumbler .task{font-size:19px;color:#c4cbe4;max-width:40ch}
+.seqline{font-family:var(--f-mono);font-weight:700;font-size:clamp(22px,4.4vw,34px);letter-spacing:.04em}
+.gearwrap{position:relative;width:170px;height:170px}
+.gearwrap svg.gear{position:absolute;inset:0;width:100%;height:100%;animation:spin 14s linear infinite}
+.gearwrap.locked svg.gear{animation:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.slot{position:absolute;inset:44px;border-radius:50%;border:3px dashed var(--cyan);display:grid;place-items:center;font-family:var(--f-mono);font-weight:700;font-size:22px;background:var(--ink)}
+.slot.over{background:#183072}.slot.ok{border-style:solid;border-color:var(--good);color:var(--good)}
+.tiles{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.tile{font-family:var(--f-mono);font-weight:700;font-size:22px;background:var(--panel2);border:2px solid var(--cyan);color:var(--text);border-radius:12px;padding:10px 18px;min-width:84px;min-height:56px;touch-action:none;user-select:none;-webkit-user-select:none}
+.tile.ghost{position:fixed;z-index:30;pointer-events:none;transform:translate(-50%,-50%) rotate(-3deg);background:var(--cyan);color:var(--ink)}
+.tile.bad{border-color:var(--bad);animation:shake .35s}
+@keyframes shake{20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.core{width:150px;height:150px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle,#1d3a8a,#0b122c 70%);border:3px solid var(--blue);box-shadow:0 0 30px rgba(27,54,255,.6);font-family:var(--f-mono);font-weight:700;font-size:40px;position:relative}
+.core small{position:absolute;bottom:22px;font-size:12px;color:var(--muted);letter-spacing:.12em}
+.core.fire{border-color:var(--cyan);box-shadow:0 0 60px var(--cyan);animation:fire .5s 3}
+@keyframes fire{50%{box-shadow:0 0 90px #fff}}
+.chain{font-family:var(--f-mono);font-size:22px;min-height:34px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center}
+.chain button{font:inherit;font-weight:700;background:var(--panel2);border:1px solid var(--good);color:var(--good);border-radius:8px;padding:2px 10px}
+.nodes{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.node{width:64px;height:64px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#2a4bd0,#111a3d);border:2px solid var(--cyan);color:var(--text);font-family:var(--f-mono);font-weight:700;font-size:24px;box-shadow:0 0 14px rgba(0,252,241,.35)}
+.node:active{transform:scale(.94)}.node.bad{border-color:var(--bad);animation:shake .35s}
+.steppers{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;font-family:var(--f-mono);font-size:26px;align-items:center}
+.stp{display:flex;align-items:center;gap:6px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:6px 8px}
+.stp sup{font-size:20px;color:var(--cyan);min-width:22px;display:inline-block;text-align:center}
+.stp button{width:40px;height:40px;border-radius:9px;border:1px solid var(--line);background:var(--ink);color:var(--text);font-size:22px}
+.board{width:100%;max-width:520px;border-radius:14px;padding:18px;background:linear-gradient(#0f2a1e,#0b1d16);border:2px solid #1f6b4a;position:relative}
+.board .expr{font-family:var(--f-mono);font-weight:700;font-size:clamp(24px,4.6vw,34px);color:#d7ffe9}
+.board .expr sup{font-size:.6em;color:#7dffbf}
+.board.short{animation:spark .4s 2;border-color:var(--bad)}.board.good{border-color:var(--good);box-shadow:0 0 30px rgba(61,220,151,.5)}
+@keyframes spark{30%{background:#3a1010}60%{background:#fff3}}
+.knobrow{display:flex;gap:18px;align-items:center;justify-content:center;flex-wrap:wrap}
+.knob{width:150px;height:150px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#3a4880,#121a3c 70%);border:3px solid var(--line);position:relative;touch-action:none;cursor:grab}
+.knob .mark{position:absolute;left:50%;top:10px;width:6px;height:28px;margin-left:-3px;border-radius:3px;background:var(--cyan)}
+.knobval{font-family:var(--f-mono);font-weight:700;font-size:40px;min-width:3ch}
+.knobval sup{font-size:.6em;color:var(--cyan)}
+.round{width:58px;height:58px;border-radius:50%;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-size:28px}
+.dialwrap{position:relative;width:min(300px,78vw);aspect-ratio:1}
+.dialwrap svg{width:100%;height:100%;touch-action:none;cursor:grab}
+.dialwrap .ptr{position:absolute;left:50%;top:-6px;margin-left:-10px;width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:18px solid var(--cyan);filter:drop-shadow(0 0 6px var(--cyan))}
+.fb{border-radius:12px;padding:12px 14px;font-size:16px;border:1px solid var(--line);background:var(--panel2);max-width:640px;width:100%;text-align:left}
+.fb b{display:block;font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:3px}
+.fb.no{border-color:rgba(255,107,122,.5)}.fb.no b{color:var(--bad)}.fb.ok{border-color:rgba(61,220,151,.5)}.fb.ok b{color:var(--good)}.fb.hint b{color:var(--warn)}
+.boom{font-family:var(--f-display);font-weight:800;font-size:clamp(46px,9vw,84px);color:var(--warn);text-shadow:4px 4px 0 #b3261e,-2px -2px 0 #000;transform:rotate(-8deg);animation:boom .5s ease-out}
+@keyframes boom{0%{transform:scale(.2) rotate(-30deg);opacity:0}70%{transform:scale(1.15) rotate(-6deg);opacity:1}100%{transform:scale(1) rotate(-8deg)}}
+.evcard{background:#f4ecd8;color:#2a2418;border-radius:10px;padding:14px 16px;max-width:560px;text-align:left;box-shadow:0 20px 30px -18px #000}
+.evcard .tag{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.14em;color:#6b5d43;text-transform:uppercase}
+.evcard p{margin:6px 0 0;font-size:17px}
+.score{font-family:var(--f-display);font-weight:800;font-size:56px;color:var(--cyan);line-height:1}
+.stars{font-size:34px;letter-spacing:6px;color:var(--warn)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+footer{border-top:1px solid var(--line);color:var(--muted);font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:space-between;padding-block:16px calc(16px + env(safe-area-inset-bottom,0px))}
+.top .tools{display:flex;gap:12px;align-items:center}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="index.html">
+    <svg viewBox="0 0 40 46" aria-hidden="true"><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z" fill="#111a3d" stroke="#00FCF1" stroke-width="2.2" stroke-linejoin="round"/><circle cx="19" cy="21" r="6.2" fill="#111a3d" stroke="#00FCF1" stroke-width="2.6"/><circle cx="19" cy="21" r="1.6" fill="#00FCF1"/><path d="M23.4 25.4 28.8 30.8" stroke="#1B36FF" stroke-width="3.8" stroke-linecap="round"/></svg>
+    <span class="wm">MATHS FORENSICS<small>ACADEMY · TRAINING GAME</small></span>
+  </a>
+  <div class="tools"><button class="linkbtn" id="snd" aria-pressed="true">Sound on</button></div>
+</div></header>
+<main class="wrap" id="app"></main>
+<div class="sr" aria-live="polite" id="live"></div>
+<footer><div class="wrap"><span>The Suspect's Vault · sequences, prime factors and index laws · KS3</span><span><a href="index.html">Back to the Academy</a></span></div></footer>
+<script>
+"use strict";
+const $ = s => document.querySelector(s), app = $("#app");
+const R = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const MINUS = "−";
+const sgn = n => n < 0 ? MINUS + Math.abs(n) : String(n);
+const say = t => { $("#live").textContent = ""; setTimeout(() => $("#live").textContent = t, 30); };
+
+/* ---------- sound (made in the browser, no files) and vibration ---------- */
+let SOUND = true; try { SOUND = localStorage.getItem("mfa.vault.snd") !== "0"; } catch (e) {}
+let AC = null;
+const ac = () => { if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { AC = null; } } if (AC && AC.state === "suspended") AC.resume(); return AC; };
+function tone(f, d, type = "sine", v = .2, when = 0, slide = 0) { const c = SOUND && ac(); if (!c) return; const t = c.currentTime + when, o = c.createOscillator(), g = c.createGain(); o.type = type; o.frequency.setValueAtTime(f, t); if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(30, f + slide), t + d); g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(.001, t + d); o.connect(g).connect(c.destination); o.start(t); o.stop(t + d + .02); }
+function noise(d, v = .25, hp = 1500, when = 0) { const c = SOUND && ac(); if (!c) return; const t = c.currentTime + when, n = Math.floor(c.sampleRate * d), b = c.createBuffer(1, n, c.sampleRate), a = b.getChannelData(0); for (let i = 0; i < n; i++) a[i] = (Math.random() * 2 - 1) * (1 - i / n); const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(); f.type = "highpass"; f.frequency.value = hp; g.gain.value = v; s.buffer = b; s.connect(f).connect(g).connect(c.destination); s.start(t); }
+const buzz = p => { try { if (navigator.vibrate) navigator.vibrate(p); } catch (e) {} };
+const SFX = {
+  tick() { noise(.018, .18, 3500); buzz(6); },
+  clunk() { tone(90, .25, "sine", .5, 0, -40); noise(.08, .25, 400); buzz([30, 30, 50]); },
+  clang() { [220, 331, 467, 612].forEach((f, i) => tone(f, 1.1 - i * .15, "triangle", .12)); noise(.12, .2, 800); buzz(80); },
+  spark() { noise(.25, .35, 2500); tone(1800, .2, "square", .05, 0, -1200); buzz([20, 40, 20, 40, 20]); },
+  laser() { tone(300, .5, "sawtooth", .08, 0, 1400); tone(1400, .3, "sine", .1, .35); buzz(60); },
+  alarm() { tone(880, .18, "square", .06); tone(660, .18, "square", .06, .2); },
+  open() { SFX.clang(); tone(523, .3, "triangle", .15, .25); tone(659, .3, "triangle", .15, .38); tone(784, .5, "triangle", .15, .5); },
+  key() { tone(1200, .12, "sine", .15); tone(1600, .2, "sine", .12, .1); }
+};
+function sndBtn() { const b = $("#snd"); b.textContent = SOUND ? "Sound on" : "Sound off"; b.setAttribute("aria-pressed", SOUND); }
+$("#snd").onclick = () => { SOUND = !SOUND; try { localStorage.setItem("mfa.vault.snd", SOUND ? "1" : "0"); } catch (e) {} sndBtn(); if (SOUND) SFX.tick(); };
+sndBtn();
+
+/* ---------- the case ---------- */
+const CASE = "The Year 9 maths mock papers have vanished from the locked maths office at St Euclid's Academy, some time between 3:30 and 4:30 pm. Five people had a reason to be near it. Crack each suspect's vault for the evidence inside, then name the culprit.";
+const SUSPECTS = [
+  { id: "hale", name: "Mr Hale", role: "Caretaker", col: "#CD8B4E",
+    clear: "Fire-alarm test log: Mr Hale was testing alarms in the sports hall from 3:15 to 4:45 pm, with two staff signing as witnesses.",
+    guilty: "A key-cutting receipt: \"MATHS OFFICE, 1 copy\", dated last Tuesday and signed R. Hale. Nobody asked him for a spare key." },
+  { id: "okafor", name: "Ms Okafor", role: "Head of Science", col: "#9FE7F5",
+    clear: "Parents' evening sign-in sheet: Ms Okafor was in the main hall with families from 3:30 to 5 pm. Twelve parents signed in to see her.",
+    guilty: "A memory stick labelled \"Y9 MOCK — scan\". The files on it are the missing papers, scanned at 4:05 pm." },
+  { id: "dev", name: "Dev Mistry", role: "Year 11 prefect", col: "#3DDC97",
+    clear: "Bus pass record: Dev tapped on to the 3:25 pm bus home. The driver remembers him.",
+    guilty: "The prefect duty rota, changed by hand: Dev swapped himself on to \"maths corridor, 4 pm\", then tried to cross it out." },
+  { id: "lindqvist", name: "Mrs Lindqvist", role: "Librarian", col: "#F2C14E",
+    clear: "Library CCTV: Mrs Lindqvist is at the issue desk for the whole hour, stamping books for the Year 7 reading club.",
+    guilty: "The library photocopier log: 120 pages copied at 4:12 pm on Mrs Lindqvist's staff code. The mock papers are 120 pages long." },
+  { id: "barros", name: "Coach Barros", role: "PE teacher", col: "#FF6B7A",
+    clear: "Match report: Coach Barros refereed the Year 8 football from kick-off at 3:30 to the final whistle at 4:40 pm.",
+    guilty: "In a gym bag at the back of the vault: the missing mock papers, under a whistle and a stopwatch." }
+];
+const initials = n => n.split(" ").slice(-1)[0][0] + (n.split(" ").length > 1 ? n.split(" ")[0][0] : "");
+
+const LEVELS = [
+  { name: "Cadet", blurb: "Next terms in sequences, factor trees up to 60, multiplying powers.", secs: 120, eg: "3, 7, 11, 15, ?" },
+  { name: "Detective", blurb: "nth-term rules, prime factors up to 300, multiplying and dividing powers.", secs: 105, eg: "4n − 1" },
+  { name: "Inspector", blurb: "Falling and geometric sequences, index form like 2³ × 3², powers of powers.", secs: 95, eg: "(a³)² ÷ a⁴" }
+];
+
+/* ---------- tumbler puzzles ---------- */
+function rule(d, c) { if (d === 0) return String(c); const dn = (d === 1 ? "" : d === -1 ? MINUS : sgn(d)) + "n"; return c === 0 ? dn : d < 0 ? `${sgn(c)} ${MINUS} ${(Math.abs(d) === 1 ? "" : Math.abs(d))}n` : `${dn} ${c < 0 ? MINUS : "+"} ${Math.abs(c)}`; }
+function makeSeq(level) {
+  const kind = level === 0 ? "next" : level === 1 ? pick(["rule", "rule", "next"]) : pick(["rule", "down", "geo"]);
+  if (kind === "next") {
+    const a = level === 0 ? R(1, 15) : R(10, 25), d = level === 0 ? R(2, 9) : pick([-4, -3, 3, 4, 5, 6, 7, 8]); const t = [0, 1, 2, 3].map(i => a + i * d); const ans = a + 4 * d;
+    const opts = [...new Set([ans, ans + d, ans - 1, t[3] * 2, ans + 1].map(sgn))].filter(x => x !== sgn(t[3])).slice(0, 4);
+    const why = v => v === sgn(ans + d) ? `That's the term after next. Add ${sgn(d)} once: ${sgn(t[3])} + ${par(d)} = ${sgn(ans)}.` : v === sgn(t[3] * 2) ? "The terms change by the same amount each time. They don't double." : `Find the gap between terms: it's ${sgn(d)} each time.`;
+    return { kind, title: "Sequence spinner", task: "Which number comes next? Drag it into the gear.", show: t.map(sgn).join(", ") + ", …", ans: sgn(ans), opts: shuffle(opts.includes(sgn(ans)) ? opts : [sgn(ans), ...opts.slice(0, 3)]), why, tip: `The difference is ${sgn(d)}: ${sgn(t[3])} + ${par(d)} = ${sgn(ans)}.` };
+  }
+  if (kind === "geo") {
+    const a = R(1, 5), r = pick([2, 3, 4]); const t = [0, 1, 2, 3].map(i => a * r ** i); const ans = t[3] * r;
+    const gap = t[3] - t[2];
+    const opts = shuffle([...new Set([ans, t[3] + gap, t[3] * (r + 1), ans + r].map(String))].slice(0, 4));
+    const why = v => +v === t[3] + gap ? `This sequence multiplies by ${r} each time, so the gaps grow. ${t[3]} × ${r} = ${ans}.` : `Each term is the one before × ${r}.`;
+    return { kind, title: "Sequence spinner", task: "Which number comes next? Drag it into the gear.", show: t.join(", ") + ", …", ans: String(ans), opts, why, tip: `It's geometric: × ${r} each time. ${t[3]} × ${r} = ${ans}.` };
+  }
+  const d = kind === "down" ? -R(2, 6) : R(2, 9), a = kind === "down" ? R(20, 40) : R(-3, 12), c = a - d;
+  const t = [0, 1, 2, 3].map(i => a + i * d);
+  const right = rule(d, c);
+  const opts = [...new Set([right, rule(d, a), rule(1, d), rule(d, -c), rule(-d, c)])].filter(o => o !== "0").slice(0, 4);
+  const why = v => v === rule(d, a) ? `Check n = 1: ${v.replace(/n/, "×1")} doesn't give ${sgn(a)}. The number after the n-term is the first term minus the difference: ${sgn(a)} − ${par(d)} = ${sgn(c)}.`
+    : v === rule(1, d) ? `The difference (${sgn(d)}) goes in front of n, not after it.` : `Test it with n = 1: it should give ${sgn(a)}, the first term.`;
+  return { kind, title: "Sequence spinner", task: "Which is the nth-term rule? Drag it into the gear.", show: t.map(sgn).join(", ") + ", …", ans: right, opts: shuffle(opts.includes(right) ? opts : [right, ...opts.slice(0, 3)]), why, tip: `Difference ${sgn(d)}, so ${d === 1 ? "" : sgn(d)}n. Then ${sgn(a)} − ${par(d)} = ${sgn(c)}: ${right}.` };
+}
+const par = n => n < 0 ? "(" + sgn(n) + ")" : String(n);
+function makePrime(level) {
+  const pool = level === 0 ? [2, 3, 5] : [2, 2, 3, 3, 5, 7];
+  let N, fs;
+  do { const k = level === 0 ? R(2, 3) : R(3, 5); fs = Array.from({ length: k }, () => pick(pool)).sort((a, b) => a - b); N = fs.reduce((p, x) => p * x, 1); }
+  while (level === 0 ? N > 60 || N < 8 : N > 360 || N < 24 || new Set(fs).size < 2);
+  if (level === 2) {
+    const ex = { 2: 0, 3: 0, 5: 0, 7: 0 }; fs.forEach(f => ex[f]++);
+    return { kind: "index", title: "Prime factor laser", task: `Set the powers so the laser matches ${N}.`, N, ex, tip: `${N} = ${fs.join(" × ")} = ${Object.entries(ex).filter(([, e]) => e).map(([p, e]) => e > 1 ? `${p}<sup>${e}</sup>` : p).join(" × ")}` };
+  }
+  return { kind: "tree", title: "Prime factor laser", task: `Fire primes into the core until they multiply to make ${N}.`, N, fs, nodes: level === 0 ? [2, 3, 5, 7] : [1, 2, 3, 5, 7, 9], tip: `${N} = ${fs.join(" × ")}` };
+}
+function makeIndex(level) {
+  const v = pick(["a", "x", "y", "m", "n"]);
+  const P = (e, b = v) => `${b}<sup>${e}</sup>`;
+  let html, ans, wrong = [];
+  if (level === 0) {
+    if (Math.random() < .7) { let p, q; do { p = R(2, 9); q = R(2, 9); } while (p * q === p + q); html = `${P(p)} × ${P(q)}`; ans = p + q; wrong = [[p * q, "Multiplying powers of the same letter means adding the indices, not multiplying them."]]; }
+    else { let p, q; do { q = R(2, 6); p = q + R(2, 7); } while (p / q === p - q); html = `${P(p)} ÷ ${P(q)}`; ans = p - q; wrong = [[p + q, "Dividing powers means subtracting the indices."], [p / q, "Dividing powers means subtracting the indices, not dividing them."]]; }
+  } else if (level === 1) {
+    const t = pick([0, 1, 2]);
+    if (t === 0) { const p = R(2, 8), q = R(2, 8), r = R(2, Math.min(9, p + q - 1)); html = `<span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle"><span>${P(p)} × ${P(q)}</span><span style="border-top:3px solid #d7ffe9;padding-top:2px">${P(r)}</span></span>`; ans = p + q - r; wrong = [[p * q - r, "Multiply first by adding the indices on top, then subtract the one underneath."], [p + q + r, "The bottom one divides, so subtract its index."]]; }
+    else if (t === 1) { let p, q; do { p = R(2, 5); q = R(2, 4); } while (p * q === p + q); html = `(${P(p)})<sup>${q}</sup>`; ans = p * q; wrong = [[p + q, "A power of a power means multiplying the indices: (a²)³ = a⁶."]]; }
+    else { const p = R(5, 12), q = R(2, p - 1), r = R(2, 6); html = `${P(p)} ÷ ${P(q)} × ${P(r)}`; ans = p - q + r; wrong = [[p - q - r, "Only the divide subtracts. The × at the end adds its index."]]; }
+  } else {
+    const t = pick([0, 1, 2]);
+    if (t === 0) { const p = R(2, 5), q = R(2, 3), r = R(2, 12); html = `(${P(p)})<sup>${q}</sup> ÷ ${P(r)}`; ans = p * q - r; wrong = [[p + q - r, "Do the bracket first: a power of a power multiplies the indices."]]; }
+    else if (t === 1) { const p = R(2, 6), q = R(2, 6), r = R(2, 4), s = R(2, 3); html = `${P(p)} × ${P(q)} ÷ (${P(r)})<sup>${s}</sup>`; ans = p + q - r * s; wrong = [[p + q - r - s, "The bracket on the bottom is a power of a power: multiply its indices first."]]; }
+    else { const p = R(2, 6), q = p + R(1, 5); html = `${P(p)} ÷ ${P(q)}`; ans = p - q; wrong = [[q - p, "Subtract the bottom index from the top one. A bigger bottom index gives a negative power."]]; }
+  }
+  if (wrong.some(([w]) => w === ans)) return makeIndex(level);   // a wrong method mustn't land on the right answer
+  return { kind: "dial", title: "Index law circuit", task: `Turn the dial to write it as a single power of ${v}.`, v, html, ans, wrong, tip: "Multiply: add the indices. Divide: subtract them. Power of a power: multiply them." };
+}
+
+/* ---------- game state ---------- */
+let BEST = {}; try { BEST = JSON.parse(localStorage.getItem("mfa.vault") || "{}"); } catch (e) {}
+let G = null, T = null, raf = 0;
+
+function screenStart() {
+  cancelAnimationFrame(raf); G = null;
+  app.innerHTML = `<div class="stack" style="gap:22px">
+    <section class="hero"><div class="eyebrow">Training game · Number and algebra</div><h1>The Suspect's Vault</h1>
+      <p>Five suspects. Five vaults. Each one is protected by three tumblers: a sequence, a prime factor lock and an index-law circuit. Crack them before the alarm laser crosses the screen, spin the combination dial, and collect the evidence inside.</p></section>
+    <div class="brief"><div class="tag">Case file · St Euclid's Academy</div><p>${esc(CASE)}</p></div>
+    <div class="sus">${SUSPECTS.map(s => `<div class="scard"><div class="av" style="background:${s.col}">${initials(s.name)}</div><b>${s.name}</b><span>${s.role}</span></div>`).join("")}</div>
+    <h2 class="eyebrow" style="margin:0">Choose your clearance</h2>
+    <div class="levels">${LEVELS.map((l, i) => `<button class="lvl" data-l="${i}"><b>${l.name}</b><span class="muted small">${l.blurb}</span><span class="bs">${BEST[i] ? "Best " + BEST[i] + " · " : ""}${l.secs} seconds a vault</span></button>`).join("")}</div>
+    <p class="muted small" style="margin:0">Tip: 3 tumblers in a row with no mistakes charges a Skeleton Key, which cracks one tumbler for you. A wrong answer costs 10 seconds. Running out of time doesn't lock you out, but your Detective Rating drops.</p>
+  </div>`;
+  app.querySelectorAll("[data-l]").forEach(b => b.onclick = () => { ac(); startGame(+b.dataset.l); });
+}
+function startGame(level) {
+  const order = shuffle(SUSPECTS.map(s => s.id)), culprit = pick(order);
+  G = { level, order, culprit, v: 0, score: 0, streak: 0, keys: 0, charge: 0, evidence: {}, mistakesTotal: 0, accuseTries: 0 };
+  startVault();
+}
+function startVault() {
+  const L = G.level;
+  T = { tumblers: shuffle([makeSeq(L), makePrime(L), makeIndex(L)]), i: 0, codes: [R(1, 39), R(1, 39), R(1, 39)], got: 0, mistakes: 0, deadline: Date.now() + LEVELS[L].secs * 1000, phase: "tumbler", dialAt: 0, dialStep: 0, ex: { 2: 0, 3: 0, 5: 0, 7: 0 }, chain: [], knob: 0, alarmed: false };
+  while (new Set(T.codes).size < 3) T.codes = [R(1, 39), R(1, 39), R(1, 39)];
+  renderVault(); loop();
+}
+const sus = id => SUSPECTS.find(s => s.id === id);
+function timeLeft() { return Math.round((T.deadline - Date.now()) / 1000); }
+function loop() {
+  cancelAnimationFrame(raf);
+  const step = () => {
+    if (!T || T.phase === "open") return;
+    const tot = LEVELS[G.level].secs * 1000, left = T.deadline - Date.now(), bar = $("#laser i"), lab = $("#tleft");
+    if (bar) bar.style.width = Math.min(100, Math.max(0, 100 - left / tot * 100)) + "%";
+    if (lab) lab.textContent = left > 0 ? Math.ceil(left / 1000) + "s" : "ALARM";
+    if (left <= 0 && !T.alarmed) { T.alarmed = true; SFX.alarm(); const l = $("#laser"); if (l) l.classList.add("over"); say("The alarm has tripped. Keep going: your rating drops the longer it takes."); }
+    raf = requestAnimationFrame(step);
+  };
+  raf = requestAnimationFrame(step);
+}
+function hud() {
+  const s = sus(G.order[G.v]);
+  return `<div class="hud"><span>VAULT <b>${G.v + 1}</b> / 5 · <b>${esc(s.name)}</b></span><span class="tums">${[0, 1, 2].map(k => `<i class="${k < T.i || T.phase !== "tumbler" ? "ok" : k === T.i ? "now" : ""}">${k < T.i || T.phase !== "tumbler" ? "✓" : k + 1}</i>`).join("")}</span>
+    <span class="codes" aria-label="Combination">${T.codes.map((c, k) => `<span class="${k < T.got ? "got" : ""}">${k < T.got ? c : "··"}</span>`).join("")}</span>
+    <span style="margin-left:auto">SCORE <b>${G.score}</b></span></div>
+    <div class="row" style="justify-content:space-between"><div style="flex:1;min-width:200px"><div class="laser" id="laser"><i></i></div></div><span class="hud"><b id="tleft"></b></span>
+    <button class="key${G.keys ? " on" : ""}" id="usekey" ${G.keys && T.phase === "tumbler" ? "" : "disabled"} aria-label="Skeleton Key: ${G.keys} charged">🗝 Skeleton Key <span class="pips">${[0, 1, 2].map(k => `<b class="${k < (G.keys ? 3 : G.charge) ? "f" : ""}"></b>`).join("")}</span>${G.keys > 1 ? " ×" + G.keys : ""}</button></div>`;
+}
+function renderVault(msg) {
+  const tm = T.tumblers[T.i];
+  let body = "";
+  if (T.phase === "dial") body = dialHTML();
+  else if (tm.kind === "next" || tm.kind === "rule" || tm.kind === "down" || tm.kind === "geo") body = seqHTML(tm);
+  else if (tm.kind === "tree") body = treeHTML(tm);
+  else if (tm.kind === "index") body = indexHTML(tm);
+  else body = knobHTML(tm);
+  app.innerHTML = `<div class="stack" style="gap:16px">${hud()}${body}<div id="fb" aria-live="polite">${msg || ""}</div><div class="row"><button class="linkbtn" id="quit">End game</button></div></div>`;
+  wireVault(); loop();
+  const k = $("#usekey"); if (k) k.onclick = useKey;
+  $("#quit").onclick = () => { const q = $("#quit"); if (q.dataset.sure) return screenStart(); q.dataset.sure = 1; q.textContent = "Tap again to end this game"; };
+}
+function fb(kind, title, text) { const f = $("#fb"); if (f) f.innerHTML = `<div class="fb ${kind}"><b>${title}</b>${text}</div>`; say(title + ". " + String(text).replace(/<[^>]+>/g, "")); }
+function mistake(msg) {
+  T.mistakes++; G.mistakesTotal++; G.streak = 0; G.charge = 0; T.deadline -= 10000; SFX.spark();
+  fb("no", "Wrong · −10 seconds", msg);
+}
+function tumblerCracked(viaKey) {
+  let charged = false;
+  if (!viaKey) { G.streak++; if (!G.keys) { G.charge = Math.min(3, G.charge + 1); if (G.charge === 3) { G.keys = 1; G.charge = 0; charged = true; setTimeout(SFX.key, 350); } } }
+  T.got++; T.i++; SFX.clunk();
+  const msg = `<div class="fb ok"><b>Tumbler cracked</b>Combination number ${T.got}: <b style="display:inline;font-size:18px;color:var(--cyan)">${T.codes[T.got - 1]}</b>${charged ? " · 3 in a row: Skeleton Key charged!" : ""}</div>`;
+  if (T.i >= 3) { T.phase = "dial"; T.dialStep = 0; T.dialAt = 0; }
+  setTimeout(() => renderVault(msg), 380);
+}
+function useKey() {
+  if (!G.keys || T.phase !== "tumbler") return;
+  G.keys--; SFX.key(); tumblerCracked(true);
+}
+
+/* ---------- tumbler 1: sequence spinner ---------- */
+const gearSVG = `<svg class="gear" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="#1B36FF" stroke-width="3">${Array.from({ length: 16 }, (_, i) => `<rect x="46" y="2" width="8" height="12" rx="2" fill="#1B36FF" transform="rotate(${i * 22.5} 50 50)"/>`).join("")}<circle cx="50" cy="50" r="38" fill="#111a3d"/></g></svg>`;
+function seqHTML(tm) {
+  return `<div class="tumbler"><div class="tt">Tumbler ${T.i + 1} · ${tm.title}</div><div class="seqline">${esc(tm.show)}</div><div class="task">${tm.task}</div>
+    <div class="gearwrap" id="gear">${gearSVG}<div class="slot" id="slot">?</div></div>
+    <div class="tiles">${tm.opts.map(o => `<button class="tile" data-o="${esc(o)}">${esc(o)}</button>`).join("")}</div></div>`;
+}
+function trySeq(o) {
+  const tm = T.tumblers[T.i];
+  if (o === tm.ans) { $("#slot").textContent = o; $("#slot").classList.add("ok"); $("#gear").classList.add("locked"); return tumblerCracked(); }
+  const t = app.querySelector(`.tile[data-o="${CSS.escape(o)}"]`); if (t) { t.classList.add("bad"); t.disabled = true; }
+  mistake(esc(tm.why(o)));
+}
+
+/* ---------- tumbler 2: prime factor laser ---------- */
+function treeHTML(tm) {
+  const prod = T.chain.reduce((p, x) => p * x, 1), rem = tm.N / prod;
+  return `<div class="tumbler"><div class="tt">Tumbler ${T.i + 1} · ${tm.title}</div><div class="task">${tm.task}</div>
+    <div class="core" id="core">${tm.N}<small>${rem === 1 ? "POWERED" : "LEFT: " + rem}</small></div>
+    <div class="chain">${T.chain.length ? T.chain.map((x, k) => `<button data-rm="${k}" aria-label="Remove ${x}">${x}</button>`).join(" × ") + ` = ${prod}` : `<span class="muted">Tap a prime to fire it in</span>`}</div>
+    <div class="nodes">${tm.nodes.map(n => `<button class="node" data-n="${n}">${n}</button>`).join("")}</div></div>`;
+}
+function fire(n) {
+  const tm = T.tumblers[T.i], prod = T.chain.reduce((p, x) => p * x, 1), rem = tm.N / prod;
+  if (n === 1) return mistake("1 isn't a prime number: it only has one factor. Multiplying by 1 doesn't change anything.");
+  if (n === 9) return mistake("9 isn't prime: 9 = 3 × 3. Use primes only.");
+  if (rem % n) return mistake(`${n} doesn't go into ${rem} (what's left of ${tm.N}): ${rem} ÷ ${n} = ${Math.floor(rem / n)} remainder ${rem % n}.`);
+  T.chain.push(n); SFX.tick(); SFX.laser();
+  if (rem / n === 1) { renderVault(); $("#core").classList.add("fire"); return setTimeout(() => tumblerCracked(), 700); }
+  renderVault();
+}
+function indexHTML(tm) {
+  const val = Object.entries(T.ex).reduce((p, [b, e]) => p * b ** e, 1);
+  return `<div class="tumbler"><div class="tt">Tumbler ${T.i + 1} · ${tm.title}</div><div class="task">${tm.task}</div>
+    <div class="core" id="core">${tm.N}<small>${val === tm.N ? "MATCH" : "NOW: " + val}</small></div>
+    <div class="steppers">${[2, 3, 5, 7].map(b => `<span class="stp"><button data-b="${b}" data-d="-1" aria-label="Lower the power of ${b}">−</button><span>${b}<sup>${T.ex[b]}</sup></span><button data-b="${b}" data-d="1" aria-label="Raise the power of ${b}">+</button></span>`).join(`<span>×</span>`)}</div>
+    <div class="muted small">A power of 0 means that prime isn't used.</div>
+    <button class="btn" id="fireidx">Fire the laser</button></div>`;
+}
+function fireIndex() {
+  const tm = T.tumblers[T.i], val = Object.entries(T.ex).reduce((p, [b, e]) => p * b ** e, 1);
+  if (val === tm.N) { $("#core").classList.add("fire"); SFX.laser(); return setTimeout(() => tumblerCracked(), 700); }
+  mistake(`That makes ${val}, not ${tm.N}. ${val > tm.N ? "Too big: lower a power." : tm.N % val === 0 ? `You still need × ${tm.N / val}. Break that into primes.` : "Split " + tm.N + " into primes first, then count how many of each."}`);
+}
+
+/* ---------- tumbler 3: index law circuit ---------- */
+function knobHTML(tm) {
+  return `<div class="tumbler"><div class="tt">Tumbler ${T.i + 1} · ${tm.title}</div><div class="task">${tm.task}</div>
+    <div class="board" id="board"><div class="expr">${tm.html}</div></div>
+    <div class="knobrow"><button class="round" id="kdn" aria-label="Lower the power">−</button>
+      <div class="knob" id="knob" role="slider" aria-label="Power" aria-valuenow="${T.knob}" tabindex="0"><div class="mark" style="transform-origin:3px 62px;transform:rotate(${T.knob * 24}deg)"></div></div>
+      <button class="round" id="kup" aria-label="Raise the power">+</button>
+      <div class="knobval">= ${tm.v}<sup id="kv">${sgn(T.knob)}</sup></div></div>
+    <button class="btn" id="close">Close the circuit</button></div>`;
+}
+function setKnob(v) {
+  v = Math.max(-12, Math.min(40, v)); if (v === T.knob) return; T.knob = v; SFX.tick();
+  const m = app.querySelector(".knob .mark"); if (m) m.style.transform = `rotate(${v * 24}deg)`;
+  const kv = $("#kv"); if (kv) kv.textContent = sgn(v); const k = $("#knob"); if (k) k.setAttribute("aria-valuenow", v);
+}
+function closeCircuit() {
+  const tm = T.tumblers[T.i];
+  if (T.knob === tm.ans) { $("#board").classList.add("good"); SFX.laser(); return setTimeout(() => tumblerCracked(), 600); }
+  $("#board").classList.remove("short"); void $("#board").offsetWidth; $("#board").classList.add("short");
+  const w = tm.wrong.find(([x]) => x === T.knob);
+  mistake(w ? w[1] : tm.tip);
+}
+
+/* ---------- final: the combination dial ---------- */
+function dialHTML() {
+  const nums = Array.from({ length: 40 }, (_, i) => i);
+  return `<div class="tumbler"><div class="tt">Combination dial</div>
+    <div class="task">Turn the dial to <b style="color:var(--cyan);font-family:var(--f-mono);font-size:24px">${T.codes[T.dialStep]}</b>, then let go. ${["First number", "Second number", "Last number"][T.dialStep]} of ${T.codes.join(" · ")}.</div>
+    <div class="dialwrap"><div class="ptr"></div><svg viewBox="-110 -110 220 220" id="dial" role="slider" aria-label="Combination dial" aria-valuenow="${T.dialAt}" tabindex="0">
+      <g id="dialg" style="transform:rotate(${-T.dialAt * 9}deg);transition:transform .08s">
+      <circle r="104" fill="#1a2350" stroke="#3a4880" stroke-width="4"/><circle r="70" fill="#111a3d" stroke="#26336A" stroke-width="2"/>
+      ${nums.map(n => { const a = n * 9 * Math.PI / 180, big = n % 5 === 0; return `<line x1="${Math.sin(a) * 100}" y1="${-Math.cos(a) * 100}" x2="${Math.sin(a) * (big ? 86 : 92)}" y2="${-Math.cos(a) * (big ? 86 : 92)}" stroke="#E8ECF8" stroke-width="${big ? 2.5 : 1.2}"/>` + (big ? `<text x="${Math.sin(a) * 77}" y="${-Math.cos(a) * 77 + 5}" fill="#E8ECF8" font-size="14" font-family="JetBrains Mono,monospace" text-anchor="middle">${n}</text>` : ""); }).join("")}
+      <circle r="22" fill="#2a4bd0" stroke="#00FCF1" stroke-width="2"/></g>
+      <text y="7" fill="#fff" font-size="20" font-weight="700" font-family="JetBrains Mono,monospace" text-anchor="middle" id="dialnum">${T.dialAt}</text></svg></div>
+    <div class="row" style="justify-content:center"><button class="round" id="dleft" aria-label="Turn left">−</button><button class="btn" id="dset">Set ${T.codes[T.dialStep]}</button><button class="round" id="dright" aria-label="Turn right">+</button></div></div>`;
+}
+function setDial(v) {
+  v = ((v % 40) + 40) % 40; if (v === T.dialAt) return; T.dialAt = v; SFX.tick();
+  const g = $("#dialg"); if (g) g.style.transform = `rotate(${-v * 9}deg)`; const n = $("#dialnum"); if (n) n.textContent = v; const d = $("#dial"); if (d) d.setAttribute("aria-valuenow", v);
+}
+function dialRelease() {
+  if (T.dialAt !== T.codes[T.dialStep]) return fb("hint", "Not there yet", `The dial is on ${T.dialAt}. Turn it to ${T.codes[T.dialStep]}.`);
+  T.dialStep++; SFX.clunk();
+  if (T.dialStep >= 3) return openVault();
+  renderVault(`<div class="fb ok"><b>Click</b>${T.codes[T.dialStep - 1]} is set. Now ${T.codes[T.dialStep]}.</div>`);
+}
+function openVault() {
+  T.phase = "open"; cancelAnimationFrame(raf); SFX.open();
+  const left = timeLeft(), pts = Math.max(20, 100 + left - 10 * T.mistakes);
+  G.score += pts;
+  const s = sus(G.order[G.v]), guilty = s.id === G.culprit, ev = guilty ? s.guilty : s.clear;
+  G.evidence[s.id] = ev;
+  app.innerHTML = `<div class="stack" style="gap:18px;align-items:center;text-align:center;padding:20px 0">
+    <div class="boom">${pick(["CRACK!", "CLUNK!", "KA-CHUNK!"])}</div>
+    <div class="eyebrow">${esc(s.name)}'s vault is open · +${pts} points${T.mistakes ? ` · ${T.mistakes} slip${T.mistakes > 1 ? "s" : ""}` : " · clean vault"}${left < 0 ? " · alarm tripped" : ""}</div>
+    <div class="evcard"><div class="tag">Evidence ${G.v + 1} of 5 · ${esc(s.name)}, ${esc(s.role)}</div><p>${esc(ev)}</p></div>
+    <button class="btn" id="next">${G.v < 4 ? "Next vault" : "Review the evidence"}</button></div>`;
+  say(`Vault open. ${ev}`);
+  $("#next").onclick = () => { G.v++; if (G.v < 5) startVault(); else screenAccuse(); };
+  $("#next").focus();
+}
+
+/* ---------- the accusation ---------- */
+function screenAccuse(msg) {
+  app.innerHTML = `<div class="stack" style="gap:18px">
+    <div class="eyebrow">All five vaults open</div><h1 style="font-size:clamp(26px,4vw,38px)">Who took the mock papers?</h1>
+    <p class="muted" style="margin:0">Four of these cards clear a suspect. One doesn't. Tap the suspect the evidence points to.</p>
+    ${msg || ""}
+    <div class="sus">${G.order.map(id => { const s = sus(id); return `<button class="scard" data-s="${id}"><div class="av" style="background:${s.col}">${initials(s.name)}</div><b>${s.name}</b><span>${s.role}</span><span class="ev">${esc(G.evidence[id])}</span></button>`; }).join("")}</div></div>`;
+  app.querySelectorAll("[data-s]").forEach(b => b.onclick = () => accuse(b.dataset.s));
+}
+function accuse(id) {
+  G.accuseTries++;
+  if (id !== G.culprit) {
+    SFX.spark();
+    if (G.accuseTries < 2) return screenAccuse(`<div class="fb no"><b>That doesn't fit</b>${esc(sus(id).name)}'s card is an alibi: it shows where they were between 3:30 and 4:30 pm. Look for the card that puts someone near the papers.</div>`);
+  } else { G.score += 100; SFX.open(); }
+  screenEnd(id === G.culprit);
+}
+function screenEnd(solved) {
+  const L = G.level, max = 5 * (100 + LEVELS[L].secs) + 100, ratio = G.score / max;
+  const stars = ratio >= .62 ? 3 : ratio >= .45 ? 2 : 1;
+  const isBest = !BEST[L] || G.score > BEST[L]; if (isBest) { BEST[L] = G.score; try { localStorage.setItem("mfa.vault", JSON.stringify(BEST)); } catch (e) {} }
+  const c = sus(G.culprit);
+  app.innerHTML = `<div class="stack" style="gap:20px;max-width:760px">
+    <div class="eyebrow">${LEVELS[L].name} · case ${solved ? "closed" : "closed by the Inspector"}</div>
+    <div class="evcard"><div class="tag">Case closed</div><p><b>${esc(c.name)}</b> took the papers. ${esc(c.guilty)}</p></div>
+    <div class="row" style="gap:24px"><div class="score">${G.score}</div><div><div class="stars" aria-label="Detective Rating ${stars} out of 3">${"★".repeat(stars)}${"☆".repeat(3 - stars)}</div><div class="muted small">Detective Rating · ${G.mistakesTotal ? G.mistakesTotal + " wrong answer" + (G.mistakesTotal > 1 ? "s" : "") : "no wrong answers"}${isBest ? " · new best" : ` · best ${BEST[L]}`}</div></div></div>
+    <div class="row"><button class="btn" id="again">New case</button>${L < 2 ? `<button class="btn ghost" id="up">Try ${LEVELS[L + 1].name}</button>` : ""}<a class="btn ghost" href="index.html">Back to the Academy</a></div></div>`;
+  $("#again").onclick = () => startGame(L); const up = $("#up"); if (up) up.onclick = () => startGame(L + 1);
+}
+
+/* ---------- touch: drag tiles, turn the knob and the dial ---------- */
+function angleAt(el, x, y) { const r = el.getBoundingClientRect(); return Math.atan2(x - (r.left + r.width / 2), -(y - (r.top + r.height / 2))) * 180 / Math.PI; }
+function rotator(el, perStep, onStep, onEnd) {
+  el.onpointerdown = e => {
+    e.preventDefault(); el.setPointerCapture(e.pointerId); let last = angleAt(el, e.clientX, e.clientY), acc = 0;
+    el.onpointermove = ev => { const a = angleAt(el, ev.clientX, ev.clientY); let d = a - last; if (d > 180) d -= 360; if (d < -180) d += 360; last = a; acc += d; while (Math.abs(acc) >= perStep) { const s = Math.sign(acc); acc -= s * perStep; onStep(s); } };
+    el.onpointerup = el.onpointercancel = () => { el.onpointermove = null; if (onEnd) onEnd(); };
+  };
+}
+function wireVault() {
+  if (T.phase === "dial") {
+    rotator($("#dial"), 9, s => setDial(T.dialAt - s), null);
+    $("#dleft").onclick = () => setDial(T.dialAt - 1); $("#dright").onclick = () => setDial(T.dialAt + 1); $("#dset").onclick = dialRelease;
+    $("#dial").onkeydown = e => { if (e.key === "ArrowLeft" || e.key === "ArrowDown") setDial(T.dialAt - 1); if (e.key === "ArrowRight" || e.key === "ArrowUp") setDial(T.dialAt + 1); if (e.key === "Enter" || e.key === " ") dialRelease(); };
+    $("#dial").addEventListener("pointerup", () => { if (T.dialAt === T.codes[T.dialStep]) dialRelease(); });
+    return;
+  }
+  const tm = T.tumblers[T.i];
+  if (tm.opts) {
+    app.querySelectorAll(".tile").forEach(t => {
+      t.onclick = () => { if (t.dataset.dragged) { delete t.dataset.dragged; return; } trySeq(t.dataset.o); };
+      t.onpointerdown = e => {
+        const x0 = e.clientX, y0 = e.clientY; let ghost = null, over = false;
+        const mv = ev => { if (!ghost && Math.hypot(ev.clientX - x0, ev.clientY - y0) < 8) return;
+          if (!ghost) { ghost = t.cloneNode(true); ghost.classList.add("ghost"); document.body.appendChild(ghost); t.style.opacity = .3; }
+          ghost.style.left = ev.clientX + "px"; ghost.style.top = ev.clientY + "px";
+          const el = document.elementFromPoint(ev.clientX, ev.clientY); over = !!(el && el.closest("#gear")); $("#slot").classList.toggle("over", over); };
+        const up = () => { document.removeEventListener("pointermove", mv); document.removeEventListener("pointerup", up); document.removeEventListener("pointercancel", up);
+          if (!ghost) return; ghost.remove(); t.style.opacity = ""; t.dataset.dragged = 1; $("#slot").classList.remove("over"); if (over) trySeq(t.dataset.o); };
+        document.addEventListener("pointermove", mv); document.addEventListener("pointerup", up); document.addEventListener("pointercancel", up);
+      };
+    });
+  } else if (tm.kind === "tree") {
+    app.querySelectorAll(".node").forEach(b => b.onclick = () => { const n = +b.dataset.n; const before = T.mistakes; fire(n); if (T.mistakes > before) { const nb = app.querySelector(`.node[data-n="${n}"]`); if (nb) nb.classList.add("bad"); } });
+    app.querySelectorAll("[data-rm]").forEach(b => b.onclick = () => { T.chain.splice(+b.dataset.rm, 1); SFX.tick(); renderVault(); });
+  } else if (tm.kind === "index") {
+    app.querySelectorAll("[data-b]").forEach(b => b.onclick = () => { const k = +b.dataset.b; T.ex[k] = Math.max(0, Math.min(8, T.ex[k] + +b.dataset.d)); SFX.tick(); const keep = $("#fb").innerHTML; renderVault(keep); });
+    $("#fireidx").onclick = fireIndex;
+  } else {
+    rotator($("#knob"), 15, s => setKnob(T.knob + s), null);
+    $("#kdn").onclick = () => setKnob(T.knob - 1); $("#kup").onclick = () => setKnob(T.knob + 1); $("#close").onclick = closeCircuit;
+    $("#knob").onkeydown = e => { if (e.key === "ArrowLeft" || e.key === "ArrowDown") setKnob(T.knob - 1); if (e.key === "ArrowRight" || e.key === "ArrowUp") setKnob(T.knob + 1); if (e.key === "Enter") closeCircuit(); };
+  }
+}
+
+screenStart();
+</script>
+</body>
+</html>
