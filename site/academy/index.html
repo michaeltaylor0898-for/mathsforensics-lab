@@ -1648,7 +1648,7 @@ function tabPlay(t) {
 /* ---------- Learn ---------- */
 function tabLearn(t) {
   const L = t.learn, body = $("#tabbody");
-  VIEW = { shown: 1, tryStep: 0, tryFb: null };
+  VIEW = { shown: 1, tryStep: 0, tryFb: null, tryJump: null };
   const speakText = `${t.name}. ${L.idea} How to do it. ${L.steps.join(" ")}`;
   body.innerHTML = `
     <div class="grid2">
@@ -1689,14 +1689,18 @@ function drawTry(t) {
   el.innerHTML = `<div class="h3" style="margin:0">Try one with me</div>
     <p class="q" style="font-size:19px;margin:0">${esc(tr.q)}</p>
     <div>${tr.steps.slice(0, i).map(s => `<div class="tryline"><span class="muted small">${esc(s.ask)}</span><b>✓ ${esc(s.type === "mc" ? s.choices[s.answer] : s.type === "expr" ? s.answerText : fmt(s.answer))}</b><span class="muted small">${esc(s.tip)}</span></div>`).join("")}
-    ${done ? "" : `<div class="tryline"><b>${esc(tr.steps[i].ask)}</b>${inputHTML("tryin", tr.steps[i])}${VIEW.tryFb ? `<div class="fb no"><b>Have another go</b>${esc(VIEW.tryFb)}</div>` : ""}</div>`}</div>
-    ${done ? `<div class="fb ok"><b>Nicely done</b>You've worked through it step by step. Now practise on your own.</div><div class="row"><a class="btn" href="#t-${t.id}-practise">Go to Practise</a></div>` : ""}`;
+    ${done ? "" : `<div class="tryline"><span class="eyebrow" style="font-size:11.5px">Step ${i + 1} of ${tr.steps.length}</span><b>${esc(tr.steps[i].ask)}</b>${inputHTML("tryin", tr.steps[i])}${VIEW.tryFb ? `<div class="fb no"><b>Have another go</b>${esc(VIEW.tryFb)}</div>` : ""}</div>`}</div>
+    ${done ? `<div class="fb ok"><b>Nicely done</b>${VIEW.tryJump ? `${esc(VIEW.tryJump)} is the answer. You went straight there: the steps above show how it's worked out.` : "You've worked through it step by step."} Now practise on your own.</div><div class="row"><a class="btn" href="#t-${t.id}-practise">Go to Practise</a></div>` : ""}`;
   if (done) { const p = prog(t.id); if (!p.learned) { p.learned = true; save(); renderCadet(); } return; }
   const s = tr.steps[i];
   const submit = raw => {
     const r = mark({ type: s.type, answer: s.answer, mistakes: [] }, raw);
+    const last = tr.steps[tr.steps.length - 1];
     if (r.ok) { VIEW.tryStep++; VIEW.tryFb = null; }
-    else VIEW.tryFb = r.invalid ? r.msg : "Not quite. " + (VIEW.tryFb ? "Hint: " + s.tip : "Look at the question again.");
+    else if (i < tr.steps.length - 1 && last.type !== "mc" && s.type !== "mc" && mark({ type: last.type, answer: last.answer, mistakes: [] }, raw).ok) {
+      VIEW.tryStep = tr.steps.length; VIEW.tryFb = null; VIEW.tryJump = last.type === "expr" ? last.answerText : fmt(last.answer);   // typed the final answer early: accept it
+    }
+    else VIEW.tryFb = r.invalid ? r.msg : "Not quite. " + (VIEW.tryFb ? "Hint: " + s.tip : `This step asks: ${s.ask}`);
     drawTry(t);
     const inp = $("#tryin"); if (inp) inp.focus();
   };
