@@ -1,0 +1,172 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap');
+.mfp{--ink:#0B122C;--panel:#111A3D;--panel2:#16214A;--line:#26336A;--text:#E8ECF8;--muted:#A3ADD0;--cyan:#00FCF1;--blue:#1B36FF;--good:#3DDC97;--warn:#FFC857;--bad:#FF6B7A;--bronze:#CD8B4E;--silver:#C9D1E2;--gold:#F2C14E;--plat:#9FE7F5;
+  background:var(--ink);color:var(--text);font-family:'Josefin Sans',system-ui,sans-serif;font-size:18px;line-height:1.55;text-align:left;overflow:hidden;-webkit-font-smoothing:antialiased}
+.mfp div,.mfp section,.mfp p,.mfp h1,.mfp h2,.mfp h3,.mfp ul,.mfp li,.mfp a,.mfp span,.mfp b{box-sizing:border-box}
+.mfp .w{max-width:1120px;margin:0 auto;padding:0 20px}
+.mfp section{padding:64px 0;border-top:1px solid rgba(38,51,106,.6)}
+.mfp h1,.mfp h2,.mfp h3{margin:0;font-weight:600;line-height:1.12;color:var(--text);font-family:'Josefin Sans',system-ui,sans-serif}
+.mfp h1{font-size:clamp(34px,6vw,60px);letter-spacing:-.01em}
+.mfp h2{font-size:clamp(27px,4vw,40px)}
+.mfp h3{font-size:22px}
+.mfp p{margin:0;color:var(--muted)}
+.mfp .eb{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);margin-bottom:12px;display:block}
+.mfp .lede{font-size:clamp(19px,2.3vw,22px);color:#C9D0EA;max-width:40em;margin-top:16px}
+.mfp .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.mfp a.btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:12px 24px;border-radius:12px;background:var(--cyan);color:var(--ink);font-weight:600;font-size:18px;text-decoration:none;border:2px solid var(--cyan)}
+.mfp a.btn.ghost{background:transparent;color:var(--text);border-color:var(--line)}
+.mfp a.btn:hover{filter:brightness(1.08)}
+.mfp .note{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);margin-top:14px;letter-spacing:.04em}
+.mfp .hero{padding:72px 0 64px;border-top:0;background:radial-gradient(ellipse at 85% 0%,rgba(27,54,255,.35),transparent 55%),radial-gradient(ellipse at 0% 100%,rgba(0,252,241,.10),transparent 50%)}
+.mfp .heroGrid{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center}
+.mfp .g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.mfp .g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.mfp .g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+@media (max-width:560px){.mfp .g4.steps{grid-template-columns:1fr}}
+@media (max-width:900px){.mfp .heroGrid,.mfp .g3,.mfp .g2{grid-template-columns:1fr}.mfp .g4{grid-template-columns:repeat(2,minmax(0,1fr))}.mfp section{padding:48px 0}}
+.mfp .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px}
+.mfp .card h3{margin-bottom:8px}
+.mfp .card p+p{margin-top:8px}
+.mfp .head{max-width:760px;margin-bottom:30px}
+.mfp .head p{margin-top:12px;font-size:19px}
+.mfp .tick{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:10px}
+.mfp .tick li{position:relative;padding-left:30px;color:#C9D0EA}
+.mfp .tick li::before{content:"";position:absolute;left:2px;top:7px;width:14px;height:8px;border-left:3px solid var(--cyan);border-bottom:3px solid var(--cyan);transform:rotate(-45deg)}
+.mfp .num{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.14em;color:var(--cyan);margin-bottom:10px;display:block}
+.mfp .mock{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px;display:grid;gap:12px;box-shadow:0 30px 60px -30px #000}
+.mfp .mock .bar{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.12em;color:var(--muted)}
+.mfp .mock .q{font-size:22px;color:var(--text)}
+.mfp .mock .inp{display:flex;gap:10px}
+.mfp .mock .inp span{flex:1;background:var(--panel2);border:1px solid var(--cyan);border-radius:10px;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:20px;color:var(--text)}
+.mfp .mock .inp b{background:var(--cyan);color:var(--ink);border-radius:10px;padding:10px 16px;font-weight:600}
+.mfp .fbk{border-radius:12px;padding:12px 14px;background:var(--panel2);border:1px solid rgba(255,107,122,.5);font-size:16px;color:#C9D0EA}
+.mfp .fbk.ok{border-color:rgba(61,220,151,.55)}
+.mfp .fbk i{display:block;font-style:normal;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--bad);margin-bottom:3px}
+.mfp .fbk.ok i{color:var(--good)}
+.mfp .medal{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;font-weight:600;font-size:24px;color:var(--ink);margin-bottom:14px;box-shadow:inset 0 -6px 0 rgba(0,0,0,.18)}
+.mfp .price{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:stretch}
+@media (max-width:900px){.mfp .price{grid-template-columns:1fr}}
+.mfp .big{font-size:64px;font-weight:600;line-height:1;color:var(--text)}
+.mfp .big small{font-size:20px;color:var(--muted);font-weight:400}
+.mfp .strike{text-decoration:line-through;color:var(--muted);font-size:24px;margin-left:10px}
+.mfp .tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;padding:5px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.mfp .tag.on{border-color:var(--cyan);color:var(--cyan)}
+.mfp .quote{font-size:clamp(22px,2.8vw,28px);color:var(--text);line-height:1.35}
+.mfp .stat{font-size:clamp(46px,7vw,72px);font-weight:600;color:var(--cyan);line-height:1}
+.mfp details{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 20px}
+.mfp details+details{margin-top:10px}
+.mfp summary{cursor:pointer;font-weight:600;font-size:19px;color:var(--text);list-style:none}
+.mfp summary::-webkit-details-marker{display:none}
+.mfp summary::after{content:"+";float:right;color:var(--cyan);font-family:'JetBrains Mono',monospace}
+.mfp details[open] summary::after{content:"−"}
+.mfp details p{margin-top:10px}
+.mfp .door{border-radius:18px;padding:26px;border:1px solid var(--line);background:linear-gradient(160deg,var(--panel2),var(--panel))}
+.mfp .door.lab{border-top:4px solid var(--blue)}.mfp .door.acad{border-top:4px solid var(--cyan)}
+.mfp .final{text-align:center;padding:72px 0;background:radial-gradient(ellipse at 50% 0%,rgba(0,252,241,.12),transparent 60%)}
+.mfp .final .cta{justify-content:center}
+.mfp .final p{max-width:36em;margin:14px auto 0}
+.mfp a{color:var(--cyan)}
+</style>
+<div class="mfp">
+
+<section class="hero"><div class="w heroGrid">
+  <div>
+    <span class="eb">Maths Forensics Academy · Years 7 to 9</span>
+    <h1>Step-by-step maths that builds real confidence.</h1>
+    <p class="lede">Your child works through the whole KS3 curriculum one topic at a time: a worked example, guided practice with feedback, a game, then a short check. Every topic secured moves them towards their Bronze, Silver, Gold and Platinum awards.</p>
+    <div class="cta"><a class="btn" href="https://lab.mathsforensics.com/academy/">Try the free topics</a><a class="btn ghost" href="WAITLIST_LINK">Join the January list</a></div>
+    <p class="note">Opens 11 January 2027 · Launch price £39 until 28 February</p>
+  </div>
+  <div class="mock" aria-label="Example of a practice question in the Academy">
+    <div class="bar"><span>FRACTIONS OF AMOUNTS · LEVEL 2</span><span>4 IN A ROW</span></div>
+    <div class="q">Out of 18 stickers, 15 are gold. What fraction are gold? Give it in its simplest form.</div>
+    <div class="inp"><span>15/18</span><b>Check</b></div>
+    <div class="fbk"><i>Nearly there</i>15/18 is the right size, but it isn't in its simplest form. Divide the top and bottom by 3.</div>
+    <div class="fbk ok"><i>Correct</i>5/6. That's 4 in a row: one more and the check unlocks.</div>
+  </div>
+</div></section>
+
+<section><div class="w">
+  <div class="head"><span class="eb">How every topic works</span><h2>Learn it. Practise it. Play it. Prove it.</h2><p>The same four steps for all 78 topics, so your child always knows what to do next, even without you there.</p></div>
+  <div class="g4 steps">
+    <div class="card"><span class="num">01 · LEARN</span><h3>See it done</h3><p>A worked example that reveals one step at a time, then "Try one with me": a question broken into small steps they answer themselves.</p></div>
+    <div class="card"><span class="num">02 · PRACTISE</span><h3>Feedback on every answer</h3><p>Questions at three levels, with hints when they're stuck. A wrong answer gets told what went wrong, not just "incorrect".</p></div>
+    <div class="card"><span class="num">03 · PLAY</span><h3>Training games</h3><p>Games built for the topic, like Departures (timetables and time) and Evidence Locker (collecting like terms).</p></div>
+    <div class="card"><span class="num">04 · CHECK</span><h3>Secure the topic</h3><p>Five questions, no hints. Four right and the topic is secured, ticked off on their pathway.</p></div>
+  </div>
+</div></section>
+
+<section><div class="w">
+  <div class="head"><span class="eb">The awards</span><h2>Bronze to Platinum, earned not given.</h2><p>Topics are grouped into four award tiers. When every topic in a tier is secured, your child takes the award test. Pass with 80% or more and they earn the award and a certificate to print.</p></div>
+  <div class="g4">
+    <div class="card"><div class="medal" style="background:var(--bronze)">B</div><h3>Bronze</h3><p>Core Year 7 · 16 topics</p></div>
+    <div class="card"><div class="medal" style="background:var(--silver)">S</div><h3>Silver</h3><p>Years 7–8 · 19 topics</p></div>
+    <div class="card"><div class="medal" style="background:var(--gold)">G</div><h3>Gold</h3><p>Years 8–9 · 21 topics</p></div>
+    <div class="card"><div class="medal" style="background:var(--plat)">P</div><h3>Platinum</h3><p>Year 9 · ready for GCSE · 22 topics</p></div>
+  </div>
+  <p class="note" style="margin-top:18px">All 78 topics are mapped to the KS3 national curriculum for England: every statement is covered.</p>
+</div></section>
+
+<section><div class="w g2" style="align-items:center">
+  <div><span class="eb">Case files</span><h2>Maths with a mystery to solve.</h2>
+    <p style="margin-top:14px;font-size:19px">Inspector Bancroft needs help. In each case file, video briefings set up an investigation: suspects to track, timelines to check, evidence to weigh. Only the maths can crack it. Five cases are ready at launch, with more through the year.</p>
+    <ul class="tick"><li>Uses the maths from the topics they've secured</li><li>Three levels in every case, so stronger students are stretched</li><li>Unlocks as they move up through the awards</li></ul></div>
+  <div class="card" style="background:#F4ECD8;color:#2A2418;border:0">
+    <span class="num" style="color:#6B5D43">CASE 01 · BRIEFING</span>
+    <p style="color:#2A2418;font-size:20px;line-height:1.45">"Two suspects fled a stopped vehicle at 10:27. Six witnesses saw them. Two of those statements are wrong. Use the times, the map and their running speeds to work out which, and where the second suspect is heading."</p>
+    <p style="color:#6B5D43;margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.08em">SPEED, DISTANCE, TIME · SCALE · READING A MAP</p>
+  </div>
+</div></section>
+
+<section><div class="w">
+  <div class="head"><span class="eb">Safe by design</span><h2>You hold the account. Your child just learns.</h2></div>
+  <div class="g3">
+    <div class="card"><h3>No email for your child</h3><p>You create the account and add your child with a first name and year group. That's all we store about them.</p></div>
+    <div class="card"><h3>One account, all your children</h3><p>Each child has their own profile and progress, with an optional PIN so brothers and sisters don't open each other's training.</p></div>
+    <div class="card"><h3>No adverts, no chat</h3><p>No messaging, no strangers, no adverts and no tracking. Designed for UK GDPR and the ICO's Children's Code.</p></div>
+  </div>
+</div></section>
+
+<section><div class="w g2" style="align-items:center">
+  <div><span class="eb">Built by a maths teacher</span>
+    <p class="quote">Designed in a real classroom, tested by a real Year 7 class, and checked line by line against the national curriculum.</p>
+    <p style="margin-top:14px">Mike Taylor · secondary maths teacher with over 10 years of teaching GCSE and marking exam papers · founder of Maths Forensics</p></div>
+  <div class="card"><span class="stat">78</span><p style="margin-top:8px;font-size:19px">topics covering every statement in the KS3 national curriculum, from place value to Pythagoras.</p></div>
+</div></section>
+
+<section><div class="w price">
+  <div class="card" style="border-color:var(--cyan)">
+    <span class="eb">Academy Pass</span>
+    <div><span class="big">£39</span><span class="strike">£49</span></div>
+    <p style="margin-top:8px">Launch price until 28 February 2027. One child, 12 months, one payment. No subscription.</p>
+    <ul class="tick"><li>All 78 topics: Learn, Practise, Play and Check</li><li>Award tests and printable certificates, Bronze to Platinum</li><li>Every training game and case file</li><li>Progress saved to their profile on any device</li></ul>
+    <div class="cta"><a class="btn" href="WAITLIST_LINK">Join the January list</a></div>
+  </div>
+  <div class="card">
+    <span class="eb">Free, for ever</span>
+    <h3>Start with 6 free topics</h3>
+    <p style="margin-top:8px">One topic from every strand: place value, algebraic notation, fractions of amounts, perimeter, probability, and tables and charts. No card needed.</p>
+    <div class="cta"><a class="btn ghost" href="https://lab.mathsforensics.com/academy/">Try the free topics</a></div>
+    <p class="note">Doing GCSE? Maths Forensics Lab is for Years 10 and 11.</p>
+  </div>
+</div></section>
+
+<section><div class="w" style="max-width:860px">
+  <div class="head"><span class="eb">Questions parents ask</span><h2>Good to know</h2></div>
+  <details><summary>Which year groups is it for?</summary><p>Years 7, 8 and 9 (ages 11 to 14). It follows the KS3 national curriculum for England, so it also suits international schools that teach the English curriculum.</p></details>
+  <details><summary>Does my child need their own email?</summary><p>No. You create the account with your email and add your child with their first name and year group. They train through your account.</p></details>
+  <details><summary>What do they need to use it?</summary><p>Any device with a web browser: laptop, tablet, Chromebook or phone. Nothing to install.</p></details>
+  <details><summary>I have two children. Do I need two passes?</summary><p>Each Academy Pass covers one child for 12 months. Both children can sit under the same parent account, each with their own progress.</p></details>
+  <details><summary>Their school already uses Maths Forensics. Do we need a pass?</summary><p>If their teacher has opened the Academy for their class, they can use it with their school login, at school and at home. A home pass is separate: it sits under your account, with its own progress.</p></details>
+  <details><summary>Is it a subscription?</summary><p>No. The Academy Pass is one payment for 12 months. It doesn't renew on its own.</p></details>
+</div></section>
+
+<section class="final"><div class="w">
+  <span class="eb">Maths Forensics HQ</span>
+  <h2>Every detective starts as a cadet.</h2>
+  <p>Try the free topics today, and join the list to hear the moment the Academy opens in January, at the launch price.</p>
+  <div class="cta"><a class="btn" href="https://lab.mathsforensics.com/academy/">Try the free topics</a><a class="btn ghost" href="WAITLIST_LINK">Join the January list</a></div>
+  <p class="note">Questions? support@mathsforensics.com</p>
+</div></section>
+
+</div>
