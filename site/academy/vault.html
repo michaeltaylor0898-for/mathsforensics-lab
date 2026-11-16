@@ -276,6 +276,51 @@ function makeIndex(level) {
   return { kind: "dial", title: "Index law circuit", task: `Turn the dial to write it as a single power of ${v}.`, v, html, ans, wrong, tip: "Multiply: add the indices. Divide: subtract them. Power of a power: multiply them." };
 }
 
+/* ---------- combination riddles: "I am a multiple of 6. I am a factor of 72…" ---------- */
+const nFac = n => { let c = 0; for (let i = 1; i <= n; i++) if (n % i === 0) c++; return c; };
+const isPrime = n => nFac(n) === 2;
+const sq = n => Number.isInteger(Math.sqrt(n)), cube = n => Math.round(Math.cbrt(n)) ** 3 === n;
+const dsum = n => String(n).split("").reduce((a, d) => a + +d, 0);
+const sf = n => [...Array(n).keys()].find(f => f > 1 && n % f === 0);
+function propsFor(level) {
+  const P = [];
+  P.push({ t: "I am even.", g: "par", ok: n => n % 2 === 0, no: n => `${n} is odd.` });
+  P.push({ t: "I am odd.", g: "par", ok: n => n % 2 === 1, no: n => `${n} is even.` });
+  for (const k of [3, 4, 5, 6, 7, 8, 9]) P.push({ t: `I am a multiple of ${k}.`, g: "mult", ok: n => n % k === 0, no: n => `${n} isn't in the ${k} times table: ${n} ÷ ${k} = ${Math.floor(n / k)} remainder ${n % k}.` });
+  for (const N of [24, 30, 36, 40, 48, 60, 72, 84, 90, 96]) P.push({ t: `I am a factor of ${N}.`, g: "fac", ok: n => N % n === 0, no: n => `${n} doesn't go into ${N} exactly: ${N} ÷ ${n} = ${Math.floor(N / n)} remainder ${N % n}.` });
+  for (let a = 5; a <= 30; a += 5) P.push({ t: `I am greater than ${a}.`, g: "gt", ok: n => n > a, no: n => `${n} isn't greater than ${a}.` });
+  for (let a = 15; a <= 35; a += 5) P.push({ t: `I am less than ${a}.`, g: "lt", ok: n => n < a, no: n => `${n} isn't less than ${a}.` });
+  if (level >= 1) {
+    P.push({ t: "I am a prime number.", g: "prime", ok: isPrime, no: n => n === 1 ? "1 isn't prime: it only has one factor." : `${n} isn't prime: ${n} = ${sf(n)} × ${n / sf(n)}.` });
+    P.push({ t: "I am a square number.", g: "sq", ok: sq, no: n => `${n} isn't a square number. The squares either side are ${Math.floor(Math.sqrt(n)) ** 2} and ${(Math.floor(Math.sqrt(n)) + 1) ** 2}.` });
+    for (const d of [5, 6, 7, 8, 9, 10, 11]) P.push({ t: `My digits add up to ${d}.`, g: "dig", ok: n => dsum(n) === d, no: n => `the digits of ${n} add up to ${dsum(n)}, not ${d}.` });
+  }
+  if (level >= 2) {
+    P.push({ t: "I am a cube number.", g: "cube", ok: cube, no: n => `${n} isn't a cube number: the cubes up to 39 are 1, 8 and 27.` });
+    for (const k of [3, 4, 5, 6]) P.push({ t: `I am 1 more than a multiple of ${k}.`, g: "one", ok: n => n % k === 1, no: n => `${n} − 1 = ${n - 1}, which isn't a multiple of ${k}.` });
+    for (const k of [2, 3, 4, 6]) P.push({ t: `I have exactly ${k} factors.`, g: "nf", ok: n => nFac(n) === k, no: n => `${n} has ${nFac(n)} factor${nFac(n) === 1 ? "" : "s"}, not ${k}.` });
+  }
+  return P;
+}
+function makeRiddle(level, avoid) {
+  const P = propsFor(level), all = Array.from({ length: 39 }, (_, i) => i + 1);
+  const KEY = [["par", "mult", "fac"], ["prime", "sq", "dig"], ["cube", "one", "nf", "prime", "sq"]][level];   // at least one clue of this level's kind
+  for (let tries = 0; tries < 600; tries++) {
+    const t = R(level === 0 ? 4 : 2, 39); if (avoid.includes(t)) continue;
+    const keys = shuffle(P.filter(p => KEY.includes(p.g) && p.ok(t))); if (!keys.length) continue;
+    let cand = all.filter(keys[0].ok); const clues = [keys[0]], used = new Set([keys[0].g]);
+    if (cand.length === 1) continue;                                                   // never solved by one clue alone
+    for (const p of shuffle(P.filter(p => p.ok(t)))) {
+      if (used.has(p.g)) continue;                                                     // no two clues of the same kind
+      const next = cand.filter(p.ok);
+      if (next.length < cand.length) { clues.push(p); used.add(p.g); cand = next; }
+      if (cand.length === 1 || clues.length === 3) break;
+    }
+    if (cand.length === 1 && clues.length >= 2) return { t, clues: shuffle(clues) };
+  }
+  return makeRiddle(level, []);
+}
+
 /* ---------- game state ---------- */
 let BEST = {}; try { BEST = JSON.parse(localStorage.getItem("mfa.vault") || "{}"); } catch (e) {}
 let G = null, T = null, raf = 0;
@@ -284,7 +329,7 @@ function screenStart() {
   cancelAnimationFrame(raf); G = null;
   app.innerHTML = `<div class="stack" style="gap:22px">
     <section class="hero"><div class="eyebrow">Training game · Number and algebra</div><h1>The Suspect's Vault</h1>
-      <p>Five suspects. Five vaults. Each one is protected by three tumblers: a sequence, a prime factor lock and an index-law circuit. Crack them before the alarm laser crosses the screen, spin the combination dial, and collect the evidence inside.</p></section>
+      <p>Five suspects. Five vaults. Each one is protected by three tumblers: a sequence, a prime factor lock and an index-law circuit. Every tumbler you crack earns a riddle card. Solve the three riddles to find the combination, dial it in before the alarm laser crosses the screen, and collect the evidence inside.</p></section>
     <div class="brief"><div class="tag">Case file · St Euclid's Academy</div><p>${esc(CASE)}</p></div>
     <div class="sus">${SUSPECTS.map(s => `<div class="scard"><div class="av" style="background:${s.col}">${initials(s.name)}</div><b>${s.name}</b><span>${s.role}</span></div>`).join("")}</div>
     <h2 class="eyebrow" style="margin:0">Choose your clearance</h2>
@@ -301,7 +346,8 @@ function startGame(level) {
 function startVault() {
   const L = G.level;
   T = { tumblers: shuffle([makeSeq(L), makePrime(L), makeIndex(L)]), i: 0, codes: [R(1, 39), R(1, 39), R(1, 39)], got: 0, mistakes: 0, deadline: Date.now() + LEVELS[L].secs * 1000, phase: "tumbler", dialAt: 0, dialStep: 0, ex: { 2: 0, 3: 0, 5: 0, 7: 0 }, chain: [], knob: 0, alarmed: false };
-  while (new Set(T.codes).size < 3) T.codes = [R(1, 39), R(1, 39), R(1, 39)];
+  T.riddles = []; for (let k = 0; k < 3; k++) T.riddles.push(makeRiddle(L, T.riddles.map(r => r.t)));
+  T.codes = T.riddles.map(r => r.t);
   renderVault(); loop();
 }
 const sus = id => SUSPECTS.find(s => s.id === id);
@@ -321,7 +367,7 @@ function loop() {
 function hud() {
   const s = sus(G.order[G.v]);
   return `<div class="hud"><span>VAULT <b>${G.v + 1}</b> / 5 · <b>${esc(s.name)}</b></span><span class="tums">${[0, 1, 2].map(k => `<i class="${k < T.i || T.phase !== "tumbler" ? "ok" : k === T.i ? "now" : ""}">${k < T.i || T.phase !== "tumbler" ? "✓" : k + 1}</i>`).join("")}</span>
-    <span class="codes" aria-label="Combination">${T.codes.map((c, k) => `<span class="${k < T.got ? "got" : ""}">${k < T.got ? c : "··"}</span>`).join("")}</span>
+    <span class="codes" aria-label="Combination">${T.codes.map((c, k) => `<span class="${k < T.dialStep && T.phase !== "tumbler" ? "got" : ""}">${k < T.dialStep && T.phase !== "tumbler" ? c : k < T.got ? "?" : "··"}</span>`).join("")}</span>
     <span style="margin-left:auto">SCORE <b>${G.score}</b></span></div>
     <div class="row" style="justify-content:space-between"><div style="flex:1;min-width:200px"><div class="laser" id="laser"><i></i></div></div><span class="hud"><b id="tleft"></b></span>
     <button class="key${G.keys ? " on" : ""}" id="usekey" ${G.keys && T.phase === "tumbler" ? "" : "disabled"} aria-label="Skeleton Key: ${G.keys} charged">🗝 Skeleton Key <span class="pips">${[0, 1, 2].map(k => `<b class="${k < (G.keys ? 3 : G.charge) ? "f" : ""}"></b>`).join("")}</span>${G.keys > 1 ? " ×" + G.keys : ""}</button></div>`;
@@ -348,7 +394,7 @@ function tumblerCracked(viaKey) {
   let charged = false;
   if (!viaKey) { G.streak++; if (!G.keys) { G.charge = Math.min(3, G.charge + 1); if (G.charge === 3) { G.keys = 1; G.charge = 0; charged = true; setTimeout(SFX.key, 350); } } }
   T.got++; T.i++; SFX.clunk();
-  const msg = `<div class="fb ok"><b>Tumbler cracked</b>Combination number ${T.got}: <b style="display:inline;font-size:18px;color:var(--cyan)">${T.codes[T.got - 1]}</b>${charged ? " · 3 in a row: Skeleton Key charged!" : ""}</div>`;
+  const msg = `<div class="fb ok"><b>Tumbler cracked · riddle card ${T.got} of 3</b>${riddleText(T.got - 1)}${charged ? "<br>3 in a row: Skeleton Key charged!" : ""}</div>`;
   if (T.i >= 3) { T.phase = "dial"; T.dialStep = 0; T.dialAt = 0; }
   setTimeout(() => renderVault(msg), 380);
 }
@@ -429,24 +475,28 @@ function closeCircuit() {
 function dialHTML() {
   const nums = Array.from({ length: 40 }, (_, i) => i);
   return `<div class="tumbler"><div class="tt">Combination dial</div>
-    <div class="task">Turn the dial to <b style="color:var(--cyan);font-family:var(--f-mono);font-size:24px">${T.codes[T.dialStep]}</b>, then let go. ${["First number", "Second number", "Last number"][T.dialStep]} of ${T.codes.join(" · ")}.</div>
+    <div class="task">${["First", "Second", "Last"][T.dialStep]} number. Work out the number that fits every clue, turn the dial to it, then press Set.</div>
+    <div class="evcard" style="max-width:520px;width:100%"><div class="tag">Riddle card ${T.dialStep + 1} of 3</div><p style="font-family:var(--f-mono);font-size:18px;line-height:1.6">${T.riddles[T.dialStep].clues.map(c => esc(c.t)).join("<br>")}</p></div>
     <div class="dialwrap"><div class="ptr"></div><svg viewBox="-110 -110 220 220" id="dial" role="slider" aria-label="Combination dial" aria-valuenow="${T.dialAt}" tabindex="0">
       <g id="dialg" style="transform:rotate(${-T.dialAt * 9}deg);transition:transform .08s">
       <circle r="104" fill="#1a2350" stroke="#3a4880" stroke-width="4"/><circle r="70" fill="#111a3d" stroke="#26336A" stroke-width="2"/>
       ${nums.map(n => { const a = n * 9 * Math.PI / 180, big = n % 5 === 0; return `<line x1="${Math.sin(a) * 100}" y1="${-Math.cos(a) * 100}" x2="${Math.sin(a) * (big ? 86 : 92)}" y2="${-Math.cos(a) * (big ? 86 : 92)}" stroke="#E8ECF8" stroke-width="${big ? 2.5 : 1.2}"/>` + (big ? `<text x="${Math.sin(a) * 77}" y="${-Math.cos(a) * 77 + 5}" fill="#E8ECF8" font-size="14" font-family="JetBrains Mono,monospace" text-anchor="middle">${n}</text>` : ""); }).join("")}
       <circle r="22" fill="#2a4bd0" stroke="#00FCF1" stroke-width="2"/></g>
       <text y="7" fill="#fff" font-size="20" font-weight="700" font-family="JetBrains Mono,monospace" text-anchor="middle" id="dialnum">${T.dialAt}</text></svg></div>
-    <div class="row" style="justify-content:center"><button class="round" id="dleft" aria-label="Turn left">−</button><button class="btn" id="dset">Set ${T.codes[T.dialStep]}</button><button class="round" id="dright" aria-label="Turn right">+</button></div></div>`;
+    <div class="row" style="justify-content:center"><button class="round" id="dleft" aria-label="Turn left">−</button><button class="btn" id="dset">Set ${T.dialAt}</button><button class="round" id="dright" aria-label="Turn right">+</button></div></div>`;
 }
 function setDial(v) {
   v = ((v % 40) + 40) % 40; if (v === T.dialAt) return; T.dialAt = v; SFX.tick();
-  const g = $("#dialg"); if (g) g.style.transform = `rotate(${-v * 9}deg)`; const n = $("#dialnum"); if (n) n.textContent = v; const d = $("#dial"); if (d) d.setAttribute("aria-valuenow", v);
+  const g = $("#dialg"); if (g) g.style.transform = `rotate(${-v * 9}deg)`; const n = $("#dialnum"); if (n) n.textContent = v; const b = $("#dset"); if (b) b.textContent = "Set " + v; const d = $("#dial"); if (d) d.setAttribute("aria-valuenow", v);
 }
+function riddleText(k) { return `<span style="display:block;font-family:var(--f-mono);margin-top:4px">${T.riddles[k].clues.map(c => esc(c.t)).join("<br>")}</span>`; }
 function dialRelease() {
-  if (T.dialAt !== T.codes[T.dialStep]) return fb("hint", "Not there yet", `The dial is on ${T.dialAt}. Turn it to ${T.codes[T.dialStep]}.`);
+  const rd = T.riddles[T.dialStep], v = T.dialAt, bad = rd.clues.find(c => !c.ok(v));
+  if (v === 0) return fb("hint", "Turn the dial first", "Work out the number from the riddle card, turn the dial to it, then press Set.");
+  if (bad) return mistake(`Clue: "${esc(bad.t)}" But ${esc(bad.no(v))}`);
   T.dialStep++; SFX.clunk();
   if (T.dialStep >= 3) return openVault();
-  renderVault(`<div class="fb ok"><b>Click</b>${T.codes[T.dialStep - 1]} is set. Now ${T.codes[T.dialStep]}.</div>`);
+  renderVault(`<div class="fb ok"><b>Click</b>${T.codes[T.dialStep - 1]} is set. On to the next riddle.</div>`);
 }
 function openVault() {
   T.phase = "open"; cancelAnimationFrame(raf); SFX.open();
@@ -508,7 +558,6 @@ function wireVault() {
     rotator($("#dial"), 9, s => setDial(T.dialAt - s), null);
     $("#dleft").onclick = () => setDial(T.dialAt - 1); $("#dright").onclick = () => setDial(T.dialAt + 1); $("#dset").onclick = dialRelease;
     $("#dial").onkeydown = e => { if (e.key === "ArrowLeft" || e.key === "ArrowDown") setDial(T.dialAt - 1); if (e.key === "ArrowRight" || e.key === "ArrowUp") setDial(T.dialAt + 1); if (e.key === "Enter" || e.key === " ") dialRelease(); };
-    $("#dial").addEventListener("pointerup", () => { if (T.dialAt === T.codes[T.dialStep]) dialRelease(); });
     return;
   }
   const tm = T.tumblers[T.i];
