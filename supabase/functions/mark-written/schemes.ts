@@ -33,6 +33,7 @@ import { COLD_CASE_A1 } from "./bank/cold-case-a-paper1.ts";
 import { COLD_CASE_ZERO } from "./bank/cold-case-zero.ts";
 import { MOST_WANTED_2 } from "./bank/most-wanted-paper2.ts";
 import { COLD_CASE_A2 } from "./bank/cold-case-a-paper2.ts";
+import { COLD_CASE_A3 } from "./bank/cold-case-a-paper3.ts";
 
 export type MarkPoint = {
   id: string;
@@ -243,7 +244,7 @@ export const SCHEMES: Scheme[] = [
   },
 ];
 
-SCHEMES.push(...COLD_CASE_B1, ...COLD_CASE_B2, ...COLD_CASE_B3, ...COLD_CASE_C1, ...COLD_CASE_C2, ...COLD_CASE_C3, ...COLD_CASE_A1, ...COLD_CASE_ZERO, ...MOST_WANTED_2, ...COLD_CASE_A2);
+SCHEMES.push(...COLD_CASE_B1, ...COLD_CASE_B2, ...COLD_CASE_B3, ...COLD_CASE_C1, ...COLD_CASE_C2, ...COLD_CASE_C3, ...COLD_CASE_A1, ...COLD_CASE_ZERO, ...MOST_WANTED_2, ...COLD_CASE_A2, ...COLD_CASE_A3);
 
 export const byId = (id: string) => SCHEMES.find((s) => s.id === id);
 
