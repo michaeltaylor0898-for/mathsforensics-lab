@@ -1,7 +1,7 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap');
 .mfp{--ink:#0B122C;--panel:#111A3D;--panel2:#16214A;--line:#26336A;--text:#E8ECF8;--muted:#A3ADD0;--cyan:#00FCF1;--blue:#1B36FF;--good:#3DDC97;--warn:#FFC857;--bad:#FF6B7A;--bronze:#CD8B4E;--silver:#C9D1E2;--gold:#F2C14E;--plat:#9FE7F5;
-  background:var(--ink);color:var(--text);font-family:'Josefin Sans',system-ui,sans-serif;font-size:18px;line-height:1.55;text-align:left;overflow:hidden;-webkit-font-smoothing:antialiased}
+  container-type:inline-size;background:var(--ink);color:var(--text);font-family:'Josefin Sans',system-ui,sans-serif;font-size:18px;line-height:1.55;text-align:left;overflow:hidden;-webkit-font-smoothing:antialiased}
 .mfp div,.mfp section,.mfp p,.mfp h1,.mfp h2,.mfp h3,.mfp ul,.mfp li,.mfp a,.mfp span,.mfp b{box-sizing:border-box}
 .mfp .w{max-width:1120px;margin:0 auto;padding:0 20px}
 .mfp section{padding:64px 0;border-top:1px solid rgba(38,51,106,.6)}
@@ -66,6 +66,9 @@
 .mfp .final .cta{justify-content:center}
 .mfp .final p{max-width:36em;margin:14px auto 0}
 .mfp a{color:var(--cyan)}
+
+@container (max-width:900px){.mfp .heroGrid,.mfp .g3,.mfp .g2,.mfp .price{grid-template-columns:1fr}.mfp .g4{grid-template-columns:repeat(2,minmax(0,1fr))}.mfp section{padding:48px 0}}
+@container (max-width:560px){.mfp .g4.steps{grid-template-columns:1fr}.mfp .big{font-size:52px}}
 </style>
 <div class="mfp">
 
@@ -74,7 +77,7 @@
     <span class="eb">Maths Forensics Academy · Years 7 to 9</span>
     <h1>Step-by-step maths that builds real confidence.</h1>
     <p class="lede">Your child works through the whole KS3 curriculum one topic at a time: a worked example, guided practice with feedback, a game, then a short check. Every topic secured moves them towards their Bronze, Silver, Gold and Platinum awards.</p>
-    <div class="cta"><a class="btn" href="https://lab.mathsforensics.com/academy/">Try the free topics</a><a class="btn ghost" href="WAITLIST_LINK">Join the January list</a></div>
+    <div class="cta"><a class="btn" target="_top" href="https://lab.mathsforensics.com/academy/">Try the free topics</a><a class="btn ghost" target="_top" href="WAITLIST_LINK">Join the January list</a></div>
     <p class="note">Opens 11 January 2027 · Launch price £39 until 28 February</p>
   </div>
   <div class="mock" aria-label="Example of a practice question in the Academy">
@@ -140,13 +143,13 @@
     <div><span class="big">£39</span><span class="strike">£49</span></div>
     <p style="margin-top:8px">Launch price until 28 February 2027. One child, 12 months, one payment. No subscription.</p>
     <ul class="tick"><li>All 78 topics: Learn, Practise, Play and Check</li><li>Award tests and printable certificates, Bronze to Platinum</li><li>Every training game and case file</li><li>Progress saved to their profile on any device</li></ul>
-    <div class="cta"><a class="btn" href="WAITLIST_LINK">Join the January list</a></div>
+    <div class="cta"><a class="btn" target="_top" href="WAITLIST_LINK">Join the January list</a></div>
   </div>
   <div class="card">
     <span class="eb">Free, for ever</span>
     <h3>Start with 6 free topics</h3>
     <p style="margin-top:8px">One topic from every strand: place value, algebraic notation, fractions of amounts, perimeter, probability, and tables and charts. No card needed.</p>
-    <div class="cta"><a class="btn ghost" href="https://lab.mathsforensics.com/academy/">Try the free topics</a></div>
+    <div class="cta"><a class="btn ghost" target="_top" href="https://lab.mathsforensics.com/academy/">Try the free topics</a></div>
     <p class="note">Doing GCSE? Maths Forensics Lab is for Years 10 and 11.</p>
   </div>
 </div></section>
@@ -165,7 +168,7 @@
   <span class="eb">Maths Forensics HQ</span>
   <h2>Every detective starts as a cadet.</h2>
   <p>Try the free topics today, and join the list to hear the moment the Academy opens in January, at the launch price.</p>
-  <div class="cta"><a class="btn" href="https://lab.mathsforensics.com/academy/">Try the free topics</a><a class="btn ghost" href="WAITLIST_LINK">Join the January list</a></div>
+  <div class="cta"><a class="btn" target="_top" href="https://lab.mathsforensics.com/academy/">Try the free topics</a><a class="btn ghost" target="_top" href="WAITLIST_LINK">Join the January list</a></div>
   <p class="note">Questions? support@mathsforensics.com</p>
 </div></section>
 

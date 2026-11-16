@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap');
 .mfp{--ink:#0B122C;--panel:#111A3D;--panel2:#16214A;--line:#26336A;--text:#E8ECF8;--muted:#A3ADD0;--cyan:#00FCF1;--blue:#1B36FF;--good:#3DDC97;--warn:#FFC857;--bad:#FF6B7A;--bronze:#CD8B4E;--silver:#C9D1E2;--gold:#F2C14E;--plat:#9FE7F5;
-  background:var(--ink);color:var(--text);font-family:'Josefin Sans',system-ui,sans-serif;font-size:18px;line-height:1.55;text-align:left;overflow:hidden;-webkit-font-smoothing:antialiased}
+  container-type:inline-size;background:var(--ink);color:var(--text);font-family:'Josefin Sans',system-ui,sans-serif;font-size:18px;line-height:1.55;text-align:left;overflow:hidden;-webkit-font-smoothing:antialiased}
 .mfp div,.mfp section,.mfp p,.mfp h1,.mfp h2,.mfp h3,.mfp ul,.mfp li,.mfp a,.mfp span,.mfp b{box-sizing:border-box}
 .mfp .w{max-width:1120px;margin:0 auto;padding:0 20px}
 .mfp section{padding:64px 0;border-top:1px solid rgba(38,51,106,.6)}
@@ -65,3 +65,6 @@
 .mfp .final .cta{justify-content:center}
 .mfp .final p{max-width:36em;margin:14px auto 0}
 .mfp a{color:var(--cyan)}
+
+@container (max-width:900px){.mfp .heroGrid,.mfp .g3,.mfp .g2,.mfp .price{grid-template-columns:1fr}.mfp .g4{grid-template-columns:repeat(2,minmax(0,1fr))}.mfp section{padding:48px 0}}
+@container (max-width:560px){.mfp .g4.steps{grid-template-columns:1fr}.mfp .big{font-size:52px}}
