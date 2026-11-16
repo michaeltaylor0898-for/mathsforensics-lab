@@ -144,6 +144,8 @@ a.tier{color:inherit;text-decoration:none}
 .ans{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px}
 .field{display:flex;align-items:center;background:var(--panel2);border:1px solid var(--line);border-radius:10px;min-width:0}
 .field:focus-within{border-color:var(--cyan)}
+.key{min-width:52px;min-height:52px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);color:var(--text);font-family:var(--f-mono);font-size:24px;font-weight:700}
+.key:hover,.key:focus-visible{border-color:var(--cyan)}
 .field input{background:transparent;border:0;color:var(--text);font-family:var(--f-mono);font-size:21px;padding:10px 14px;width:11em;max-width:58vw;outline:none}
 .field span{font-family:var(--f-mono);color:var(--muted);padding-right:14px}
 .choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:16px}
@@ -217,6 +219,13 @@ function parseNum(s) {
   s = String(s).trim().replace(/[−–—]/g, "-").replace(/,/g, "").replace(/\s+/g, "").replace(/^£/, "").replace(/(mm|cm|km|kg|ml|m\/s|km\/h|m|g|l|litres?|°c|°f|°|c|p|s|mins?|minutes|hours?)(²|³)?$/i, "");
   if (!/^-?\d*\.?\d+$/.test(s)) return null;
   return parseFloat(s);
+}
+function parseFrac(s) {                                              // "3/7", "3 / 7", "−3/7", or a whole number
+  if (s == null) return null;
+  s = String(s).trim().replace(/[−–—]/g, "-").replace(/[÷⁄∕]/g, "/").replace(/\s+/g, "");
+  let m = s.match(/^(-?)(\d+)\/(-?)(\d+)$/);
+  if (m) { const d = +m[4]; if (!d) return null; return { n: (m[1] === m[3] ? 1 : -1) * +m[2], d }; }
+  m = s.match(/^-?\d+$/); return m ? { n: +s, d: 1 } : null;
 }
 const near = (a, b) => a != null && Math.abs(a - b) < 1e-9 * Math.max(1, Math.abs(b));
 
@@ -894,17 +903,16 @@ function foaWhat(level) {
   let A = d * m, B = n * m, over = false;
   const ctx = pick([["stickers", "are gold"], ["pupils", "walk to school"], ["cars", "are electric"], ["songs", "are on repeat"]]);
   if (level === 3 && Math.random() < .5) { over = true; while (n < 2 || gcd(n, d) > 1) { d = R(5, 10); n = R(2, d - 1); } A = d * m; B = n * m; }
-  const right = over ? `${d}/${n}` : `${n}/${d}`;
-  const wrong = over ? [`${n}/${d}`, `${A}/${B}`, `${d - n}/${n}`] : [`${d}/${n}`, `${B}/${A}`, n < d - n ? `${n}/${d - n}` : `${n + 1}/${d}`];
-  const c = MC(right, [...new Set(wrong)].filter(w => w !== right).slice(0, 3));
+  const [rn, rd] = over ? [d, n] : [n, d];
   const prompt = over ? `Track A is <b>${A} m</b> long. Track B is <b>${B} m</b> long. Write the length of track A as a fraction of track B, in its simplest form.`
     : `Out of <b>${A}</b> ${ctx[0]}, <b>${B}</b> ${ctx[1]}. What fraction ${ctx[1]}? Give it in its simplest form.`;
   const top = over ? A : B, bot = over ? B : A, g = gcd(top, bot);
   return {
-    prompt, type: "mc", choices: c.choices, answer: c.answer,
+    prompt, type: "frac", answer: [rn, rd], answerText: `${rn}/${rd}`,
     hints: [over ? "Put track A on top, track B underneath." : "Put the part on top and the total underneath.", `${top}/${bot}. Now divide the top and bottom by ${g}.`],
-    solution: [[`${top}/${bot}`, over ? "A as a fraction of B" : "Part over total"], [`÷ ${g} top and bottom`, "Simplify"], [`= ${right}`, "Simplest form"]],
-    mistakes: c.choices.map((_, i) => [v => v === i, (() => { const x = c.at(i); if (x === `${B}/${A}` || x === `${A}/${B}`) return `That's the right size but not in its simplest form. Divide top and bottom by ${g}.`; if (x === (over ? `${n}/${d}` : `${d}/${n}`)) return over ? "That's B as a fraction of A. Put the one you're asked about on top." : "That's upside down. The part goes on top, the total underneath."; return over ? `Not quite. Start with ${A}/${B}, then simplify.` : `The bottom of the fraction should be the total (${A}), not the ones left over.`; })()])
+    solution: [[`${top}/${bot}`, over ? "A as a fraction of B" : "Part over total"], [`÷ ${g} top and bottom`, "Simplify"], [`= ${rn}/${rd}`, "Simplest form"]],
+    mistakes: [[f => f.n * rn === f.d * rd || f.n * B === f.d * A && !over || f.n * A === f.d * B && over, over ? "That's B as a fraction of A. Put the one you're asked about on top." : "That's upside down. The part goes on top, the total underneath."],
+               [f => !over && f.n * (A - B) === f.d * B, `The bottom of the fraction should be the total (${A}), not the ones left over.`]]
   };
 }
 function foaContext(level) {
@@ -1381,7 +1389,7 @@ const TOPICS = [
       tryOne: { q: "In a class of 28, 12 pupils have a pet. What fraction have a pet?",
         steps: [{ ask: "Write it as part over total. What goes on the bottom?", type: "num", answer: 28, tip: "The total, 28, goes on the bottom: 12/28." },
                 { ask: "What is the biggest number that divides both 12 and 28?", type: "num", answer: 4, tip: "12 = 4 × 3 and 28 = 4 × 7." },
-                { ask: "So 12/28 simplifies to 3 over…", type: "num", answer: 7, tip: "12/28 = 3/7." }] },
+                { ask: "So what is 12/28 in its simplest form?", type: "frac", answer: [3, 7], answerText: "3/7", tip: "12 ÷ 4 = 3 and 28 ÷ 4 = 7, so 12/28 = 3/7." }] },
       mistakes: [["Dividing by the top number", "For 3/5 of 40, divide by 5 (the bottom), not 3."],
                  ["Stopping at one part", "1/5 of 40 is 8, but 3/5 is 24."],
                  ["Answering the wrong part", "If 2/5 walk, the question might ask about the 3/5 who don't."]]
@@ -1468,6 +1476,14 @@ function mark(q, raw) {
     if (v === q.answer) return { ok: true };
     const m = q.mistakes.find(([f]) => f(v)); return { ok: false, msg: m ? m[1] : "Not quite." };
   }
+  if (q.type === "frac") {
+    const f = parseFrac(raw);
+    if (!f) return { ok: false, invalid: true, msg: "Type a fraction like 3/7. Use the / key for the line." };
+    const [an, ad] = q.answer, same = f.n * ad === an * f.d;
+    if (same && gcd(f.n, f.d) === 1) return { ok: true };
+    if (same) { const g = gcd(f.n, f.d); return { ok: false, msg: `${f.n}/${f.d} is the right size, but it isn't in its simplest form. Divide the top and bottom by ${g}.` }; }
+    const k = (q.mistakes || []).find(([fn]) => fn(f)); return { ok: false, msg: k ? k[1] : "Not quite." };
+  }
   if (q.type === "expr") {
     const m = parseExpr(raw);
     if (!m) return { ok: false, invalid: true, msg: "Type your answer like 3a + 4b or 5x − 2." };
@@ -1479,7 +1495,7 @@ function mark(q, raw) {
   if (near(v, q.answer)) return { ok: true };
   const m = q.mistakes.find(([f]) => f(v)); return { ok: false, msg: m ? m[1] : "Not quite." };
 }
-const answerText = q => q.type === "mc" ? q.choices[q.answer] : q.type === "expr" ? q.answerText : (q.answerText || fmt(q.answer)) + (q.unit ? (q.unit === "°" ? "" : " ") + q.unit : "");
+const answerText = q => q.type === "mc" ? q.choices[q.answer] : q.type === "expr" || q.type === "frac" ? q.answerText : (q.answerText || fmt(q.answer)) + (q.unit ? (q.unit === "°" ? "" : " ") + q.unit : "");
 
 /* ---------- read aloud ---------- */
 function speak(text) {
@@ -1597,6 +1613,15 @@ function screenPath() {
 }
 
 
+/* helper keys: put the character at the cursor and keep the keyboard up */
+document.addEventListener("pointerdown", e => { if (e.target.closest(".key")) e.preventDefault(); });
+document.addEventListener("click", e => {
+  const k = e.target.closest(".key"); if (!k) return;
+  const inp = k.closest("form").querySelector("input"); const ch = k.dataset.key === "−" ? "-" : k.dataset.key;
+  const a = inp.selectionStart ?? inp.value.length, b = inp.selectionEnd ?? inp.value.length;
+  inp.value = inp.value.slice(0, a) + ch + inp.value.slice(b); inp.focus(); try { inp.setSelectionRange(a + 1, a + 1); } catch (er) {}
+});
+
 /* ---------- curriculum map ---------- */
 const TIERINFO = { bronze: ["Bronze", "var(--bronze)", "B", "Core Year 7"], silver: ["Silver", "var(--silver)", "S", "Years 7–8"], gold: ["Gold", "var(--gold)", "G", "Years 8–9"], platinum: ["Platinum", "var(--platinum)", "P", "Year 9 · GCSE ready"] };
 function screenMap() {
@@ -1680,27 +1705,31 @@ function drawExample(t) {
   else $("#exagain").onclick = () => { VIEW.shown = 1; drawExample(t); };
 }
 function inputHTML(id, s) {
+  // Tablet number pads have no / and sometimes no minus, so give those keys as buttons
+  const keys = s.type === "frac" ? ["/", "−"].slice(0, /−|-/.test((s.prompt || "") + (s.ask || "")) ? 2 : 1)
+             : s.type === "num" && /−|-/.test((s.prompt || "") + (s.ask || "")) ? ["−"] : [];
+  if (s.type === "frac") return `<form class="ans" data-form="${id}"><label class="field"><input id="${id}" inputmode="numeric" autocomplete="off" aria-label="Your answer as a fraction" placeholder="e.g. 3/7"></label>${keys.map(k => `<button type="button" class="key" data-key="${k}" aria-label="Type ${k === "/" ? "a fraction line" : "a minus sign"}">${k}</button>`).join("")}<button class="btn" type="submit">Check</button></form>`;
   if (s.type === "mc") return `<div class="choices">${s.choices.map((c, i) => `<button class="choice" data-mc="${i}">${esc(c)}</button>`).join("")}</div>`;
-  return `<form class="ans" data-form="${id}"><label class="field"><input id="${id}" inputmode="${s.type === "num" ? "decimal" : "text"}" autocomplete="off" aria-label="Your answer" ${s.type === "expr" ? 'placeholder="e.g. 3a + 4b"' : ""}>${s.unit ? `<span>${esc(s.unit)}</span>` : ""}</label><button class="btn" type="submit">Check</button></form>`;
+  return `<form class="ans" data-form="${id}"><label class="field"><input id="${id}" inputmode="${s.type === "num" ? "decimal" : "text"}" autocomplete="off" aria-label="Your answer" ${s.type === "expr" ? 'placeholder="e.g. 3a + 4b"' : ""}>${s.unit ? `<span>${esc(s.unit)}</span>` : ""}</label>${keys.map(k => `<button type="button" class="key" data-key="${k}" aria-label="Type a minus sign">${k}</button>`).join("")}<button class="btn" type="submit">Check</button></form>`;
 }
 function drawTry(t) {
   const tr = t.learn.tryOne, el = $("#tryone"), i = VIEW.tryStep;
   const done = i >= tr.steps.length;
   el.innerHTML = `<div class="h3" style="margin:0">Try one with me</div>
     <p class="q" style="font-size:19px;margin:0">${esc(tr.q)}</p>
-    <div>${tr.steps.slice(0, i).map(s => `<div class="tryline"><span class="muted small">${esc(s.ask)}</span><b>✓ ${esc(s.type === "mc" ? s.choices[s.answer] : s.type === "expr" ? s.answerText : fmt(s.answer))}</b><span class="muted small">${esc(s.tip)}</span></div>`).join("")}
+    <div>${tr.steps.slice(0, i).map(s => `<div class="tryline"><span class="muted small">${esc(s.ask)}</span><b>✓ ${esc(s.type === "mc" ? s.choices[s.answer] : s.type === "expr" || s.type === "frac" ? s.answerText : fmt(s.answer))}</b><span class="muted small">${esc(s.tip)}</span></div>`).join("")}
     ${done ? "" : `<div class="tryline"><span class="eyebrow" style="font-size:11.5px">Step ${i + 1} of ${tr.steps.length}</span><b>${esc(tr.steps[i].ask)}</b>${inputHTML("tryin", tr.steps[i])}${VIEW.tryFb ? `<div class="fb no"><b>Have another go</b>${esc(VIEW.tryFb)}</div>` : ""}</div>`}</div>
     ${done ? `<div class="fb ok"><b>Nicely done</b>${VIEW.tryJump ? `${esc(VIEW.tryJump)} is the answer. You went straight there: the steps above show how it's worked out.` : "You've worked through it step by step."} Now practise on your own.</div><div class="row"><a class="btn" href="#t-${t.id}-practise">Go to Practise</a></div>` : ""}`;
   if (done) { const p = prog(t.id); if (!p.learned) { p.learned = true; save(); renderCadet(); } return; }
   const s = tr.steps[i];
   const submit = raw => {
-    const r = mark({ type: s.type, answer: s.answer, mistakes: [] }, raw);
+    const r = mark({ type: s.type, answer: s.answer, answerText: s.answerText, mistakes: [] }, raw);
     const last = tr.steps[tr.steps.length - 1];
     if (r.ok) { VIEW.tryStep++; VIEW.tryFb = null; }
-    else if (i < tr.steps.length - 1 && last.type !== "mc" && s.type !== "mc" && mark({ type: last.type, answer: last.answer, mistakes: [] }, raw).ok) {
-      VIEW.tryStep = tr.steps.length; VIEW.tryFb = null; VIEW.tryJump = last.type === "expr" ? last.answerText : fmt(last.answer);   // typed the final answer early: accept it
+    else if (i < tr.steps.length - 1 && last.type !== "mc" && s.type !== "mc" && mark({ type: last.type, answer: last.answer, answerText: last.answerText, mistakes: [] }, raw).ok) {
+      VIEW.tryStep = tr.steps.length; VIEW.tryFb = null; VIEW.tryJump = last.type === "expr" || last.type === "frac" ? last.answerText : fmt(last.answer);   // typed the final answer early: accept it
     }
-    else VIEW.tryFb = r.invalid ? r.msg : "Not quite. " + (VIEW.tryFb ? "Hint: " + s.tip : `This step asks: ${s.ask}`);
+    else VIEW.tryFb = r.invalid || (r.msg && r.msg !== "Not quite.") ? r.msg : "Not quite. " + (VIEW.tryFb ? "Hint: " + s.tip : `This step asks: ${s.ask}`);
     drawTry(t);
     const inp = $("#tryin"); if (inp) inp.focus();
   };
