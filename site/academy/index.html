@@ -1589,10 +1589,10 @@ function screenPath() {
     }).join("")}</div>
     <p class="muted small" style="margin-top:14px">All ${TOPICS.length} Bronze topics are ready. <a href="#map">See the full KS3 curriculum map</a>: ${Object.values(MAP).flat().length} topics from Bronze to Platinum.</p>
     <h2 class="eyebrow" style="margin:34px 0 12px">Training games</h2>
-    <div class="topics"><a class="tcard" href="timetables.html" style="text-decoration:none;color:inherit">
-      <span class="strand">Time · Number</span><h3>Departures</h3>
-      <span class="muted small">Read train, bus and flight timetables to track the courier: journey times, waiting times, connections and time zones.</span>
-      <span class="meta"><span class="chip">3 levels · 10 questions</span><span class="chip learning">Play</span></span></a></div>`;
+    <div class="topics">${Object.entries(GAMES).flatMap(([tid, gs]) => gs.map(g => `<a class="tcard" href="${g.href}" style="text-decoration:none;color:inherit">
+      <span class="strand">${g.tag} · ${esc(TOPIC(tid).name)}</span><h3>${g.name}</h3>
+      <span class="muted small">${g.blurb}</span>
+      <span class="meta"><span class="chip">${g.meta}</span><span class="chip learning">Play</span></span></a>`)).join("")}</div>`;
   wireImport();
 }
 
@@ -1619,7 +1619,7 @@ function screenTopic(id, tab) {
   const t = TOPIC(id); if (!t) { location.hash = "#path"; return; }
   if (!isOpen(id)) { app.innerHTML = `<nav class="crumbs"><a href="#path">Bronze pathway</a><span>›</span><span>${t.strand}</span></nav><h1 class="h1" style="margin-top:8px">${esc(t.name)}</h1>${lockedPanel(t)}`; return; }
   const p = prog(id);
-  const tabs = [["learn", "Learn", p.learned], ["practise", "Practise", p.practised >= 5 || p.secured], ["check", "Check", p.secured]];
+  const tabs = [["learn", "Learn", p.learned], ["practise", "Practise", p.practised >= 5 || p.secured]].concat(GAMES[id] ? [["play", "Play", false]] : [], [["check", "Check", p.secured]]);
   app.innerHTML = `
     <nav class="crumbs"><a href="#path">Bronze pathway</a><span>›</span><span>${t.strand}</span></nav>
     <h1 class="h1" style="margin-top:8px">${esc(t.name)}</h1>
@@ -1629,7 +1629,20 @@ function screenTopic(id, tab) {
   app.querySelectorAll("[data-tab]").forEach(b => b.onclick = () => location.hash = `#t-${id}-${b.dataset.tab}`);
   if (tab === "learn") tabLearn(t);
   else if (tab === "practise") tabPractise(t);
+  else if (tab === "play" && GAMES[id]) tabPlay(t);
   else tabCheck(t);
+}
+
+/* ---------- Play: training games linked to topics ---------- */
+const GAMES = {
+  "simplifying": [{ name: "Evidence Locker", href: "like-terms.html", tag: "Algebra", blurb: "Sort every term into the right locker, then total each one to write the expression in its simplest form. Three levels, up to x², xy and minus signs.", meta: "3 levels · 10 cases" }],
+  "metric-units": [{ name: "Departures", href: "timetables.html", tag: "Time", blurb: "Read train, bus and flight timetables to track the courier: journey times, waiting times, connections and time zones.", meta: "3 levels · 10 questions" }]
+};
+function tabPlay(t) {
+  $("#tabbody").innerHTML = `<p class="muted" style="max-width:62ch">Practise ${esc(t.name.toLowerCase())} as a game. Games don't count towards securing the topic: the Check does that.</p>
+    <div class="topics">${(GAMES[t.id] || []).map(g => `<a class="tcard" href="${g.href}" style="text-decoration:none;color:inherit">
+      <span class="strand">Training game · ${g.tag}</span><h3>${g.name}</h3><span class="muted small">${g.blurb}</span>
+      <span class="meta"><span class="chip">${g.meta}</span><span class="chip learning">Play</span></span></a>`).join("")}</div>`;
 }
 
 /* ---------- Learn ---------- */
@@ -2037,8 +2050,8 @@ function route() {
     }
   } else if (LIVE && !deviceMode()) { screenWelcome(); return; }
   if (!STORE.name) { screenName(); return; }
-  // routes: #path, #t-<topic-id>-<learn|practise|check>
-  const m = location.hash.match(/^#t-([a-z0-9-]+)-(learn|practise|check)$/);
+  // routes: #path, #t-<topic-id>-<learn|practise|play|check>
+  const m = location.hash.match(/^#t-([a-z0-9-]+)-(learn|practise|play|check)$/);
   if (m && TOPIC(m[1])) screenTopic(m[1], m[2]);
   else if (location.hash === "#map") screenMap();
   else screenPath();
