@@ -80,6 +80,10 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .tcard{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:8px;min-width:0}
 .tcard:hover{border-color:var(--cyan)}
 .irclass{margin-top:16px}
+.top .wrap{gap:12px}
+.hdrgame{margin-left:auto;flex:none;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;border:1px solid #FFB86B;color:#FFB86B;text-decoration:none;font:600 14px/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.hdrgame:hover{background:rgba(255,184,107,.12)}
+@media (max-width:520px){.hdrgame{padding:7px 10px;font-size:12px}.hdrgame span{display:none}}
 .irjoin{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;margin:0 0 14px;border-color:var(--cyan)}
 .irjoinrow{display:flex;gap:10px}
 .irjoincode{width:9.5ch;font:600 24px/1 var(--f-mono);letter-spacing:.14em;text-align:center;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg,#0B122C);color:inherit}
@@ -197,11 +201,12 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:space-betw
       <svg viewBox="0 0 40 46" aria-hidden="true"><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z" fill="#111a3d" stroke="#00FCF1" stroke-width="2.2" stroke-linejoin="round"/><circle cx="19" cy="21" r="6.2" fill="#111a3d" stroke="#00FCF1" stroke-width="2.6"/><circle cx="19" cy="21" r="1.6" fill="#00FCF1"/><path d="M23.4 25.4 28.8 30.8" stroke="#1B36FF" stroke-width="3.8" stroke-linecap="round"/></svg>
       <span class="wm">MATHS FORENSICS<small>ACADEMY · KS3</small></span>
     </a>
+    <a class="hdrgame" href="games.html"><span aria-hidden="true">▶</span> Class games</a>
     <div class="cadet" id="cadet"></div>
   </div>
 </header>
 <main class="wrap" id="app" tabindex="-1"></main>
-<footer><div class="wrap"><span>Maths Forensics Academy · Years 7 to 9 · Version 17 Nov 2026 (d)</span><span><span id="footnote">Progress is saved on this device only.</span> <a href="../privacy.html">Privacy</a></span></div></footer>
+<footer><div class="wrap"><span>Maths Forensics Academy · Years 7 to 9 · Version 17 Nov 2026 (e)</span><span><span id="footnote">Progress is saved on this device only.</span> <a href="../privacy.html">Privacy</a></span></div></footer>
 
 <script>
 "use strict";
@@ -1628,7 +1633,7 @@ function screenPath() {
       <span class="strand">${g.tag} · ${esc(TOPIC(tid).name)}</span><h3>${g.name}</h3>
       <span class="muted small">${g.blurb}</span>
       <span class="meta"><span class="chip">${g.meta}</span><span class="chip learning">Play</span></span></a>`)).join("")}</div>
-    <h2 class="eyebrow" style="margin:34px 0 12px">Incident Room challenges</h2>
+    <h2 class="eyebrow" style="margin:34px 0 12px">Class games</h2>
     <p class="muted" style="max-width:66ch;margin:0 0 14px">Quick-fire questions on ${IR_TOPICS}. Play on your own, or join your class's game.</p>
     <form class="panel irjoin" id="irJoin" novalidate><div><div class="h3" style="margin:0">Join a class game</div><span class="muted small">Your teacher shows a 6-digit game code on the board.</span></div>
       <div class="irjoinrow"><input class="irjoincode" id="irCode" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="123456" autocomplete="off" aria-label="Game code"><button class="btn" type="submit">Join</button></div>
@@ -1698,19 +1703,19 @@ function screenTopic(id, tab) {
   else tabCheck(t);
 }
 
-/* ---------- Incident Room games set to the KS3 topics (?ks3=1) ---------- */
-const IR_URL = "../incident-room/";
+/* ---------- class games (games.html: the games engine in Academy mode, KS3 only) ---------- */
+const IR_URL = "games.html";
 const IR_TOPICS = "collecting like terms, expanding brackets, percentages, ratio, fractions and mixed numbers, ordering fractions, and decimals and rounding";
 const IR_SOLO = [
-  { name: "The Interrogation", href: IR_URL + "?play=interrogation&ks3=1", tag: "Incident Room · on your own", blurb: "Two 90-second rounds. Get two right in a row and you're promoted from Constable to Sergeant to Inspector, where questions are worth more.", meta: "2 rounds · 90 seconds" },
-  { name: "Rapid Response", href: IR_URL + "?play=rapid&ks3=1", tag: "Incident Room · on your own", blurb: "Pick your topics and answer 6 to 20 questions against the clock, with an explanation after every one.", meta: "6 to 20 questions" }
+  { name: "The Interrogation", href: IR_URL + "?play=interrogation", tag: "Class games · on your own", blurb: "Two 90-second rounds. Get two right in a row and you're promoted from Constable to Sergeant to Inspector, where questions are worth more.", meta: "2 rounds · 90 seconds" },
+  { name: "Rapid Response", href: IR_URL + "?play=rapid", tag: "Class games · on your own", blurb: "Pick your topics and answer 6 to 20 questions against the clock, with an explanation after every one.", meta: "6 to 20 questions" }
 ];
 const IR_CLASS = [
-  { name: "The Interrogation tournament", href: IR_URL + "?host&game=interrogation&ks3=1", blurb: "Qualifiers, quarter-finals, semi-finals and a final, in one lesson or as homework over a week." },
-  { name: "Rapid Response, live", href: IR_URL + "?host&game=rapid&ks3=1", blurb: "The whole class answers the same questions on their tablets, with a live leaderboard." },
-  { name: "Team showdown", href: IR_URL + "?play=teams&ks3=1", blurb: "2 to 4 teams on mini whiteboards, scored on the board." }
+  { name: "The Interrogation tournament", href: IR_URL + "?host&game=interrogation", blurb: "Qualifiers, quarter-finals, semi-finals and a final, in one lesson or as homework over a week." },
+  { name: "Rapid Response, live", href: IR_URL + "?host&game=rapid", blurb: "The whole class answers the same questions on their tablets, with a live leaderboard." },
+  { name: "Team showdown", href: IR_URL + "?play=teams", blurb: "2 to 4 teams on mini whiteboards, scored on the board." }
 ];
-/* students type the live game's 6-digit code and go straight to the Incident Room's join screen */
+/* students type the live game's 6-digit code and go straight to the class games join screen */
 function wireIrJoin() {
   const f = document.getElementById("irJoin"); if (!f) return;
   const inp = document.getElementById("irCode"), err = document.getElementById("irJoinErr");
@@ -1719,7 +1724,7 @@ function wireIrJoin() {
     if (c.length !== 6) { err.textContent = "Game codes have 6 digits."; return; }
     location.href = IR_URL + "?code=" + c; };
 }
-const irGame = (sub, topics) => ({ ir: true, name: "The Interrogation", href: IR_URL + "?play=interrogation&ks3=1&sub=" + sub, tag: "Incident Room", blurb: `Quick-fire ${topics} questions that get harder as you get them right. Two rounds of 90 seconds.`, meta: "2 rounds · 90 seconds" });
+const irGame = (sub, topics) => ({ ir: true, name: "The Interrogation", href: IR_URL + "?play=interrogation&sub=" + sub, tag: "Class game", blurb: `Quick-fire ${topics} questions that get harder as you get them right. Two rounds of 90 seconds.`, meta: "2 rounds · 90 seconds" });
 
 /* ---------- Play: training games linked to topics ---------- */
 const GAMES = {

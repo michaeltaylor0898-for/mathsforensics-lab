@@ -812,6 +812,19 @@ body.turnon .li-side .li-turn:first-child { display: none; }
 .iv-grade { display: inline-block; font: 700 .8rem var(--display); letter-spacing: .05em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; color: #0B122C; }
 .iv-grade.g1 { background: #9DB3E8; } .iv-grade.g2 { background: var(--cyan); } .iv-grade.g3 { background: var(--amber); }
 .iv-q { border: 2px solid var(--line); }
+.iv-q { position: relative; }
+.iv-pen { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; border-radius: inherit;
+  background: rgba(11,18,44,.82); color: var(--bad); font-family: var(--display); text-transform: uppercase; letter-spacing: .08em; text-align: center; z-index: 3; animation: ivpen .2s ease-out; }
+.iv-pen span { font: 700 3.2rem/1 var(--mono); color: var(--text); }
+@keyframes ivpen { from { opacity: 0; } to { opacity: 1; } }
+.ac-games { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; margin: 12px 0; }
+.ac-game { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; text-align: left; font: inherit; color: var(--text); background: var(--panel-2); border: 1px solid var(--line); border-radius: 14px; padding: 16px; cursor: pointer; }
+.ac-game:hover, .ac-game:focus-visible { border-color: var(--cyan); }
+.ac-game b { font-family: var(--display); text-transform: uppercase; letter-spacing: .06em; }
+.ac-game span { color: var(--muted); font-size: .95rem; }
+.ac-join { border-color: var(--cyan); }
+.ac-join form { gap: 10px; margin-top: 10px; flex-wrap: nowrap; }
+.ac-code { max-width: 11ch; font: 700 1.6rem/1 var(--mono); letter-spacing: .14em; text-align: center; }
 .iv-promo { border-radius: 10px; padding: 8px 12px; margin: 8px 0 0; font-weight: 700; animation: puIn .3s ease-out; }
 .iv-promo.up { background: rgba(255,200,87,.18); border-left: 4px solid var(--amber); }
 .iv-promo.down { background: rgba(157,179,232,.12); border-left: 4px solid #9DB3E8; }
@@ -1276,13 +1289,17 @@ window.IR_CONFIG = {
 <script>
 (() => {
 "use strict";
+/* Academy mode: the same games engine published inside the Academy (academy/games.html) with
+   window.MF_MODE = "academy". KS3 questions only, its own home page, saved data and live channels. */
+const ACAD = window.MF_MODE === "academy";
 /* ================= CORE HELPERS ================= */
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const SKEY = k => (ACAD ? "ac-" : "") + k;
 const store = {
-  get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
-  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
-  del(k) { try { localStorage.removeItem(k); } catch (e) {} }
+  get(k, d) { try { const v = localStorage.getItem(SKEY(k)); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(SKEY(k), JSON.stringify(v)); } catch (e) {} },
+  del(k) { try { localStorage.removeItem(SKEY(k)); } catch (e) {} }
 };
 const ordinal = n => { const s = ["th", "st", "nd", "rd"], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); };
 const LETTERS = ["A", "B", "C", "D", "E", "F"];
@@ -3182,7 +3199,7 @@ function soHostStart(cfg) {
   const code = String(100000 + Math.floor(Math.random() * 900000));
   const H = S.host = { game: "stakeout", code, cfg, round: 1, phase: "lobby", ci: -1, k: 0, cases: [], players: {}, online: new Set(), kicked: new Set(), arrests: {}, left: 0, total: cfg.time, stats: [], status: "connecting" };
   soNewRound(H);
-  const ch = sb().channel("ir-" + code, { config: { broadcast: { self: false }, presence: { key: "host" } } });
+  const ch = sb().channel((ACAD ? "ac-" : "ir-") + code, { config: { broadcast: { self: false }, presence: { key: "host" } } });
   H.ch = ch;
   ch.on("broadcast", { event: "hello" }, ({ payload }) => { addPlayer(payload); soPush(); if (H.phase === "lobby") soDrawHost(); })
     .on("broadcast", { event: "arrest" }, ({ payload }) => soOnArrest(payload))
@@ -3977,7 +3994,7 @@ function ikHostStart(cfg) {
   const code = String(100000 + Math.floor(Math.random() * 900000));
   const H = S.host = { game: "identikit", code, cfg, round: 1, phase: "lobby", pi: -1, qi: -1, plan: [], off: [], fresh: [], players: {}, online: new Set(), kicked: new Set(), answers: {}, ids: {}, left: 0, total: 0, stats: [], qstats: [], status: "connecting" };
   ikNewRound(H);
-  const ch = sb().channel("ir-" + code, { config: { broadcast: { self: false }, presence: { key: "host" } } });
+  const ch = sb().channel((ACAD ? "ac-" : "ir-") + code, { config: { broadcast: { self: false }, presence: { key: "host" } } });
   H.ch = ch;
   ch.on("broadcast", { event: "hello" }, ({ payload }) => { addPlayer(payload); ikPush(); if (H.phase === "lobby") ikDrawHost(); })
     .on("broadcast", { event: "answer" }, ({ payload }) => ikOnAnswer(payload))
@@ -4691,7 +4708,7 @@ function liHostStart(cfg) {
   const H = S.host = { game: "inquiry", code, cfg, round: 1, gr: 0, wins: { c: 0, a: 0 }, phase: "lobby", picker: Math.random() < 0.5 ? "c" : "a", board: [], sel: null, qk: 0, used: new Set(),
     players: {}, team: {}, online: new Set(), kicked: new Set(), answers: {}, left: 0, total: 0, log: [], status: "connecting" };
   liNewBoard(H);
-  const ch = sb().channel("ir-" + code, { config: { broadcast: { self: false }, presence: { key: "host" } } });
+  const ch = sb().channel((ACAD ? "ac-" : "ir-") + code, { config: { broadcast: { self: false }, presence: { key: "host" } } });
   H.ch = ch;
   ch.on("broadcast", { event: "hello" }, ({ payload }) => { liAdd(payload); liPush(); if (H.phase === "lobby") liDrawHost(); })
     .on("broadcast", { event: "answer" }, ({ payload }) => liOnAnswer(payload))
@@ -5126,7 +5143,7 @@ function lnHostStart(cfg) {
   const code = String(100000 + Math.floor(Math.random() * 900000));
   const H = S.host = { game: "lineup", code, cfg, round: 1, gr: 0, wins: { c: 0, a: 0 }, phase: "lobby", turn: "c", grid: lnEmpty(), last: null, win: null, dropper: null, qk: 0, used: new Set(), pool: [],
     players: {}, team: {}, online: new Set(), kicked: new Set(), answers: {}, left: 0, total: 0, log: [], status: "connecting" };
-  const ch = sb().channel("ir-" + code, { config: { broadcast: { self: false }, presence: { key: "host" } } });
+  const ch = sb().channel((ACAD ? "ac-" : "ir-") + code, { config: { broadcast: { self: false }, presence: { key: "host" } } });
   H.ch = ch;
   ch.on("broadcast", { event: "hello" }, ({ payload }) => { liAdd(payload); lnPush(); if (H.phase === "lobby") lnDrawHost(); })
     .on("broadcast", { event: "answer" }, ({ payload }) => lnOnAnswer(payload))
@@ -5624,7 +5641,7 @@ function ctHostStart(cfg) {
   const H = S.host = { game: "trail", code, cfg, round: 1, teams: CT_ORDER.slice(0, cfg.nteams), phase: "lobby", turnNo: 0, active: null, roll: null, msg: "", card: null, qk: 0, used: new Set(), pool: [],
     players: {}, team: {}, online: new Set(), kicked: new Set(), answers: {}, left: 0, total: 0, log: [], status: "connecting" };
   ctNewBoard(H);
-  const ch = sb().channel("ir-" + code, { config: { broadcast: { self: false }, presence: { key: "host" } } });
+  const ch = sb().channel((ACAD ? "ac-" : "ir-") + code, { config: { broadcast: { self: false }, presence: { key: "host" } } });
   H.ch = ch;
   ch.on("broadcast", { event: "hello" }, ({ payload }) => { ctAdd(payload); ctPush(); if (H.phase === "lobby") ctDrawHost(); })
     .on("broadcast", { event: "answer" }, ({ payload }) => ctOnAnswer(payload))
@@ -6322,7 +6339,7 @@ function clHostStart(cfg) {
   const code = String(100000 + Math.floor(Math.random() * 900000));
   const H = S.host = { game: "crimelab", code, cfg, round: 1, phase: "lobby", ci: -1, order: [], squads: [], sqOf: {}, place: 0,
     players: {}, online: new Set(), kicked: new Set(), left: 0, total: cfg.mins * 60, log: [], status: "connecting" };
-  const ch = sb().channel("ir-" + code, { config: { broadcast: { self: false }, presence: { key: "host" } } });
+  const ch = sb().channel((ACAD ? "ac-" : "ir-") + code, { config: { broadcast: { self: false }, presence: { key: "host" } } });
   H.ch = ch;
   ch.on("broadcast", { event: "hello" }, ({ payload }) => { clAdd(payload); clPush(); if (["lobby", "squads", "case"].includes(H.phase)) clDrawHost(); })
     .on("broadcast", { event: "lab" }, ({ payload }) => clOnLab(payload))
@@ -7383,7 +7400,7 @@ function phHostStart(cfg) {
   const code = String(100000 + Math.floor(Math.random() * 900000));
   const H = S.host = { game: "pursuit", code, cfg, round: 1, phase: "lobby", players: {}, online: new Set(), kicked: new Set(), cnt: {}, answers: {}, qk: 0, status: "connecting",
     g: { tier: cfg.tier, strands: cfg.strands, paid: true, seen: new Set(), bank: null }, left: 0, total: 60, log: [] };
-  const ch = sb().channel("ir-" + code, { config: { broadcast: { self: false }, presence: { key: "host" } } });
+  const ch = sb().channel((ACAD ? "ac-" : "ir-") + code, { config: { broadcast: { self: false }, presence: { key: "host" } } });
   H.ch = ch;
   ch.on("broadcast", { event: "hello" }, ({ payload }) => { addPlayer(payload); phPush(); if (H.phase === "lobby") phDrawHost(); })
     .on("broadcast", { event: "pq" }, ({ payload }) => phOnQuick(payload))
@@ -8095,7 +8112,8 @@ const KUG = (() => {
 })();
 const IV_STAGES = ["Qualifiers", "Quarter-finals", "Semi-finals", "Final", "Finished"];
 const IV_SECS = { 0: 90, 1: 60, 2: 60, 3: 90 };
-const IV_TIERS = [["F", "GCSE Foundation"], ["H", "GCSE Higher"], ["K", "KS3 (Years 7–9)"]];
+const IV_TIERS = [["F", "Foundation"], ["H", "Higher"]];
+const ivTierFix = cfg => { cfg.tier = ACAD ? "K" : cfg.tier === "H" ? "H" : "F"; return cfg; };
 let ivTok = 0;
 
 /* ---------- seeded questions ---------- */
@@ -8204,8 +8222,19 @@ function ivPick(i) {
   if (R.promo > 0) setTimeout(() => Sound.play("promote"), 150);
   app.querySelectorAll(".pu-opt").forEach((b, k) => { b.disabled = true; if (k === q.a) b.classList.add("right"); else if (k === i) b.classList.add("wrong"); });
   if (X.o.onProgress) X.o.onProgress(R);
-  const flash = R.promo;
-  setTimeout(() => { if (S.iv !== X) return; X.busy = false; if (X.left <= 0 || !X.active) return; ivNext(R); ivDrawQ(flash); }, r.ok || r.pass ? 380 : 1000);
+  const flash = R.promo, wrong = !r.ok && !r.pass;
+  /* 2 seconds for a wrong answer, then 1 more for each wrong answer in a row, up to 5 */
+  X.miss = wrong ? (X.miss || 0) + 1 : r.ok ? 0 : (X.miss || 0);
+  const pen = wrong ? Math.min(5, 1 + X.miss) : 0;
+  if (wrong) ivPenalty(X, pen);
+  setTimeout(() => { if (S.iv !== X) return; X.busy = false; if (X.left <= 0 || !X.active) return; ivNext(R); ivDrawQ(flash); }, wrong ? pen * 1000 : 380);
+}
+function ivPenalty(X, pen) {
+  const q = app.querySelector(".iv-q"); if (!q) return;
+  const el = document.createElement("div"); el.className = "iv-pen"; el.setAttribute("role", "status");
+  let n = pen; const draw = () => { el.innerHTML = `<b>Wrong: ${pen}-second penalty</b><span>${n}</span>`; };
+  draw(); q.appendChild(el);
+  const t = setInterval(() => { n -= 1; if (n <= 0 || S.iv !== X || !el.isConnected) return clearInterval(t); draw(); }, 1000);
 }
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-iv]"); if (b && !b.disabled && S.iv && S.iv.active) ivPick(+b.dataset.iv); });
 document.addEventListener("keydown", e => {
@@ -8262,6 +8291,7 @@ const ivBest = () => store.get("ir-iv-best", { score: 0, games: 0 });
 function ivSoloSetup() {
   stopTimer(); S.iv = null; S.pad = null; S.ivMode = true;
   const paid = soloUnlimited(), cfg = Object.assign({ subject: "A", tier: "F" }, store.get("ir-iv", {}));
+  ivTierFix(cfg);
   const fixSub = () => { if (!ivSubjects(cfg.tier).some(x => x[0] === cfg.subject)) cfg.subject = ivSubjects(cfg.tier)[0][0]; };
   fixSub();
   const best = ivBest();
@@ -8274,9 +8304,9 @@ function ivSoloSetup() {
         <div class="pu-rounds">
           <div><b>Round 1 · Your chosen subject</b><span>90 seconds on the part of ${cfg.tier === "K" ? "KS3" : "GCSE"} maths you choose below.</span></div>
           <div><b>Round 2 · General case knowledge</b><span>90 seconds on ${cfg.tier === "K" ? "all the KS3 topics" : "everything"}.</span></div>
-          <div><b>Grades</b><span>${[1, 2, 3].map(l => ivGradeChip(l)).join(" ")}<br>Two right in a row: promoted. A wrong answer: back a grade. "No comment" passes, but fewer passes wins a tie.</span></div>
+          <div><b>Grades</b><span>${[1, 2, 3].map(l => ivGradeChip(l)).join(" ")}<br>Two right in a row: promoted. A wrong answer: back a grade and a 2-second penalty, longer if you keep guessing. "No comment" passes, but fewer passes wins a tie.</span></div>
         </div></section>
-      <section class="panel"><span class="eyebrow">Level</span>${choice("ivtier", cfg.tier, IV_TIERS)}
+      <section class="panel">${ACAD ? "" : `<span class="eyebrow">Tier</span>${choice("ivtier", cfg.tier, IV_TIERS)}`}
         <span class="eyebrow">Your chosen subject</span>${choice("ivsub", cfg.subject, ivSubjects(cfg.tier))}
         ${cfg.tier === "K" ? `<p class="muted small">KS3 topics: collecting like terms, expanding brackets, percentages, ratio, fractions and mixed numbers, ordering fractions, decimals and rounding.</p>` : paid ? "" : `<p class="muted small">On the free plan, questions from the question bank come from the sample topics.</p>`}
         <div class="row"><button class="btn primary big" id="go">Start the interrogation</button><button class="btn" id="back">Back</button>${soundBtns()}</div></section>`);
@@ -8350,6 +8380,7 @@ const IV_RULES = `<ul class="so-rules">
   <li><b>Everyone plays the qualifiers</b> on their own device: 90 seconds, same questions for all.</li>
   <li><b>Questions get harder as you go.</b> Two right in a row: promoted to Sergeant (2 points) and then Inspector (3 points). Wrong: back a grade.</li>
   <li><b>"No comment"</b> passes a question. Fewer passes wins a tie.</li>
+  <li><b>Wrong answers cost time:</b> a 2-second penalty, and 1 second more for each wrong answer in a row. Guessing doesn't pay.</li>
   <li><b>The top players go into the knockout</b> rounds. Everyone else plays on in the <b>Reserve League</b> and predicts the winners for bonus points.</li></ul>`;
 
 /* ================= HOST ================= */
@@ -8358,6 +8389,7 @@ function ivHostSetup() {
   if (!liveConfigured()) return liveMissing(homeFn);
   if (gating() && !S.acc.signed_in) return signInToHost(homeFn);
   const cfg = Object.assign({ tier: "F", subject: "", mode: "live", title: "" }, store.get("ir-ivh", {}));
+  ivTierFix(cfg);
   if (cfg.subject && !ivSubjects(cfg.tier).some(x => x[0] === cfg.subject)) cfg.subject = "";
   const draw = (keep = false) => {
     set(`${brand("The Interrogation · teacher")}
@@ -8376,7 +8408,7 @@ function ivHostSetup() {
           <li><b>You close each round</b> when you're ready, say every two days. The draw fills in automatically: quarter-finals, semi-finals, final.</li>
           <li><b>Knocked-out students</b> can still play each round in the Reserve League.</li></ol>
           <label class="eyebrow" for="ivTitle">Tournament name</label><input id="ivTitle" class="field" maxlength="40" placeholder="Year 10 Detective of the Year" value="${esc(cfg.title)}">`}
-        <span class="eyebrow">Level</span>${choice("ivtier", cfg.tier, IV_TIERS)}
+        ${ACAD ? "" : `<span class="eyebrow">Tier</span>${choice("ivtier", cfg.tier, IV_TIERS)}`}
         <span class="eyebrow">Topic focus</span>${choice("ivsub", cfg.subject, [["", cfg.tier === "K" ? "All the KS3 topics" : "All of GCSE"]].concat(ivSubjects(cfg.tier)))}
         <div class="row"><button class="btn primary big" id="go">${cfg.mode === "live" ? "Open the game" : "Create the tournament"}</button>${cfg.mode === "cup" && S.user ? `<button class="btn" id="mine">My homework tournaments</button>` : ""}<button class="btn" id="back">Back</button>${soundBtns(true)}</div>
       </section>`, true, keep);
@@ -8399,7 +8431,7 @@ function ivHostStart(cfg) {
   const code = String(100000 + Math.floor(Math.random() * 900000));
   const H = S.host = { game: "interrogation", code, cfg, round: 1, phase: "lobby", stage: 0, first: 4, seeds: [0, 1, 2, 3].map(ivNewSeed), res: {}, ties: {}, seedRank: [], preds: {}, bonus: {},
     players: {}, online: new Set(), kicked: new Set(), left: 0, total: 90, status: "connecting" };
-  const ch = sb().channel("ir-" + code, { config: { broadcast: { self: false }, presence: { key: "host" } } });
+  const ch = sb().channel((ACAD ? "ac-" : "ir-") + code, { config: { broadcast: { self: false }, presence: { key: "host" } } });
   H.ch = ch;
   ch.on("broadcast", { event: "hello" }, ({ payload }) => { addPlayer(payload); ivPush(); if (H.phase === "lobby") ivDrawHost(); })
     .on("broadcast", { event: "iv" }, ({ payload }) => ivOnScore(payload))
@@ -8644,7 +8676,7 @@ function ivDrawStudent() {
    A teacher creates a "cup" and shares the link. Students play each round once, whenever suits them.
    The teacher closes each round; the draw fills in automatically (qualifiers → quarter-finals → semi-finals → final).
    Needs supabase/migrations/009_interrogation_cups.sql. */
-const IV_CUP_URL = code => `https://lab.mathsforensics.com/incident-room/?cup=${code}`;
+const IV_CUP_URL = code => (ACAD ? `${location.origin}${location.pathname}?cup=${code}` : `https://lab.mathsforensics.com/incident-room/?cup=${code}`);
 const ivCupCode = () => Array.from({ length: 5 }, () => "ABCDEFGHJKLMNPQRSTUVWXYZ"[Math.floor(Math.random() * 24)]).join("");
 async function ivHash(s) {
   const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
@@ -9333,7 +9365,7 @@ function wdHostStart(cfg) {
   const code = String(100000 + Math.floor(Math.random() * 900000)), me = "h" + Math.random().toString(36).slice(2, 8);
   const H = S.host = { game: "whodunnit", code, cfg, round: 1, phase: "lobby", me, players: {}, order: [me], online: new Set(), kicked: new Set(), full: new Set(), G: null, prev: null, status: "connecting", idle: 0 };
   H.players[me] = { id: me, name: S.player.name || "Detective", avatar: S.player.avatar, score: 0, correct: 0, wrong: 0, streak: 0, best: 0, last: 0, ok: false, prevRank: 0 };
-  const ch = sb().channel("ir-" + code, { config: { broadcast: { self: false }, presence: { key: "host" } } });
+  const ch = sb().channel((ACAD ? "ac-" : "ir-") + code, { config: { broadcast: { self: false }, presence: { key: "host" } } });
   H.ch = ch;
   ch.on("broadcast", { event: "hello" }, ({ payload }) => { wdAdd(payload); wdPush(); wdDrawHost(); })
     .on("broadcast", { event: "wd" }, ({ payload }) => { if (payload && H.order.includes(payload.id) && payload.round === H.round) wdApply(payload.id, payload.a || {}); })
@@ -10058,7 +10090,7 @@ function pvHostStart(cfg) {
   const code = String(100000 + Math.floor(Math.random() * 900000)), friends = cfg.mode === "friends";
   const H = S.host = { game: "vault", code, cfg, round: 1, phase: "lobby", plays: friends, me: friends ? "h" + Math.random().toString(36).slice(2, 8) : null, players: {}, order: [], online: new Set(), kicked: new Set(), full: new Set(), status: "connecting", seed: 0, t0: 0, sig: "" };
   if (friends) { addPlayerQuiet(H, { id: H.me, name: S.player.name || "Burglar", avatar: S.player.avatar }); }
-  const ch = sb().channel("ir-" + code, { config: { broadcast: { self: false }, presence: { key: "host" } } });
+  const ch = sb().channel((ACAD ? "ac-" : "ir-") + code, { config: { broadcast: { self: false }, presence: { key: "host" } } });
   H.ch = ch;
   ch.on("broadcast", { event: "hello" }, ({ payload }) => { pvAdd(payload); pvPush(); pvDrawHost(); })
     .on("broadcast", { event: "pv" }, ({ payload }) => { if (payload && payload.round === H.round) pvProgress(payload.id, payload.tier, payload.alarms); })
@@ -10833,7 +10865,7 @@ function hwHostStart(cfg) {
   const duel = cfg.mode === "duel", code = String(100000 + Math.floor(Math.random() * 900000));
   const H = S.host = { game: "harbour", code, cfg, round: 1, phase: "lobby", plays: duel, me: duel ? "h" + Math.random().toString(36).slice(2, 8) : null, players: {}, order: [], online: new Set(), kicked: new Set(), full: new Set(), status: "connecting", sig: "" };
   if (duel) hwAddQuiet(H, { id: H.me, name: S.player.name || "Captain", avatar: S.player.avatar });
-  const ch = sb().channel("ir-" + code, { config: { broadcast: { self: false }, presence: { key: "host" } } });
+  const ch = sb().channel((ACAD ? "ac-" : "ir-") + code, { config: { broadcast: { self: false }, presence: { key: "host" } } });
   H.ch = ch;
   ch.on("broadcast", { event: "hello" }, ({ payload }) => { hwAdd(payload); hwPush(); hwDrawHost(); })
     .on("broadcast", { event: "hw" }, ({ payload }) => { if (payload && payload.round === H.round && H.players[payload.id]) hwEvent(payload.id, payload.a || {}); })
@@ -11352,8 +11384,8 @@ const READY = GAMES.filter(g => g.ready);
 
 /* the teacher's switch between the games that are ready to host */
 const gameSwitch = cur => `<div class="gameswitch" role="group" aria-label="Choose a game">
-  ${READY.map(g => `<button class="gsw" data-game="${g.id}" aria-pressed="${cur === g.id}">${gameIcon(g.id, "sm")}<span>${esc(g.name)}</span>${g.isNew ? `<span class="newtag">New</span>` : ""}</button>`).join("")}
-  <button class="gsw quiet" data-game="home">All games</button><a class="gsw quiet labback" href="${esc(LAB_URL)}">← Back to the Lab</a></div>`;
+  ${READY.filter(g => !ACAD || ACAD_GAMES.includes(g.id)).map(g => `<button class="gsw" data-game="${g.id}" aria-pressed="${cur === g.id}">${gameIcon(g.id, "sm")}<span>${esc(g.name)}</span>${g.isNew ? `<span class="newtag">New</span>` : ""}</button>`).join("")}
+  <button class="gsw quiet" data-game="home">All games</button><a class="gsw quiet labback" href="${esc(ACAD ? ACAD_HOME : LAB_URL)}">← Back to the ${ACAD ? "Academy" : "Lab"}</a></div>`;
 const hostGame = id => { Sound.unlock(); if (id === "home") return signIn(); store.set("ir-game", id); ({ so: soHostSetup, ik: ikHostSetup, inquiry: liHostSetup, lineup: lnHostSetup, trail: ctHostSetup, crimelab: clHostSetup, vault: pvHostSetup, harbour: hwHostSetup, pursuit: phHostSetup, interrogation: ivHostSetup }[id] || hostSetup)(); };
 const bindGameSwitch = () => app.querySelectorAll("[data-game]").forEach(b => b.onclick = () => hostGame(b.dataset.game));
 
@@ -11421,6 +11453,7 @@ function pausedHome(last) {
 function signIn() {
   stopTimer(); S.pad = null; S.pu = null; S.ivMode = false; S.wd = null; S.pv = null; S.hw = null; S.daily = null; S.hwd = null; S.hwc = null; puTok += 1;
   if (!S.host && !S.stu) disarmGuard();
+  if (ACAD) return acadHome();
   const last = store.get("ir-last", null);
   const canRejoin = last && Date.now() - last.t < 3 * 3600e3;
   const showUpgrade = gating() && !soloUnlimited();
@@ -11501,9 +11534,10 @@ function signIn() {
 
 /* ================= APP ================= */
 const CFG = window.IR_CONFIG || {};
-const JOIN_URL = "lab.mathsforensics.com/join";
+const ACAD_HOME = "./";
+const JOIN_URL = ACAD ? (location.host + location.pathname.replace(/[^/]*$/, "")).replace(/\/$/, "") || "lab.mathsforensics.com/academy" : "lab.mathsforensics.com/join";
 const LAB_URL = CFG.labUrl || "https://lab.mathsforensics.com/";
-const signInUrl = next => `${LAB_URL}?next=${next || "incident-room"}`;
+const signInUrl = next => (ACAD ? `${LAB_URL}?return=academy` : `${LAB_URL}?next=${next || "incident-room"}`);
 const liveConfigured = () => !!(window.supabase && CFG.url && CFG.key && !/PASTE/.test(CFG.url + CFG.key));
 let sbClient = null;
 const sb = () => sbClient || (sbClient = window.supabase.createClient(CFG.url, CFG.key, { realtime: { params: { eventsPerSecond: 20 } } }));
@@ -11573,7 +11607,7 @@ function runCeremony(top) {
 const set = (html, wide = false, keepScroll = false) => {
   clearCeleb(); turnFrame(null);
   app.classList.toggle("wide", wide);
-  app.innerHTML = html;
+  app.innerHTML = ACAD ? acadWords(html) : html;
   if (!keepScroll) window.scrollTo(0, 0);
   fitBoard(); requestAnimationFrame(fitBoard); setTimeout(fitBoard, 350);
 };
@@ -11595,7 +11629,7 @@ const avatarSvg = (id, cls = "") => {
   return `<svg class="av ${cls}" viewBox="0 0 64 64" aria-hidden="true">${a.svg}</svg>`;
 };
 const SHIELD = `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 4l24 9v17c0 15-10 25-24 30C18 55 8 45 8 30V13z" fill="${C.ink}" stroke="${C.cyan}" stroke-width="3"/><circle cx="29" cy="28" r="9" fill="none" stroke="${C.cyan}" stroke-width="3"/><line x1="35.5" y1="34.5" x2="43" y2="42" stroke="${C.cyan}" stroke-width="4" stroke-linecap="round"/><rect x="18" y="47" width="28" height="3" fill="${C.amber}"/></svg>`;
-const brand = (sub = "Maths Forensics Lab") => `<div class="brand">${SHIELD}<div><div class="name">Incident Room</div><div class="sub">${esc(sub)}</div></div></div>`;
+const brand = (sub = ACAD ? "Class games · KS3" : "Maths Forensics Lab") => `<div class="brand">${SHIELD}<div><div class="name">${ACAD ? "Maths Forensics Academy" : "Incident Room"}</div><div class="sub">${esc(sub)}</div></div></div>`;
 const avatarPicker = sel => `<div class="avatars" role="group" aria-label="Detectives">${(store.get("ir-myav", null) ? [{ id: store.get("ir-myav"), name: "My detective" }] : []).concat(AVATARS).map(a => `<button class="av-btn" data-avatar="${a.id}" aria-pressed="${a.id === sel}">${avatarSvg(a.id)}<span>${a.name}</span></button>`).join("")}<button class="av-btn av-make" data-avedit><span class="av-plus">+</span><span>Customise</span></button></div>`;
 const bindPicker = onPick => app.querySelectorAll("[data-avatar]").forEach(b => b.onclick = () => {
   onPick(b.dataset.avatar); store.set("ir-av", b.dataset.avatar);
@@ -11902,7 +11936,7 @@ async function accountScreen() {
 }
 /* Ask the server before a game starts; calls go() if allowed */
 async function claimGame(kind, go, back) {
-  if (!gating()) return go();
+  if (!gating() || (ACAD && kind === "solo")) return go();
   if (kind === "host" && !S.acc.signed_in) return signInToHost(back);
   if (kind === "solo" && !S.acc.signed_in) {
     const g = guestSolo();
@@ -11965,8 +11999,8 @@ function profile(next = signIn) {
 function lobby() { return signIn(); }
 const choice = (attr, val, opts) => `<div class="choice">${opts.map(([v, l]) => `<button class="btn" data-${attr}="${v}" aria-pressed="${String(v) === String(val)}">${l}</button>`).join("")}</div>`;
 const bindChoice = (attr, fn) => app.querySelectorAll(`[data-${attr}]`).forEach(b => b.onclick = () => fn(b.dataset[attr]));
-const withFilter = (cfg, defaults, ks3ok = false) => { const c = Object.assign({}, defaults, cfg || {}); c.ks3ok = ks3ok; c.tier = (ks3ok ? ["F", "K"] : ["F"]).includes(c.tier) ? c.tier : "H"; c.topics = Array.isArray(c.topics) ? c.topics.filter(id => TOPICS[id] && (id[0] === "K") === (c.tier === "K")) : []; c.open = []; c.picking = c.topics.length > 0; return c; };
-const saveCfg = (key, cfg) => { const { open, picking, allow, ks3ok, ...keep } = cfg; store.set(key, keep); };
+const withFilter = (cfg, defaults) => { const c = Object.assign({}, defaults, cfg || {}); c.tier = ACAD ? "K" : c.tier === "F" ? "F" : "H"; c.topics = Array.isArray(c.topics) ? c.topics.filter(id => TOPICS[id] && (id[0] === "K") === (c.tier === "K")) : []; c.open = []; c.picking = c.topics.length > 0; return c; };
+const saveCfg = (key, cfg) => { const { open, picking, allow, ...keep } = cfg; store.set(key, keep); };
 const filterSummary = cfg => `${tierName(cfg.tier)} · ${cfg.topics.length ? cfg.topics.length + " topic" + (cfg.topics.length > 1 ? "s" : "") : "all topics"}`;
 function topicPicker(cfg) {
   const ks3 = cfg.tier === "K", SL = ks3 ? KS3_STRANDS : STRANDS;
@@ -11983,7 +12017,7 @@ function topicPicker(cfg) {
       <div class="chips"><button class="chip all" data-strand="${s}">${on === ids.length ? "Clear all" : "Select all"}</button>${ids.map(id => lk(id) ? `<button class="chip lk" data-locked="${id}" title="Unlock with the Exam Pass">🔒 ${esc(TOPICS[id])}</button>` : `<button class="chip" data-topic="${id}" aria-pressed="${cfg.topics.includes(id)}">${esc(TOPICS[id])}</button>`).join("")}</div></details>`;
   }).join("");
   return `${cfg.allow && !ks3 ? `<div class="freenote"><b>Free plan:</b> ${cfg.allow.length} sample topics (🔒 shows the rest). <button class="linkbtn" data-ui="upgrade">Unlock all 76 topics</button></div>` : ""}
-    <span class="eyebrow">Tier</span>${choice("tier", cfg.tier, cfg.ks3ok ? [["F", "GCSE Foundation"], ["H", "GCSE Higher (includes Foundation)"], ["K", "KS3 (Years 7–9)"]] : [["F", "Foundation"], ["H", "Higher (includes Foundation)"]])}
+    ${ACAD ? "" : `<span class="eyebrow">Tier</span>${choice("tier", cfg.tier, [["F", "Foundation"], ["H", "Higher (includes Foundation)"]])}`}
     <span class="eyebrow">Topics</span>${choice("tmode", picking ? "pick" : "all", [["all", ks3 ? "All KS3 topics" : "All GCSE topics"], ["pick", "Choose topics"]])}
     ${picking ? `<div class="chips strands">${Object.entries(SL).map(([s, name]) => {
         const ids = idsOf(s);
@@ -12095,7 +12129,7 @@ async function recordScreen() {
 /* ================= SOLO ================= */
 function soloSetup() {
   stopTimer(); S.pad = null;
-  const cfg = withFilter(store.get("ir-solo", null), { mix: "mixed", n: 10, tier: "H", topics: [] }, true);
+  const cfg = withFilter(store.get("ir-solo", null), { mix: "mixed", n: 10, tier: "H", topics: [] });
   cfg.allow = soloAllow();
   if (cfg.allow) cfg.topics = cfg.topics.filter(id => id[0] === "K" || cfg.allow.includes(id));
   const draw = (keep = false) => {
@@ -12267,7 +12301,7 @@ function reviewHtml(results) {
 const TEAM_DEFS = [{ name: "Fingerprints", av: "print" }, { name: "Torches", av: "torch" }, { name: "Owls", av: "owl" }, { name: "Lenses", av: "lens" }];
 function teamSetup() {
   stopTimer(); S.pad = null;
-  const cfg = withFilter(store.get("ir-team", null), { count: 3, n: 6, mix: "mixed", tier: "H", topics: [] }, true);
+  const cfg = withFilter(store.get("ir-team", null), { count: 3, n: 6, mix: "mixed", tier: "H", topics: [] });
   const draw = (keep = false) => {
     const none = !poolFor(cfg).length;
     set(`${brand("Team showdown · projector")}
@@ -12370,7 +12404,7 @@ function hostSetup() {
   stopTimer(); S.pad = null;
   if (!liveConfigured()) return liveMissing(homeFn);
   if (gating() && !S.acc.signed_in) return signInToHost(homeFn);
-  const cfg = withFilter(store.get("ir-host", null), { n: 10, time: "auto", mix: "mixed", typed: false, tier: "H", topics: [] }, true);
+  const cfg = withFilter(store.get("ir-host", null), { n: 10, time: "auto", mix: "mixed", typed: false, tier: "H", topics: [] });
   const draw = (keep = false) => {
     const none = !poolFor(cfg).length;
     set(`${brand("Rapid Response · teacher")}
@@ -12400,7 +12434,7 @@ function hostStart(cfg) {
   const code = String(100000 + Math.floor(Math.random() * 900000));
   const H = S.host = { code, cfg, typed: !!cfg.typed, round: 1, phase: "lobby", i: -1, players: {}, online: new Set(), kicked: new Set(), answers: {}, left: 0, total: 0, stats: [], status: "connecting" };
   newRound(H);
-  const ch = sb().channel("ir-" + code, { config: { broadcast: { self: false }, presence: { key: "host" } } });
+  const ch = sb().channel((ACAD ? "ac-" : "ir-") + code, { config: { broadcast: { self: false }, presence: { key: "host" } } });
   H.ch = ch;
   ch.on("broadcast", { event: "hello" }, ({ payload }) => { addPlayer(payload); hostPush(); if (H.phase === "lobby") drawHost(); })
     .on("broadcast", { event: "answer" }, ({ payload }) => onAnswer(payload))
@@ -12681,7 +12715,7 @@ function studentJoin(code, reuseId) {
   const id = studentId(reuseId);
   const P = S.stu = { code, id, state: null, key: "", left: 0, round: 0, hist: [], L: freshPad(), lastRank: 0, saved: {} };
   set(`${brand("Join a live game")}<section class="panel"><h2>Connecting…</h2><p class="muted">Finding game ${spaced(code)}.</p></section>`);
-  const ch = sb().channel("ir-" + code, { config: { broadcast: { self: false }, presence: { key: id } } });
+  const ch = sb().channel((ACAD ? "ac-" : "ir-") + code, { config: { broadcast: { self: false }, presence: { key: id } } });
   P.ch = ch;
   ch.on("broadcast", { event: "state" }, ({ payload }) => onState(payload))
     .subscribe(status => {
@@ -12866,18 +12900,45 @@ app.addEventListener("click", e => {
   if (t.id === "rec") { store.del("ir-last"); studentLeave(recordScreen); }
 }, true);
 
-/* ?ks3=1 (from the Academy) sets each game's level to KS3. &sub=KA picks an Interrogation subject; &topics=KA1,KA2 picks Rapid Response topics. */
-function ks3Prefs(q) {
-  const sub = (q.get("sub") || "").toUpperCase(), tops = (q.get("topics") || "").toUpperCase().split(",").filter(id => KS3_IDS.includes(id));
-  const ivSub = IV_K_SUBJECTS.some(x => x[0] === sub) ? sub : "";
-  store.set("ir-iv", Object.assign({}, store.get("ir-iv", {}), { tier: "K", subject: ivSub || "KA" }));
-  store.set("ir-ivh", Object.assign({}, store.get("ir-ivh", {}), { tier: "K", subject: ivSub }));
-  ["ir-solo", "ir-team", "ir-host"].forEach(k => store.set(k, Object.assign({}, store.get(k, {}) || {}, { tier: "K", topics: tops })));
+/* ================= ACADEMY CLASS GAMES HOME ================= */
+const ACAD_GAMES = ["interrogation", "rapid"];
+/* words on shared screens that name the Incident Room */
+const acadWords = html => html.replace(/go to <b>([^<]*)<\/b> and type the code/g, "open <b>$1</b>, tap <b>Class games</b> and type the code").replace(/Back to (the )?Incident Room/g, "Back to class games").replace(/Incident Room home page/g, "Academy class games page")
+  .replace(/the Incident Room/g, "the Academy").replace(/Incident Room/g, "Academy");
+function acadHome(err = "") {
+  stopTimer(); S.pad = null; S.iv = null;
+  set(`<div class="row spread homebar">${brand()}<a class="btn quiet labback" href="${ACAD_HOME}">← Back to the Academy</a></div>
+    <section class="panel ac-join"><span class="eyebrow">Playing with your class?</span><h2>Join a class game</h2>
+      <p class="muted">Type the 6-digit code your teacher shows on the board.</p>
+      <form id="acJoin" class="row" novalidate><input id="acCode" class="field ac-code" inputmode="numeric" maxlength="6" placeholder="123456" autocomplete="off" aria-label="Game code"><button class="btn primary big" type="submit">Join</button></form>
+      <p class="muted small" id="acErr" role="alert">${esc(err)}</p></section>
+    <section class="panel"><span class="eyebrow">On your own</span><h2>Practise solo</h2>
+      <div class="ac-games">
+        <button class="ac-game" id="acIv">${gameIcon("interrogation", "sm")}<b>The Interrogation</b><span>Two 90-second rounds. Two right in a row and you're promoted, for more points.</span></button>
+        <button class="ac-game" id="acRr">${gameIcon("rapid", "sm")}<b>Rapid Response</b><span>Pick your topics and answer 6 to 20 questions against the clock.</span></button>
+      </div>
+      <p class="muted small">Topics: collecting like terms, expanding brackets, percentages, ratio, fractions and mixed numbers, ordering fractions, decimals and rounding.</p></section>
+    <section class="panel"><span class="eyebrow">Teachers</span><h2>Run a class game</h2>
+      <p class="muted">Show the game on the board. Students join from the Academy with the code. You'll need your Maths Forensics teacher sign-in.</p>
+      <div class="ac-games">
+        <button class="ac-game" id="acHostIv">${gameIcon("interrogation", "sm")}<b>The Interrogation tournament</b><span>Qualifiers, quarter-finals, semi-finals and a final, in one lesson or as homework over a week.</span></button>
+        <button class="ac-game" id="acHostRr">${gameIcon("rapid", "sm")}<b>Rapid Response, live</b><span>Everyone answers on their own tablet, with a live leaderboard.</span></button>
+        <button class="ac-game" id="acTeams">${gameIcon("rapid", "sm")}<b>Team showdown</b><span>2 to 4 teams on mini whiteboards, scored on the board.</span></button>
+      </div></section>`);
+  const code = document.getElementById("acCode"), errEl = document.getElementById("acErr");
+  code.oninput = () => { code.value = code.value.replace(/\D/g, "").slice(0, 6); errEl.textContent = ""; };
+  document.getElementById("acJoin").onsubmit = e => { e.preventDefault(); const c = code.value.replace(/\D/g, "");
+    if (c.length !== 6) { errEl.textContent = "Game codes have 6 digits."; return; } Sound.unlock(); joinScreen(c); };
+  document.getElementById("acIv").onclick = () => { Sound.unlock(); ivSoloSetup(); };
+  document.getElementById("acRr").onclick = () => { Sound.unlock(); profile(soloSetup); };
+  document.getElementById("acHostIv").onclick = () => { Sound.unlock(); ivHostSetup(); };
+  document.getElementById("acHostRr").onclick = () => { Sound.unlock(); hostSetup(); };
+  document.getElementById("acTeams").onclick = () => { Sound.unlock(); teamSetup(); };
 }
 /* ================= START ================= */
 (async () => {
   const q = new URLSearchParams(location.search);
-  if (q.get("ks3") === "1") ks3Prefs(q);
+  if (ACAD) { const sub = (q.get("sub") || "").toUpperCase(); if (IV_K_SUBJECTS.some(x => x[0] === sub)) store.set("ir-iv", Object.assign({}, store.get("ir-iv", {}), { subject: sub })); }
   if (q.has("host")) { set(`${brand("Host a game")}<section class="panel"><h2>Opening…</h2></section>`); await initAuth(); await loadAccess(); if (!q.get("game")) return signIn(); return ({ stakeout: soHostSetup, so: soHostSetup, identikit: ikHostSetup, ik: ikHostSetup, inquiry: liHostSetup, lineup: lnHostSetup, trail: ctHostSetup, crimelab: clHostSetup, cl: clHostSetup, pursuit: phHostSetup, interrogation: ivHostSetup }[q.get("game") || store.get("ir-game", "rapid")] || hostSetup)(); }
   else if (q.get("play") === "pursuit") puIntro();
   else if (q.has("cup")) { await initAuth(); await loadAccess(); return ivCupOpen(q.get("cup")); }
