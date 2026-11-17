@@ -146,6 +146,10 @@ a.tier{color:inherit;text-decoration:none}
 .field:focus-within{border-color:var(--cyan)}
 .key{min-width:52px;min-height:52px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);color:var(--text);font-family:var(--f-mono);font-size:24px;font-weight:700}
 .key:hover,.key:focus-visible{border-color:var(--cyan)}
+.typehelp{margin-top:8px;font-size:14.5px;color:var(--muted)}
+.typehelp summary{cursor:pointer;color:var(--cyan);font-size:14px;width:max-content;max-width:100%}
+.typehelp ul{margin:8px 0 0;padding-left:20px;display:grid;gap:4px}
+.typehelp b{color:var(--text)}
 .field input{background:transparent;border:0;color:var(--text);font-family:var(--f-mono);font-size:21px;padding:10px 14px;width:11em;max-width:58vw;outline:none}
 .field span{font-family:var(--f-mono);color:var(--muted);padding-right:14px}
 .choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:16px}
@@ -188,7 +192,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:space-betw
   </div>
 </header>
 <main class="wrap" id="app" tabindex="-1"></main>
-<footer><div class="wrap"><span>Maths Forensics Academy · Years 7 to 9 · Version 17 Nov 2026</span><span><span id="footnote">Progress is saved on this device only.</span> <a href="../privacy.html">Privacy</a></span></div></footer>
+<footer><div class="wrap"><span>Maths Forensics Academy · Years 7 to 9 · Version 17 Nov 2026 (b)</span><span><span id="footnote">Progress is saved on this device only.</span> <a href="../privacy.html">Privacy</a></span></div></footer>
 
 <script>
 "use strict";
@@ -216,13 +220,18 @@ const fmt = n => {                                                   // 12,345.6
 const plain = n => String(+n.toFixed(6));                             // no commas, for typed comparison
 function parseNum(s) {
   if (s == null) return null;
-  s = String(s).trim().replace(/[−–—]/g, "-").replace(/,/g, "").replace(/\s+/g, "").replace(/^£/, "").replace(/(mm|cm|km|kg|ml|m\/s|km\/h|m|g|l|litres?|°c|°f|°|c|p|s|mins?|minutes|hours?)(²|³)?$/i, "");
+  s = String(s).trim().replace(/[−–—]/g, "-");
+  { const c = s.match(/^(-?\d*),(\d+)(\D*)$/); if (c && c[2].length !== 3) s = c[1] + "." + c[2] + c[3]; }   // decimal comma (Spanish keyboards): 3,5 means 3.5; 2,300 stays a thousands comma
+  s = s.replace(/,/g, "").replace(/\s+/g, "").replace(/^£/, "").replace(/(mm|cm|km|kg|ml|m\/s|km\/h|m|g|l|litres?|°c|°f|°|c|p|s|mins?|minutes|hours?)(²|³)?$/i, "");
   if (!/^-?\d*\.?\d+$/.test(s)) return null;
   return parseFloat(s);
 }
 function parseFrac(s) {                                              // "3/7", "3 / 7", "−3/7", or a whole number
   if (s == null) return null;
-  s = String(s).trim().replace(/[−–—]/g, "-").replace(/[÷⁄∕]/g, "/").replace(/\s+/g, "");
+  s = String(s).trim().replace(/[−–—]/g, "-").replace(/[÷⁄∕]/g, "/");
+  const mixed = s.match(/^(-?)(\d+)\s+(\d+)\s*\/\s*(\d+)$/);                          // a mixed number: 2 3/4
+  if (mixed) { const d = +mixed[4]; if (!d || +mixed[3] >= d) return null; return { n: (mixed[1] ? -1 : 1) * (+mixed[2] * d + +mixed[3]), d }; }
+  s = s.replace(/\s+/g, "");
   let m = s.match(/^(-?)(\d+)\/(-?)(\d+)$/);
   if (m) { const d = +m[4]; if (!d) return null; return { n: (m[1] === m[3] ? 1 : -1) * +m[2], d }; }
   m = s.match(/^-?\d+$/); return m ? { n: +s, d: 1 } : null;
@@ -242,17 +251,18 @@ function prog(id) {
 /* ---------- algebra helpers for "Simplifying" ---------- */
 function parseExpr(s) {
   // returns {map:{a:3,b:-2,"":5}} or null. Accepts 3a+2b-4, 3a + b, a-2b, 5.
-  s = String(s).toLowerCase().replace(/[−–—]/g, "-").replace(/\s+/g, "").replace(/\*/g, "");
+  s = String(s).toLowerCase().replace(/[−–—]/g, "-").replace(/\s+/g, "").replace(/\*/g, "").replace(/²/g, "^2").replace(/³/g, "^3");
   if (!s || /[+-]$/.test(s) || /[+-]{2}/.test(s)) return null;
-  if (!/^[+-]?(\d*[a-z]?|\d+)([+-](\d*[a-z]?|\d+))*$/.test(s)) return null;
+  if (!/^[+-]?(\d*([a-z](\^\d+)?)?|\d+)([+-](\d*([a-z](\^\d+)?)?|\d+))*$/.test(s)) return null;
   const terms = s.match(/[+-]?[^+-]+/g);
   if (!terms) return null;
   const map = {};
   for (const t of terms) {
-    const m = t.match(/^([+-]?)(\d*)([a-z]?)$/);
-    if (!m || (m[2] === "" && m[3] === "")) return null;
+    const m = t.match(/^([+-]?)(\d*)([a-z]?)(?:\^(\d+))?$/);
+    if (!m || (m[2] === "" && m[3] === "") || (m[4] && !m[3])) return null;
     const c = (m[1] === "-" ? -1 : 1) * (m[2] === "" ? 1 : parseInt(m[2], 10));
-    map[m[3]] = (map[m[3]] || 0) + c;
+    const key = m[3] + (m[4] && m[4] !== "1" ? "^" + m[4] : "");                    // x^2 is its own kind of term; x^1 is just x
+    map[key] = (map[key] || 0) + c;
   }
   for (const k in map) if (map[k] === 0) delete map[k];
   return map;
@@ -1613,6 +1623,16 @@ function screenPath() {
 }
 
 
+/* how to type answers on a tablet or phone */
+function typeHelp(type) {
+  const tips = {
+    num: ["<b>Decimals:</b> use a point: 3.5. A comma works too: 3,5.", "<b>Negative numbers:</b> tap the <b>−</b> key first, then the number.", "<b>Units</b> like cm or kg are optional."],
+    frac: ["<b>Fractions:</b> type the top number, tap the <b>/</b> key, then the bottom number: 3/7.", "<b>Mixed numbers:</b> the whole number, a space, then the fraction: 2 3/4.", "<b>Simplest form:</b> divide the top and bottom by the same number until you can't any more."],
+    expr: ["<b>Leave out ×:</b> write 3a, not 3 × a.", "<b>Powers:</b> tap the <b>^</b> key (or type ^), then the power: x^2 means x².", "<b>Minus signs:</b> 5a − 2b is typed 5a-2b. Spaces don't matter."]
+  }[type];
+  return tips ? `<details class="typehelp"><summary>How to type your answer</summary><ul>${tips.map(t => `<li>${t}</li>`).join("")}</ul></details>` : "";
+}
+
 /* helper keys: put the character at the cursor and keep the keyboard up */
 document.addEventListener("pointerdown", e => { if (e.target.closest(".key")) e.preventDefault(); });
 document.addEventListener("click", e => {
@@ -1707,11 +1727,14 @@ function drawExample(t) {
 }
 function inputHTML(id, s) {
   // Tablet number pads have no / and sometimes no minus, so give those keys as buttons
-  const keys = s.type === "frac" ? ["/", "−"].slice(0, /−|-/.test((s.prompt || "") + (s.ask || "")) ? 2 : 1)
-             : s.type === "num" && /−|-/.test((s.prompt || "") + (s.ask || "")) ? ["−"] : [];
-  if (s.type === "frac") return `<form class="ans" data-form="${id}"><label class="field"><input id="${id}" inputmode="numeric" autocomplete="off" aria-label="Your answer as a fraction" placeholder="e.g. 3/7"></label>${keys.map(k => `<button type="button" class="key" data-key="${k}" aria-label="Type ${k === "/" ? "a fraction line" : "a minus sign"}">${k}</button>`).join("")}<button class="btn" type="submit">Check</button></form>`;
+  const qtext = (s.prompt || "") + (s.ask || "") + (s.answerText || "");
+  const keys = s.type === "frac" ? ["/", "−"].slice(0, /−|-/.test(qtext) ? 2 : 1)
+             : s.type === "num" && /−|-/.test(qtext) ? ["−"]
+             : s.type === "expr" && /[²³]|\^/.test(qtext) ? ["^"] : [];
+  const help = typeHelp(s.type);
+  if (s.type === "frac") return `<form class="ans" data-form="${id}"><label class="field"><input id="${id}" inputmode="numeric" autocomplete="off" aria-label="Your answer as a fraction" placeholder="e.g. 3/7"></label>${keys.map(k => `<button type="button" class="key" data-key="${k}" aria-label="Type ${k === "/" ? "a fraction line" : "a minus sign"}">${k}</button>`).join("")}<button class="btn" type="submit">Check</button></form>${help}`;
   if (s.type === "mc") return `<div class="choices">${s.choices.map((c, i) => `<button class="choice" data-mc="${i}">${esc(c)}</button>`).join("")}</div>`;
-  return `<form class="ans" data-form="${id}"><label class="field"><input id="${id}" inputmode="${s.type === "num" ? "decimal" : "text"}" autocomplete="off" aria-label="Your answer" ${s.type === "expr" ? 'placeholder="e.g. 3a + 4b"' : ""}>${s.unit ? `<span>${esc(s.unit)}</span>` : ""}</label>${keys.map(k => `<button type="button" class="key" data-key="${k}" aria-label="Type a minus sign">${k}</button>`).join("")}<button class="btn" type="submit">Check</button></form>`;
+  return `<form class="ans" data-form="${id}"><label class="field"><input id="${id}" inputmode="${s.type === "num" ? "decimal" : "text"}" autocomplete="off" aria-label="Your answer" ${s.type === "expr" ? 'placeholder="e.g. 3a + 4b"' : ""}>${s.unit ? `<span>${esc(s.unit)}</span>` : ""}</label>${keys.map(k => `<button type="button" class="key" data-key="${k}" aria-label="${k === "^" ? "Type a power" : "Type a minus sign"}">${k}</button>`).join("")}<button class="btn" type="submit">Check</button></form>${help}`;
 }
 function drawTry(t) {
   const tr = t.learn.tryOne, el = $("#tryone"), i = VIEW.tryStep;
