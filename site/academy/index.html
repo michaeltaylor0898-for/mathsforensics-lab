@@ -80,6 +80,10 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .tcard{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:8px;min-width:0}
 .tcard:hover{border-color:var(--cyan)}
 .irclass{margin-top:16px}
+.irjoin{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;margin:0 0 14px;border-color:var(--cyan)}
+.irjoinrow{display:flex;gap:10px}
+.irjoincode{width:9.5ch;font:600 24px/1 var(--f-mono);letter-spacing:.14em;text-align:center;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg,#0B122C);color:inherit}
+.irjoincode:focus{outline:2px solid var(--cyan);outline-offset:1px}
 .irlinks{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
 .irlink{display:flex;flex-direction:column;gap:4px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;text-decoration:none;color:inherit}
 .irlink:hover{border-color:var(--cyan)}
@@ -197,7 +201,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:space-betw
   </div>
 </header>
 <main class="wrap" id="app" tabindex="-1"></main>
-<footer><div class="wrap"><span>Maths Forensics Academy · Years 7 to 9 · Version 17 Nov 2026 (c)</span><span><span id="footnote">Progress is saved on this device only.</span> <a href="../privacy.html">Privacy</a></span></div></footer>
+<footer><div class="wrap"><span>Maths Forensics Academy · Years 7 to 9 · Version 17 Nov 2026 (d)</span><span><span id="footnote">Progress is saved on this device only.</span> <a href="../privacy.html">Privacy</a></span></div></footer>
 
 <script>
 "use strict";
@@ -1625,14 +1629,17 @@ function screenPath() {
       <span class="muted small">${g.blurb}</span>
       <span class="meta"><span class="chip">${g.meta}</span><span class="chip learning">Play</span></span></a>`)).join("")}</div>
     <h2 class="eyebrow" style="margin:34px 0 12px">Incident Room challenges</h2>
-    <p class="muted" style="max-width:66ch;margin:0 0 14px">Quick-fire questions on ${IR_TOPICS}.</p>
+    <p class="muted" style="max-width:66ch;margin:0 0 14px">Quick-fire questions on ${IR_TOPICS}. Play on your own, or join your class's game.</p>
+    <form class="panel irjoin" id="irJoin" novalidate><div><div class="h3" style="margin:0">Join a class game</div><span class="muted small">Your teacher shows a 6-digit game code on the board.</span></div>
+      <div class="irjoinrow"><input class="irjoincode" id="irCode" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="123456" autocomplete="off" aria-label="Game code"><button class="btn" type="submit">Join</button></div>
+      <span class="muted small" id="irJoinErr" role="alert"></span></form>
     <div class="topics">${IR_SOLO.map(g => `<a class="tcard" href="${g.href}" style="text-decoration:none;color:inherit">
       <span class="strand">${g.tag}</span><h3>${g.name}</h3><span class="muted small">${g.blurb}</span>
       <span class="meta"><span class="chip">${g.meta}</span><span class="chip learning">Play</span></span></a>`).join("")}</div>
     <section class="panel irclass"><div class="h3" style="margin-top:0">Playing with a class?</div>
       <p class="muted small" style="margin:0 0 12px">Teachers sign in and show the game on the board. Students join on their tablets with a 6-digit code, and every game is set to these KS3 topics.</p>
       <div class="irlinks">${IR_CLASS.map(g => `<a class="irlink" href="${g.href}"><b>${g.name}</b><span>${g.blurb}</span></a>`).join("")}</div></section>`;
-  wireImport();
+  wireImport(); wireIrJoin();
 }
 
 
@@ -1703,6 +1710,15 @@ const IR_CLASS = [
   { name: "Rapid Response, live", href: IR_URL + "?host&game=rapid&ks3=1", blurb: "The whole class answers the same questions on their tablets, with a live leaderboard." },
   { name: "Team showdown", href: IR_URL + "?play=teams&ks3=1", blurb: "2 to 4 teams on mini whiteboards, scored on the board." }
 ];
+/* students type the live game's 6-digit code and go straight to the Incident Room's join screen */
+function wireIrJoin() {
+  const f = document.getElementById("irJoin"); if (!f) return;
+  const inp = document.getElementById("irCode"), err = document.getElementById("irJoinErr");
+  inp.oninput = () => { inp.value = inp.value.replace(/\D/g, "").slice(0, 6); err.textContent = ""; };
+  f.onsubmit = e => { e.preventDefault(); const c = inp.value.replace(/\D/g, "");
+    if (c.length !== 6) { err.textContent = "Game codes have 6 digits."; return; }
+    location.href = IR_URL + "?code=" + c; };
+}
 const irGame = (sub, topics) => ({ ir: true, name: "The Interrogation", href: IR_URL + "?play=interrogation&ks3=1&sub=" + sub, tag: "Incident Room", blurb: `Quick-fire ${topics} questions that get harder as you get them right. Two rounds of 90 seconds.`, meta: "2 rounds · 90 seconds" });
 
 /* ---------- Play: training games linked to topics ---------- */
