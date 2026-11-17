@@ -1,0 +1,66 @@
+# Deploys Forensic Marking: the mark-written Edge Function (with every loaded paper) to Supabase,
+# and the written-answers page to lab.mathsforensics.com/written/.
+# Runs on every push to this branch that touches either part, or by hand from the Actions tab.
+#
+# One-time setup — GitHub repo → Settings → Secrets and variables → Actions → New repository secret:
+#   SUPABASE_ACCESS_TOKEN  Supabase dashboard → Account → Access Tokens → Generate new token
+#   FTP_SERVER             cPanel FTP host, e.g. ftp.mathsforensics.com
+#   FTP_USERNAME           cPanel FTP account
+#   FTP_PASSWORD           its password
+#   FTP_LAB_DIR            the Lab folder as the FTP account sees it, ending in a slash, e.g. lab.mathsforensics.com/
+# No keys are ever written into this repository.
+name: Deploy Forensic Marking
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [written-marking-prototype]
+    paths:
+      - "supabase/functions/mark-written/**"
+      - "site/written/**"
+      - ".github/workflows/deploy-forensic-marking.yml"
+
+concurrency: deploy-forensic-marking
+
+jobs:
+  function:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with: { deno-version: v2.x }
+      - name: Check the mark schemes (paper totals, keywords, clues)
+        working-directory: supabase/functions/mark-written
+        run: deno test --no-check marking_test.ts
+      - uses: supabase/setup-cli@v1
+        if: env.SUPABASE_ACCESS_TOKEN != ''
+        with: { version: latest }
+      - name: Deploy mark-written
+        if: env.SUPABASE_ACCESS_TOKEN != ''
+        run: supabase functions deploy mark-written --no-verify-jwt --project-ref duvxykqlrekqhfvsvnrj
+      - name: Waiting for setup
+        if: env.SUPABASE_ACCESS_TOKEN == ''
+        run: echo "::warning::SUPABASE_ACCESS_TOKEN isn't set yet, so the function wasn't deployed."
+
+  page:
+    runs-on: ubuntu-latest
+    needs: function
+    env:
+      FTP_SERVER: ${{ secrets.FTP_SERVER }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Upload site/written to lab.mathsforensics.com/written/
+        if: env.FTP_SERVER != ''
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: site/written/
+          server-dir: ${{ secrets.FTP_LAB_DIR }}written/
+          dangerous-clean-slate: false
+      - name: Waiting for setup
+        if: env.FTP_SERVER == ''
+        run: echo "::warning::FTP secrets aren't set yet, so the page wasn't uploaded."
