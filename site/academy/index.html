@@ -79,6 +79,11 @@ h1,h2,h3{margin:0;text-wrap:balance}
 @media (max-width:700px){.topics{grid-template-columns:minmax(0,1fr)}}
 .tcard{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:8px;min-width:0}
 .tcard:hover{border-color:var(--cyan)}
+.irclass{margin-top:16px}
+.irlinks{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.irlink{display:flex;flex-direction:column;gap:4px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;text-decoration:none;color:inherit}
+.irlink:hover{border-color:var(--cyan)}
+.irlink span{color:var(--muted);font-size:14px}
 .tcard .strand{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .tcard h3{font-size:20px;font-weight:700}
 .tcard .meta{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
@@ -192,7 +197,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:space-betw
   </div>
 </header>
 <main class="wrap" id="app" tabindex="-1"></main>
-<footer><div class="wrap"><span>Maths Forensics Academy · Years 7 to 9 · Version 17 Nov 2026 (b)</span><span><span id="footnote">Progress is saved on this device only.</span> <a href="../privacy.html">Privacy</a></span></div></footer>
+<footer><div class="wrap"><span>Maths Forensics Academy · Years 7 to 9 · Version 17 Nov 2026 (c)</span><span><span id="footnote">Progress is saved on this device only.</span> <a href="../privacy.html">Privacy</a></span></div></footer>
 
 <script>
 "use strict";
@@ -1615,10 +1620,18 @@ function screenPath() {
     }).join("")}</div>
     <p class="muted small" style="margin-top:14px">All ${TOPICS.length} Bronze topics are ready. <a href="#map">See the full KS3 curriculum map</a>: ${Object.values(MAP).flat().length} topics from Bronze to Platinum.</p>
     <h2 class="eyebrow" style="margin:34px 0 12px">Training games</h2>
-    <div class="topics">${Object.entries(GAMES).flatMap(([tid, gs]) => gs.map(g => `<a class="tcard" href="${g.href}" style="text-decoration:none;color:inherit">
+    <div class="topics">${Object.entries(GAMES).flatMap(([tid, gs]) => gs.filter(g => !g.ir).map(g => `<a class="tcard" href="${g.href}" style="text-decoration:none;color:inherit">
       <span class="strand">${g.tag} · ${esc(TOPIC(tid).name)}</span><h3>${g.name}</h3>
       <span class="muted small">${g.blurb}</span>
-      <span class="meta"><span class="chip">${g.meta}</span><span class="chip learning">Play</span></span></a>`)).join("")}</div>`;
+      <span class="meta"><span class="chip">${g.meta}</span><span class="chip learning">Play</span></span></a>`)).join("")}</div>
+    <h2 class="eyebrow" style="margin:34px 0 12px">Incident Room challenges</h2>
+    <p class="muted" style="max-width:66ch;margin:0 0 14px">Quick-fire questions on ${IR_TOPICS}.</p>
+    <div class="topics">${IR_SOLO.map(g => `<a class="tcard" href="${g.href}" style="text-decoration:none;color:inherit">
+      <span class="strand">${g.tag}</span><h3>${g.name}</h3><span class="muted small">${g.blurb}</span>
+      <span class="meta"><span class="chip">${g.meta}</span><span class="chip learning">Play</span></span></a>`).join("")}</div>
+    <section class="panel irclass"><div class="h3" style="margin-top:0">Playing with a class?</div>
+      <p class="muted small" style="margin:0 0 12px">Teachers sign in and show the game on the board. Students join on their tablets with a 6-digit code, and every game is set to these KS3 topics.</p>
+      <div class="irlinks">${IR_CLASS.map(g => `<a class="irlink" href="${g.href}"><b>${g.name}</b><span>${g.blurb}</span></a>`).join("")}</div></section>`;
   wireImport();
 }
 
@@ -1678,10 +1691,26 @@ function screenTopic(id, tab) {
   else tabCheck(t);
 }
 
+/* ---------- Incident Room games set to the KS3 topics (?ks3=1) ---------- */
+const IR_URL = "../incident-room/";
+const IR_TOPICS = "collecting like terms, expanding brackets, percentages, ratio, fractions and mixed numbers, ordering fractions, and decimals and rounding";
+const IR_SOLO = [
+  { name: "The Interrogation", href: IR_URL + "?play=interrogation&ks3=1", tag: "Incident Room · on your own", blurb: "Two 90-second rounds. Get two right in a row and you're promoted from Constable to Sergeant to Inspector, where questions are worth more.", meta: "2 rounds · 90 seconds" },
+  { name: "Rapid Response", href: IR_URL + "?play=rapid&ks3=1", tag: "Incident Room · on your own", blurb: "Pick your topics and answer 6 to 20 questions against the clock, with an explanation after every one.", meta: "6 to 20 questions" }
+];
+const IR_CLASS = [
+  { name: "The Interrogation tournament", href: IR_URL + "?host&game=interrogation&ks3=1", blurb: "Qualifiers, quarter-finals, semi-finals and a final, in one lesson or as homework over a week." },
+  { name: "Rapid Response, live", href: IR_URL + "?host&game=rapid&ks3=1", blurb: "The whole class answers the same questions on their tablets, with a live leaderboard." },
+  { name: "Team showdown", href: IR_URL + "?play=teams&ks3=1", blurb: "2 to 4 teams on mini whiteboards, scored on the board." }
+];
+const irGame = (sub, topics) => ({ ir: true, name: "The Interrogation", href: IR_URL + "?play=interrogation&ks3=1&sub=" + sub, tag: "Incident Room", blurb: `Quick-fire ${topics} questions that get harder as you get them right. Two rounds of 90 seconds.`, meta: "2 rounds · 90 seconds" });
+
 /* ---------- Play: training games linked to topics ---------- */
 const GAMES = {
-  "simplifying": [{ name: "Evidence Locker", href: "like-terms.html", tag: "Algebra", blurb: "Sort every term into the right locker, then total each one to write the expression in its simplest form. Three levels, up to x², xy and minus signs.", meta: "3 levels · 10 cases" }],
+  "simplifying": [{ name: "Evidence Locker", href: "like-terms.html", tag: "Algebra", blurb: "Sort every term into the right locker, then total each one to write the expression in its simplest form. Three levels, up to x², xy and minus signs.", meta: "3 levels · 10 cases" }, irGame("KA", "algebra")],
   "factors-multiples": [{ name: "The Suspect's Vault", href: "vault.html", tag: "Number and algebra", blurb: "Crack five suspects' vaults before the alarm: sequences, prime factor trees and index laws, then spin the combination dial and name the culprit.", meta: "3 levels · 5 vaults" }],
+  "rounding": [irGame("KD", "decimals and rounding")],
+  "fractions-of-amounts": [irGame("KF", "fractions")],
   "metric-units": [{ name: "Departures", href: "timetables.html", tag: "Time", blurb: "Read train, bus and flight timetables to track the courier: journey times, waiting times, connections and time zones.", meta: "3 levels · 10 questions" }]
 };
 function tabPlay(t) {
