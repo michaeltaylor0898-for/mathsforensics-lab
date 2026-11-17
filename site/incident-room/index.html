@@ -1275,7 +1275,7 @@ a.gsw.labback { display: inline-flex; align-items: center; }
 window.IR_CONFIG = {
   url: "https://duvxykqlrekqhfvsvnrj.supabase.co",
   key: "sb_publishable_llHxDDCcByPpdbi5G2Hqtg_DqGcnuHn",
-  labUrl: "https://lab.mathsforensics.com/",
+  labUrl: "https://lab.mathsforensics.com/lab/",
   examPassUrl: "https://www.mathsforensics.com/mathsforensics-lab-checkout",
   teacherProUrl: "https://www.mathsforensics.com/incident-room-teacherpro-checkout",
   prices: { pass: "£49", passLater: "£59", teacherPro: "£49 a year" },
@@ -11536,7 +11536,7 @@ function signIn() {
 const CFG = window.IR_CONFIG || {};
 const ACAD_HOME = "./";
 const JOIN_URL = ACAD ? (location.host + location.pathname.replace(/[^/]*$/, "")).replace(/\/$/, "") || "lab.mathsforensics.com/academy" : "lab.mathsforensics.com/join";
-const LAB_URL = CFG.labUrl || "https://lab.mathsforensics.com/";
+const LAB_URL = CFG.labUrl || "https://lab.mathsforensics.com/lab/";
 const signInUrl = next => (ACAD ? `${LAB_URL}?return=academy` : `${LAB_URL}?next=${next || "incident-room"}`);
 const liveConfigured = () => !!(window.supabase && CFG.url && CFG.key && !/PASTE/.test(CFG.url + CFG.key));
 let sbClient = null;
