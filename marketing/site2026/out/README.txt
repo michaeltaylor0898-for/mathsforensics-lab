@@ -1,7 +1,13 @@
 MATHS FORENSICS · NEW SITE PAGES (Systeme.io)
 =============================================
 
-Five pages, one folder each: home, academy, gcse, schools, about.
+TWO EDITIONS OF THE SAME PAGES
+  launch-11-january/  everything presented as live: Forensic Marking, Mike mode, The Investigation,
+                      The Full Investigation (with a checkout button), story cases. Paste these on launch day.
+  soft-launch-now/    the same pages with "From January" on the features that aren't live yet.
+                      Use these from 21 November until launch, so nobody pays for something that isn't there yet.
+
+Five pages in each edition, one folder each: home, academy, gcse, schools, about.
 In each folder:
   whole-page.html   the whole page in ONE Raw HTML block (easiest; try this first)
   block-1 ... .html the same page split into sections, if Systeme says the whole page is too long.
@@ -26,7 +32,8 @@ If you choose different addresses, tell Claude and the links will be rebuilt.
 LINKS STILL TO CONNECT (send Claude these and the pages are rebuilt with them)
   #connect-academy-checkout          the Academy Pass checkout (£39)
   #connect-kit-checkout              the Exam Season Kit checkout (£69)
-  #connect-full-investigation-list   a free waiting-list form for The Full Investigation
+  #connect-full-investigation-list   a free waiting-list form for The Full Investigation (soft-launch pages)
+  #connect-full-investigation-checkout  The Full Investigation checkout, £147.99 (launch pages)
 Every other button already points to a live page.
 
 MEDIA FOLDER (do this first)

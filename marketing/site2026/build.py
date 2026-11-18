@@ -1,8 +1,9 @@
 """Builds the Systeme paste files and a clickable preview from src/.
    src/<page>.html holds sections split by <!-- BLOCK: name -->. Links are {{NAME}} tokens from LINKS."""
-import re, pathlib, json, html
+import re, pathlib, json, html, os
 root = pathlib.Path(__file__).parent
-src, out = root / "src", root / "out"
+src = root / "src"
+out = root / ("out" if os.environ.get("EDITION", "launch") == "launch" else "out-soft")
 out.mkdir(exist_ok=True)
 CSS = (src / "style.css").read_text()
 LINKS = json.loads((src / "links.json").read_text())
@@ -17,8 +18,26 @@ def fill(s):
         return html.escape(LINKS[k], quote=True)
     return re.sub(r"\{\{([A-Z_]+)\}\}", rep, s)
 
+# 11 January edition: every feature presented as live (no "from January" labels)
+LAUNCH = [
+    (r'\s*<span class="tag jan">(Jan|From January)</span>(?=</(h3|li)>)', ''),
+    (r'<span class="tag jan">From January</span>(<h4 style="margin-top:14px">Story cases)', r'<span class="tag">Cases</span>\1'),
+    (r'<span class="tag jan">From January</span>(<h4 style="margin-top:14px">Forensic Marking)', r'<span class="tag">Add-on</span>\1'),
+    (r'<span class="tag jan">January</span>(<h4 style="margin-top:14px">Forensic Marking)', r'<span class="tag" style="color:var(--amber)">Show it</span>\1'),
+    (r', from January', ''),
+    (r'Forensic Marking · from January', 'Forensic Marking'),
+    (r'Forensic Marking, from January', 'Forensic Marking'),
+    (r'and from January, your handwritten working', 'and your handwritten working'),
+    (r'It launches in January\. ', ''),
+    (r'<span class="badge jan">JANUARY</span>', '<span class="badge">EVERYTHING</span>'),
+    (r'href="\{\{FI_WAITLIST\}\}">Join the list</a>', 'href="{{FI_CHECKOUT}}">Get The Full Investigation</a>'),
+]
+EDITION = os.environ.get("EDITION", "launch")
+
 def blocks(name):
     raw = (src / f"{name}.html").read_text()
+    if EDITION == "launch":
+        for a, b in LAUNCH: raw = re.sub(a, b, raw)
     parts = re.split(r"<!-- BLOCK: ([^>]*?) -->", raw)
     return [(parts[i].strip(), fill(parts[i + 1].strip())) for i in range(1, len(parts), 2)]
 

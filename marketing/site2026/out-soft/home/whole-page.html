@@ -1,0 +1,448 @@
+<!-- Maths Forensics · Homepage · whole page in one Raw HTML block -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Caveat:wght@600&family=Josefin+Sans:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+/* Maths Forensics site, 2026. Every rule is scoped under .mf so Systeme's own styles are untouched.
+   Layout responds to the block's width (container queries), which is what Systeme's phone view uses. */
+.mf{--ink:#0B122C;--ink2:#0E1636;--panel:#111A3D;--panel2:#16214B;--line:#26336A;--line2:#33437F;--text:#EAF0FF;--soft:#C9D2EE;--muted:#9AA6CC;
+  --cyan:#00FCF1;--blue:#1B36FF;--good:#3DDC97;--amber:#FFC857;--red:#FF5A6E;--bronze:#D8955B;--silver:#C9D1E2;--gold:#F2C14E;--plat:#9FE7F5;
+  --fd:'Unbounded','Arial Black',system-ui,sans-serif;--fb:'Josefin Sans','Avenir Next','Segoe UI',system-ui,sans-serif;--fm:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+  container-type:inline-size;background:var(--ink);color:var(--text);font-family:var(--fb);font-size:18px;line-height:1.55;text-align:left;overflow:hidden;-webkit-font-smoothing:antialiased;position:relative;z-index:1}
+.mf *,.mf *::before,.mf *::after{box-sizing:border-box}
+.mf .w{max-width:1160px;margin:0 auto;padding:0 24px}
+.mf section{padding:88px 0;position:relative}
+.mf section.tight{padding:56px 0}
+.mf section.alt{background:var(--ink2)}
+.mf section.grid{background-image:linear-gradient(rgba(38,51,106,.35) 1px,transparent 1px),linear-gradient(90deg,rgba(38,51,106,.35) 1px,transparent 1px);background-size:44px 44px}
+.mf h1,.mf h2,.mf h3,.mf h4{margin:0;color:var(--text);font-weight:800;text-wrap:balance}
+.mf h1{font-family:var(--fd);font-size:clamp(34px,5.6cqi,66px);line-height:1.04;letter-spacing:-.015em}
+.mf h2{font-family:var(--fd);font-size:clamp(27px,3.6cqi,44px);line-height:1.1;letter-spacing:-.01em}
+.mf h3{font-family:var(--fb);font-size:24px;line-height:1.2;font-weight:700}
+.mf h4{font-family:var(--fb);font-size:19px;line-height:1.25;font-weight:700}
+.mf p{margin:0;color:var(--soft)}
+.mf a{color:var(--cyan)}
+.mf .eb{display:inline-flex;align-items:center;gap:10px;font-family:var(--fm);font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);margin-bottom:16px}
+.mf .eb::before{content:"";width:22px;height:2px;background:currentColor}
+.mf .lede{font-size:clamp(19px,2.2cqi,23px);line-height:1.5;color:var(--soft);max-width:36em;margin-top:20px}
+.mf .head{max-width:780px;margin-bottom:44px}
+.mf .head p{margin-top:16px;font-size:20px}
+.mf .head.c{margin-left:auto;margin-right:auto;text-align:center}
+.mf .head.c .eb{justify-content:center}
+.mf .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px;align-items:center}
+.mf a.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:54px;padding:14px 26px;border-radius:12px;background:var(--cyan);color:var(--ink);font-family:var(--fb);font-weight:700;font-size:18px;line-height:1.1;text-decoration:none;border:2px solid var(--cyan);transition:transform .15s,filter .15s}
+.mf a.btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.mf a.btn.ghost{background:transparent;color:var(--text);border-color:var(--line2)}
+.mf a.btn.ghost:hover{border-color:var(--cyan)}
+.mf a.btn.small{min-height:46px;padding:10px 18px;font-size:16px}
+.mf a.txt{font-weight:700;text-decoration:none;border-bottom:2px solid rgba(0,252,241,.35)}
+.mf .note{font-family:var(--fm);font-size:13px;letter-spacing:.04em;color:var(--muted);margin-top:16px}
+.mf .muted{color:var(--muted)}
+.mf .g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.mf .g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.mf .g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.mf .split{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+.mf .split.rev>:first-child{order:2}
+.mf .card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:26px}
+.mf .card h3+p,.mf .card h4+p{margin-top:8px}
+.mf .tag{display:inline-block;font-family:var(--fm);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:6px 9px;border-radius:7px;border:1px solid var(--line2);color:var(--muted);white-space:nowrap}
+.mf .tag.jan{color:var(--amber);border-color:rgba(255,200,87,.5)}
+.mf .tag.live{color:var(--good);border-color:rgba(61,220,151,.5)}
+.mf .tag.free{color:var(--cyan);border-color:rgba(0,252,241,.5)}
+.mf .tick{list-style:none;padding:0;margin:16px 0 0;display:grid;gap:10px}
+.mf .tick li{position:relative;padding-left:30px;color:var(--soft);font-size:17px}
+.mf .tick li::before{content:"";position:absolute;left:2px;top:7px;width:14px;height:8px;border-left:3px solid var(--cyan);border-bottom:3px solid var(--cyan);transform:rotate(-45deg)}
+/* hero */
+.mf .hero{padding:96px 0 88px;background:radial-gradient(ellipse 70% 60% at 85% 0%,rgba(27,54,255,.32),transparent 70%),radial-gradient(ellipse 50% 50% at 0% 100%,rgba(0,252,241,.08),transparent 70%)}
+.mf .hero .split{grid-template-columns:1.1fr .9fr}
+.mf .hero h1 em{font-style:normal;color:var(--cyan)}
+.mf .proof{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:30px;font-family:var(--fm);font-size:13px;letter-spacing:.06em;color:var(--muted)}
+.mf .proof b{color:var(--text);font-weight:700}
+/* case-file mock-ups: drawn in HTML so they stay sharp; each can be swapped for a real screenshot */
+.mf .file{position:relative;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line2);border-radius:18px;padding:22px;box-shadow:0 40px 80px -40px rgba(0,0,0,.9),0 0 0 1px rgba(0,252,241,.04)}
+.mf .file .bar{display:flex;justify-content:space-between;align-items:center;gap:10px;font-family:var(--fm);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.mf .file .bar b{color:var(--cyan)}
+.mf .file .q{font-size:19px;color:var(--text);line-height:1.4}
+.mf .work{margin-top:14px;display:grid;gap:8px;font-family:var(--fm);font-size:15px}
+.mf .work div{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;background:rgba(11,18,44,.7);border:1px solid var(--line);color:var(--text)}
+.mf .work div.bad{border-color:rgba(255,90,110,.6);background:rgba(255,90,110,.08)}
+.mf .work div.ok{border-color:rgba(61,220,151,.45)}
+.mf .mk{font-family:var(--fm);font-size:12px;font-weight:700;letter-spacing:.06em;padding:4px 7px;border-radius:6px;white-space:nowrap}
+.mf .mk.y{color:var(--ink);background:var(--good)}
+.mf .mk.n{color:#fff;background:var(--red)}
+.mf .finding{margin-top:14px;padding:12px 14px;border-radius:12px;background:rgba(0,252,241,.07);border:1px dashed rgba(0,252,241,.5);font-size:16px;color:var(--soft)}
+.mf .finding b{color:var(--cyan);font-family:var(--fm);font-size:12px;letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:4px}
+.mf .stamp{position:absolute;right:-10px;top:-14px;transform:rotate(8deg);font-family:var(--fm);font-weight:700;font-size:13px;letter-spacing:.18em;color:var(--red);border:2px solid var(--red);border-radius:6px;padding:6px 10px;background:var(--ink)}
+.mf .light{display:flex;gap:8px;align-items:center;font-family:var(--fm);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.mf .light i{width:14px;height:14px;border-radius:50%;background:#2a335c;display:inline-block}
+.mf .light i.g{background:var(--good);box-shadow:0 0 12px var(--good)}
+.mf .light i.a{background:var(--amber);box-shadow:0 0 12px var(--amber)}
+.mf .light i.r{background:var(--red)}
+/* the three doors */
+.mf .doors{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.mf a.door{--acc:var(--cyan);display:flex;flex-direction:column;gap:12px;text-decoration:none;color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:28px 26px;position:relative;overflow:hidden;transition:transform .15s,border-color .15s}
+.mf a.door::before{content:"";position:absolute;inset:0 0 auto;height:5px;background:var(--acc)}
+.mf a.door:hover{transform:translateY(-3px);border-color:var(--acc)}
+.mf a.door .who{font-family:var(--fm);font-size:12.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--acc)}
+.mf a.door h3{font-family:var(--fd);font-size:25px;font-weight:800}
+.mf a.door p{font-size:17px}
+.mf a.door .price{margin-top:auto;padding-top:14px;display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line)}
+.mf a.door .price b{font-family:var(--fd);font-size:24px;color:var(--text)}
+.mf a.door .price span{font-family:var(--fm);font-size:13px;font-weight:700;letter-spacing:.08em;color:var(--acc)}
+.mf .acad{--acc:var(--bronze)!important}
+.mf .gcse{--acc:var(--cyan)!important}
+.mf .school{--acc:#8EA2FF!important}
+/* evidence */
+.mf .big{font-family:var(--fd);font-weight:800;font-size:clamp(72px,11cqi,132px);line-height:.9;color:var(--cyan);letter-spacing:-.03em}
+.mf .stack{display:flex;height:58px;border-radius:12px;overflow:hidden;border:1px solid var(--line2);margin-top:26px}
+.mf .stack div{display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:13px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden}
+.mf .keys{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:16px}
+.mf .keys div{font-size:15px;color:var(--soft);padding-left:16px;position:relative;line-height:1.35}
+.mf .keys div::before{content:"";position:absolute;left:0;top:4px;width:10px;height:10px;border-radius:3px;background:var(--c)}
+.mf .keys b{display:block;font-family:var(--fm);color:var(--text)}
+/* features */
+.mf .feat{padding:64px 0;border-top:1px solid rgba(38,51,106,.7)}
+.mf .feat:first-of-type{border-top:0;padding-top:0}
+.mf .feat .n{font-family:var(--fm);font-size:13px;font-weight:700;letter-spacing:.16em;color:var(--cyan);margin-bottom:14px;display:block}
+.mf .feat h3{font-family:var(--fd);font-size:clamp(24px,2.8cqi,32px);line-height:1.15;font-weight:800}
+.mf .feat p.body{margin-top:14px;font-size:19px}
+.mf .feat .vs{margin-top:20px;padding:14px 16px;border-left:3px solid var(--cyan);background:rgba(0,252,241,.05);border-radius:0 12px 12px 0;font-size:16px;color:var(--soft)}
+.mf .feat .vs b{color:var(--text)}
+/* path */
+.mf .path{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;position:relative}
+.mf .stop{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;position:relative}
+.mf .stop .y{font-family:var(--fm);font-size:11.5px;font-weight:700;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+.mf .stop b{display:block;font-size:17px;margin-top:4px;color:var(--text)}
+.mf .stop small{display:block;font-size:14px;color:var(--muted);margin-top:4px;line-height:1.35}
+.mf .stop.a{border-color:rgba(216,149,91,.6)}.mf .stop.a .y{color:var(--bronze)}
+.mf .stop.l{border-color:rgba(0,252,241,.45)}.mf .stop.l .y{color:var(--cyan)}
+.mf .stop.c{border-color:rgba(255,90,110,.5)}.mf .stop.c .y{color:var(--red)}
+.mf .stop.e{border-color:rgba(61,220,151,.5)}.mf .stop.e .y{color:var(--good)}
+.mf .rail{margin-top:10px;padding:12px 14px;border-radius:12px;border:1px dashed var(--line2);font-family:var(--fm);font-size:13px;letter-spacing:.06em;color:var(--soft);text-align:center}
+.mf .rail b{color:var(--cyan)}
+/* bracket */
+.mf .bracket{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;align-items:center}
+.mf .rnd{display:grid;gap:10px}
+.mf .rnd .t{font-family:var(--fm);font-size:11px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-bottom:2px}
+.mf .pl{display:flex;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:9px;background:rgba(11,18,44,.75);border:1px solid var(--line);font-size:15px;color:var(--soft)}
+.mf .pl b{font-family:var(--fm);color:var(--text)}
+.mf .pl.win{border-color:var(--cyan);color:var(--text)}
+.mf .champ{text-align:center;padding:16px 10px;border-radius:12px;border:1px solid var(--amber);background:rgba(255,200,87,.07)}
+.mf .champ span{font-family:var(--fm);font-size:11px;letter-spacing:.16em;color:var(--amber);text-transform:uppercase}
+.mf .champ b{display:block;font-size:20px;margin-top:4px;color:var(--text)}
+/* report */
+.mf .meter{display:grid;grid-template-columns:110px 1fr auto;gap:12px;align-items:center;font-size:15px;color:var(--soft)}
+.mf .meter+.meter{margin-top:10px}
+.mf .meter .tr{height:10px;border-radius:99px;background:rgba(11,18,44,.8);border:1px solid var(--line);overflow:hidden}
+.mf .meter .tr i{display:block;height:100%;border-radius:99px;background:var(--cyan)}
+.mf .meter em{font-style:normal;font-family:var(--fm);font-size:12px;font-weight:700;letter-spacing:.06em}
+.mf .up{color:var(--good)}.mf .st{color:var(--muted)}.mf .dn{color:var(--amber)}
+.mf .suspect{display:flex;gap:12px;align-items:flex-start;padding:10px 12px;border-radius:10px;background:rgba(11,18,44,.7);border:1px solid var(--line);margin-top:10px;font-size:15px;color:var(--soft)}
+.mf .suspect b{font-family:var(--fm);color:var(--red)}
+/* awards */
+.mf .medals{display:flex;gap:12px;flex-wrap:wrap}
+.mf .medal{width:74px;height:74px;border-radius:50%;display:grid;place-items:center;font-family:var(--fm);font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--ink);text-transform:uppercase;box-shadow:inset 0 -6px 0 rgba(0,0,0,.18)}
+.mf .medal.b{background:var(--bronze)}.mf .medal.s{background:var(--silver)}.mf .medal.g{background:var(--gold)}.mf .medal.p{background:var(--plat)}
+/* plans */
+.mf .plans{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;align-items:stretch}
+.mf .plan{display:flex;flex-direction:column;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px 22px;position:relative}
+.mf .plan.pick{border:2px solid var(--cyan);box-shadow:0 0 0 6px rgba(0,252,241,.07)}
+.mf .plan .badge{position:absolute;top:-13px;left:22px;font-family:var(--fm);font-size:11.5px;font-weight:700;letter-spacing:.12em;padding:5px 9px;border-radius:7px;background:var(--cyan);color:var(--ink)}
+.mf .plan .badge.jan{background:var(--amber)}
+.mf .plan h4{font-size:21px}
+.mf .plan .sub{font-family:var(--fm);font-size:12px;letter-spacing:.08em;color:var(--cyan);text-transform:uppercase;margin-top:4px}
+.mf .plan .pr{font-family:var(--fd);font-size:40px;font-weight:800;line-height:1;color:var(--text)}
+.mf .plan .pr small{display:block;font-family:var(--fb);font-weight:400;font-size:14px;color:var(--muted);margin-top:8px;letter-spacing:0}
+.mf .plan .tick{margin-top:0}
+.mf .plan .tick li{font-size:15.5px}
+.mf .plan a.btn{margin-top:auto;width:100%}
+.mf .also{margin-top:22px;text-align:center;font-size:16px;color:var(--muted)}
+.mf .also a{margin:0 6px}
+/* people */
+.mf .badgeid{max-width:420px;width:100%;justify-self:center;background:linear-gradient(160deg,var(--panel2),var(--panel));border:1px solid var(--line2);border-radius:20px;padding:22px;display:grid;gap:16px}
+.mf .photo{aspect-ratio:4/5;max-width:100%;border-radius:14px;border:1px solid var(--line2);background:repeating-linear-gradient(135deg,rgba(38,51,106,.4) 0 12px,rgba(22,33,75,.4) 12px 24px);display:grid;place-items:center;text-align:center;font-family:var(--fm);font-size:12px;letter-spacing:.1em;color:var(--muted);overflow:hidden}
+.mf .photo img{width:100%;height:100%;object-fit:cover;display:block}
+.mf .quote{font-family:var(--fd);font-size:clamp(21px,2.4cqi,28px);line-height:1.3;color:var(--text);font-weight:600}
+/* FAQ */
+.mf details{border-top:1px solid var(--line);padding:18px 0}
+.mf details:last-child{border-bottom:1px solid var(--line)}
+.mf summary{cursor:pointer;list-style:none;font-size:20px;font-weight:700;color:var(--text);display:flex;justify-content:space-between;gap:16px}
+.mf summary::-webkit-details-marker{display:none}
+.mf summary::after{content:"+";font-family:var(--fm);color:var(--cyan);font-size:24px;line-height:1}
+.mf details[open] summary::after{content:"−"}
+.mf details p{margin-top:12px;font-size:17px;max-width:62em}
+/* final */
+.mf .final{text-align:center;padding:110px 0;background:radial-gradient(ellipse 60% 70% at 50% 100%,rgba(27,54,255,.35),transparent 70%)}
+.mf .final .cta{justify-content:center}
+.mf .final p.lede{margin-left:auto;margin-right:auto}
+/* strip */
+.mf .strip{display:grid;grid-template-columns:1.2fr .8fr;gap:30px;align-items:center;background:linear-gradient(120deg,rgba(142,162,255,.12),rgba(17,26,61,.6));border:1px solid rgba(142,162,255,.35);border-radius:22px;padding:38px}
+.mf .strip .pr{font-family:var(--fd);font-size:46px;font-weight:800;line-height:1}
+.mf .strip .pr small{font-family:var(--fb);font-size:16px;font-weight:400;color:var(--muted);display:block;margin-top:8px}
+.mf .row{display:flex;flex-wrap:wrap;gap:8px}
+.mf table.cmp{width:100%;border-collapse:collapse;font-size:16px}
+.mf table.cmp th,.mf table.cmp td{padding:14px 12px;border-bottom:1px solid var(--line);text-align:left;color:var(--soft);vertical-align:top}
+.mf table.cmp th{font-family:var(--fm);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.mf table.cmp td:first-child{color:var(--text);font-weight:600}
+.mf table.cmp .y{color:var(--good);font-weight:700}
+.mf .scroll{overflow-x:auto}
+/* motion */
+@media (prefers-reduced-motion:reduce){.mf a.btn,.mf a.door{transition:none}.mf a.btn:hover,.mf a.door:hover{transform:none}}
+/* width: tablets */
+@container (max-width:980px){
+  .mf .plans{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .mf .g4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .mf .split,.mf .hero .split{grid-template-columns:1fr;gap:40px}
+  .mf .split.rev>:first-child{order:0}
+  .mf .strip{grid-template-columns:1fr}
+}
+/* width: phones */
+@container (max-width:720px){
+  .mf{font-size:17px}
+  .mf .w{padding:0 18px}
+  .mf section{padding:60px 0}
+  .mf .hero{padding:56px 0 52px}
+  .mf .doors,.mf .g3,.mf .g2,.mf .plans,.mf .g4{grid-template-columns:1fr}
+  .mf .path{grid-template-columns:1fr 1fr}
+  .mf .keys{grid-template-columns:1fr 1fr}
+  .mf .stack div span{display:none}
+  .mf .bracket{grid-template-columns:1fr 1fr}
+  .mf .bracket .rnd:last-child{grid-column:1/-1}
+  .mf .card,.mf .file{padding:20px}
+  .mf .strip{padding:26px}
+  .mf .feat{padding:48px 0}
+  .mf .head{margin-bottom:32px}
+  .mf .head p{font-size:18px}
+  .mf a.btn{width:100%}
+  .mf .meter{grid-template-columns:86px 1fr auto}
+  .mf .stamp{right:6px}
+  .mf .plan.pick{order:-1}
+}
+.mf .photo.wide{aspect-ratio:16/9}
+
+/* video and screenshots */
+.mf .vid{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--line2);background:#070C20;box-shadow:0 40px 80px -40px rgba(0,0,0,.9);aspect-ratio:16/9}
+.mf .vid video{display:block;width:100%;height:100%;object-fit:cover}
+.mf .shots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.mf figure.shot{margin:0;background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+.mf figure.shot img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top center;border-bottom:1px solid var(--line)}
+.mf figure.shot figcaption{padding:16px 18px 18px;display:grid;gap:6px}
+.mf figure.shot figcaption b{font-size:19px;color:var(--text)}
+.mf figure.shot figcaption span{font-size:15.5px;color:var(--soft);line-height:1.4}
+.mf .modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:34px}
+.mf .mode{padding:20px;border-radius:14px;border:1px solid var(--line);background:rgba(17,26,61,.6)}
+.mf .mode .k{font-family:var(--fm);font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--cyan);text-transform:uppercase}
+.mf .mode b{display:block;font-size:19px;margin-top:6px;color:var(--text)}
+.mf .mode p{font-size:15.5px;margin-top:6px}
+/* Forensic Marking replay: working appears line by line, then each mark, then the finding (10 s loop) */
+.mf .replay .work div>span:first-child{font-family:'Caveat',cursive;font-size:24px;letter-spacing:.01em}
+.mf .replay .work div{animation:mfL 10s infinite both}
+.mf .replay .work div .mk{animation:mfM 10s infinite both}
+.mf .replay .work div:nth-child(1){animation-name:mfL1}.mf .replay .work div:nth-child(1) .mk{animation-name:mfM1}
+.mf .replay .work div:nth-child(2){animation-name:mfL2}.mf .replay .work div:nth-child(2) .mk{animation-name:mfM2}
+.mf .replay .work div:nth-child(3){animation-name:mfL3}.mf .replay .work div:nth-child(3) .mk{animation-name:mfM3}
+.mf .replay .finding,.mf .replay .light{animation:mfF 10s infinite both}
+@keyframes mfL1{0%,4%{opacity:0;clip-path:inset(0 100% 0 0)}12%,90%{opacity:1;clip-path:inset(0 0 0 0)}96%,100%{opacity:0}}
+@keyframes mfL2{0%,16%{opacity:0;clip-path:inset(0 100% 0 0)}24%,90%{opacity:1;clip-path:inset(0 0 0 0)}96%,100%{opacity:0}}
+@keyframes mfL3{0%,28%{opacity:0;clip-path:inset(0 100% 0 0)}36%,90%{opacity:1;clip-path:inset(0 0 0 0)}96%,100%{opacity:0}}
+@keyframes mfM1{0%,42%{opacity:0;transform:scale(1.8)}46%,90%{opacity:1;transform:none}96%,100%{opacity:0}}
+@keyframes mfM2{0%,48%{opacity:0;transform:scale(1.8)}52%,90%{opacity:1;transform:none}96%,100%{opacity:0}}
+@keyframes mfM3{0%,54%{opacity:0;transform:scale(1.8)}58%,90%{opacity:1;transform:none}96%,100%{opacity:0}}
+@keyframes mfF{0%,62%{opacity:0;transform:translateY(8px)}68%,90%{opacity:1;transform:none}96%,100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.mf .replay .work div,.mf .replay .work div .mk,.mf .replay .finding,.mf .replay .light{animation:none!important;opacity:1!important;clip-path:none!important;transform:none!important}}
+@container (max-width:980px){.mf .shots{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@container (max-width:720px){.mf .shots,.mf .modes{grid-template-columns:1fr}.mf .replay .work div>span:first-child{font-size:21px}}
+
+</style>
+<div class="mf">
+<section class="hero"><div class="w split">
+  <div>
+    <span class="eb">Maths Forensics HQ · Years 7 to 11</span>
+    <h1>Every lost mark is <em>evidence.</em></h1>
+    <p class="lede">Maths Forensics HQ finds where your child's maths marks go, names the mistake behind each one, and fixes it. From the first week of Year 7 to the last GCSE paper.</p>
+    <div class="cta"><a class="btn" target="_top" href="#paths">Find your path</a><a class="btn ghost" target="_top" href="https://lab.mathsforensics.com/incident-room/?play=pursuit">Play Hot Pursuit free</a></div>
+    <div class="proof"><span><b>280</b> GCSE scripts analysed</span><span><b>Over a decade</b> of GCSE teaching</span><span>Tested <b>every day</b> in real classrooms</span></div>
+  </div>
+  <div class="file replay" aria-label="Example: Forensic Marking of a student's working">
+    <span class="stamp">EVIDENCE</span>
+    <div class="bar"><span>Case file · Q7 · 3 marks</span><b>Forensic Marking</b></div>
+    <p class="q">Solve x² + 8x − 4 = 0 by completing the square.</p>
+    <div class="work">
+      <div class="bad"><span>(x − 4)² − 16 − 4 = 0</span><span class="mk n">M1 ✗</span></div>
+      <div><span>(x − 4)² = 20</span><span class="mk n">M1 ✗</span></div>
+      <div><span>x = 4 ± √20</span><span class="mk n">A1 ✗</span></div>
+    </div>
+    <div class="finding"><b>Finding</b>One sign slip in line 1 cost all three marks. Half of 8 is +4, so the bracket is (x + 4)².</div>
+    <div class="light" style="margin-top:14px"><i class="r"></i><i></i><i></i><span>Mike mode would have flagged line 1</span></div>
+  </div>
+</div></section>
+<section class="alt" id="paths"><div class="w">
+  <div class="head"><span class="eb">Find your path</span><h2>One HQ. A door for every stage.</h2><p>Every student, parent and teacher signs in to the same place. Choose where you start.</p></div>
+  <div class="doors">
+    <a class="door acad" target="_top" href="https://www.mathsforensics.com/academy"><span class="who">Years 7 to 9 · KS3</span><h3>The Academy</h3><p>Step-by-step KS3 maths, with worked examples, games and Bronze to Platinum awards.</p><span class="price"><b>£39</b><span>12 months →</span></span></a>
+    <a class="door gcse" target="_top" href="https://www.mathsforensics.com/the-lab"><span class="who">Years 10 and 11 · GCSE</span><h3>The Lab</h3><p>GCSE practice, Forensic Marking and full papers that show exactly where the marks go.</p><span class="price"><b>from £49</b><span>Until the exams →</span></span></a>
+    <a class="door school" target="_top" href="https://www.mathsforensics.com/schools"><span class="who">Teachers and schools</span><h3>For schools</h3><p>The Academy, the Lab and live class games for the whole department, Years 7 to 11.</p><span class="price"><b>£549</b><span>A year →</span></span></a>
+  </div>
+  <p class="note" style="text-align:center;margin-top:22px">Starting A-level next September? <a class="txt" target="_top" href="https://www.mathsforensics.com/jumpstart-lab">See the A-Level Jumpstart Lab</a></p>
+</div></section>
+<section class="grid"><div class="w split">
+  <div>
+    <span class="eb">The evidence</span>
+    <h2>Nearly 1 in 3 lost marks were on maths the student already knew.</h2>
+    <p class="lede">We analysed 280 GCSE maths scripts and coded every lost mark by its cause. Two-thirds were topics not yet secure. The rest were misreads, slips and missing working: marks that were already earned, then given away.</p>
+    <p class="note">Maths Forensics research, 2026. 280 anonymised GCSE maths scripts.</p>
+  </div>
+  <div class="card">
+    <div class="big">32%</div>
+    <p style="margin-top:10px;font-size:18px">of lost marks were avoidable</p>
+    <div class="stack" role="img" aria-label="Lost marks: 68% knowledge, 13.4% misread, 10.9% accuracy, 7.7% method not shown">
+      <div style="width:68%;background:#3B4A86;color:var(--text)"><span>Knowledge 68%</span></div>
+      <div style="width:13.4%;background:var(--cyan)"></div>
+      <div style="width:10.9%;background:var(--amber)"></div>
+      <div style="width:7.7%;background:var(--red)"></div>
+    </div>
+    <div class="keys">
+      <div style="--c:#3B4A86"><b>68%</b>Knowledge gap</div>
+      <div style="--c:var(--cyan)"><b>13.4%</b>Misread the question</div>
+      <div style="--c:var(--amber)"><b>10.9%</b>Accuracy slip</div>
+      <div style="--c:var(--red)"><b>7.7%</b>Method not shown</div>
+    </div>
+    <p style="margin-top:18px;font-size:16px">So HQ does two jobs: it builds the maths, and it protects the marks you've already earned.</p>
+  </div>
+</div></section>
+<section><div class="w">
+  <div class="head"><span class="eb">Inside Maths Forensics HQ</span><h2>Four things you won't find together anywhere else.</h2><p>Other platforms tell a student what they got wrong. HQ works out why, and what to do about it.</p></div>
+
+  <div class="feat split">
+    <div>
+      <span class="n">Exhibit A</span>
+      <h3>It names the mistake, not just the score.</h3>
+      <p class="body">Every wrong answer in the Academy and the Lab is matched to the error behind it. A student who adds the denominators is told exactly that, and shown how to fix it, before the habit sets.</p>
+      <div class="vs"><b>A typical platform:</b> "Incorrect. The answer is 7/12." <b>HQ:</b> "You added the denominators. Make them the same first."</div>
+    </div>
+    <div class="file">
+      <div class="bar"><span>Lab · Fractions · Q4</span><b>Practise</b></div>
+      <p class="q">Work out 1/3 + 1/4</p>
+      <div class="work"><div class="bad"><span>Your answer: 2/7</span><span class="mk n">✗</span></div></div>
+      <div class="finding"><b>The mistake</b>You added the tops and the bottoms. Change both to twelfths first: 4/12 + 3/12 = 7/12.</div>
+    </div>
+  </div>
+
+  <div class="feat split rev">
+    <div>
+      <span class="n">Exhibit B</span>
+      <h3>It marks the working the way an examiner does. <span class="tag jan">From January</span></h3>
+      <p class="body">Forensic Marking reads handwritten working, from a stylus or a photo, and awards every method and accuracy mark with the line that earned it. Mike mode watches as the student writes and warns at the exact step where students usually slip.</p>
+      <div class="vs"><b>Our rule:</b> no method seen, no method mark. It's stricter than the exam, so students learn to protect every mark.</div>
+    </div>
+    <div class="file">
+      <div class="bar"><span>Mike mode · live</span><b>Q3 · 4 marks</b></div>
+      <div class="work">
+        <div class="ok"><span>Area = ½ × 8 × 5</span><span class="mk y">M1 ✓</span></div>
+        <div class="ok"><span>= 20 cm²</span><span class="mk y">A1 ✓</span></div>
+        <div><span>Height = 20 ÷ 4 = 5 cm</span><span class="mk" style="color:var(--amber);border:1px solid var(--amber)">CHECK</span></div>
+      </div>
+      <div class="light" style="margin-top:14px"><i></i><i class="a"></i><i></i><span>Amber: is this shape a triangle or a rectangle?</span></div>
+    </div>
+  </div>
+
+  <div class="feat split">
+    <div>
+      <span class="n">Exhibit C</span>
+      <h3>One path from Year 7 to the GCSE exam.</h3>
+      <p class="body">The Academy builds KS3 maths step by step. The Lab takes it to grade 9. Cold Case papers rehearse the real thing. The Investigation, a weekly report, follows the student the whole way, so nothing they learn is lost between years.</p>
+    </div>
+    <div>
+      <div class="path">
+        <div class="stop a"><span class="y">Years 7–9</span><b>Academy</b><small>KS3, Bronze to Platinum</small></div>
+        <div class="stop l"><span class="y">Years 10–11</span><b>Lab</b><small>Every GCSE topic to grade 9</small></div>
+        <div class="stop c"><span class="y">Mocks</span><b>Cold Case</b><small>9 original papers</small></div>
+        <div class="stop e"><span class="y">Summer</span><b>The exam</b><small>Every mark protected</small></div>
+      </div>
+      <div class="rail"><b>The Investigation</b> · a weekly report on what's improving and what to fix next</div>
+    </div>
+  </div>
+
+  <div class="feat split rev">
+    <div>
+      <span class="n">Exhibit D</span>
+      <h3>Students actually ask to play it.</h3>
+      <p class="body">The Incident Room turns practice into live class games: a knockout Interrogation with quarter-finals, semi-finals and a final, Rapid Response, Hot Pursuit and more. Every game ends with a debrief of every mistake.</p>
+      <div class="vs">Built and tested with real Year 7 and Year 9 classes, every school day.</div>
+    </div>
+    <div><div class="vid"><video src="https://lab.mathsforensics.com/media/incident-room-tour.mp4" poster="https://lab.mathsforensics.com/media/incident-room-poster.jpg" autoplay muted loop playsinline controls preload="metadata" aria-label="30-second tour of the Incident Room games"></video></div>
+      <p class="note">Real games from the Incident Room. <a class="txt" target="_top" href="https://www.mathsforensics.com/the-lab#incident-room">See all 12 games</a></p></div>
+  </div>
+</div></section>
+<section class="alt"><div class="w split">
+  <div>
+    <span class="eb">The Investigation</span>
+    <h2>A weekly report on exactly what to fix.</h2>
+    <p class="lede">Every answer is evidence. Each week, HQ reads it and tells the student which habits are costing the most marks, what's improving, and what to work on next.</p>
+    <ul class="tick"><li>A skills tracker for knowledge, reading, method, accuracy and timing</li><li>Prime suspects: the habits losing the most marks, ranked, with the fix for each</li><li>A short monthly summary for parents, in plain English, in The Full Investigation</li></ul>
+  </div>
+  <div class="file">
+    <div class="bar"><span>Week of 12 January · example</span><b>The Investigation</b></div>
+    <div class="meter"><span>Knowledge</span><span class="tr"><i style="width:72%"></i></span><em class="up">Improving</em></div>
+    <div class="meter"><span>Reading</span><span class="tr"><i style="width:58%"></i></span><em class="dn">Slipping</em></div>
+    <div class="meter"><span>Method</span><span class="tr"><i style="width:64%"></i></span><em class="up">Improving</em></div>
+    <div class="meter"><span>Accuracy</span><span class="tr"><i style="width:69%"></i></span><em class="st">Steady</em></div>
+    <div class="meter"><span>Timing</span><span class="tr"><i style="width:51%"></i></span><em class="st">Steady</em></div>
+    <div class="suspect"><b>#1</b><span>Missing the units on area questions. Cost 4 marks this week. Fix: write the units before the number.</span></div>
+  </div>
+</div></section>
+<section id="plans"><div class="w">
+  <div class="head c"><span class="eb">GCSE plans</span><h2>One payment. No subscription.</h2><p>Every plan lasts until the summer 2027 exams. Launch prices end 28 February.</p></div>
+  <div class="plans">
+    <div class="plan"><div><h4>Free</h4><div class="sub">Try it</div></div><div class="pr">£0</div>
+      <ul class="tick"><li>Hot Pursuit and sample topics</li><li>A free Cold Case paper</li><li>1 marked question a week, from January</li></ul>
+      <a class="btn ghost small" target="_top" href="https://lab.mathsforensics.com/incident-room/?play=pursuit">Play free</a></div>
+    <div class="plan"><div><h4>Exam Pass</h4><div class="sub">Know it</div></div><div class="pr">£49<small>then £59 from 1 March</small></div>
+      <ul class="tick"><li>The full Lab: 103 GCSE topics to grade 9</li><li>Every Incident Room game</li><li>5 marked questions a week, from January</li><li>The Investigation weekly report</li></ul>
+      <a class="btn ghost small" target="_top" href="https://www.mathsforensics.com/mathsforensics-lab-checkout">Get the Exam Pass</a></div>
+    <div class="plan pick"><span class="badge">MOST POPULAR</span><div><h4>Exam Season Kit</h4><div class="sub">Know it · Show it · Prove it</div></div><div class="pr">£69<small>then £79 from 1 March</small></div>
+      <ul class="tick"><li>Everything in the Exam Pass</li><li>All 9 Cold Case papers and Most Wanted</li><li>Mike mode on Cold Case papers</li><li>1 whole paper marked, from January</li></ul>
+      <a class="btn small" target="_top" href="#connect-kit-checkout">Get the Kit</a></div>
+    <div class="plan"><span class="badge jan">JANUARY</span><div><h4>The Full Investigation</h4><div class="sub">Everything, fully marked</div></div><div class="pr">£147.99<small>about £243 bought separately</small></div>
+      <ul class="tick"><li>Everything in the Kit</li><li>The Exam Execution Guide and Mark Recovery System</li><li>40 marked questions a week, and whole papers</li><li>A monthly summary for parents</li></ul>
+      <a class="btn ghost small" target="_top" href="#connect-full-investigation-list">Join the list</a></div>
+  </div>
+  <p class="also">Just want one thing? <a target="_top" href="https://www.mathsforensics.com/exam-execution-guide">Exam Execution Guide £47.99</a> · <a target="_top" href="https://www.mathsforensics.com/mark-recovery-system">Mark Recovery System</a> · <a target="_top" href="https://www.mathsforensics.com/cold-case">Cold Case papers from £12.99</a></p>
+</div></section>
+<section class="tight"><div class="w">
+  <div class="strip">
+    <div><span class="eb">For schools</span><h2 style="font-size:clamp(25px,3cqi,36px)">The whole department, Years 7 to 11, on one licence.</h2>
+      <p style="margin-top:14px">The Academy, the Lab and live class games, with class codes, homework and progress for every teacher. Built for UK GDPR.</p></div>
+    <div><div class="pr">£549<small>per school, per year</small></div><div class="cta" style="margin-top:20px"><a class="btn" target="_top" href="https://www.mathsforensics.com/schools">See the schools licence</a></div></div>
+  </div>
+</div></section>
+
+<section class="alt"><div class="w split">
+  <div class="badgeid">
+    <div class="photo"><span>YOUR PHOTO HERE<br>Mike, portrait 4:5</span></div>
+    <div><b style="font-size:20px">Mike Taylor</b><p class="muted" style="font-size:15px;margin-top:4px">Founder · GCSE maths teacher · over a decade of teaching and marking exam papers</p></div>
+  </div>
+  <div>
+    <span class="eb">Who's behind it</span>
+    <p class="quote">"I kept watching capable students lose marks on maths they knew. HQ is what I built to stop it, and my own classes use it every day."</p>
+    <p class="lede">Mike Taylor has taught GCSE and IGCSE maths for over a decade, across AQA, Edexcel and Cambridge, and has marked thousands of papers. Every question, mark scheme and game in HQ was written by a teacher and tested in a real classroom first.</p>
+    <div class="cta"><a class="btn ghost" target="_top" href="https://www.mathsforensics.com/about">Read the story</a></div>
+  </div>
+</div></section>
+<section><div class="w" style="max-width:880px">
+  <div class="head"><span class="eb">Questions parents ask</span><h2>Good to know</h2></div>
+  <details><summary>Is my child ready for the Academy or the Lab?</summary><p>Years 7 to 9 start in the Academy, which builds KS3 maths step by step. Years 10 and 11, or anyone sitting GCSE or IGCSE this year, start in the Lab. They share one sign-in, so moving up later is easy.</p></details>
+  <details><summary>Is it a subscription?</summary><p>No. The Academy Pass is one payment for 12 months. GCSE plans are one payment that lasts until the summer 2027 exams. There's nothing to cancel.</p></details>
+  <details><summary>Which exam boards does it cover?</summary><p>The Lab follows the GCSE maths content that AQA, Edexcel and OCR all teach, plus Cambridge IGCSE. Cold Case papers are Higher tier, written for AQA and Edexcel.</p></details>
+  <details><summary>What is Forensic Marking?</summary><p>Your child writes their working on screen or photographs it on paper. It's marked mark by mark, with the line that earned or lost each mark and how to fix it. It launches in January. Photos are deleted after 7 days and the feedback stays in their report. <a target="_top" href="https://lab.mathsforensics.com/ai-marking.html">How AI marking works</a></p></details>
+  <details><summary>How does my child sign in?</summary><p>Buy with the email your child will use. GCSE students sign in with Google, Microsoft or email. For the Academy, you create the account as the parent and add each child with their own PIN.</p></details>
+  <details><summary>Is it safe for children?</summary><p>There are no adverts, no tracking and no messaging between users. We collect the minimum needed and follow the ICO's Children's Code. <a target="_top" href="https://lab.mathsforensics.com/student-privacy.html">Student privacy</a> · <a target="_top" href="https://lab.mathsforensics.com/safeguarding.html">Safeguarding</a></p></details>
+  <details><summary>What if it doesn't help?</summary><p>GCSE plans come with a 30-day money-back guarantee. Use it with your child's next practice paper, and if it doesn't improve their approach, ask for a refund.</p></details>
+</div></section>
+
+<section class="final"><div class="w">
+  <span class="eb">Maths Forensics HQ</span>
+  <h2>Your marks are on that paper somewhere.<br>Let's find them.</h2>
+  <p class="lede">Start free with Hot Pursuit, or choose your path.</p>
+  <div class="cta"><a class="btn" target="_top" href="#paths">Find your path</a><a class="btn ghost" target="_top" href="https://lab.mathsforensics.com/incident-room/?play=pursuit">Play Hot Pursuit free</a></div>
+  <p class="note">Already a member? <a class="txt" target="_top" href="https://lab.mathsforensics.com/">Log in to Maths Forensics HQ</a></p>
+</div></section>
+</div>
