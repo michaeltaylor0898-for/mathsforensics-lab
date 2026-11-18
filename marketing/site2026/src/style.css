@@ -248,3 +248,5 @@
 @media (prefers-reduced-motion:reduce){.mf .replay .work div,.mf .replay .work div .mk,.mf .replay .finding,.mf .replay .light{animation:none!important;opacity:1!important;clip-path:none!important;transform:none!important}}
 @container (max-width:980px){.mf .shots{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @container (max-width:720px){.mf .shots,.mf .modes{grid-template-columns:1fr}.mf .replay .work div>span:first-child{font-size:21px}}
+
+.mf img.pimg{display:block;width:100%;height:auto;border-radius:18px;border:1px solid var(--line2);box-shadow:0 40px 80px -40px rgba(0,0,0,.9)}
