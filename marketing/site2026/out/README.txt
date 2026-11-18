@@ -11,11 +11,12 @@ Five pages in each edition, one folder each: home, academy, gcse, schools, about
 In each folder:
   whole-page.html   the whole page in ONE Raw HTML block (easiest; try this first)
   block-1 ... .html the same page split into sections, if Systeme says the whole page is too long.
-                    Block 1 carries the styles, so it must be on the page (and first).
+                    Block 1 is the header with the logo and carries the styles, so it must be on the page (and first).
 
 HOW TO PASTE A PAGE
 1. In Systeme, open the funnel page (e.g. the homepage) in the editor.
-2. Delete the old sections you are replacing. Keep Systeme's own header/menu and footer if you like them.
+2. Delete ALL the old sections on the page, including Systeme's own header/menu and footer.
+   Each page now brings its own header (Maths Forensics logo, menu, Log in to HQ) and footer.
 3. Add a new Section. In its settings: full width, padding 0 on all sides, background none.
 4. Drag a "Raw HTML" element into the section.
 5. Open the .html file in Notepad, Ctrl+A, Ctrl+C, then paste into the Raw HTML box. Save.

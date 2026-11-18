@@ -35,7 +35,10 @@ LAUNCH = [
 EDITION = os.environ.get("EDITION", "launch")
 
 def blocks(name):
-    raw = (src / f"{name}.html").read_text()
+    hd = (src / "_header.html").read_text()
+    for pg in ["gcse", "academy", "schools", "about"]:
+        hd = hd.replace("{{CUR_" + pg + "}}", ' aria-current="page"' if pg == name else "")
+    raw = "<!-- BLOCK: 0 header -->\n" + hd + "\n" + (src / f"{name}.html").read_text() + "\n<!-- BLOCK: 99 footer -->\n" + (src / "_footer.html").read_text()
     if EDITION == "launch":
         for a, b in LAUNCH: raw = re.sub(a, b, raw)
     parts = re.split(r"<!-- BLOCK: ([^>]*?) -->", raw)
@@ -67,7 +70,7 @@ for n, t, path, body in preview:
     body = body.replace(html.escape(LINKS["MEDIA"], quote=True), "media/")
     if n == "gcse": body = body.replace('id="incident-room"', 'id="gcse-incident-room"').replace('id="plans"', 'id="gcse-plans"').replace('href="#plans"', 'href="#gcse-plans"')
     body = body.replace('href="#paths"', 'href="#home-paths"').replace('id="paths"', 'id="home-paths"').replace('href="#plans"', 'href="#home-plans"').replace('id="plans"', 'id="home-plans"') if n == "home" else body
-    pages += f'<main class="pg" id="pg-{n}" hidden>\n<div class="sysbar">mathsforensics.com{path} · Systeme header and menu sit above this</div>\n{body}</main>\n'
+    pages += f'<main class="pg" id="pg-{n}" hidden>\n{body}</main>\n'
 pv = f"""<title>Maths Forensics Site Redesign</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
