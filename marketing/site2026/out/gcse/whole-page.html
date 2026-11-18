@@ -1,6 +1,6 @@
 <!-- Maths Forensics · GCSE (the Lab) · whole page in one Raw HTML block -->
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Josefin+Sans:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Caveat:wght@600&family=Josefin+Sans:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
 /* Maths Forensics site, 2026. Every rule is scoped under .mf so Systeme's own styles are untouched.
    Layout responds to the block's width (container queries), which is what Systeme's phone view uses. */
 .mf{--ink:#0B122C;--ink2:#0E1636;--panel:#111A3D;--panel2:#16214B;--line:#26336A;--line2:#33437F;--text:#EAF0FF;--soft:#C9D2EE;--muted:#9AA6CC;
@@ -218,6 +218,39 @@
 }
 .mf .photo.wide{aspect-ratio:16/9}
 
+/* video and screenshots */
+.mf .vid{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--line2);background:#070C20;box-shadow:0 40px 80px -40px rgba(0,0,0,.9);aspect-ratio:16/9}
+.mf .vid video{display:block;width:100%;height:100%;object-fit:cover}
+.mf .shots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.mf figure.shot{margin:0;background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+.mf figure.shot img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top center;border-bottom:1px solid var(--line)}
+.mf figure.shot figcaption{padding:16px 18px 18px;display:grid;gap:6px}
+.mf figure.shot figcaption b{font-size:19px;color:var(--text)}
+.mf figure.shot figcaption span{font-size:15.5px;color:var(--soft);line-height:1.4}
+.mf .modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:34px}
+.mf .mode{padding:20px;border-radius:14px;border:1px solid var(--line);background:rgba(17,26,61,.6)}
+.mf .mode .k{font-family:var(--fm);font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--cyan);text-transform:uppercase}
+.mf .mode b{display:block;font-size:19px;margin-top:6px;color:var(--text)}
+.mf .mode p{font-size:15.5px;margin-top:6px}
+/* Forensic Marking replay: working appears line by line, then each mark, then the finding (10 s loop) */
+.mf .replay .work div>span:first-child{font-family:'Caveat',cursive;font-size:24px;letter-spacing:.01em}
+.mf .replay .work div{animation:mfL 10s infinite both}
+.mf .replay .work div .mk{animation:mfM 10s infinite both}
+.mf .replay .work div:nth-child(1){animation-name:mfL1}.mf .replay .work div:nth-child(1) .mk{animation-name:mfM1}
+.mf .replay .work div:nth-child(2){animation-name:mfL2}.mf .replay .work div:nth-child(2) .mk{animation-name:mfM2}
+.mf .replay .work div:nth-child(3){animation-name:mfL3}.mf .replay .work div:nth-child(3) .mk{animation-name:mfM3}
+.mf .replay .finding,.mf .replay .light{animation:mfF 10s infinite both}
+@keyframes mfL1{0%,4%{opacity:0;clip-path:inset(0 100% 0 0)}12%,90%{opacity:1;clip-path:inset(0 0 0 0)}96%,100%{opacity:0}}
+@keyframes mfL2{0%,16%{opacity:0;clip-path:inset(0 100% 0 0)}24%,90%{opacity:1;clip-path:inset(0 0 0 0)}96%,100%{opacity:0}}
+@keyframes mfL3{0%,28%{opacity:0;clip-path:inset(0 100% 0 0)}36%,90%{opacity:1;clip-path:inset(0 0 0 0)}96%,100%{opacity:0}}
+@keyframes mfM1{0%,42%{opacity:0;transform:scale(1.8)}46%,90%{opacity:1;transform:none}96%,100%{opacity:0}}
+@keyframes mfM2{0%,48%{opacity:0;transform:scale(1.8)}52%,90%{opacity:1;transform:none}96%,100%{opacity:0}}
+@keyframes mfM3{0%,54%{opacity:0;transform:scale(1.8)}58%,90%{opacity:1;transform:none}96%,100%{opacity:0}}
+@keyframes mfF{0%,62%{opacity:0;transform:translateY(8px)}68%,90%{opacity:1;transform:none}96%,100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.mf .replay .work div,.mf .replay .work div .mk,.mf .replay .finding,.mf .replay .light{animation:none!important;opacity:1!important;clip-path:none!important;transform:none!important}}
+@container (max-width:980px){.mf .shots{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@container (max-width:720px){.mf .shots,.mf .modes{grid-template-columns:1fr}.mf .replay .work div>span:first-child{font-size:21px}}
+
 </style>
 <div class="mf">
 <section class="hero"><div class="w split">
@@ -255,15 +288,32 @@
     <ul class="tick"><li><b>One question</b>, marked with feedback</li><li><b>A whole Cold Case paper</b>, marked and debriefed</li><li><b>A marked school mock</b>: we explain why each lost mark was lost (coming later)</li></ul>
     <p class="note">Our rule: no method seen, no method mark. Photos are deleted after 7 days. <a class="txt" target="_top" href="https://lab.mathsforensics.com/ai-marking.html">How AI marking works</a></p>
   </div>
-  <div class="file">
+  <div class="file replay">
     <span class="stamp">EVIDENCE</span>
-    <div class="bar"><span>Cold Case B · Paper 2 · Q11</span><b>4 marks</b></div>
+    <div class="bar"><span>Cold Case B · Paper 2 · Q11</span><b>3 marks</b></div>
     <div class="work">
       <div class="ok"><span>sin x = 7 / 12</span><span class="mk y">M1 ✓</span></div>
       <div class="ok"><span>x = sin⁻¹(0.58)</span><span class="mk y">M1 ✓</span></div>
       <div class="bad"><span>x = 35.5°</span><span class="mk n">A1 ✗</span></div>
     </div>
     <div class="finding"><b>Finding</b>Rounded 7/12 to 0.58 too early. Keep the full value on your calculator: x = 35.7°.</div>
+  </div>
+</div></section>
+<section class="alt grid" id="incident-room"><div class="w">
+  <div class="head"><span class="eb">The Incident Room</span><h2>Revision that plays like a game show.</h2><p>12 maths games built into HQ. Play on your own, race your friends, or run one live with the whole class. Every game ends with a debrief of every mistake, with the right answer and why.</p></div>
+  <div class="vid"><video src="https://lab.mathsforensics.com/media/incident-room-tour.mp4" poster="https://lab.mathsforensics.com/media/incident-room-poster.jpg" autoplay muted loop playsinline controls preload="metadata" aria-label="30-second tour of the Incident Room games"></video></div>
+  <div class="modes">
+    <div class="mode"><span class="k">On your own</span><b>Start in seconds</b><p>No code needed. Hot Pursuit is free, with no sign-up.</p></div>
+    <div class="mode"><span class="k">With friends</span><b>Share a code</b><p>Race through the Polynomial Vault or duel in Harbour Watch.</p></div>
+    <div class="mode"><span class="k">As a class</span><b>One code on the board</b><p>Everyone joins on their own device. The Interrogation runs a knockout to a final.</p></div>
+  </div>
+  <div class="shots" style="margin-top:34px">
+    <figure class="shot"><img src="https://lab.mathsforensics.com/media/ir-hot-pursuit.jpg" alt="Hot Pursuit: the Shadow chasing the reward down the board" loading="lazy"><figcaption><span class="tag free" style="justify-self:start">Free</span><b>Hot Pursuit</b><span>Build a reward in 60 seconds, then get it to HQ before your Shadow catches you.</span></figcaption></figure>
+    <figure class="shot"><img src="https://lab.mathsforensics.com/media/ir-interrogation.jpg" alt="The Interrogation: an Inspector question worth 3 points" loading="lazy"><figcaption><span class="tag" style="justify-self:start">Solo · class knockout</span><b>The Interrogation</b><span>Two right in a row and you're promoted, from Constable to Inspector. Wrong answers cost time.</span></figcaption></figure>
+    <figure class="shot"><img src="https://lab.mathsforensics.com/media/ir-polynomial-vault.jpg" alt="The Polynomial Vault: dragging brackets to factorise a quadratic" loading="lazy"><figcaption><span class="tag" style="justify-self:start">Higher · A-level</span><b>The Polynomial Vault</b><span>Drag in the brackets, build algebra tiles and plot parabolas to crack ten locks.</span></figcaption></figure>
+    <figure class="shot"><img src="https://lab.mathsforensics.com/media/ir-harbour-watch.jpg" alt="Harbour Watch: a coordinate grid hiding the smugglers' boats" loading="lazy"><figcaption><span class="tag" style="justify-self:start">Red v Blue · duel</span><b>Harbour Watch</b><span>Aim at a point, then prove your firing solution with coordinates, vectors or bearings.</span></figcaption></figure>
+    <figure class="shot"><img src="https://lab.mathsforensics.com/media/ir-games-hub.jpg" alt="The Incident Room: join with a code, or play on your own" loading="lazy"><figcaption><span class="tag" style="justify-self:start">Every game</span><b>One code to join</b><span>From the teacher's board or a friend. One code works for every game.</span></figcaption></figure>
+    <div class="card" style="display:flex;flex-direction:column;gap:10px"><span class="tag" style="align-self:flex-start">And eight more</span><h4>Rapid Response, Stakeout, The Identikit, Line of Inquiry, Case Trail, The Lineup, Crime Lab and Who Broke the Maths?</h4><p style="font-size:15.5px">Team games for the board, mystery cases and quick-fire rounds, across every GCSE topic.</p></div>
   </div>
 </div></section>
 <section class="alt"><div class="w split rev">
@@ -285,7 +335,7 @@
   <div class="scroll"><table class="cmp">
     <tr><th></th><th>Free</th><th>Exam Pass</th></tr>
     <tr><td>Lab topics</td><td>Sample topics</td><td class="y">All 103, to grade 9</td></tr>
-    <tr><td>Hot Pursuit chasers</td><td>The Fixer</td><td class="y">The Fixer, the Professor and the Mastermind</td></tr>
+    <tr><td>Hot Pursuit Shadows</td><td>The Fixer</td><td class="y">The Fixer, the Professor and the Kingpin</td></tr>
     <tr><td>Tier and topic focus in games</td><td>Foundation</td><td class="y">Higher, by topic</td></tr>
     <tr><td>Forensic Marking, from January</td><td>1 question a week</td><td class="y">5 questions a week</td></tr>
     <tr><td>The Investigation</td><td>No</td><td class="y">Weekly report</td></tr>
@@ -322,8 +372,8 @@
 
 <section class="final"><div class="w">
   <span class="eb">The Lab</span>
-  <h2>Can you outrun the chaser?</h2>
-  <p class="lede">Get every topic and every chaser at the £49 launch price, or try Hot Pursuit free first.</p>
+  <h2>Can you outrun the Shadow?</h2>
+  <p class="lede">Get every topic and every Shadow at the £49 launch price, or try Hot Pursuit free first.</p>
   <div class="cta"><a class="btn" target="_top" href="https://www.mathsforensics.com/mathsforensics-lab-checkout">Get the Exam Pass · £49</a><a class="btn ghost" target="_top" href="https://lab.mathsforensics.com/incident-room/?play=pursuit">Play Hot Pursuit free</a></div>
   <p class="note">Already a member? <a class="txt" target="_top" href="https://lab.mathsforensics.com/">Log in to Maths Forensics HQ</a></p>
 </div></section>

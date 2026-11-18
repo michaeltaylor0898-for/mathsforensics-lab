@@ -29,6 +29,11 @@ LINKS STILL TO CONNECT (send Claude these and the pages are rebuilt with them)
   #connect-full-investigation-list   a free waiting-list form for The Full Investigation
 Every other button already points to a live page.
 
+MEDIA FOLDER (do this first)
+  The pages load the game video and screenshots from lab.mathsforensics.com/media/.
+  In cPanel, open the lab.mathsforensics.com folder, create a folder called media,
+  and upload every file from this zip's media folder into it.
+
 PHOTOS (the striped boxes saying "YOUR PHOTO HERE")
   Mike, portrait 4:5        homepage + About page
   Students on tablets, 16:9 schools page

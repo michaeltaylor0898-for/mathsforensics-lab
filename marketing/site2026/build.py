@@ -44,6 +44,9 @@ for n, t, path, body in preview:
     for u, pn in url2page.items():
         body = body.replace(f'href="{html.escape(u, quote=True)}"', f'href="#{pn}"')
         body = body.replace(f'href="{html.escape(u, quote=True)}#paths"', 'href="#home-paths"')
+        body = body.replace(f'href="{html.escape(u, quote=True)}#incident-room"', 'href="#gcse-incident-room"')
+    body = body.replace(html.escape(LINKS["MEDIA"], quote=True), "media/")
+    if n == "gcse": body = body.replace('id="incident-room"', 'id="gcse-incident-room"').replace('id="plans"', 'id="gcse-plans"').replace('href="#plans"', 'href="#gcse-plans"')
     body = body.replace('href="#paths"', 'href="#home-paths"').replace('id="paths"', 'id="home-paths"').replace('href="#plans"', 'href="#home-plans"').replace('id="plans"', 'id="home-plans"') if n == "home" else body
     pages += f'<main class="pg" id="pg-{n}" hidden>\n<div class="sysbar">mathsforensics.com{path} · Systeme header and menu sit above this</div>\n{body}</main>\n'
 pv = f"""<title>Maths Forensics Site Redesign</title>

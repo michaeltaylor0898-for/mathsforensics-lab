@@ -1,6 +1,6 @@
 <!-- Maths Forensics · Schools · block 1 of 6 · this block carries the styles: paste it first -->
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Josefin+Sans:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Caveat:wght@600&family=Josefin+Sans:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
 /* Maths Forensics site, 2026. Every rule is scoped under .mf so Systeme's own styles are untouched.
    Layout responds to the block's width (container queries), which is what Systeme's phone view uses. */
 .mf{--ink:#0B122C;--ink2:#0E1636;--panel:#111A3D;--panel2:#16214B;--line:#26336A;--line2:#33437F;--text:#EAF0FF;--soft:#C9D2EE;--muted:#9AA6CC;
@@ -217,6 +217,39 @@
   .mf .plan.pick{order:-1}
 }
 .mf .photo.wide{aspect-ratio:16/9}
+
+/* video and screenshots */
+.mf .vid{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--line2);background:#070C20;box-shadow:0 40px 80px -40px rgba(0,0,0,.9);aspect-ratio:16/9}
+.mf .vid video{display:block;width:100%;height:100%;object-fit:cover}
+.mf .shots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.mf figure.shot{margin:0;background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+.mf figure.shot img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top center;border-bottom:1px solid var(--line)}
+.mf figure.shot figcaption{padding:16px 18px 18px;display:grid;gap:6px}
+.mf figure.shot figcaption b{font-size:19px;color:var(--text)}
+.mf figure.shot figcaption span{font-size:15.5px;color:var(--soft);line-height:1.4}
+.mf .modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:34px}
+.mf .mode{padding:20px;border-radius:14px;border:1px solid var(--line);background:rgba(17,26,61,.6)}
+.mf .mode .k{font-family:var(--fm);font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--cyan);text-transform:uppercase}
+.mf .mode b{display:block;font-size:19px;margin-top:6px;color:var(--text)}
+.mf .mode p{font-size:15.5px;margin-top:6px}
+/* Forensic Marking replay: working appears line by line, then each mark, then the finding (10 s loop) */
+.mf .replay .work div>span:first-child{font-family:'Caveat',cursive;font-size:24px;letter-spacing:.01em}
+.mf .replay .work div{animation:mfL 10s infinite both}
+.mf .replay .work div .mk{animation:mfM 10s infinite both}
+.mf .replay .work div:nth-child(1){animation-name:mfL1}.mf .replay .work div:nth-child(1) .mk{animation-name:mfM1}
+.mf .replay .work div:nth-child(2){animation-name:mfL2}.mf .replay .work div:nth-child(2) .mk{animation-name:mfM2}
+.mf .replay .work div:nth-child(3){animation-name:mfL3}.mf .replay .work div:nth-child(3) .mk{animation-name:mfM3}
+.mf .replay .finding,.mf .replay .light{animation:mfF 10s infinite both}
+@keyframes mfL1{0%,4%{opacity:0;clip-path:inset(0 100% 0 0)}12%,90%{opacity:1;clip-path:inset(0 0 0 0)}96%,100%{opacity:0}}
+@keyframes mfL2{0%,16%{opacity:0;clip-path:inset(0 100% 0 0)}24%,90%{opacity:1;clip-path:inset(0 0 0 0)}96%,100%{opacity:0}}
+@keyframes mfL3{0%,28%{opacity:0;clip-path:inset(0 100% 0 0)}36%,90%{opacity:1;clip-path:inset(0 0 0 0)}96%,100%{opacity:0}}
+@keyframes mfM1{0%,42%{opacity:0;transform:scale(1.8)}46%,90%{opacity:1;transform:none}96%,100%{opacity:0}}
+@keyframes mfM2{0%,48%{opacity:0;transform:scale(1.8)}52%,90%{opacity:1;transform:none}96%,100%{opacity:0}}
+@keyframes mfM3{0%,54%{opacity:0;transform:scale(1.8)}58%,90%{opacity:1;transform:none}96%,100%{opacity:0}}
+@keyframes mfF{0%,62%{opacity:0;transform:translateY(8px)}68%,90%{opacity:1;transform:none}96%,100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.mf .replay .work div,.mf .replay .work div .mk,.mf .replay .finding,.mf .replay .light{animation:none!important;opacity:1!important;clip-path:none!important;transform:none!important}}
+@container (max-width:980px){.mf .shots{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@container (max-width:720px){.mf .shots,.mf .modes{grid-template-columns:1fr}.mf .replay .work div>span:first-child{font-size:21px}}
 
 </style>
 <div class="mf">
