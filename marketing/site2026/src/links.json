@@ -29,5 +29,7 @@
   "PHOTO_BOARD": "a class game on the board, 16:9",
   "MEDIA": "https://lab.mathsforensics.com/media/",
   "FI_CHECKOUT": "https://www.mathsforensics.com/full-investigation-checkout",
-  "TERMS": "https://lab.mathsforensics.com/terms.html"
+  "TERMS": "https://lab.mathsforensics.com/terms.html",
+  "TEACHER_PRO_CHECKOUT": "https://www.mathsforensics.com/incident-room-teacherpro-checkout",
+  "INCIDENT_ROOM": "https://lab.mathsforensics.com/incident-room/"
 }
