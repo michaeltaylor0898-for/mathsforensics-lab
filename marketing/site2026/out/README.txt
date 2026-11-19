@@ -43,8 +43,8 @@ MEDIA FOLDER (do this first)
   and upload every file from this zip's media folder into it.
 
 PHOTOS (the striped boxes saying "YOUR PHOTO HERE")
-  Mike, portrait 4:5        homepage + About page
-  Students on tablets, 16:9 schools page
+  Mike's photo is done: the pages load lab.mathsforensics.com/media/mike.png
+  (homepage "Who's behind it" and the About page). To change it, replace that file.
 Upload the photo to Systeme (or anywhere public), copy its address, and send it to Claude.
 Never show a child's face without written consent from the school and parents; hands on tablets work well.
 
