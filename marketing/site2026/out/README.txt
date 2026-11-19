@@ -30,12 +30,12 @@ WHERE EACH PAGE GOES
   about    -> mathsforensics.com/about       (replaces the current About page)
 If you choose different addresses, tell Claude and the links will be rebuilt.
 
-LINKS STILL TO CONNECT (send Claude these and the pages are rebuilt with them)
-  #connect-academy-checkout          the Academy Pass checkout (£39)
-  #connect-kit-checkout              the Exam Season Kit checkout (£69)
-  #connect-full-investigation-list   a free waiting-list form for The Full Investigation (soft-launch pages)
-  #connect-full-investigation-checkout  The Full Investigation checkout, £147.99 (launch pages)
-Every other button already points to a live page.
+CHECKOUT ADDRESSES THESE PAGES USE (create funnels with exactly these URL paths)
+  www.mathsforensics.com/academy-checkout                Academy Pass, £39
+  www.mathsforensics.com/exam-season-kit-checkout        Exam Season Kit, £69
+  www.mathsforensics.com/full-investigation-waitlist     free waiting-list opt-in (soft-launch pages)
+  www.mathsforensics.com/full-investigation-checkout     The Full Investigation, £147.99 (launch pages)
+  Already live: mathsforensics-lab-checkout (Exam Pass). Every other button points to a live page.
 
 LOGO
   Upload your Maths Forensics logo (transparent PNG, the one Systeme's header uses) to the media folder
