@@ -37,6 +37,10 @@ LINKS STILL TO CONNECT (send Claude these and the pages are rebuilt with them)
   #connect-full-investigation-checkout  The Full Investigation checkout, £147.99 (launch pages)
 Every other button already points to a live page.
 
+LOGO
+  Upload your Maths Forensics logo (transparent PNG, the one Systeme's header uses) to the media folder
+  as logo.png (all lower case). Every page's header and footer shows it. Until it's there, a drawn shield shows instead.
+
 MEDIA FOLDER (do this first)
   The pages load the game video and screenshots from lab.mathsforensics.com/media/.
   In cPanel, open the lab.mathsforensics.com folder, create a folder called media,
