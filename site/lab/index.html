@@ -4074,18 +4074,41 @@ function checkSessions(attempts,topic,since=''){ // [{ref,correct,total,at}]
   return Object.values(g);
 }
 
+/* ---------- Academy set work: topic "ac:learn:<topic>", "ac:secure:<topic>" or "ac:case:<nn>". Done in the Academy, tracked from academy_progress ---------- */
+const AC_TOPICS=[["place-value","Place value"],["four-operations","The four operations"],["negative-numbers","Negative numbers"],["rounding","Rounding"],["factors-multiples","Factors, multiples and primes"],["order-of-operations","Order of operations"],["notation","Algebraic notation"],["simplifying","Simplifying expressions"],["substitution","Substitution"],["fractions-of-amounts","Fractions of amounts"],["metric-units","Metric units"],["perimeter","Perimeter"],["area-rectangles","Area of rectangles"],["angle-facts","Angle facts"],["probability-words","Probability words and the scale"],["charts-tables","Tables and charts"]];
+const AC_CASES=[["01","Case 01: The Scoby Stop"],["02","Case 02: The Dragon\u2019s Mouth"]];
+const acName=id=>(AC_TOPICS.find(t=>t[0]===id)||[,id])[1], acCase=id=>(AC_CASES.find(c=>c[0]===id)||[,'Case '+id])[1];
+let ACP={}; // Academy progress for the open class: user_id -> {topic: {learned,practised,secured,best,checks}}
+function acStatus(a,uid,now=Date.now()){
+  const k=asgKind(a), tp=(ACP[uid]||{}), overdue=now>new Date(a.due_at).getTime();
+  const out=(status,note)=>({status,note,overdue:overdue&&status!=='done',label:note});
+  if(k.sub==='case'){const p=tp['case-'+k.id];
+    if(p&&p.secured) return out('done',`Case closed · ${p.practised|0} points`);
+    if(p&&(p.learned||p.practised)) return out('progress','Case opened, not closed yet');
+    return out('none',overdue?'Not started · overdue':'Not started');}
+  const p=tp[k.id];
+  if(!p||!(p.learned||p.practised||p.checks)) return out('none',overdue?'Not started · overdue':'Not started');
+  if(k.sub==='secure'){
+    if(p.secured) return out('done',`Secured · ${p.best|0}/5 in the check`);
+    if((p.checks|0)>=1) return out('help',`Check: best ${p.best|0}/5 after ${p.checks} ${p.checks===1?'try':'tries'}`);
+    return out('progress',`${p.learned?'Learned · ':''}${p.practised|0} practice questions`);}
+  if(p.learned&&((p.practised|0)>=5||p.secured)) return out('done',`Learned · ${p.practised|0} practised`);
+  return out('progress',`${p.learned?'Learned':'Not learned yet'} · ${Math.min(p.practised|0,5)}/5 practised`);
+}
 /* ---------- Assignments: topic holds the kind: "<topic>", "check:<topic>", "exam:<id>" or "diag" ---------- */
-function asgKind(a){const t=String(a.topic||'');if(t==='diag')return {kind:'diag'};if(t.startsWith('paper:'))return {kind:'paper',id:t.slice(6)};if(t.startsWith('exam:'))return {kind:'exam',id:t.slice(5)};if(t.startsWith('check:'))return {kind:'check',id:t.slice(6)};return {kind:'practice',id:t}}
+function asgKind(a){const t=String(a.topic||'');if(t.startsWith('ac:')){const [,sub,id]=t.split(':');return {kind:'academy',sub,id}}if(t==='diag')return {kind:'diag'};if(t.startsWith('paper:'))return {kind:'paper',id:t.slice(6)};if(t.startsWith('exam:'))return {kind:'exam',id:t.slice(5)};if(t.startsWith('check:'))return {kind:'check',id:t.slice(6)};return {kind:'practice',id:t}}
 function asgDefaultTitle(topic){const k=asgKind({topic});
+  if(k.kind==='academy') return k.sub==='case'?acCase(k.id):(k.sub==='secure'?'Secure: ':'Learn and practise: ')+acName(k.id);
   if(k.kind==='diag') return 'Baseline diagnostic';
   if(k.kind==='paper') return k.id==='1'?'Paper 1 practice (non-calculator)':'Paper 2 practice (calculator)';
   if(k.kind==='exam') return 'Exam question: '+((typeof EXAM_BY_ID!=='undefined'&&EXAM_BY_ID[k.id])?EXAM_BY_ID[k.id].title:k.id);
   if(k.kind==='check') return 'Topic check: '+(TOP[k.id]?TOP[k.id].name:k.id);
   return TOP[k.id]?TOP[k.id].name:k.id}
-function asgValid(topic){const k=asgKind({topic});return k.kind==='diag'||(k.kind==='paper'&&(k.id==='1'||k.id==='2'))||(k.kind==='exam'&&typeof EXAM_BY_ID!=='undefined'&&!!EXAM_BY_ID[k.id])||((k.kind==='check'||k.kind==='practice')&&!!TOP[k.id])}
+function asgValid(topic){const k=asgKind({topic});if(k.kind==='academy') return k.sub==='case'?AC_CASES.some(c=>c[0]===k.id):(k.sub==='learn'||k.sub==='secure')&&AC_TOPICS.some(t=>t[0]===k.id);return k.kind==='diag'||(k.kind==='paper'&&(k.id==='1'||k.id==='2'))||(k.kind==='exam'&&typeof EXAM_BY_ID!=='undefined'&&!!EXAM_BY_ID[k.id])||((k.kind==='check'||k.kind==='practice')&&!!TOP[k.id])}
 /* Who did the set work, and who seems not to understand it. One student's attempts.
    status: done · help (attempted, but the evidence says they're stuck) · progress · none */
-function asgStatus(a,attempts,now=Date.now()){
+function asgStatus(a,attempts,now=Date.now(),uid){
+  if(asgKind(a).kind==='academy') return acStatus(a,uid,now);
   const k=asgKind(a), p=asgProgress(a,attempts), after=attempts.filter(x=>String(x.created_at)>=String(a.created_at));
   const overdue=now>new Date(a.due_at).getTime();
   const slip=xs=>{const e={};for(const x of xs) if(x.error_id) e[x.error_id]=(e[x.error_id]||0)+1;const top=Object.entries(e).sort((x,y)=>y[1]-x[1])[0];
@@ -4129,6 +4152,7 @@ function paperSessions(attempts,paper,since=''){
   return Object.values(g);
 }
 function asgProgress(a,attempts){ // attempts of ONE student
+  if(asgKind(a).kind==='academy') return {done:false,frac:0,label:'In the Academy'};
   const k=asgKind(a), after=attempts.filter(x=>String(x.created_at)>=String(a.created_at));
   if(k.kind==='practice'){const mine=after.filter(x=>x.topic===k.id&&x.correct), done=mine.filter(x=>!isHelped(x)).length, h=mine.length-done;
     return {done:done>=a.target,frac:Math.min(1,done/a.target),helped:h,label:`${Math.min(done,a.target)}/${a.target} correct${h?` (+${h} with help)`:''}`}}
@@ -4774,7 +4798,7 @@ const demoStore=(()=>{
     async studentClasses(userId){return db.classes.filter(c=>db.members.some(m=>m.class_id===c.id&&m.user_id===userId)).map(c=>({...c,teacher:userById(c.teacher_id)?.name}))},
     async studentAssignments(userId){
       const cls=db.classes.filter(c=>db.members.some(m=>m.class_id===c.id&&m.user_id===userId)).map(c=>c.id);
-      return db.assignments.filter(a=>cls.includes(a.class_id));
+      return db.assignments.filter(a=>cls.includes(a.class_id)&&!String(a.topic).startsWith('ac:'));
     },
     async teacherClasses(teacherId){return db.classes.filter(c=>c.teacher_id===teacherId).map(c=>({...c,students:db.members.filter(m=>m.class_id===c.id).length}))},
     async createClass(teacherId,name){
@@ -5017,7 +5041,7 @@ function supabaseStore(cfg){
     async studentClasses(){return must(await sb.rpc('my_classes'))},
     async studentAssignments(userId){
       const rows=must(await sb.from('assignments').select('*').gte('due_at',new Date(Date.now()-14*DAY).toISOString()).order('due_at'));
-      return rows;
+      return rows.filter(a=>!String(a.topic).startsWith('ac:'));
     },
     async teacherClasses(teacherId){
       const cls=must(await sb.from('classes').select('*').eq('teacher_id',teacherId).order('created_at'));
@@ -5046,7 +5070,10 @@ function supabaseStore(cfg){
       const assignments=asg;
       const dg=ids.length?await sb.from('diagnostics').select('user_id,grade,score,max,created_at').in('user_id',ids).order('created_at',{ascending:false}):{data:[]};
       const ro=await sb.from('roster').select('id,class_id,email,name,created_at,claimed_at').eq('class_id',classId).order('name');
-      return {...c,students,attempts,assignments,diagnostics:dg.error?[]:dg.data,roster:ro.error?[]:ro.data};
+      let academy={};
+      if(c.academy_on){const ap=await sb.rpc('academy_class_progress',{p_class:classId});
+        if(!ap.error) for(const x of (ap.data||[])) if(x.user) academy[x.user]=x.topics||{};}
+      return {...c,students,attempts,assignments,diagnostics:dg.error?[]:dg.data,roster:ro.error?[]:ro.data,academy};
     },
     async createAssignment(classId,{topic,target,due_at,title}){
       if(!asgValid(topic)) throw new Error('Choose what to set.');
@@ -5918,7 +5945,7 @@ function studentReportData(st,d,r){
   const answers=inR.length, correct=inR.filter(a=>a.correct).length, helped=inR.filter(isHelped).length;
   const ss=studySessions(inR), minutes=ss.reduce((m,s)=>m+s.minutes,0), days=new Set(inR.map(a=>dayKey(a.created_at))).size;
   const dg=(d.diagnostics||[]).filter(x=>x.user_id===st.id).sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at)))[0];
-  const work=d.assignments.filter(a=>new Date(a.due_at)>=r.from&&new Date(a.created_at)<r.to).sort((a,b)=>String(a.due_at).localeCompare(String(b.due_at))).map(a=>({a,s:asgStatus(a,all)}));
+  const work=d.assignments.filter(a=>asgKind(a).kind!=='academy').filter(a=>new Date(a.due_at)>=r.from&&new Date(a.created_at)<r.to).sort((a,b)=>String(a.due_at).localeCompare(String(b.due_at))).map(a=>({a,s:asgStatus(a,all)}));
   const per={}; for(const a of inR) if(TOP[a.topic]){const t=per[a.topic]||(per[a.topic]={n:0,c:0});t.n++;if(a.correct&&!isHelped(a))t.c++}
   const secure=Object.keys(M).filter(id=>TOP[id]&&M[id].state==='secure');
   let strengths=secure.slice().sort((x,y)=>M[y].acc-M[x].acc).slice(0,5);
@@ -5936,7 +5963,7 @@ function classReportData(d,r){
   const strandAcc=strands.map(s=>{const xs=inR.filter(a=>TOP[a.topic]&&TOP[a.topic].strand===s);return {s,n:xs.length,c:xs.filter(a=>a.correct).length}});
   const per={}; for(const a of inR) if(TOP[a.topic]){const t=per[a.topic]||(per[a.topic]={n:0,c:0,who:new Set()});t.n++;if(a.correct)t.c++;t.who.add(a.user_id)}
   const weakTopics=Object.entries(per).filter(([,t])=>t.n>=8).sort((a,b)=>a[1].c/a[1].n-b[1].c/b[1].n).slice(0,5);
-  const work=d.assignments.filter(a=>new Date(a.due_at)>=r.from&&new Date(a.created_at)<r.to).sort((a,b)=>String(a.due_at).localeCompare(String(b.due_at)))
+  const work=d.assignments.filter(a=>asgKind(a).kind!=='academy').filter(a=>new Date(a.due_at)>=r.from&&new Date(a.created_at)<r.to).sort((a,b)=>String(a.due_at).localeCompare(String(b.due_at)))
     .map(a=>{const sts=d.students.map(st=>asgStatus(a,d.attempts.filter(x=>x.user_id===st.id)).status);return {a,done:sts.filter(x=>x==='done').length,help:sts.filter(x=>x==='help').length,progress:sts.filter(x=>x==='progress').length,none:sts.filter(x=>x==='none').length}});
   const sess=rows.flatMap(x=>studySessions(x.inR).map(s=>({...s,user:x.st.id})));
   return {rows,answers:inR.length,correct:inR.filter(a=>a.correct).length,helped:inR.filter(isHelped).length,minutes:rows.reduce((m,x)=>m+x.minutes,0),
@@ -5954,7 +5981,7 @@ function schoolReportFromRaw({school,seats_used,classes,members,students,attempt
   const er={}; for(const a of inR) if(a.error_id) er[a.error_id]=(er[a.error_id]||0)+1;
   const sess=students.flatMap(st=>studySessions(inR.filter(a=>a.user_id===st.id)).map(s=>({...s,user:st.id})));
   return {school:{name:school.name,seats:school.seats,expires_at:school.expires_at},seats_used,from,to,
-    classes:classes.map(c=>{const ids=members.filter(m=>m.class_id===c.id).map(m=>m.user_id), asg=assignments.filter(a=>a.class_id===c.id&&new Date(a.due_at)>=r.from&&new Date(a.created_at)<r.to);
+    classes:classes.map(c=>{const ids=members.filter(m=>m.class_id===c.id).map(m=>m.user_id), asg=assignments.filter(a=>asgKind(a).kind!=='academy'&&a.class_id===c.id&&new Date(a.due_at)>=r.from&&new Date(a.created_at)<r.to);
       const slots=asg.flatMap(a=>ids.map(id=>asgStatus(a,attempts.filter(x=>x.user_id===id)).status==='done'));
       return {id:c.id,name:c.name,teacher:c.teacher,student_ids:ids,not_joined:roster.filter(x=>x.class_id===c.id&&!x.claimed_at).length,work_set:asg.length,work_slots:slots.length,work_done:slots.filter(Boolean).length}}),
     students:per_student,topics:Object.values(tp),errors:Object.entries(er).sort((a,b)=>b[1]-a[1]).map(([id,n])=>({id,n})),
@@ -6727,10 +6754,10 @@ function renderClassDetail(d){
   $('#classDetail').querySelectorAll('[data-copy]').forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(b.dataset.copy);alertBox('Follow-up list copied')}catch(e){alertBox('Copy not available in this browser')}});
   $('#copy').onclick=async()=>{try{await navigator.clipboard.writeText(d.code);alertBox('Class code copied')}catch(e){const r=document.createRange();r.selectNodeContents($('#code'));getSelection().removeAllRanges();getSelection().addRange(r)}};
   const fa=$('#fAsg'), kindSel=$('#a-kind');
-  const syncKind=()=>{const k=kindSel.value;const dn=$('#a-due-n');if(dn)dn.textContent=k==='practice'?4:(k==='diag'||k.startsWith('paper'))?2:3;$('#a-topic-l').hidden=k==='exam'||k==='diag'||k.startsWith('paper');$('#a-exam-l').hidden=k!=='exam';$('#a-target-l').hidden=k!=='practice'};
+  const syncKind=()=>{const k=kindSel.value;const dn=$('#a-due-n');if(dn)dn.textContent=k==='practice'?4:(k==='diag'||k.startsWith('paper'))?2:3;$('#a-topic-l').hidden=k==='exam'||k==='diag'||k.startsWith('paper')||k.startsWith('ac-');$('#a-actopic-l').hidden=!(k==='ac-learn'||k==='ac-secure');$('#a-accase-l').hidden=k!=='ac-case';$('#a-exam-l').hidden=k!=='exam';$('#a-target-l').hidden=k!=='practice'};
   kindSel.onchange=syncKind; syncKind();
   fa.onsubmit=e=>{e.preventDefault();busy(fa,async()=>{const k=kindSel.value,tp=$('#a-topic').value;
-    const topic=k==='practice'?tp:k==='check'?'check:'+tp:k==='exam'?'exam:'+$('#a-exam').value:k.startsWith('paper')?'paper:'+k.slice(5):'diag';
+    const topic=k==='ac-learn'?'ac:learn:'+$('#a-actopic').value:k==='ac-secure'?'ac:secure:'+$('#a-actopic').value:k==='ac-case'?'ac:case:'+$('#a-accase').value:k==='practice'?tp:k==='check'?'check:'+tp:k==='exam'?'exam:'+$('#a-exam').value:k.startsWith('paper')?'paper:'+k.slice(5):'diag';
     await api.createAssignment(d.id,{topic,target:+$('#a-target').value||1,due_at:$('#a-due').value});alertBox('Work set for '+d.name);renderClassDetail(await api.classDetail(d.id))})};
   document.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{await api.deleteAssignment(b.dataset.del);renderClassDetail(await api.classDetail(d.id))});
 }
@@ -6739,9 +6766,10 @@ const SG=[['help','Needs help','⚠'],['none','Not started','✕'],['progress','
 function dueLabel2(iso){const d=Math.ceil((new Date(iso)-Date.now())/864e5);
   return d<0?{t:`Overdue by ${-d} day${d===-1?'':'s'}`,c:'over'}:d===0?{t:'Due today',c:'soon'}:d===1?{t:'Due tomorrow',c:'soon'}:{t:`Due in ${d} days`,c:''}}
 function asgCardHTML(a,d){
-  const k=asgKind(a), rows=d.students.map(st=>({st,r:asgStatus(a,d.attempts.filter(x=>x.user_id===st.id))}));
+  ACP=d.academy||{};
+  const k=asgKind(a), rows=d.students.map(st=>({st,r:asgStatus(a,d.attempts.filter(x=>x.user_id===st.id),Date.now(),st.id)}));
   const by=Object.fromEntries(SG.map(([key])=>[key,rows.filter(x=>x.r.status===key)]));
-  const what={practice:`${a.target} correct answers on ${TOP[k.id]?TOP[k.id].name:k.id}`,check:'Pass a 5-question topic check (4 out of 5)',exam:'Hand in the exam question',diag:'Complete the 20-question diagnostic',paper:`Hand in a ${PAPER_N}-question ${k.id==='1'?'non-calculator':'calculator'} paper set`}[k.kind];
+  const what={practice:`${a.target} correct answers on ${TOP[k.id]?TOP[k.id].name:k.id}`,check:'Pass a 5-question topic check (4 out of 5)',exam:'Hand in the exam question',diag:'Complete the 20-question diagnostic',paper:`Hand in a ${PAPER_N}-question ${k.id==='1'?'non-calculator':'calculator'} paper set`,academy:k.sub==='case'?'Academy: crack the case':k.sub==='secure'?'Academy: pass the topic check (4 out of 5)':'Academy: learn the topic and answer 5 practice questions'}[k.kind];
   const due=dueLabel2(a.due_at), n=rows.length||1;
   const group=([key,label,icon])=>{const xs=by[key];
     return `<div class="sg sg-${key}"><h4><span aria-hidden="true">${icon}</span> ${label} <b>${xs.length}</b></h4>${xs.length?`<ul>${xs.map(({st,r})=>`<li${r.overdue&&key==='none'?' class="over"':''}><b>${esc(st.name)}</b><small>${esc(r.note)}</small></li>`).join('')}</ul>`:'<p class="hint">Nobody</p>'}</div>`};
@@ -6759,7 +6787,8 @@ function asgCardHTML(a,d){
 function followUpHTML(d){
   const recent=d.assignments.filter(a=>Date.now()-new Date(a.due_at).getTime()<14*864e5);
   const per=new Map();
-  for(const a of recent) for(const st of d.students){const r=asgStatus(a,d.attempts.filter(x=>x.user_id===st.id));
+  ACP=d.academy||{};
+  for(const a of recent) for(const st of d.students){const r=asgStatus(a,d.attempts.filter(x=>x.user_id===st.id),Date.now(),st.id);
     if(r.status==='help'||(r.status==='none'&&r.overdue)){if(!per.has(st.id))per.set(st.id,{st,items:[]});per.get(st.id).items.push({a,r})}}
   if(!per.size) return '';
   const list=[...per.values()].sort((x,y)=>y.items.filter(i=>i.r.status==='help').length-x.items.filter(i=>i.r.status==='help').length||y.items.length-x.items.length);
@@ -6772,9 +6801,11 @@ function setWorkHTML(d,liveTopics){
   const cards=d.assignments.slice().sort((x,y)=>String(y.created_at).localeCompare(String(x.created_at))).map(a=>asgCardHTML(a,d)).join('');
   return `<div class="panel setwork" id="setwork"><div class="phead"><h2>Set work for ${esc(d.name)}</h2><span class="hint">Students see it on their Today page straight away. Below, you'll see who has done it, who is stuck and who hasn't started.</span></div>
     <form id="fAsg" class="asgform" novalidate>
-      <label>${step(1,'What kind of work?')}<select class="inp" id="a-kind"><option value="practice">Topic practice</option><option value="check">Topic check (5 questions)</option><option value="exam">Exam question</option><option value="paper1">Paper 1 practice set (non-calculator)</option><option value="paper2">Paper 2 practice set (calculator)</option><option value="diag">Baseline diagnostic</option></select></label>
+      <label>${step(1,'What kind of work?')}<select class="inp" id="a-kind">${d.academy_on?`<optgroup label="Academy (Years 7 to 9)"><option value="ac-learn">Academy: learn and practise a topic</option><option value="ac-secure">Academy: secure a topic (pass its check)</option><option value="ac-case">Academy: a case file</option></optgroup><optgroup label="Lab (GCSE)">`:''}<option value="practice">Topic practice</option><option value="check">Topic check (5 questions)</option><option value="exam">Exam question</option><option value="paper1">Paper 1 practice set (non-calculator)</option><option value="paper2">Paper 2 practice set (calculator)</option><option value="diag">Baseline diagnostic</option>${d.academy_on?'</optgroup>':''}</select></label>
       <label id="a-topic-l">${step(2,'Which topic?')}<select class="inp" id="a-topic">${liveTopics.map(t=>`<option value="${t.id}">G${t.grade} · ${t.name}</option>`).join('')}</select></label>
       <label id="a-exam-l" hidden>${step(2,'Which exam question?')}<select class="inp" id="a-exam">${EXAMS.slice().sort((a,b)=>a.grade-b.grade).map(x=>`<option value="${x.id}">G${x.grade} · ${x.title}</option>`).join('')}</select></label>
+      <label id="a-actopic-l" hidden>${step(2,'Which Academy topic?')}<select class="inp" id="a-actopic">${AC_TOPICS.map(([id,n])=>`<option value="${id}">Bronze · ${n}</option>`).join('')}</select></label>
+      <label id="a-accase-l" hidden>${step(2,'Which case?')}<select class="inp" id="a-accase">${AC_CASES.map(([id,n])=>`<option value="${id}">${n}</option>`).join('')}</select></label>
       <label id="a-target-l">${step(3,'How many correct?')}<input class="inp" id="a-target" type="number" min="1" max="50" value="5"></label>
       <label>${step('<span id="a-due-n">4</span>','Due date')}<input class="inp" id="a-due" type="date" value="${todayPlus(7)}"></label>
       <button class="btn" type="submit">Set work →</button><p class="formerr" hidden></p></form>

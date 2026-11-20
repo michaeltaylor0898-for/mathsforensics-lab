@@ -706,7 +706,7 @@ function scClosed(){
     <div class="panel"><div class="panel-title"><span>Forensic report · where your points went</span><span>${S.errors.length} error${S.errors.length===1?'':'s'}</span></div>
       <div class="report">${rep}</div></div>
     <div class="panel stack"><div><div class="eyebrow">Next case</div><b style="font-family:var(--display);font-size:18px;letter-spacing:.04em">CASE 02 · THE DRAGON'S MOUTH</b><div class="note">Suspect 2's trail leads to Anton City, and to a hidden workshop. Follow the money, crack the safe and trace the signal.</div></div>
-      <div class="next-row"><a class="btn" href="case-02.html" style="text-decoration:none">Open Case 02</a><a class="btn ghost" href="index.html#path" style="text-decoration:none">Back to the Academy</a></div></div>
+      <div class="next-row"><a class="btn" href="case-02.html${location.search}" style="text-decoration:none">Open Case 02</a><a class="btn ghost" href="index.html#path" style="text-decoration:none">Back to the Academy</a></div></div>
     <div class="next-row"><button class="btn ghost" data-restart="1">Replay Case 01</button></div>
   </div>`;
 }
@@ -765,8 +765,9 @@ const teacherCheck=()=>{ const t=location.hash==='#teacher'; document.getElement
 window.addEventListener('hashchange',teacherCheck); teacherCheck();
 
 /* ---------- boot ---------- */
-const KEY='mfa.case01';
-const _render=render; render=function(){ _render(); try{ localStorage.setItem(KEY, JSON.stringify(S)); if(S.scene==='closed') localStorage.setItem('mfa.case.01', JSON.stringify({closed:true, score:S.score})); }catch(_){} };
+const L=(new URLSearchParams(location.search).get('l')||'').replace(/[^a-z0-9-]/gi,'').slice(0,40), SUF=L?'.'+L:'';
+const KEY='mfa.case01'+SUF;
+const _render=render; render=function(){ _render(); try{ localStorage.setItem(KEY, JSON.stringify(S)); if(S.scene==='closed') localStorage.setItem('mfa.case.01'+SUF, JSON.stringify({closed:true, score:S.score})); }catch(_){} };
 let saved=null; try{ saved=JSON.parse(localStorage.getItem(KEY)||'null'); }catch(_){}
 if(saved && saved.scene){ S=Object.assign(fresh(), saved); }
 render();

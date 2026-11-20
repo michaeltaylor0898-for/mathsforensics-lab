@@ -631,7 +631,8 @@ function scClosed(){
 
 /* ---------- render ---------- */
 const app = document.getElementById('app');
-const KEY='mfa.case02';
+const L=(new URLSearchParams(location.search).get('l')||'').replace(/[^a-z0-9-]/gi,'').slice(0,40), SUF=L?'.'+L:'';
+const KEY='mfa.case02'+SUF;
 function render(){
   const idx = SCENES.findIndex(s=>s[0]===S.scene);
   document.getElementById('steps').innerHTML = SCENES.map((s,i)=>`<li class="${i<idx?'done':i===idx?'now':''}">${s[1]}</li>`).join('');
@@ -639,7 +640,7 @@ function render(){
   document.getElementById('demo').checked = S.demo;
   const fn = {cover:scCover,briefing:scBriefing,money:scMoney,blueprint:scBlueprint,safe:scSafe,signal:scSignal,closed:scClosed}[S.scene];
   app.innerHTML = fn();
-  try{ localStorage.setItem(KEY, JSON.stringify(S)); if(S.scene==='closed') localStorage.setItem('mfa.case.02', JSON.stringify({closed:true, score:S.score})); }catch(_){}
+  try{ localStorage.setItem(KEY, JSON.stringify(S)); if(S.scene==='closed') localStorage.setItem('mfa.case.02'+SUF, JSON.stringify({closed:true, score:S.score})); }catch(_){}
 }
 function go(scene){ S.scene=scene; if(scene==='briefing'&&!S.started) S.started=Date.now(); render(); window.scrollTo({top:0,behavior:'smooth'}); }
 function wrong(id, r, raw){

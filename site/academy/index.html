@@ -207,6 +207,17 @@ a.casetile:hover{border-color:var(--cyan);transform:translateY(-2px)}
 .casetile.soon{border-style:dashed;opacity:.75;justify-content:flex-end;min-height:160px}
 .casebanner{display:flex;flex-direction:column;gap:2px;margin:12px 0 4px;padding:12px 16px;border:1px solid var(--cyan);border-radius:12px;background:rgba(0,252,241,.06);text-decoration:none;color:inherit;max-width:640px}
 .casebanner b{font-size:17px}
+.workpanel{margin:0 0 22px;border-color:var(--cyan);background:linear-gradient(180deg,rgba(0,252,241,.07),transparent 70%),var(--panel,#0B122C)}
+.worklist{display:grid;gap:8px;margin-top:16px}
+.workitem{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;text-decoration:none;color:inherit;background:rgba(7,12,32,.5)}
+a.workitem:hover{border-color:var(--cyan)}
+.workitem.done{opacity:.65}
+.wi-main{display:flex;flex-direction:column;gap:2px;min-width:0}
+.wi-side{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:none;text-align:right}
+.workitem .due{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.workitem .due.soon{color:#FFB86B}.workitem .due.over{color:var(--bad,#FF5D73)}
+.chip.warn{color:#FFB86B;border-color:#FFB86B}
+@media (max-width:560px){.workitem{flex-direction:column;align-items:flex-start}.wi-side{align-items:flex-start;text-align:left}}
 </style>
 </head>
 <body>
@@ -1606,13 +1617,14 @@ function screenName() {
 }
 
 function screenPath() {
+  caseSync();
   const secured = TOPICS.filter(t => prog(t.id).secured).length;
   const pct = Math.round(secured / TOPICS.length * 100);
   const allDone = secured === TOPICS.length;
   const next = TOPICS.find(t => !prog(t.id).secured && isOpen(t.id)) || TOPICS.find(t => !prog(t.id).secured);
   const parentHint = LIVE && ACC.on && ACC.me.role === "student" && ACC.access.level !== "full" && !Object.values(STORE.topics).some(p => p.learned || p.practised || p.secured)
     ? `<section class="panel stack" style="margin-bottom:18px${ACC.me.spare_passes ? ";border-color:var(--cyan)" : ""}"><div class="h3" style="margin:0">${ACC.me.spare_passes ? "Your Academy Pass is ready" : "Setting this up for your child?"}</div><p class="small muted" style="margin:0">${ACC.me.spare_passes ? "Add your child to this account to use it. They don't need an email." : "Add your child to this account instead. They don't need an email."}</p><div><a class="btn small ghost" href="#add-child">Add my child</a></div></section>` : "";
-  app.innerHTML = `${importBanner()}${parentHint}
+  app.innerHTML = `${importBanner()}${parentHint}${workPanel()}
     <div class="eyebrow">Your training pathway</div>
     <h1 class="h1">Working towards Bronze</h1>
     <p class="lede">Secure every topic by getting 4 out of 5 in its check. Then sit the Bronze award test and score 80% or more to earn your certificate.</p>
@@ -1637,7 +1649,7 @@ function screenPath() {
     <section class="casefeat" aria-label="Case files">
       <div class="casefeat-hd"><div><div class="eyebrow">Case files · Operation Crossroads</div><h2>Use your maths to crack real cases</h2>
         <p class="muted">Inspector Bancroft briefs you on video. Then you work through the evidence: every answer moves the case on, and every mistake is logged in your forensic report.</p></div></div>
-      <div class="casegrid">${CASES.map(c => { const st = caseState(c.n); return `<a class="casetile" href="${c.href}">
+      <div class="casegrid">${CASES.map(c => { const st = casePlayed(c.n); return `<a class="casetile" href="${caseHref(c)}">
         <span class="casetile-img" style="background-image:url('video/${c.poster}')"></span>
         <span class="casetile-body"><span class="strand">Case ${c.n}</span><b>${c.name}</b><span class="muted small">${c.blurb}</span>
         <span class="meta"><span class="chip">${c.maths}</span><span class="chip ${st.closed ? "secured" : "learning"}">${st.closed ? `Closed · ${st.score} pts` : st.open ? "Continue the case" : "Open the case"}</span></span></span></a>`; }).join("")}
@@ -1756,9 +1768,54 @@ const CASES = [
   { n: "01", name: "The Scoby Stop", href: "case-01.html", poster: "case01_tx01_briefing.jpg", maths: "Speed, distance, time · scale", blurb: "Two women run from a stopped car. Six witnesses. Use speed, distance and time to work out which of them saw your suspects." },
   { n: "02", name: "The Dragon\u2019s Mouth", href: "case-02.html", poster: "case02_tx01_briefing.jpg", maths: "Percentages · coordinates · sequences", blurb: "Follow the money, plot a stolen blueprint, crack a safe and trace a phone across Anton City." }
 ];
-function caseState(n) { try { const d = JSON.parse(localStorage.getItem("mfa.case." + n) || "null"); if (d && d.closed) return { closed: true, score: d.score }; return { open: !!localStorage.getItem("mfa.case" + n) }; } catch (e) { return {}; } }
+const LSUF = () => (ACC.on && ACC.learner ? "." + ACC.learner.id : "");
+const caseHref = c => c.href + (ACC.on && ACC.learner ? "?l=" + ACC.learner.id : "");
+function caseState(n) { try { const d = JSON.parse(localStorage.getItem("mfa.case." + n + LSUF()) || "null"); if (d && d.closed) return { closed: true, score: d.score }; return { open: !!localStorage.getItem("mfa.case" + n + LSUF()) }; } catch (e) { return {}; } }
+/* a case's progress is kept as topic "case-nn", so it syncs with the account and the teacher can see it */
+function caseSync() {
+  let changed = false;
+  for (const c of CASES) { const st = caseState(c.n), id = "case-" + c.n, p = STORE.topics[id];
+    if (st.closed && !(p && p.secured)) { STORE.topics[id] = { learned: true, practised: st.score | 0, streak: 0, secured: true, best: 5, checks: 1 }; changed = true; }
+    else if (st.open && !p) { STORE.topics[id] = { learned: true, practised: 0, streak: 0, secured: false, best: 0, checks: 0 }; changed = true; } }
+  if (changed) save();
+}
+const casePlayed = n => { const p = STORE.topics["case-" + n]; return p && p.secured ? { closed: true, score: p.practised | 0 } : p && p.learned ? { open: true } : caseState(n); };
+/* ---------- work from the teacher (school students only) ---------- */
+function acWorkKind(a) { const [, sub, id] = String(a.topic || "").split(":"); return { sub, id }; }
+function acWorkStatus(a) {
+  const k = acWorkKind(a);
+  if (k.sub === "case") { const st = casePlayed(k.id); return st.closed ? ["done", `Case closed · ${st.score} points`] : st.open ? ["progress", "Case opened, not closed yet"] : ["none", "Not started"]; }
+  const p = STORE.topics[k.id] || {};
+  if (k.sub === "secure") return p.secured ? ["done", `Secured · ${p.best | 0}/5 in the check`] : (p.checks | 0) ? ["help", `Best ${p.best | 0}/5 so far: you need 4 out of 5`] : (p.learned || p.practised) ? ["progress", "Started: finish with the Check"] : ["none", "Not started"];
+  if (p.learned && ((p.practised | 0) >= 5 || p.secured)) return ["done", `Learned · ${p.practised | 0} practised`];
+  return (p.learned || p.practised) ? ["progress", `${p.learned ? "Learned" : "Learn it first"} · ${Math.min(p.practised | 0, 5)}/5 practised`] : ["none", "Not started"];
+}
+function acWorkLink(a) {
+  const k = acWorkKind(a);
+  if (k.sub === "case") { const c = CASES.find(x => x.n === k.id); return c ? caseHref(c) : "#path"; }
+  const p = STORE.topics[k.id] || {};
+  return k.sub === "secure" ? `#t-${k.id}-${p.learned ? "check" : "learn"}` : `#t-${k.id}-${p.learned ? "practise" : "learn"}`;
+}
+function acWorkWhat(a) { const k = acWorkKind(a); return k.sub === "case" ? "Crack the case with Inspector Bancroft" : k.sub === "secure" ? "Pass the topic check: 4 out of 5" : "Learn the topic, then answer 5 practice questions"; }
+function dueText(iso) { const d = Math.ceil((new Date(iso) - Date.now()) / 864e5); return d < 0 ? [`Overdue by ${-d} day${d === -1 ? "" : "s"}`, "over"] : d === 0 ? ["Due today", "soon"] : d === 1 ? ["Due tomorrow", "soon"] : [`Due in ${d} days`, ""]; }
+function workPanel() {
+  const work = (ACC.work || []).filter(a => { const k = acWorkKind(a); return k.sub === "case" ? CASES.some(c => c.n === k.id) : !!TOPIC(k.id); });
+  if (!work.length) return "";
+  const rows = work.map(a => ({ a, st: acWorkStatus(a) }));
+  const open = rows.filter(r => r.st[0] !== "done").sort((x, y) => String(x.a.due_at).localeCompare(String(y.a.due_at))), done = rows.filter(r => r.st[0] === "done");
+  const first = open[0];
+  const item = ({ a, st }) => { const [dt, dc] = dueText(a.due_at); const isDone = st[0] === "done";
+    return `<a class="workitem${isDone ? " done" : ""}" href="${acWorkLink(a)}"><span class="wi-main"><b>${esc(a.title)}</b><span class="muted small">${acWorkWhat(a)}</span></span>
+      <span class="wi-side"><span class="chip ${isDone ? "secured" : st[0] === "help" ? "warn" : st[0] === "progress" ? "learning" : ""}">${isDone ? "✓ " : ""}${esc(st[1])}</span>${isDone ? "" : `<span class="due ${dc}">${dt}</span>`}</span></a>`; };
+  return `<section class="panel workpanel" aria-label="Work from your teacher">
+    <div class="row" style="justify-content:space-between;align-items:flex-start;gap:12px"><div><div class="eyebrow">Your next move</div>
+      <h2 style="margin:4px 0 0">${first ? "Work from your teacher" : "All your set work is done"}</h2></div>
+      ${first ? `<a class="btn" href="${acWorkLink(first.a)}">Start: ${esc(first.a.title)}</a>` : ""}</div>
+    <div class="worklist">${open.map(item).join("")}${done.map(item).join("")}</div></section>`;
+}
+
 const CASE_FOR = { "metric-units": ["01"], "speed-distance-time": ["01"], "scale-drawings": ["01", "02"], "percentages-of-amounts": ["02"], "coordinates": ["02"], "sequences": ["02"], "nth-term": ["02"], "constructions": ["02"] };
-const caseCard = c => { const st = caseState(c.n); return `<a class="tcard casecard" href="${c.href}" style="text-decoration:none;color:inherit">
+const caseCard = c => { const st = casePlayed(c.n); return `<a class="tcard casecard" href="${caseHref(c)}" style="text-decoration:none;color:inherit">
       <span class="strand">Case file ${c.n} · Inspector Bancroft</span><h3>${c.name}</h3><span class="muted small">${c.blurb}</span>
       <span class="meta"><span class="chip">${c.maths}</span><span class="chip ${st.closed ? "secured" : "learning"}">${st.closed ? `Closed · ${st.score} pts` : st.open ? "Continue the case" : "Open the case"}</span></span></a>`; };
 const GAMES = {
@@ -2002,6 +2059,11 @@ async function accUse(l) {
   STORE = { name: l.first_name, topics: {} };
   data.forEach(r => { const { topic, ...rest } = r; STORE.topics[topic] = rest; ACC.synced[topic] = pj(rest); });
   try { if (ACC.me && ACC.me.role === "parent") sessionStorage.setItem("mfa.child", l.id); } catch (e) {}
+  ACC.work = [];
+  if (ACC.me && ACC.me.role === "student" && ACC.me.learner && ACC.me.learner.id === l.id) {
+    try { const w = await ACC.sb.from("assignments").select("id,title,topic,target,due_at,created_at").like("topic", "ac:%")
+      .gte("due_at", new Date(Date.now() - 14 * 864e5).toISOString()).order("due_at"); if (!w.error) ACC.work = w.data || []; } catch (e) {}
+  }
 }
 let accTimer = null;
 function accSave() { clearTimeout(accTimer); accTimer = setTimeout(accFlush, 500); }
