@@ -539,7 +539,7 @@ function screenEnd() {
       <div class="big">${G.score}</div><div class="rank">${rank}</div>
       <div class="muted">${right} of ${ROUNDS} right${newBest ? " · new best score on this device" : ` · best ${BEST[k]}`}</div>
       <div class="pips">${G.results.map(r => `<i class="${r.ok ? "ok" : "no"}"></i>`).join("")}</div>
-      <div class="row"><button class="btn" id="again">Play again</button><button class="btn ghost" id="change">Change transport or level</button></div>
+      <div class="row"><button class="btn" id="again">Play again</button><button class="btn ghost" id="change">Change transport or level</button></div><p class="small" style="margin-top:14px">Ready for a real case? Times and timetables crack <a href="case-01.html">Case 01: The Scoby Stop</a>, where you race a suspect to the 10:41 train.</p>
       ${right >= 8 && CHOICE.level < 3 ? `<p class="small muted" style="margin:0">Ready for a harder shift? Try <b>${LEVELS[CHOICE.level + 1].name}</b>.</p>` : ""}</section>
     <section class="panel stack"><div class="eyebrow">Where time went missing</div>
       ${slips.length ? `<ul class="mlist">${slips.map(([m, n]) => `<li><b>× ${n}</b>${esc(m)}.</li>`).join("")}</ul>` : `<p class="muted" style="margin:0">No common slips this shift. Nice clean timekeeping.</p>`}

@@ -192,6 +192,21 @@ a.tier{color:inherit;text-decoration:none}
 footer{border-top:1px solid var(--line);color:var(--muted);font-size:14px}
 footer .wrap{display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:space-between;padding-block:16px calc(16px + env(safe-area-inset-bottom,0px))}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.casefeat{margin:34px 0 8px;padding:24px;border:1px solid var(--line);border-radius:18px;background:radial-gradient(ellipse at 0% 0%,rgba(0,252,241,.10),transparent 55%),linear-gradient(180deg,#0E1636,#0A1029)}
+.casefeat-hd h2{font-size:clamp(22px,3vw,30px);margin:6px 0 6px}
+.casefeat-hd p{max-width:70ch;margin:0}
+.casegrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:20px}
+@media (max-width:900px){.casegrid{grid-template-columns:minmax(0,1fr)}}
+.casetile{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#0B122C;text-decoration:none;color:inherit;transition:border-color .15s,transform .15s}
+a.casetile:hover{border-color:var(--cyan);transform:translateY(-2px)}
+.casetile-img{display:block;aspect-ratio:16/9;background-size:cover;background-position:center;border-bottom:1px solid var(--line)}
+.casetile-body{display:flex;flex-direction:column;gap:6px;padding:14px 16px 16px;flex:1}
+.casetile-body b{font-size:19px}
+.casetile .strand{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan)}
+.casetile .meta{margin-top:auto;padding-top:8px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.casetile.soon{border-style:dashed;opacity:.75;justify-content:flex-end;min-height:160px}
+.casebanner{display:flex;flex-direction:column;gap:2px;margin:12px 0 4px;padding:12px 16px;border:1px solid var(--cyan);border-radius:12px;background:rgba(0,252,241,.06);text-decoration:none;color:inherit;max-width:640px}
+.casebanner b{font-size:17px}
 </style>
 </head>
 <body>
@@ -1619,6 +1634,15 @@ function screenPath() {
 
       </section>
     </div>
+    <section class="casefeat" aria-label="Case files">
+      <div class="casefeat-hd"><div><div class="eyebrow">Case files · Operation Crossroads</div><h2>Use your maths to crack real cases</h2>
+        <p class="muted">Inspector Bancroft briefs you on video. Then you work through the evidence: every answer moves the case on, and every mistake is logged in your forensic report.</p></div></div>
+      <div class="casegrid">${CASES.map(c => { const st = caseState(c.n); return `<a class="casetile" href="${c.href}">
+        <span class="casetile-img" style="background-image:url('video/${c.poster}')"></span>
+        <span class="casetile-body"><span class="strand">Case ${c.n}</span><b>${c.name}</b><span class="muted small">${c.blurb}</span>
+        <span class="meta"><span class="chip">${c.maths}</span><span class="chip ${st.closed ? "secured" : "learning"}">${st.closed ? `Closed · ${st.score} pts` : st.open ? "Continue the case" : "Open the case"}</span></span></span></a>`; }).join("")}
+        <div class="casetile soon"><span class="casetile-body"><span class="strand">Case 03</span><b>The Stately Heist</b><span class="muted small">Montague Hall. A new case every month.</span><span class="meta"><span class="chip">Coming soon</span></span></span></div></div>
+    </section>
     <h2 class="eyebrow" style="margin:34px 0 12px">Bronze topics</h2>
     <div class="topics">${TOPICS.map(t => {
       const [cls, label] = status(t.id); const p = prog(t.id);
@@ -1628,12 +1652,6 @@ function screenPath() {
         <span class="meta"><span class="steps3" aria-label="Learn, practise, check"><i class="${p.learned ? "on" : ""}"></i><i class="${p.practised ? "on" : ""}"></i><i class="${p.secured ? "ok" : ""}"></i></span>${open ? `<span class="chip ${cls}">${label}</span>` : `<span class="chip">Academy Pass</span>`}</span></a>`;
     }).join("")}</div>
     <p class="muted small" style="margin-top:14px">All ${TOPICS.length} Bronze topics are ready. <a href="#map">See the full KS3 curriculum map</a>: ${Object.values(MAP).flat().length} topics from Bronze to Platinum.</p>
-    <h2 class="eyebrow" style="margin:34px 0 12px">Case files</h2>
-    <p class="muted" style="max-width:66ch;margin:0 0 14px">Story investigations with Inspector Bancroft. Watch the briefing, then use your maths to crack the case.</p>
-    <div class="topics">${CASES.map(c => { const st = caseState(c.n); return `<a class="tcard" href="${c.href}" style="text-decoration:none;color:inherit">
-      <span class="strand">Case ${c.n} · Operation Crossroads</span><h3>${c.name}</h3>
-      <span class="muted small">${c.blurb}</span>
-      <span class="meta"><span class="chip">${c.maths}</span><span class="chip ${st.closed ? "secured" : st.open ? "learning" : ""}">${st.closed ? `Closed · ${st.score} pts` : st.open ? "Continue" : "Open the case"}</span></span></a>`; }).join("")}</div>
     <h2 class="eyebrow" style="margin:34px 0 12px">Training games</h2>
     <div class="topics">${Object.entries(GAMES).flatMap(([tid, gs]) => gs.filter(g => !g.ir).map(g => `<a class="tcard" href="${g.href}" style="text-decoration:none;color:inherit">
       <span class="strand">${g.tag} · ${esc(TOPIC(tid).name)}</span><h3>${g.name}</h3>
@@ -1684,7 +1702,7 @@ function screenMap() {
       <div class="tierhd">${medal(col, l, tier !== "bronze")}<div><h2 style="font-size:22px">${nm}</h2><div class="muted small">${yrs} · ${list.length} topics</div></div></div>
       <div class="mapgrid">${list.map(([id, name, strand, codes]) => { const t = TOPIC(id); const st = t ? status(id) : null;
         return t ? `<a class="mapcard" href="#t-${id}-learn"><span class="strand muted small" style="font-family:var(--f-mono);letter-spacing:.1em;text-transform:uppercase;font-size:11px">${strand}</span><b>${esc(name)}</b><span class="codes">${codes.join(" · ")}</span><span><span class="chip ${st[0]}">${st[1]}</span></span></a>`
-                 : `<div class="mapcard soon"><span class="strand muted small" style="font-family:var(--f-mono);letter-spacing:.1em;text-transform:uppercase;font-size:11px">${strand}</span><b>${esc(name)}</b><span class="codes">${codes.join(" · ")}</span><span><span class="chip">Coming soon</span></span></div>`; }).join("")}</div>`; }).join("")}
+                 : `<div class="mapcard soon"><span class="strand muted small" style="font-family:var(--f-mono);letter-spacing:.1em;text-transform:uppercase;font-size:11px">${strand}</span><b>${esc(name)}</b><span class="codes">${codes.join(" · ")}</span><span><span class="chip">Coming soon</span>${CASE_FOR[id] ? `<span class="chip learning" style="margin-left:6px">Case ${CASE_FOR[id].join(", ")}</span>` : ""}</span></div>`; }).join("")}</div>`; }).join("")}
     <details class="panel" style="margin-top:30px"><summary class="h3" style="cursor:pointer;margin:0">Curriculum statement codes</summary>
       <p class="muted small">From the KS3 programme of study (DfE-00179-2013). N Number · A Algebra · R Ratio, proportion and rates of change · G Geometry and measures · P Probability · S Statistics.</p>
       <div class="nclist">${Object.entries(NC).map(([c, d]) => `<div><code>${c}</code>${esc(d)}</div>`).join("")}</div></details>`;
@@ -1695,17 +1713,18 @@ function screenTopic(id, tab) {
   const t = TOPIC(id); if (!t) { location.hash = "#path"; return; }
   if (!isOpen(id)) { app.innerHTML = `<nav class="crumbs"><a href="#path">Bronze pathway</a><span>›</span><span>${t.strand}</span></nav><h1 class="h1" style="margin-top:8px">${esc(t.name)}</h1>${lockedPanel(t)}`; return; }
   const p = prog(id);
-  const tabs = [["learn", "Learn", p.learned], ["practise", "Practise", p.practised >= 5 || p.secured]].concat(GAMES[id] ? [["play", "Play", false]] : [], [["check", "Check", p.secured]]);
+  const tabs = [["learn", "Learn", p.learned], ["practise", "Practise", p.practised >= 5 || p.secured]].concat(GAMES[id] || CASE_FOR[id] ? [["play", "Play", false]] : [], [["check", "Check", p.secured]]);
   app.innerHTML = `
     <nav class="crumbs"><a href="#path">Bronze pathway</a><span>›</span><span>${t.strand}</span></nav>
     <h1 class="h1" style="margin-top:8px">${esc(t.name)}</h1>
+    ${CASE_FOR[id] ? `<a class="casebanner" href="#t-${id}-play"><span class="eyebrow">Used in a case file</span><b>${CASE_FOR[id].map(n => { const c = CASES.find(x => x.n === n); return `Case ${n}: ${c.name}`; }).join(" · ")}</b><span class="muted small">Secure this topic, then use it to crack the case with Inspector Bancroft.</span></a>` : ""}
     <div class="tabs" role="tablist">${tabs.map(([k, label, done], i) =>
       `<button class="tab ${k === tab ? "on" : ""} ${done && k !== tab ? "done" : ""}" role="tab" aria-selected="${k === tab}" data-tab="${k}"><span class="n">${done && k !== tab ? "✓" : i + 1}</span>${label}</button>`).join("")}</div>
     <div class="tabbody" id="tabbody"></div>`;
   app.querySelectorAll("[data-tab]").forEach(b => b.onclick = () => location.hash = `#t-${id}-${b.dataset.tab}`);
   if (tab === "learn") tabLearn(t);
   else if (tab === "practise") tabPractise(t);
-  else if (tab === "play" && GAMES[id]) tabPlay(t);
+  else if (tab === "play" && (GAMES[id] || CASE_FOR[id])) tabPlay(t);
   else tabCheck(t);
 }
 
@@ -1734,10 +1753,14 @@ const irGame = (sub, topics) => ({ ir: true, name: "The Interrogation", href: IR
 
 /* ---------- Play: training games linked to topics ---------- */
 const CASES = [
-  { n: "01", name: "The Scoby Stop", href: "case-01.html", maths: "Speed, distance, time · scale", blurb: "Two women run from a stopped car. Six witnesses. Use speed, distance and time to work out which of them saw your suspects." },
-  { n: "02", name: "The Dragon\u2019s Mouth", href: "case-02.html", maths: "Percentages · coordinates · sequences", blurb: "Follow the money, plot a stolen blueprint, crack a safe and trace a phone across Anton City." }
+  { n: "01", name: "The Scoby Stop", href: "case-01.html", poster: "case01_tx01_briefing.jpg", maths: "Speed, distance, time · scale", blurb: "Two women run from a stopped car. Six witnesses. Use speed, distance and time to work out which of them saw your suspects." },
+  { n: "02", name: "The Dragon\u2019s Mouth", href: "case-02.html", poster: "case02_tx01_briefing.jpg", maths: "Percentages · coordinates · sequences", blurb: "Follow the money, plot a stolen blueprint, crack a safe and trace a phone across Anton City." }
 ];
 function caseState(n) { try { const d = JSON.parse(localStorage.getItem("mfa.case." + n) || "null"); if (d && d.closed) return { closed: true, score: d.score }; return { open: !!localStorage.getItem("mfa.case" + n) }; } catch (e) { return {}; } }
+const CASE_FOR = { "metric-units": ["01"], "speed-distance-time": ["01"], "scale-drawings": ["01", "02"], "percentages-of-amounts": ["02"], "coordinates": ["02"], "sequences": ["02"], "nth-term": ["02"], "constructions": ["02"] };
+const caseCard = c => { const st = caseState(c.n); return `<a class="tcard casecard" href="${c.href}" style="text-decoration:none;color:inherit">
+      <span class="strand">Case file ${c.n} · Inspector Bancroft</span><h3>${c.name}</h3><span class="muted small">${c.blurb}</span>
+      <span class="meta"><span class="chip">${c.maths}</span><span class="chip ${st.closed ? "secured" : "learning"}">${st.closed ? `Closed · ${st.score} pts` : st.open ? "Continue the case" : "Open the case"}</span></span></a>`; };
 const GAMES = {
   "simplifying": [{ name: "Evidence Locker", href: "like-terms.html", tag: "Algebra", blurb: "Sort every term into the right locker, then total each one to write the expression in its simplest form. Three levels, up to x², xy and minus signs.", meta: "3 levels · 10 cases" }, irGame("KA", "algebra")],
   "factors-multiples": [{ name: "The Suspect's Vault", href: "vault.html", tag: "Number and algebra", blurb: "Crack five suspects' vaults before the alarm: sequences, prime factor trees and index laws, then spin the combination dial and name the culprit.", meta: "3 levels · 5 vaults" }],
@@ -1746,7 +1769,9 @@ const GAMES = {
   "metric-units": [{ name: "Departures", href: "timetables.html", tag: "Time", blurb: "Read train, bus and flight timetables to track the courier: journey times, waiting times, connections and time zones.", meta: "3 levels · 10 questions" }]
 };
 function tabPlay(t) {
-  $("#tabbody").innerHTML = `<p class="muted" style="max-width:62ch">Practise ${esc(t.name.toLowerCase())} as a game. Games don't count towards securing the topic: the Check does that.</p>
+  const cases = (CASE_FOR[t.id] || []).map(n => CASES.find(c => c.n === n));
+  $("#tabbody").innerHTML = `${cases.length ? `<h2 class="eyebrow" style="margin:0 0 12px">Use it in a case</h2><div class="topics" style="margin-bottom:26px">${cases.map(caseCard).join("")}</div>` : ""}
+    ${(GAMES[t.id] || []).length ? `<p class="muted" style="max-width:62ch">Practise ${esc(t.name.toLowerCase())} as a game. Games don't count towards securing the topic: the Check does that.</p>` : ""}
     <div class="topics">${(GAMES[t.id] || []).map(g => `<a class="tcard" href="${g.href}" style="text-decoration:none;color:inherit">
       <span class="strand">Training game · ${g.tag}</span><h3>${g.name}</h3><span class="muted small">${g.blurb}</span>
       <span class="meta"><span class="chip">${g.meta}</span><span class="chip learning">Play</span></span></a>`).join("")}</div>`;
