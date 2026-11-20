@@ -1,0 +1,775 @@
+<!doctype html>
+<html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Case 01: The Scoby Stop · Maths Forensics Academy</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Josefin+Sans:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: an incident-room console. Dark navy UI frame, intelligence map on the left, evidence paper and tasks on the right; stacks to one column on phones. Deliberately single dark theme. */
+:root{
+  --bg:#070C1F; --panel:#0B122C; --panel-2:#111A3D; --line:#26326A; --fg:#E8ECF8; --muted:#8E99C4;
+  --cyan:#00FCF1; --blue:#1B36FF; --amber:#FFB547; --red:#FF5D73; --green:#3DE39B;
+  --paper:#F4ECD8; --paper-2:#E9DDBF; --ink:#2A2418; --ink-2:#6B5D43; --stamp:#B3261E;
+  --ground:#0E1634; --street:#1E2A57; --street-edge:#2D3B74; --street-ink:#7D89B8; --park:#0F3A3A; --park-edge:#1C5A55;
+  --display:"Syncopate","Arial Black",system-ui,sans-serif;
+  --body:"Josefin Sans","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5;
+  background-image:radial-gradient(ellipse at 20% -10%,rgba(27,54,255,.18),transparent 55%),radial-gradient(ellipse at 110% 10%,rgba(0,252,241,.07),transparent 45%);background-attachment:fixed}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--panel)}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* top bar */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:rgba(11,18,44,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:10px 20px;padding-block:10px}
+.brand{display:flex;flex-direction:column;line-height:1.1;margin-right:auto}
+.brand b{font-family:var(--display);font-size:13px;letter-spacing:.14em}
+.brand span{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.08em}
+.steps{display:flex;gap:4px;flex-wrap:wrap;list-style:none;margin:0;padding:0}
+.steps li{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border:1px solid var(--line);border-radius:3px;color:var(--muted)}
+.steps li.done{color:var(--cyan);border-color:rgba(0,252,241,.35)}
+.steps li.now{background:var(--cyan);color:var(--panel);border-color:var(--cyan);font-weight:600}
+.pts{font-family:var(--mono);font-size:12px;display:flex;align-items:center;gap:8px;padding:5px 10px;border:1px solid var(--line);border-radius:3px;background:var(--panel-2)}
+.pts b{font-size:16px;color:var(--cyan);font-variant-numeric:tabular-nums}
+
+main{padding-block:24px 40px}
+h1,h2,h3{text-wrap:balance;margin:0}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan)}
+.h-scene{font-family:var(--display);font-weight:700;font-size:clamp(20px,3vw,28px);letter-spacing:.04em;text-transform:uppercase;margin-top:6px}
+.lede{color:var(--muted);max-width:62ch;margin:8px 0 0}
+.scene-head{margin-bottom:20px}
+
+.grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px;align-items:start}
+.grid > *{min-width:0}
+.sticky{position:sticky;top:calc(env(safe-area-inset-top,0px) + 76px)}
+@media (max-width:880px){.grid{grid-template-columns:minmax(0,1fr)}.sticky{position:static}}
+
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:18px}
+.panel-title{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.stack{display:flex;flex-direction:column;gap:16px}
+
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--cyan);color:var(--panel);border:0;border-radius:4px;padding:11px 18px;font-weight:700;font-size:15px;letter-spacing:.02em}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.btn.ghost:hover{border-color:var(--cyan)}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+.link{background:none;border:0;color:var(--muted);text-decoration:underline;text-underline-offset:3px;font-size:14px;padding:0}
+.link:hover{color:var(--cyan)}
+
+/* cover */
+.cover{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.9fr);gap:28px;align-items:center;padding-block:12px}
+@media (max-width:880px){.cover{grid-template-columns:minmax(0,1fr)}}
+.cover h1{font-family:var(--display);font-weight:700;font-size:clamp(30px,5.4vw,56px);line-height:1.02;letter-spacing:.02em;text-transform:uppercase}
+.cover h1 em{font-style:normal;color:var(--cyan)}
+.cover p{color:var(--muted);max-width:52ch;font-size:17px}
+.folder{position:relative;background:linear-gradient(180deg,#B38C5E,#A07A4E);border-radius:4px 14px 4px 4px;padding:22px;box-shadow:0 30px 60px -30px rgba(0,0,0,.8);transform:rotate(-1.5deg)}
+.folder::before{content:"";position:absolute;top:-14px;left:18px;width:120px;height:18px;background:#B38C5E;border-radius:6px 6px 0 0}
+.folder .sheet{background:var(--paper);color:var(--ink);border-radius:2px;padding:20px;font-family:var(--mono);font-size:12.5px;line-height:1.6;transform:rotate(2deg)}
+.sheet h3{font-family:var(--display);font-size:15px;letter-spacing:.1em;margin-bottom:8px}
+.stamp{display:inline-block;border:2px solid var(--stamp);color:var(--stamp);font-family:var(--display);font-weight:700;font-size:12px;letter-spacing:.18em;padding:3px 8px;transform:rotate(-6deg);margin:8px 0}
+.sheet dl{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;margin:10px 0 0}
+.sheet dt{color:var(--ink-2)}
+.sheet dd{margin:0}
+.meta-row{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 24px}
+.tag{font-family:var(--mono);font-size:11.5px;padding:4px 9px;border:1px solid var(--line);border-radius:3px;color:var(--muted)}
+
+/* transmission (AI video slot) */
+.tx{background:var(--panel);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.tx-screen{position:relative;aspect-ratio:16/7;max-width:100%;background:radial-gradient(circle at 30% 40%,#18245a,#070c1f 70%);display:flex;align-items:flex-end;gap:16px;padding:16px;overflow:hidden}
+.tx-screen::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 3px);pointer-events:none}
+.tx-chip{position:absolute;top:12px;left:12px;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border:1px dashed rgba(0,252,241,.6);color:var(--cyan);border-radius:3px;background:rgba(7,12,31,.6)}
+.tx-rec{position:absolute;top:12px;right:14px;font-family:var(--mono);font-size:11px;color:var(--red);display:flex;align-items:center;gap:6px}
+.tx-rec i{width:8px;height:8px;border-radius:50%;background:var(--red);animation:blink 1.4s infinite}
+@keyframes blink{50%{opacity:.2}}
+.tx-face{width:min(26%,140px);height:auto;flex:none;align-self:flex-end;margin-bottom:-16px}
+.tx-id{display:flex;flex-direction:column;padding-bottom:4px;min-width:0}
+.tx-id b{font-family:var(--display);font-size:clamp(12px,1.8vw,16px);letter-spacing:.08em;text-transform:uppercase}
+.tx-id span{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.tx-wave{position:absolute;right:16px;bottom:16px;display:flex;gap:3px;align-items:flex-end;height:28px}
+.tx-wave i{width:3px;background:var(--cyan);opacity:.7;border-radius:2px;height:20%}
+.tx.live .tx-wave i{animation:wave 1s ease-in-out infinite}
+@keyframes wave{50%{height:100%}}
+.tx-subs{padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.tx-subs p{margin:0;max-width:68ch;font-size:16.5px}
+.tx.live .tx-subs p{animation:sub .5s both}
+@keyframes sub{from{opacity:0;transform:translateY(6px)}}
+
+.tx-head{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line)}
+.tx-head .tx-rec{position:static}
+.tx-len{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.tx-video{display:block;width:100%;max-width:100%;aspect-ratio:16/9;background:#000}
+details.tx-subs summary{cursor:pointer;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+details.tx-subs p{margin:8px 0 0;color:var(--fg)}
+.tx-skip{padding:0 18px 14px}
+/* suspects */
+.suspects{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:520px){.suspects{grid-template-columns:minmax(0,1fr)}}
+.suspect{background:var(--paper);color:var(--ink);border-radius:3px;padding:14px;display:flex;flex-direction:column;gap:8px;position:relative}
+.suspect .s-head{display:flex;gap:12px;align-items:center}
+.suspect svg{width:58px;height:58px;flex:none;border-radius:2px;background:var(--paper-2)}
+.suspect h4{margin:0;font-family:var(--display);font-size:13px;letter-spacing:.08em}
+.suspect .sub{font-family:var(--mono);font-size:11.5px;color:var(--ink-2)}
+.suspect ul{margin:0;padding-left:18px;font-size:14.5px}
+.suspect .obs{font-size:14px;font-style:italic;border-left:3px solid var(--ink-2);padding:2px 0 2px 10px}
+.suspect .obs b{display:block;font-style:normal;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.suspect .speed{font-family:var(--mono);font-size:12.5px;padding:6px 8px;background:var(--ink);color:var(--paper);border-radius:2px}
+.s1 .speed b{color:var(--amber)} .s2 .speed b{color:var(--cyan)}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:middle;margin-right:4px}
+.dot.s1{background:var(--amber)} .dot.s2{background:var(--cyan)}
+
+table.speeds{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums}
+.tbl{overflow-x:auto}
+.speeds th,.speeds td{padding:7px 6px;text-align:center;border-bottom:1px solid var(--line)}
+.speeds th{font-weight:600;color:var(--muted);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.speeds td button{width:100%;background:none;border:1px solid transparent;border-radius:3px;padding:5px 2px;font-family:var(--mono);font-size:13px}
+.speeds.pick td button{border-color:var(--line)}
+.speeds.pick td button:hover{border-color:var(--cyan);color:var(--cyan)}
+.speeds td button.sel-s1{background:var(--amber);color:var(--panel);font-weight:600}
+.speeds td button.sel-s2{background:var(--cyan);color:var(--panel);font-weight:600}
+.note{font-size:13px;color:var(--muted);margin-top:8px}
+
+/* questions */
+.q{border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px}
+.q:first-child{border-top:0;padding-top:0}
+.q-p{font-size:16px}
+.q-p small{display:block;color:var(--muted);font-size:13.5px;margin-top:2px}
+.q.done .q-p{color:var(--muted);font-size:14.5px}
+.q-a{font-family:var(--mono);font-size:14px;color:var(--green)}
+.q-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.q-in{display:flex;align-items:center;background:var(--panel-2);border:1px solid var(--line);border-radius:4px;min-width:0}
+.q-in:focus-within{border-color:var(--cyan)}
+.q-in input{background:transparent;border:0;color:var(--fg);font-family:var(--mono);font-size:17px;padding:10px 12px;width:9.5em;max-width:46vw;outline:none}
+.q-in span{font-family:var(--mono);color:var(--muted);padding-right:12px;font-size:14px}
+.choices{display:flex;flex-wrap:wrap;gap:8px}
+.choice{background:var(--panel-2);border:1px solid var(--line);border-radius:4px;padding:10px 14px;font-size:15px;text-align:left}
+.choice:hover{border-color:var(--cyan)}
+.choice small{display:block;font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.fb{font-size:14.5px;padding:10px 12px;border-left:3px solid var(--red);background:rgba(255,93,115,.08);border-radius:0 4px 4px 0}
+.fb b{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--red);display:block;margin-bottom:2px}
+.hint{font-size:14.5px;padding:10px 12px;border-left:3px solid var(--amber);background:rgba(255,181,71,.07);border-radius:0 4px 4px 0}
+.demo-a{font-family:var(--mono);font-size:12px;color:var(--amber)}
+.solved-note{font-size:14.5px;padding:10px 12px;border-left:3px solid var(--green);background:rgba(61,227,155,.07);border-radius:0 4px 4px 0}
+
+/* witnesses */
+.wtabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+@media (max-width:520px){.wtabs{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.wtab{background:var(--panel-2);border:1px solid var(--line);border-radius:4px;padding:7px 4px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.wtab b{font-family:var(--mono);font-size:14px}
+.wtab span{font-size:10.5px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.wtab.on{border-color:var(--cyan);box-shadow:inset 0 0 0 1px var(--cyan)}
+.wtab.v-S1 span{color:var(--amber)} .wtab.v-S2 span{color:var(--cyan)} .wtab.v-X span{color:var(--red)}
+.statement{background:var(--paper);color:var(--ink);border-radius:3px;padding:16px 18px;position:relative;box-shadow:0 18px 30px -24px rgba(0,0,0,.9)}
+.statement .st-h{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-family:var(--mono);font-size:11.5px;color:var(--ink-2);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--paper-2);padding-bottom:8px;margin-bottom:10px}
+.statement h4{margin:0 0 2px;font-family:var(--display);font-size:14px;letter-spacing:.06em}
+.statement .where{font-family:var(--mono);font-size:12.5px;color:var(--ink-2);margin-bottom:8px}
+.statement p{margin:0;font-size:15.5px;line-height:1.55;max-width:62ch}
+.statement .verdict-stamp{position:absolute;right:14px;top:40px;border:2px solid currentColor;padding:3px 8px;font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:.14em;transform:rotate(-8deg);background:rgba(244,236,216,.85)}
+.vs-S1{color:#B66F00} .vs-S2{color:#0A7C78} .vs-X{color:var(--stamp)}
+.ref{display:flex;flex-wrap:wrap;gap:8px;font-family:var(--mono);font-size:12px}
+.ref span{padding:4px 8px;border:1px solid var(--line);border-radius:3px;background:var(--panel-2)}
+
+/* map */
+.map{background:var(--ground);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.map svg{display:block;width:100%;height:auto}
+.map-cap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;font-family:var(--mono);font-size:11.5px;color:var(--muted);padding:8px 12px;border-top:1px solid var(--line);background:var(--panel)}
+.m-street{stroke:var(--street);stroke-width:14;stroke-linecap:round;fill:none}
+.m-edge{stroke:var(--street-edge);stroke-width:16;stroke-linecap:round;fill:none}
+.m-sname{fill:var(--street-ink);font-family:var(--mono);font-size:8.5px;letter-spacing:.04em}
+.m-park{fill:var(--park);stroke:var(--park-edge);stroke-width:1}
+.m-pname{fill:#3FA79D;font-family:var(--mono);font-size:9px}
+.m-bld{fill:var(--panel-2);stroke:var(--street-edge)}
+.m-bname{fill:var(--muted);font-family:var(--mono);font-size:8.5px}
+.m-path{stroke:var(--park-edge);stroke-width:3;stroke-dasharray:4 4;fill:none}
+.m-route{stroke:#fff;stroke-width:4;stroke-dasharray:9 6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.m-trail-s1{stroke:var(--amber);stroke-width:5;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:.95}
+.m-trail-s2{stroke:var(--cyan);stroke-width:5;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:.95}
+.m-pursuit{stroke:var(--red);stroke-width:4;stroke-dasharray:8 6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.m-leg rect{fill:var(--paper);}
+.m-leg text{fill:var(--ink);font-family:var(--mono);font-size:10px;font-weight:600}
+.m-pin circle{stroke-width:2.5}
+.m-pin text{font-family:var(--mono);font-size:9px;font-weight:600}
+.m-pin.p-pending circle{fill:var(--panel);stroke:var(--muted)} .m-pin.p-pending text{fill:var(--fg)}
+.m-pin.p-on circle{fill:#fff;stroke:#fff} .m-pin.p-on text{fill:var(--panel)}
+.m-pin.p-S1 circle{fill:var(--amber);stroke:var(--amber)} .m-pin.p-S1 text{fill:var(--panel)}
+.m-pin.p-S2 circle{fill:var(--cyan);stroke:var(--cyan)} .m-pin.p-S2 text{fill:var(--panel)}
+.m-pin.p-X circle{fill:var(--panel);stroke:var(--red)} .m-pin.p-X text{fill:var(--red)}
+.m-pin[data-wit]{cursor:pointer}
+.m-stop rect{fill:var(--red)} .m-stop text{fill:var(--red);font-family:var(--mono);font-size:9px;font-weight:600}
+.m-circle{fill:rgba(255,181,71,.10);stroke:var(--amber);stroke-width:2;stroke-dasharray:6 5}
+.m-cand circle{fill:var(--panel);stroke:var(--fg);stroke-width:2}
+.m-cand text{fill:var(--fg);font-family:var(--mono);font-size:9px}
+.m-scale line{stroke:var(--fg);stroke-width:2}
+.m-scale text{fill:var(--muted);font-family:var(--mono);font-size:8.5px}
+.m-rail{stroke:var(--muted);stroke-width:1.5;fill:none}
+
+/* outcome / closed */
+.next-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:4px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px}
+.stat span{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.stat b{display:block;font-family:var(--display);font-size:22px;margin-top:4px;font-variant-numeric:tabular-nums}
+.report{display:flex;flex-direction:column;gap:10px}
+.rep{display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px;padding:10px 0;border-top:1px solid var(--line);font-size:15px}
+@media (max-width:560px){.rep{grid-template-columns:minmax(0,1fr);gap:2px}}
+.rep .rt{font-family:var(--mono);font-size:12px;color:var(--amber);text-transform:uppercase;letter-spacing:.06em}
+.rep .rq{font-family:var(--mono);font-size:11.5px;color:var(--muted);display:block}
+.locked{background:repeating-linear-gradient(135deg,var(--panel) 0 12px,var(--panel-2) 12px 24px);border:1px dashed var(--line);border-radius:6px;padding:18px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.locked b{font-family:var(--display);font-size:15px;letter-spacing:.06em}
+
+footer{border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;padding-block:14px}
+.toggle{display:inline-flex;gap:8px;align-items:center;cursor:pointer}
+.toggle input{accent-color:var(--amber)}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+</head><body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html#path" style="text-decoration:none;color:inherit" title="Back to the Academy"><b>← MATHS FORENSICS ACADEMY</b><span>OPERATION CROSSROADS · CASE 01</span></a>
+    <ol class="steps" id="steps"></ol>
+    <div class="pts">Case points <b id="pts">100</b></div>
+  </div>
+</header>
+<main class="wrap" id="app"></main>
+<footer>
+  <div class="wrap">
+    <span>Case 01 of the Operation Crossroads campaign · transmissions are AI-generated</span>
+    <label class="toggle" id="demo-wrap" hidden><input type="checkbox" id="demo"> Teacher view: show answers</label>
+  </div>
+</footer>
+
+<script>
+(function(){
+/* ---------- constants ---------- */
+const U = 40;          // svg units per map cm
+const SCALE = 50;      // metres per map cm
+const STOP = [320,280];
+const SPEED = {S1:2.5, S2:3.94};
+const SCENES = [
+  ['cover','File'],['briefing','Briefing'],['suspects','Suspects'],['witnesses','Witnesses'],
+  ['search','Search'],['pursuit','Pursuit'],['closed','Closed']
+];
+const VLABEL = {S1:'Suspect 1', S2:'Suspect 2', X:'False lead'};
+
+const WIT = [
+ {code:'A1', name:'Mona Cox', where:'Primrose Street, by the Post Office', cover:'10:28', time:'10:28:00', t:60, verdict:'X',
+  text:'I was out jogging along Primrose Street when a woman ran past me going the other way. Fair hair in a ponytail, green running vest, silver running tights, bright orange trainers and a small running backpack. She was flying, and barely out of breath. My running watch said 10:28 exactly.',
+  route:[[320,280],[400,280],[400,120],[544,120]], pin:[544,120]},
+ {code:'A2', name:'Margaret Rutherford', where:'42 Victoria Road', cover:'10:30', time:'10:30:00', t:180, verdict:'S1',
+  text:'I was watering the front garden when a woman walked past, then broke into a jog. Her hood was up, but I could see fair, shoulder-length hair. Average build, about 160 cm, maybe 40 years old. She had a dark holdall and was red-faced and out of breath. The church clock had just struck half past ten.',
+  route:[[320,280],[240,280],[240,120],[200,120]], pin:[200,120]},
+ {code:'A3', name:'Stephen Gartree', where:'15 Maple Drive', cover:'10:33', time:'10:33:00', t:360, verdict:'S1',
+  text:'I was loading my golf clubs into the car when a woman jogged past. Fair hair in a ponytail, about 160 cm, average build, dark holdall in her left hand. She was on the phone, not speaking English. My car clock said 10:33. About a minute later I drove up Maple Drive and along Park Avenue, and I didn’t see her again.',
+  route:[[320,280],[240,280],[240,120],[120,120],[120,60]], pin:[120,60]},
+ {code:'B1', name:'Ethel Harper', where:'4 Willow Way', cover:'10:28', time:'10:28:30', t:90, verdict:'S2',
+  text:'I’d just set the oven timer, so I know it was 10:28 and 30 seconds. A tall, muscular woman ran past incredibly fast: black coat, black boots, long black hair, carrying a brown leather holdall. She tried to push something into my wheelie bin but it fell out. It was a small grey plastic part with a toothed edge. I gave it to the police.',
+  route:[[320,280],[400,280],[400,420],[440,420]], pin:[440,420]},
+ {code:'B2', name:'Bernard Hemming', where:'Pinecrest Park, south entrance', cover:'10:25', time:'10:25:00', t:-120, verdict:'X',
+  text:'I was walking my dog, Max, near the south entrance of the park. A tall woman with dark hair ran past at an impressive speed: short running shorts, bright yellow trainers and a backpack. I know the time because I’d just looked at my watch. It was 10:25.',
+  route:[[320,280],[160,280],[160,360]], pin:[160,360]},
+ {code:'B3', name:'Harun Salleh', where:'Sycamore Crescent, near Hollyhock Street', cover:'approx. 10:34', time:'10:36:00', t:540, verdict:'S2',
+  text:'I was walking to the mosque on Park Avenue and checked my phone: it was exactly 10:36. A tall woman, around 180 cm, long black hair, black coat and boots, was walking up Sycamore Crescent with a brown bag, talking on the phone in a language I didn’t recognise. She ended the call, looked at her watch, then ran towards Park Avenue and turned right, towards the station.',
+  route:[[320,280],[400,280],[400,420],[560,420],[560,360]], pin:[560,360]}
+];
+WIT.forEach(w=>{
+  const L = legs(w.route); w.legs = L;
+  w.cm = Math.round(L.reduce((a,l)=>a+l.len,0)*10)/10;
+  w.d = Math.round(w.cm*SCALE);
+  w.v = w.t>0 ? w.d/w.t : null;
+});
+const TRAIL_S1 = [[320,280],[240,280],[240,120],[120,120],[120,60]];
+const TRAIL_S2 = [[320,280],[400,280],[400,420],[560,420],[560,360]];
+const PURSUIT = [[560,360],[560,20],[680,20]];
+const CENTER = [120,60];
+const CANDS = [
+  {id:'oak', name:'Oakwood Park pavilion', p:[180,70]},
+  {id:'mosque', name:'Mosque car park', p:[300,0]},
+  {id:'pine', name:'Pinecrest Park bandstand', p:[100,400]},
+  {id:'river', name:'Riverside Park', p:[480,300]},
+  {id:'station', name:'Scoby train station', p:[680,20]}
+].map(c=>({...c, cm: Math.round(Math.hypot(c.p[0]-CENTER[0], c.p[1]-CENTER[1])/U*10)/10}));
+
+function legs(route){
+  const out=[];
+  for(let i=1;i<route.length;i++){
+    const [x1,y1]=route[i-1],[x2,y2]=route[i];
+    out.push({x:(x1+x2)/2,y:(y1+y2)/2,len:Math.round(Math.hypot(x2-x1,y2-y1)/U*10)/10,vert:Math.abs(x2-x1)<Math.abs(y2-y1)});
+  }
+  return out;
+}
+
+/* ---------- state ---------- */
+const fresh = () => ({scene:'cover', score:100, errors:[], ans:{}, draft:{}, fb:{}, hinted:{}, tx:{}, active:'A1', demo:false, started:null, finished:null, wrong:0});
+let S = fresh();
+
+/* ---------- helpers ---------- */
+const near = (v,a,tol=0.0001) => Math.abs(v-a) <= tol;
+const ok = () => ({ok:true});
+const err = (type,msg) => ({ok:false,type,msg});
+const num = s => { const v = parseFloat(String(s).replace(',','.').replace(/[^0-9.\-]/g,'')); return isNaN(v)?null:v; };
+const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const f2 = v => v.toFixed(2);
+
+/* ---------- question banks ---------- */
+const TABLE = [
+  [25,[9.7,10.8,12.6,14.2]],[30,[9.7,10.8,12.6,14.2]],[35,[9.5,10.6,12.4,14.0]],[40,[9.3,10.5,12.2,13.8]],[45,[9.0,10.2,12.0,13.6]]
+];
+const LEVELS = ['Beginner','Novice','Intermediate','Advanced'];
+
+const Q = {
+  s2cell:{type:'cell', prompt:'Tap the running speed in the table that best fits <b>Suspect 2</b>.', answerText:'Age 30, Advanced: 14.2 km/h',
+    hint:'Find her age row first (30). Then use PC Jensen’s description of how she ran to pick the level column.',
+    check:v=>v==='30|Advanced'?ok(): (v.startsWith('30|')?err('Reasoning','Right age. Now the level: PC Jensen says she sprinted off like a trained athlete. Which column fits that?'):err('Reading the evidence','Check her estimated age on the profile: about 30.'))},
+  s2conv:{type:'num', prompt:'Convert Suspect 2’s top speed to metres per second.', unit:'m/s', small:'Round to 2 decimal places.', answerText:'14.2 ÷ 3.6 = 3.94',
+    hint:'To change km/h into m/s, divide by 3.6.',
+    check:v=>{ if(near(v,3.944,0.006)) return ok(); if(near(v,51.12,0.1)) return err('Units','You multiplied by 3.6. Going from km/h to m/s, divide by 3.6.');
+      if(near(v,14.2,0.01)) return err('Units','That is still in km/h. Convert it to m/s.'); if(near(v,6.35,0.02)) return err('Units','That is the mph conversion. The table value is in km/h, so divide by 3.6.');
+      if(near(v,3.944,0.06)) return err('Rounding','Nearly. Round to 2 decimal places.'); return err('Units','Divide the km/h value by 3.6.'); }},
+  s1cell:{type:'cell', prompt:'Now tap the running speed that best fits <b>Suspect 1</b>.', answerText:'Age 45, Beginner: 9.0 km/h',
+    hint:'Find her age row first (45). Then use PC Jensen’s description of how she ran to pick the level column.',
+    check:v=>v==='45|Beginner'?ok(): (v.startsWith('45|')?err('Reasoning','Right age. Now the level: PC Jensen says she was out of breath and doesn’t run often. Which column fits that?'):err('Reading the evidence','Check her estimated age on the profile: about 45.'))},
+  s1conv:{type:'num', prompt:'Convert Suspect 1’s top speed to metres per second.', unit:'m/s', small:'Round to 2 decimal places.', answerText:'9.0 ÷ 3.6 = 2.50',
+    hint:'Divide the km/h value by 3.6.',
+    check:v=>{ if(near(v,2.5,0.006)) return ok(); if(near(v,32.4,0.1)) return err('Units','You multiplied by 3.6. Going from km/h to m/s, divide by 3.6.');
+      if(near(v,9,0.01)) return err('Units','That is still in km/h. Convert it to m/s.'); if(near(v,4.02,0.02)) return err('Units','That is the mph conversion. The table value is in km/h.');
+      return err('Units','Divide the km/h value by 3.6.'); }},
+
+  c1:{type:'num', prompt:'Mr Gartree drove the length of Maple Drive and Park Avenue about <b>60 seconds</b> after Suspect 1 passed him, and saw nothing. At her top speed, what is the furthest she could have gone?', unit:'m', answerText:'2.50 × 60 = 150 m',
+    hint:'Distance = speed × time. Use Suspect 1’s top running speed in m/s.',
+    check:v=>{ if(near(v,150,0.5)) return ok(); if(near(v,2.5,0.01)) return err('Formula','That is her speed. Multiply it by the time to get a distance.');
+      if(near(v,236.4,1)) return err('Reasoning','That uses Suspect 2’s speed. Mr Gartree saw Suspect 1.'); if(near(v,540,1)) return err('Units','Use her speed in m/s, not km/h.');
+      if(near(v,83.4,0.6)) return err('Reasoning','That is walking speed. For the furthest she could get, use her top running speed.'); if(near(v,0.0417,0.001)||near(v,24,0.5)) return err('Formula','Distance = speed × time.');
+      return err('Formula','Distance = speed × time.'); }},
+  c2:{type:'num', prompt:'Convert that distance into a search radius on the map.', unit:'cm', small:'Scale: 1 cm on the map = 50 m.', answerText:'150 ÷ 50 = 3 cm',
+    hint:'Every map centimetre is 50 metres, so divide by 50.',
+    check:v=>{ if(near(v,3,0.01)) return ok(); if(near(v,7500,1)) return err('Scale','You multiplied by 50. Going from metres to map cm, divide by 50.');
+      if(near(v,1.5,0.01)||near(v,0.3,0.01)||near(v,30,0.01)) return err('Scale','Check the scale: 1 cm = 50 m, so divide the metres by 50.'); return err('Scale','Divide the real distance by 50 to get map centimetres.'); }},
+  c3:{type:'choice', prompt:'The search circle is now on the map. Which location is <b>inside</b> it? Distances are measured on the map from 15 Maple Drive.', answerText:'Oakwood Park pavilion (1.5 cm)',
+    hint:'Anything more than 3 cm from 15 Maple Drive is outside her reach.',
+    choices:()=>CANDS.map(c=>({v:c.id,label:c.name,sub:c.cm.toFixed(1)+' cm from 15 Maple Drive'})),
+    check:v=>{ if(v==='oak') return ok(); const c=CANDS.find(x=>x.id===v); return err('Reasoning',`${c.name} is ${c.cm.toFixed(1)} cm away on the map. That is outside the 3 cm search radius.`); }},
+
+  d1:{type:'num', prompt:'Suspect 2 ran from Sycamore Crescent towards the station (red route). How far is that in real life?', unit:'m', answerText:'(8.5 + 3.0) × 50 = 575 m',
+    hint:'Add the two legs shown on the map, then multiply by 50.',
+    check:v=>{ if(near(v,575,0.5)) return ok(); if(near(v,11.5,0.01)) return err('Scale','That is the map length in cm. Convert it: 1 cm = 50 m.');
+      if(near(v,425,0.5)||near(v,150,0.5)) return err('Reading the evidence','Add both legs of the route before converting.'); return err('Scale','Add the legs, then multiply by 50.'); }},
+  d2:{type:'num', prompt:'At her top speed of 3.94 m/s, how long does that run take?', unit:'s', small:'Round to the nearest second.', answerText:'575 ÷ 3.94 = 146 s',
+    hint:'Time = distance ÷ speed.',
+    check:v=>{ if(v>=145.5&&v<=146.5) return ok(); if(near(v,2265.5,2)) return err('Formula','You multiplied. Time = distance ÷ speed.');
+      if(near(v,2.43,0.02)) return err('Units','That looks like minutes. Give the time in seconds.'); if(near(v,230,0.5)) return err('Reasoning','That uses Suspect 1’s speed.');
+      if(near(v,0.00685,0.0005)) return err('Formula','You divided speed by distance. Time = distance ÷ speed.'); if(v>=144&&v<=148) return err('Rounding','Close. Round to the nearest second.');
+      return err('Formula','Time = distance ÷ speed.'); }},
+  d3:{type:'choice', prompt:'Mr Salleh saw her set off at exactly 10:36:00. What time does she reach the station?', answerText:'10:36:00 + 2 min 26 s = 10:38:26',
+    hint:'146 seconds is 2 minutes and 26 seconds.',
+    choices:()=>[{v:'a',label:'10:37:46'},{v:'b',label:'10:38:26'},{v:'c',label:'10:38:46'},{v:'d',label:'10:39:26'}],
+    check:v=>v==='b'?ok():err('Units','Convert 146 seconds into minutes and seconds first (146 = 2 × 60 + 26), then add it to 10:36:00.')},
+  d4:{type:'choice', prompt:'The next train to Anton City leaves at <b>10:41</b>. Can she make it?', answerText:'Yes, with about 2½ minutes to spare',
+    hint:'Compare 10:38:26 with 10:41:00.',
+    choices:()=>[{v:'y',label:'Yes'},{v:'n',label:'No'}],
+    check:v=>v==='y'?ok():err('Reasoning','She arrives at 10:38:26, about two and a half minutes before the train leaves.')}
+};
+
+function witQs(w){
+  const qs = [];
+  qs.push({id:w.code+'-d', type:'num', unit:'m', prompt:`How far is <b>${esc(w.where)}</b> from the vehicle stop, in real life?`, small:'Add the route legs on the map. Scale: 1 cm = 50 m.',
+    answerText:`${w.legs.map(l=>l.len.toFixed(1)).join(' + ')} = ${w.cm.toFixed(1)} cm × 50 = ${w.d} m`,
+    hint:'Add the leg lengths shown on the route, then multiply the total by 50.',
+    check:v=>{ if(near(v,w.d,0.5)) return ok(); if(near(v,w.cm,0.01)) return err('Scale',`${w.cm.toFixed(1)} is the map length in cm. Convert it: 1 cm on the map = 50 m.`);
+      if(near(v,w.cm*5,0.5)||near(v,w.cm*500,0.5)||near(v,w.cm/50,0.01)) return err('Scale','Check the scale. Each map centimetre is 50 metres.');
+      return err('Reading the evidence','Add every leg of the route on the map, then convert to metres.'); }});
+  qs.push({id:w.code+'-t', type:'num', unit:'s', prompt:'How much time passed between the women fleeing at <b>10:27:00</b> and this sighting?', small:'Give your answer in seconds.',
+    answerText: w.t>0?`${w.time} − 10:27:00 = ${w.t} s`:`10:25:00 is 2 minutes <i>before</i> 10:27:00, so −120 s`,
+    hint:'Count from 10:27:00 to the sighting time. 1 minute = 60 seconds.',
+    check:v=>{ if(near(v,w.t,0.5)) return ok();
+      if(w.code==='B3' && near(v,420,0.5)) return err('Reading the evidence','The cover sheet says “approx. 10:34”, but in his statement he checked his phone: exactly 10:36. Use the most precise evidence.');
+      if(w.code==='B2' && near(v,120,0.5)) return err('Reading the evidence','10:25 is before the women ran at 10:27. Should the time difference be positive?');
+      if(w.code==='B2' && near(v,-2,0.01)) return err('Units','Right direction. Now give it in seconds.');
+      if(w.t>0 && near(v,w.t/60,0.01)) return err('Units','That answer is in minutes. Speed in m/s needs the time in seconds.');
+      return err('Reading the evidence','Find the sighting time in the statement and count on from 10:27:00, in seconds.'); }});
+  if(w.t>0){
+    const ex = w.v;
+    qs.push({id:w.code+'-v', type:'num', unit:'m/s', prompt:'What average speed would someone need to get there by that time?', small:'Round to 2 decimal places.',
+      answerText:`${w.d} ÷ ${w.t} = ${f2(ex)} m/s`,
+      hint:'Speed = distance ÷ time. Use metres and seconds.',
+      check:v=>{ if(near(v,ex,0.006)) return ok(); if(near(v,w.t/w.d,0.006)) return err('Formula','You divided time by distance. Speed = distance ÷ time.');
+        if(near(v,w.d/(w.t/60),0.6)) return err('Units','That is metres per minute. Use the time in seconds.'); if(near(v,ex*3.6,0.06)) return err('Units','That is in km/h. The suspects’ speeds are in m/s.');
+        if(near(v,w.cm/w.t,0.006)) return err('Scale','You used the map distance in cm. Use the real distance in metres.'); if(near(v,ex,0.06)) return err('Rounding','Nearly. Round to 2 decimal places.');
+        return err('Formula','Speed = distance ÷ time.'); }});
+  }
+  qs.push({id:w.code+'-x', type:'choice', prompt:'Verdict: who did this witness see?', answerText:VLABEL[w.verdict],
+    hint:`Compare the speed with each top speed (Suspect 1: 2.50 m/s, Suspect 2: 3.94 m/s), and the description with each profile.`,
+    choices:()=>[{v:'S1',label:'Suspect 1'},{v:'S2',label:'Suspect 2'},{v:'X',label:'False lead'}],
+    check:v=>{ if(v===w.verdict) return ok();
+      if(w.code==='B2') return err('Reasoning','This sighting was before the women fled at 10:27. It cannot be either suspect.');
+      if(v!=='X' && w.v>SPEED[v]) return err('Reasoning',`${f2(w.v)} m/s is faster than ${VLABEL[v]}’s top speed of ${f2(SPEED[v])} m/s. She couldn’t have got there in time.`);
+      if(w.code==='A1') return err('Reasoning','Check the description too: running kit and orange trainers. Neither suspect matches.');
+      if(v==='X') return err('Reasoning','The speed is possible, so this could be a real sighting. Check the description against the suspect profiles.');
+      return err('Reading the evidence','Check the description: hair, height, build and bag.'); }});
+  return qs;
+}
+
+function allQs(){
+  const out = {...Q};
+  WIT.forEach(w=>witQs(w).forEach(q=>out[q.id]=q));
+  return out;
+}
+let QALL = allQs();
+Object.keys(QALL).forEach(k=>QALL[k].id=QALL[k].id||k);
+
+/* ---------- map ---------- */
+const STREETS = [
+  {n:'Park Avenue',p:[[-30,20],[750,20]],l:[420,20]},
+  {n:'Victoria Road',p:[[120,120],[320,120]],l:[280,120]},
+  {n:'Primrose Street',p:[[400,120],[560,120]],l:[470,120]},
+  {n:'Ivy Street',p:[[120,200],[240,200]],l:[180,200]},
+  {n:'Hollyhock Street',p:[[400,200],[560,200]],l:[480,200]},
+  {n:'Greenfield Road',p:[[40,280],[400,280]],l:[90,280]},
+  {n:'Willow Way',p:[[400,420],[560,420]],l:[500,420]},
+  {n:'Maple Drive',p:[[120,20],[120,280]],l:[120,170],v:1},
+  {n:'Church Lane',p:[[240,120],[240,280]],l:[240,240],v:1},
+  {n:'Cedar Road',p:[[320,120],[320,280]],l:[320,190],v:1},
+  {n:'Mill Street',p:[[400,120],[400,420]],l:[400,320],v:1},
+  {n:'Sycamore Crescent',p:[[560,20],[560,420]],l:[560,270],v:1}
+];
+const pts = p => p.map(q=>q.join(',')).join(' ');
+
+function mapSVG(o){
+  o = o||{};
+  let s = `<svg viewBox="-30 -50 780 540" role="img" aria-label="Scoby intelligence map"><rect x="-30" y="-50" width="780" height="540" fill="var(--ground)"/>`;
+  // parks
+  s += `<rect class="m-park" x="40" y="300" width="180" height="160" rx="6"/><text class="m-pname" x="130" y="448" text-anchor="middle">PINECREST PARK</text>`;
+  s += `<rect class="m-park" x="140" y="40" width="90" height="60" rx="6"/><text class="m-pname" x="185" y="94" text-anchor="middle">OAKWOOD PARK</text>`;
+  s += `<rect class="m-park" x="420" y="222" width="120" height="176" rx="6"/><text class="m-pname" x="480" y="390" text-anchor="middle">RIVERSIDE PARK</text>`;
+  s += `<path class="m-path" d="M160 287 V360"/>`;
+  // buildings
+  s += `<rect class="m-bld" x="276" y="-26" width="52" height="20" rx="2"/><text class="m-bname" x="302" y="-12" text-anchor="middle">Mosque</text>`;
+  s += `<rect class="m-bld" x="350" y="-26" width="56" height="20" rx="2"/><text class="m-bname" x="378" y="-12" text-anchor="middle">Shops</text>`;
+  s += `<rect class="m-bld" x="576" y="-30" width="68" height="24" rx="2"/><text class="m-bname" x="610" y="-14" text-anchor="middle">Shopping Ctr</text>`;
+  s += `<rect class="m-bld" x="652" y="-36" width="80" height="30" rx="2"/><text class="m-bname" x="692" y="-17" text-anchor="middle">Train Station</text>`;
+  s += `<path class="m-rail" d="M690 -36 C700 -46 720 -48 750 -48 M700 -36 C712 -44 730 -44 750 -42"/>`;
+  s += `<rect class="m-bld" x="478" y="130" width="56" height="20" rx="2"/><text class="m-bname" x="506" y="143" text-anchor="middle">Post Office</text>`;
+  // streets
+  STREETS.forEach(st=>s+=`<polyline class="m-edge" points="${pts(st.p)}"/>`);
+  STREETS.forEach(st=>s+=`<polyline class="m-street" points="${pts(st.p)}"/>`);
+  STREETS.forEach(st=>{
+    const [x,y]=st.l;
+    s += st.v ? `<text class="m-sname" x="${x}" y="${y}" dy="3" text-anchor="middle" transform="rotate(-90 ${x} ${y})">${st.n}</text>`
+              : `<text class="m-sname" x="${x}" y="${y}" dy="3" text-anchor="middle">${st.n}</text>`;
+  });
+  // circle + candidates
+  if(o.circle){ s += `<circle class="m-circle" cx="${CENTER[0]}" cy="${CENTER[1]}" r="${3*U}"/>`; }
+  if(o.cands){ CANDS.forEach(c=>{ const [x,y]=c.p; const right = x<600;
+    s += `<g class="m-cand"><circle cx="${x}" cy="${y}" r="5"/><text x="${right?x+9:x-9}" y="${y+16}" text-anchor="${right?'start':'end'}">${c.name}</text></g>`; }); }
+  // trails
+  if(o.trailS1) s += `<polyline class="m-trail-s1" points="${pts(TRAIL_S1)}"/>`;
+  if(o.trailS2) s += `<polyline class="m-trail-s2" points="${pts(TRAIL_S2)}"/>`;
+  if(o.pursuit) { s += `<polyline class="m-pursuit" points="${pts(PURSUIT)}"/>`; s += legLabels(legs(PURSUIT)); }
+  // highlighted route
+  if(o.route){ s += `<polyline class="m-route" points="${pts(o.route)}"/>`; s += legLabels(legs(o.route)); }
+  // stop
+  s += `<g class="m-stop"><rect x="${STOP[0]-7}" y="${STOP[1]-7}" width="14" height="14" transform="rotate(45 ${STOP[0]} ${STOP[1]})"/><text x="${STOP[0]+12}" y="${STOP[1]+22}">VEHICLE STOP</text></g>`;
+  // pins
+  (o.pins||[]).forEach(w=>{
+    const st = S.ans[w.code+'-x'] ? 'p-'+w.verdict : (o.active===w.code?'p-on':'p-pending');
+    const [x,y]=w.pin;
+    s += `<g class="m-pin ${st}" ${o.click?`data-wit="${w.code}" tabindex="0" role="button" aria-label="Witness ${w.code}, ${esc(w.name)}"`:''}><circle cx="${x}" cy="${y}" r="12"/><text x="${x}" y="${y}" dy="3.2" text-anchor="middle">${w.code}</text></g>`;
+  });
+  if(o.centerPin){ const [x,y]=CENTER; s += `<g class="m-pin p-S1"><circle cx="${x}" cy="${y}" r="12"/><text x="${x}" y="${y}" dy="3.2" text-anchor="middle">A3</text></g>`; }
+  if(o.b3Pin){ const [x,y]=[560,360]; s += `<g class="m-pin p-S2"><circle cx="${x}" cy="${y}" r="12"/><text x="${x}" y="${y}" dy="3.2" text-anchor="middle">B3</text></g>`; }
+  // scale + north
+  s += `<g class="m-scale"><line x1="610" y1="470" x2="${610+2*U}" y2="470"/><line x1="610" y1="465" x2="610" y2="475"/><line x1="${610+U}" y1="466" x2="${610+U}" y2="474"/><line x1="${610+2*U}" y1="465" x2="${610+2*U}" y2="475"/>
+    <text x="610" y="460" text-anchor="middle">0</text><text x="${610+U}" y="460" text-anchor="middle">50</text><text x="${610+2*U}" y="460" text-anchor="middle">100 m</text>
+    <text x="${610+U}" y="486" text-anchor="middle">1 cm : 50 m</text></g>`;
+  s += `<g class="m-scale"><line x1="-6" y1="470" x2="-6" y2="444"/><path d="M-6 438 l-5 10 h10 z" fill="var(--fg)"/><text x="-6" y="486" text-anchor="middle">N</text></g>`;
+  return s + `</svg>`;
+}
+function legLabels(L){
+  return L.map(l=>{
+    const x = l.vert ? l.x+30 : l.x, y = l.vert ? l.y : l.y-18;
+    return `<g class="m-leg"><rect x="${x-24}" y="${y-9}" width="48" height="18" rx="3"/><text x="${x}" y="${y}" dy="3.5" text-anchor="middle">${l.len.toFixed(1)} cm</text></g>`;
+  }).join('');
+}
+
+/* ---------- components ---------- */
+function face(initials, tone){
+  return `<svg class="tx-face" viewBox="0 0 120 120" aria-hidden="true">
+    <defs><linearGradient id="g${initials}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${tone}" stop-opacity=".9"/><stop offset="1" stop-color="#0B122C" stop-opacity=".2"/></linearGradient></defs>
+    <circle cx="60" cy="44" r="24" fill="url(#g${initials})"/><path d="M14 120 C16 84 38 72 60 72 C82 72 104 84 106 120 Z" fill="url(#g${initials})"/>
+    <text x="60" y="50" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="15" font-weight="600" fill="#070C1F">${initials}</text></svg>`;
+}
+const TXFILE = {brief:'case01_tx01_briefing', trail:'case01_tx02_trail', arrest:'case01_tx03_arrest', escape:'case01_tx04_escape', c2brief:'case02_tx01_briefing', c2work:'case02_tx02_workshop'};
+function transmission(id, who, role, lines, len){
+  const f = TXFILE[id];
+  return `<section class="tx">
+    <div class="tx-head"><span class="tx-rec"><i></i>INCOMING · ${who.toUpperCase()}</span><span class="tx-len">${len}</span></div>
+    <video class="tx-video" data-tx="${id}" controls playsinline preload="metadata" poster="video/${f}.jpg" src="video/${f}.mp4"></video>
+    <details class="tx-subs"><summary>Transcript</summary>${lines.map(l=>`<p>${l}</p>`).join('')}</details>
+    <div class="tx-skip" data-skipwrap="${id}" ${S.tx[id]?'hidden':''}><button class="link" data-skip="${id}">Can\u2019t play sound? Read the transcript and continue</button></div>
+  </section>`;
+}
+function after(id, html){ return `<div class="next-row" data-after="${id}" ${S.tx[id]?'':'hidden'}>${html}</div>`; }
+function unlockTx(id){ S.tx[id]=true; app.querySelectorAll(`[data-after="${id}"]`).forEach(e=>e.hidden=false); const w=app.querySelector(`[data-skipwrap="${id}"]`); if(w) w.hidden=true; }
+
+function qHTML(q){
+  const done = q.id in S.ans;
+  const demo = S.demo ? `<div class="demo-a">Answer: ${q.answerText}</div>` : '';
+  if(done){
+    let shown = S.ans[q.id];
+    if(q.type==='choice'){ const c=q.choices().find(c=>c.v===shown); shown=c?c.label:shown; }
+    if(q.type==='cell'){ shown = shown.replace('|',', '); }
+    return `<div class="q done"><div class="q-p">${q.prompt}</div><div class="q-a">✓ ${esc(shown)}${q.unit?' '+q.unit:''}</div></div>`;
+  }
+  let body = '';
+  if(q.type==='num'){
+    body = `<form class="q-row" data-q="${q.id}"><label class="q-in"><input id="in-${q.id}" inputmode="decimal" autocomplete="off" aria-label="Your answer" value="${esc(S.draft[q.id]||'')}"><span>${q.unit||''}</span></label><button class="btn" type="submit">Check</button></form>`;
+  } else if(q.type==='choice'){
+    body = `<div class="choices">${q.choices().map(c=>`<button class="choice" data-q="${q.id}" data-v="${c.v}">${c.label}${c.sub?`<small>${c.sub}</small>`:''}</button>`).join('')}</div>`;
+  } else if(q.type==='cell'){
+    body = `<div class="note">Tap your answer in the running-speed table (Exhibit D1), under the suspect cards.</div>`;
+  }
+  const fb = S.fb[q.id] ? `<div class="fb" role="status"><b>${S.fb[q.id].type}</b>${S.fb[q.id].msg}</div>` : '';
+  const hint = S.hinted[q.id] ? `<div class="hint">${q.hint}</div>` : `<div><button class="link" data-hint="${q.id}">Need a hint? (−3 points)</button></div>`;
+  return `<div class="q"><div class="q-p">${q.prompt}${q.small?`<small>${q.small}</small>`:''}</div>${body}${fb}${hint}${demo}</div>`;
+}
+function qList(ids){
+  let html='';
+  for(const id of ids){ const q=QALL[id]; html+=qHTML(q); if(!(id in S.ans)) break; }
+  return html;
+}
+const solved = ids => ids.every(id=>id in S.ans);
+function activeCell(){ for(const id of ['s2cell','s2conv','s1cell','s1conv']){ if(!(id in S.ans)) return QALL[id].type==='cell'?id:null; } return null; }
+
+/* ---------- scenes ---------- */
+function scCover(){
+  return `<section class="cover">
+    <div>
+      <div class="eyebrow">Operation Crossroads · Case 01</div>
+      <h1>The Scoby <em>Stop</em></h1>
+      <p>Two women ran from a stopped car carrying holdalls. Six witnesses saw something. Only the maths can tell you which of them saw your suspects.</p>
+      <div class="meta-row"><span class="tag">GCSE Foundation / KS3</span><span class="tag">Speed, distance, time</span><span class="tag">Unit conversion</span><span class="tag">Map scale</span><span class="tag">~25 minutes</span></div>
+      <button class="btn" data-go="briefing">Open the case file</button>
+    </div>
+    <div class="folder" aria-hidden="true"><div class="sheet">
+      <h3>CASE 01 · SCOBY</h3>
+      <span class="stamp">CONFIDENTIAL</span>
+      <dl><dt>Date</dt><dd>Monday 3 July</dd><dt>Incident</dt><dd>Traffic stop, Greenfield Road</dd><dt>Vehicle</dt><dd>Blue Toyota Prius, WIF3 801</dd><dt>Driver</dt><dd>Milos Jovanović (flagged)</dd><dt>Assigned</dt><dd>Insp. Bancroft → you</dd><dt>Status</dt><dd>Two suspects at large</dd></dl>
+    </div></div>
+  </section>`;
+}
+function scBriefing(){
+  return `<div class="scene-head"><div class="eyebrow">Step 1 · Briefing</div><h2 class="h-scene">Incoming transmission</h2></div>
+  <div class="stack" style="max-width:860px">
+    ${transmission('brief','Inspector Bancroft','Scoby Police · Crossroads Task Force',[
+      'Detective. Inspector Bancroft, Scoby Police.',
+      'At 10:24 this morning, PC Jensen pulled over a blue Toyota on Greenfield Road for running a red light.',
+      'At exactly 10:27, two women jumped out of the back and ran, each carrying a holdall. By the time PC Jensen looked up, they were gone.',
+      'The driver, Milos Jovanović, is flagged by the Crossroads Task Force. He says he’s just a taxi driver.',
+      'We have six witness statements. Some of them saw our suspects. Some of them didn’t.',
+      'Speed, distance and time will tell you which is which. Find out where those two women went.',
+      'Numbers don’t lie.'
+    ],'1 min 8 s')}
+    ${after('brief',`<button class="btn" data-go="suspects">Review the suspects</button>`)}
+  </div>`;
+}
+function suspectCard(n){
+  const s1 = n===1;
+  const sp = s1 ? ('s1conv' in S.ans) : ('s2conv' in S.ans);
+  return `<article class="suspect s${n}">
+    <div class="s-head"><svg viewBox="0 0 60 60" aria-hidden="true"><circle cx="30" cy="23" r="11" fill="${s1?'#C9B48A':'#9C8763'}"/><path d="M8 60 C9 42 19 36 30 36 C41 36 51 42 52 60Z" fill="${s1?'#C9B48A':'#9C8763'}"/>${s1?'<path d="M17 25 C17 9 43 9 43 25 L43 34 C38 30 22 30 17 34Z" fill="#3A4A7A" opacity=".75"/>':''}</svg>
+      <div><h4><span class="dot s${n}"></span>SUSPECT ${n}</h4><div class="sub">Computer-generated impression</div></div></div>
+    <ul>${s1?'<li>Estimated age 45</li><li>About 160 cm, average build</li><li>Blue hooded anorak, dark leggings</li><li>Dark holdall</li>':'<li>Estimated age 30</li><li>About 180 cm, muscular and athletic</li><li>Black hooded coat, black leggings, boots</li><li>Long black hair, brown leather holdall</li>'}</ul>
+    <div class="obs"><b>PC Jensen saw her run</b>${s1?'“She set off at a slow jog and was already out of breath by the end of the road. She doesn’t run often, that’s for sure.”':'“She sprinted off like a trained athlete. Long, easy strides, and she didn’t slow down at all.”'}</div>
+    <div class="speed">Top running speed: <b>${sp ? (s1?'2.50':'3.94')+' m/s' : '?'}</b></div>
+  </article>`;
+}
+function scSuspects(){
+  const cell = activeCell();
+  const sel1 = S.ans.s1cell, sel2 = S.ans.s2cell;
+  const rows = TABLE.map(([age,vals])=>`<tr><th>${age}</th>${vals.map((v,i)=>{ const key=age+'|'+LEVELS[i]; const cls = key===sel1?'sel-s1':key===sel2?'sel-s2':'';
+    return `<td><button ${cell?`data-cell="${key}"`:'disabled'} class="${cls}" aria-label="Age ${age}, ${LEVELS[i]}, ${v} km/h">${v.toFixed(1)}</button></td>`; }).join('')}</tr>`).join('');
+  const ids=['s2cell','s2conv','s1cell','s1conv'];
+  return `<div class="scene-head"><div class="eyebrow">Step 2 · Suspects</div><h2 class="h-scene">How fast can they run?</h2>
+    <p class="lede">Before you test any witness, you need each suspect’s top speed. Use each woman’s age and PC Jensen’s account of how she ran to find her speed in the table, then convert it to metres per second.</p></div>
+  <div class="grid">
+    <div class="stack"><div class="suspects">${suspectCard(1)}${suspectCard(2)}</div>
+      <div class="panel"><div class="panel-title"><span>Exhibit D1 · Average female running speeds (km/h)</span></div>
+        <div class="tbl"><table class="speeds ${cell?'pick':''}"><thead><tr><th>Age</th>${LEVELS.map(l=>`<th>${l}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>
+        <div class="note">Walking speed, women aged 40–49: 5.005 km/h. To convert km/h to m/s, divide by 3.6.</div></div>
+    </div>
+    <div class="panel sticky"><div class="panel-title"><span>Your tasks</span><span>${ids.filter(i=>i in S.ans).length} / 4</span></div>
+      <div class="stack">${qList(ids)}
+      ${solved(ids)?`<div class="solved-note">Top speeds logged. Suspect 1: 2.50 m/s. Suspect 2: 3.94 m/s.</div><div class="next-row"><button class="btn" data-go="witnesses">Go to the witness board</button></div>`:''}</div></div>
+  </div>`;
+}
+function scWitnesses(){
+  const w = WIT.find(x=>x.code===S.active);
+  const ids = witQs(w).map(q=>q.id);
+  const doneCount = WIT.filter(x=>(x.code+'-x') in S.ans).length;
+  const all = doneCount===6;
+  const tabs = WIT.map(x=>{ const v=S.ans[x.code+'-x']; return `<button class="wtab ${x.code===S.active?'on':''} ${v?'v-'+x.verdict:''}" data-wit="${x.code}"><b>${x.code}</b><span>${v?(x.verdict==='X'?'False':x.verdict):'Open'}</span></button>`; }).join('');
+  const verdict = S.ans[w.code+'-x'];
+  const nextOpen = WIT.find(x=>!((x.code+'-x') in S.ans));
+  return `<div class="scene-head"><div class="eyebrow">Step 3 · Witnesses</div><h2 class="h-scene">The witness board</h2>
+    <p class="lede">For each statement, work out the speed someone would need to reach that spot by the time it was seen. Then decide who the witness saw, or whether it’s a false lead.</p></div>
+  <div class="grid">
+    <div class="sticky stack">
+      <div class="map">${mapSVG({pins:WIT, active:S.active, click:true, route: all?null:w.route, trailS1:all, trailS2:all})}
+        <div class="map-cap"><span>${all?'Trails established':'Route to '+esc(w.where)}</span><span>Tap a pin to open a statement</span></div></div>
+      <div class="ref"><span><i class="dot s1"></i>Suspect 1 top speed 2.50 m/s</span><span><i class="dot s2"></i>Suspect 2 top speed 3.94 m/s</span><span>Fled at 10:27:00</span></div>
+    </div>
+    <div class="stack">
+      <div class="wtabs" role="tablist">${tabs}</div>
+      <article class="statement">
+        <div class="st-h"><span>Statement ${w.code}</span><span>Time of incident: ${w.cover}</span></div>
+        <h4>${esc(w.name)}</h4><div class="where">${esc(w.where)}</div>
+        <p>${esc(w.text)}</p>
+        ${verdict?`<span class="verdict-stamp vs-${w.verdict}">${VLABEL[w.verdict].toUpperCase()}</span>`:''}
+      </article>
+      <div class="panel"><div class="panel-title"><span>Analysis · ${w.code}</span><span>${doneCount} / 6 statements closed</span></div>
+        <div class="stack">${qList(ids)}
+        ${verdict && !all && nextOpen ? `<div class="next-row"><button class="btn ghost" data-wit="${nextOpen.code}">Next statement: ${nextOpen.code}</button></div>`:''}
+        </div></div>
+      ${all ? transmission('trail','Inspector Bancroft','Scoby Police · Crossroads Task Force',[
+        'Good work, Detective. Two false leads gone, and two trails on the map.',
+        'Suspect 1 headed west, and was last seen on Maple Drive at 10:33. Suspect 2 went south, then up Sycamore Crescent towards Park Avenue.',
+        'Start with Suspect 1. She can’t have got far.'
+      ],'31 s') + after('trail',`<button class="btn" data-go="search">Find Suspect 1</button>`) : ''}
+    </div>
+  </div>`;
+}
+function scSearch(){
+  const ids=['c1','c2','c3'];
+  const showCircle = 'c2' in S.ans;
+  return `<div class="scene-head"><div class="eyebrow">Step 4 · Search</div><h2 class="h-scene">Draw the search circle</h2>
+    <p class="lede">Suspect 1 was last seen at 15 Maple Drive. Work out how far she could possibly have got, then send units to the right place.</p></div>
+  <div class="grid">
+    <div class="sticky"><div class="map">${mapSVG({trailS1:true, circle:showCircle, cands:showCircle, centerPin:true})}
+      <div class="map-cap"><span>${showCircle?'Search radius 3 cm = 150 m':'Last seen: 15 Maple Drive, 10:33'}</span><span>1 cm : 50 m</span></div></div></div>
+    <div class="stack">
+      <div class="panel"><div class="panel-title"><span>Your tasks</span><span>${ids.filter(i=>i in S.ans).length} / 3</span></div><div class="stack">${qList(ids)}</div></div>
+      ${solved(ids)? transmission('arrest','Inspector Bancroft','Scoby Police · Crossroads Task Force',[
+        'Detective, we’ve got her.',
+        'Units found Suspect 1 hiding in the Oakwood Park pavilion, right where your circle said she’d be.',
+        'Her holdall was full of bundled banknotes. She’s in custody, and she isn’t saying a word.',
+        'That leaves Suspect 2. Mr Salleh saw her running towards the station.'
+      ],'34 s') + after('arrest',`<button class="btn" data-go="pursuit">Chase Suspect 2</button>`) : ''}
+    </div>
+  </div>`;
+}
+function scPursuit(){
+  const ids=['d1','d2','d3','d4'];
+  return `<div class="scene-head"><div class="eyebrow">Step 5 · Pursuit</div><h2 class="h-scene">Beat her to the station</h2>
+    <p class="lede">At 10:36 Suspect 2 ended a phone call, checked her watch and started running. Is she trying to catch a train?</p></div>
+  <div class="grid">
+    <div class="sticky"><div class="map">${mapSVG({trailS2:true, pursuit:true, b3Pin:true})}
+      <div class="map-cap"><span>Sycamore Crescent → Scoby station</span><span>1 cm : 50 m</span></div></div></div>
+    <div class="stack">
+      <div class="panel"><div class="panel-title"><span>Your tasks</span><span>${ids.filter(i=>i in S.ans).length} / 4</span></div><div class="stack">${qList(ids)}</div></div>
+      ${solved(ids)? transmission('escape','Inspector Bancroft','Scoby Police · Crossroads Task Force',[
+        'Your maths was right, Detective. Our fastest unit reached Scoby station at 10:44, but the 10:41 had already gone.',
+        'Platform CCTV shows Suspect 2 boarding with the brown holdall. That train’s last stop is Anton City.',
+        'One more thing.',
+        'The grey plastic part from Ethel Harper’s bin was 3D-printed. Somebody in this network has a workshop.',
+        'Get some rest. You’re going to Anton City.'
+      ],'46 s') + after('escape',`<button class="btn" data-go="closed">Close the case</button>`) : ''}
+    </div>
+  </div>`;
+}
+function rank(s){ return s>=90?'Detective Chief Inspector':s>=75?'Detective Inspector':s>=60?'Detective Sergeant':'Detective Constable'; }
+function scClosed(){
+  if(!S.finished) S.finished = Date.now();
+  const mins = S.started ? Math.max(1,Math.round((S.finished-S.started)/60000)) : '–';
+  const total = Object.keys(QALL).length;
+  const firstTry = total - new Set(S.errors.map(e=>e.q)).size;
+  const byType = {};
+  S.errors.forEach(e=>{(byType[e.type]=byType[e.type]||[]).push(e);});
+  const rep = Object.keys(byType).length ? Object.entries(byType).sort((a,b)=>b[1].length-a[1].length).map(([t,list])=>
+    `<div class="rep"><div class="rt">${t} × ${list.length}</div><div>${list.slice(0,3).map(e=>`<div><span class="rq">${e.where}</span>${e.msg}</div>`).join('')}</div></div>`).join('')
+    : `<div class="rep"><div class="rt">None</div><div>No technique errors logged. Every answer was right first time.</div></div>`;
+  return `<div class="scene-head"><div class="eyebrow">Case 01 · Closed</div><h2 class="h-scene">One in custody, one on the run</h2>
+    <p class="lede">Suspect 1 was arrested in Oakwood Park. Suspect 2 escaped on the 10:41 to Anton City.</p></div>
+  <div class="stack">
+    <div class="stats">
+      <div class="stat"><span>Case points</span><b>${S.score}</b></div>
+      <div class="stat"><span>Rank</span><b style="font-size:15px">${rank(S.score)}</b></div>
+      <div class="stat"><span>Right first time</span><b>${firstTry} / ${total}</b></div>
+      <div class="stat"><span>Time on case</span><b>${mins} min</b></div>
+    </div>
+    <div class="panel"><div class="panel-title"><span>Forensic report · where your points went</span><span>${S.errors.length} error${S.errors.length===1?'':'s'}</span></div>
+      <div class="report">${rep}</div></div>
+    <div class="panel stack"><div><div class="eyebrow">Next case</div><b style="font-family:var(--display);font-size:18px;letter-spacing:.04em">CASE 02 · THE DRAGON'S MOUTH</b><div class="note">Suspect 2's trail leads to Anton City, and to a hidden workshop. Follow the money, crack the safe and trace the signal.</div></div>
+      <div class="next-row"><a class="btn" href="case-02.html" style="text-decoration:none">Open Case 02</a><a class="btn ghost" href="index.html#path" style="text-decoration:none">Back to the Academy</a></div></div>
+    <div class="next-row"><button class="btn ghost" data-restart="1">Replay Case 01</button></div>
+  </div>`;
+}
+
+/* ---------- render ---------- */
+const app = document.getElementById('app');
+function render(){
+  QALL = allQs(); Object.keys(QALL).forEach(k=>QALL[k].id=QALL[k].id||k);
+  const idx = SCENES.findIndex(s=>s[0]===S.scene);
+  document.getElementById('steps').innerHTML = SCENES.map((s,i)=>`<li class="${i<idx?'done':i===idx?'now':''}">${s[1]}</li>`).join('');
+  document.getElementById('pts').textContent = S.score;
+  document.getElementById('demo').checked = S.demo;
+  const fn = {cover:scCover,briefing:scBriefing,suspects:scSuspects,witnesses:scWitnesses,search:scSearch,pursuit:scPursuit,closed:scClosed}[S.scene];
+  app.innerHTML = fn();
+}
+function go(scene){ S.scene=scene; if(scene==='briefing'&&!S.started) S.started=Date.now(); render(); window.scrollTo({top:0,behavior:'smooth'}); }
+
+function answer(id, raw){
+  const q = QALL[id]; if(!q || id in S.ans) return;
+  let val = raw;
+  if(q.type==='num'){ val = num(raw); if(val===null){ S.fb[id]={type:'Check',msg:'Type a number first.'}; render(); focusIn(id); return; } }
+  const r = q.check(val);
+  if(r.ok){ S.ans[id] = q.type==='num' ? String(raw).trim() : val; delete S.fb[id]; delete S.draft[id]; render(); focusNext(); }
+  else {
+    S.score = Math.max(0, S.score-5); S.wrong++;
+    S.errors.push({q:id, type:r.type, msg:r.msg, where:whereOf(id)});
+    S.fb[id] = {type:r.type, msg:r.msg};
+    if(q.type==='num') S.draft[id]=raw;
+    render(); focusIn(id);
+  }
+}
+function whereOf(id){
+  if(id.includes('-')){ const w=WIT.find(x=>x.code===id.split('-')[0]); return 'Statement '+w.code+' · '+w.name; }
+  return {s2cell:'Suspect 2 speed',s2conv:'Suspect 2 conversion',s1cell:'Suspect 1 speed',s1conv:'Suspect 1 conversion',c1:'Search distance',c2:'Search radius',c3:'Search location',d1:'Station distance',d2:'Run time',d3:'Arrival time',d4:'The 10:41 train'}[id]||id;
+}
+function focusIn(id){ const el=document.getElementById('in-'+id); if(el){ el.focus(); el.select(); } }
+function focusNext(){ const el=app.querySelector('.q:not(.done) input'); if(el) el.focus({preventScroll:true}); }
+
+app.addEventListener('submit',e=>{ const f=e.target.closest('form[data-q]'); if(!f) return; e.preventDefault(); const id=f.dataset.q; answer(id, f.querySelector('input').value); });
+app.addEventListener('input',e=>{ const f=e.target.closest('form[data-q]'); if(f) S.draft[f.dataset.q]=e.target.value; });
+app.addEventListener('click',e=>{
+  const t = e.target.closest('[data-go],[data-skip],[data-hint],[data-cell],[data-wit],[data-restart],.choice');
+  if(!t) return;
+  if(t.dataset.go) return go(t.dataset.go);
+  if(t.dataset.skip){ const d=app.querySelector(`[data-skipwrap="${t.dataset.skip}"]`)?.previousElementSibling; if(d) d.open=true; unlockTx(t.dataset.skip); return; }
+  if(t.dataset.hint){ if(!S.hinted[t.dataset.hint]){ S.hinted[t.dataset.hint]=true; S.score=Math.max(0,S.score-3); S.errors.push({q:t.dataset.hint,type:'Hint used',msg:'Took a hint.',where:whereOf(t.dataset.hint)}); } render(); return; }
+  if(t.dataset.cell){ const id=activeCell(); if(id) answer(id,t.dataset.cell); return; }
+  if(t.dataset.wit){ S.active=t.dataset.wit; render(); return; }
+  if(t.dataset.restart){ const demo=S.demo; S=fresh(); S.demo=demo; render(); window.scrollTo({top:0}); return; }
+  if(t.classList.contains('choice')) answer(t.dataset.q, t.dataset.v);
+});
+app.addEventListener('keydown',e=>{ const t=e.target.closest('[data-wit]'); if(t && (e.key==='Enter'||e.key===' ') && t.tagName!=='BUTTON'){ e.preventDefault(); S.active=t.dataset.wit; render(); } });
+app.addEventListener('play',e=>{ const v=e.target; if(v.matches&&v.matches('video[data-tx]')) unlockTx(v.dataset.tx); },true);
+document.getElementById('demo').addEventListener('change',e=>{ S.demo=e.target.checked; render(); });
+const teacherCheck=()=>{ const t=location.hash==='#teacher'; document.getElementById('demo-wrap').hidden=!t; if(!t && S.demo){ S.demo=false; render(); } };
+window.addEventListener('hashchange',teacherCheck); teacherCheck();
+
+/* ---------- boot ---------- */
+const KEY='mfa.case01';
+const _render=render; render=function(){ _render(); try{ localStorage.setItem(KEY, JSON.stringify(S)); if(S.scene==='closed') localStorage.setItem('mfa.case.01', JSON.stringify({closed:true, score:S.score})); }catch(_){} };
+let saved=null; try{ saved=JSON.parse(localStorage.getItem(KEY)||'null'); }catch(_){}
+if(saved && saved.scene){ S=Object.assign(fresh(), saved); }
+render();
+})();
+</script>
+</body></html>

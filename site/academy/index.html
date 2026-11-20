@@ -206,7 +206,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:space-betw
   </div>
 </header>
 <main class="wrap" id="app" tabindex="-1"></main>
-<footer><div class="wrap"><span>Maths Forensics Academy · Years 7 to 9 · Version 17 Nov 2026 (f)</span><span><span id="footnote">Progress is saved on this device only.</span> <a href="../privacy.html">Privacy</a></span></div></footer>
+<footer><div class="wrap"><span>Maths Forensics Academy · Years 7 to 9 · Version 20 Nov 2026 (g)</span><span><span id="footnote">Progress is saved on this device only.</span> <a href="../privacy.html">Privacy</a></span></div></footer>
 
 <script>
 "use strict";
@@ -1616,7 +1616,7 @@ function screenPath() {
           <a class="tier locked" href="#map">${medal("var(--platinum)", "P", true)}<b>Platinum</b><span>Year 9 · ${MAP.platinum.length} topics</span></a>
         </div>
         <div class="lockrow">${LOCK}<div><b>Bronze award test</b><div class="muted small">${allDone ? "Coming soon in this preview. You've secured every topic." : "Opens when every Bronze topic is secured. 30 questions · 80% to pass."}</div></div></div>
-        <div class="lockrow">${LOCK}<div><b>Case File 01: The Scoby Stop</b><div class="muted small">Unlocks with your Bronze award.</div></div></div>
+
       </section>
     </div>
     <h2 class="eyebrow" style="margin:34px 0 12px">Bronze topics</h2>
@@ -1628,6 +1628,12 @@ function screenPath() {
         <span class="meta"><span class="steps3" aria-label="Learn, practise, check"><i class="${p.learned ? "on" : ""}"></i><i class="${p.practised ? "on" : ""}"></i><i class="${p.secured ? "ok" : ""}"></i></span>${open ? `<span class="chip ${cls}">${label}</span>` : `<span class="chip">Academy Pass</span>`}</span></a>`;
     }).join("")}</div>
     <p class="muted small" style="margin-top:14px">All ${TOPICS.length} Bronze topics are ready. <a href="#map">See the full KS3 curriculum map</a>: ${Object.values(MAP).flat().length} topics from Bronze to Platinum.</p>
+    <h2 class="eyebrow" style="margin:34px 0 12px">Case files</h2>
+    <p class="muted" style="max-width:66ch;margin:0 0 14px">Story investigations with Inspector Bancroft. Watch the briefing, then use your maths to crack the case.</p>
+    <div class="topics">${CASES.map(c => { const st = caseState(c.n); return `<a class="tcard" href="${c.href}" style="text-decoration:none;color:inherit">
+      <span class="strand">Case ${c.n} · Operation Crossroads</span><h3>${c.name}</h3>
+      <span class="muted small">${c.blurb}</span>
+      <span class="meta"><span class="chip">${c.maths}</span><span class="chip ${st.closed ? "secured" : st.open ? "learning" : ""}">${st.closed ? `Closed · ${st.score} pts` : st.open ? "Continue" : "Open the case"}</span></span></a>`; }).join("")}</div>
     <h2 class="eyebrow" style="margin:34px 0 12px">Training games</h2>
     <div class="topics">${Object.entries(GAMES).flatMap(([tid, gs]) => gs.filter(g => !g.ir).map(g => `<a class="tcard" href="${g.href}" style="text-decoration:none;color:inherit">
       <span class="strand">${g.tag} · ${esc(TOPIC(tid).name)}</span><h3>${g.name}</h3>
@@ -1727,6 +1733,11 @@ function wireIrJoin() {
 const irGame = (sub, topics) => ({ ir: true, name: "The Interrogation", href: IR_URL + "?play=interrogation&sub=" + sub, tag: "Class game", blurb: `Quick-fire ${topics} questions that get harder as you get them right. Two rounds of 90 seconds.`, meta: "2 rounds · 90 seconds" });
 
 /* ---------- Play: training games linked to topics ---------- */
+const CASES = [
+  { n: "01", name: "The Scoby Stop", href: "case-01.html", maths: "Speed, distance, time · scale", blurb: "Two women run from a stopped car. Six witnesses. Use speed, distance and time to work out which of them saw your suspects." },
+  { n: "02", name: "The Dragon\u2019s Mouth", href: "case-02.html", maths: "Percentages · coordinates · sequences", blurb: "Follow the money, plot a stolen blueprint, crack a safe and trace a phone across Anton City." }
+];
+function caseState(n) { try { const d = JSON.parse(localStorage.getItem("mfa.case." + n) || "null"); if (d && d.closed) return { closed: true, score: d.score }; return { open: !!localStorage.getItem("mfa.case" + n) }; } catch (e) { return {}; } }
 const GAMES = {
   "simplifying": [{ name: "Evidence Locker", href: "like-terms.html", tag: "Algebra", blurb: "Sort every term into the right locker, then total each one to write the expression in its simplest form. Three levels, up to x², xy and minus signs.", meta: "3 levels · 10 cases" }, irGame("KA", "algebra")],
   "factors-multiples": [{ name: "The Suspect's Vault", href: "vault.html", tag: "Number and algebra", blurb: "Crack five suspects' vaults before the alarm: sequences, prime factor trees and index laws, then spin the combination dial and name the culprit.", meta: "3 levels · 5 vaults" }],

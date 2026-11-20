@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Case 02: The Dragon's Mouth · Maths Forensics Academy</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Josefin+Sans:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Caveat:wght@500&display=swap">
+<style>
+/* Layout: an incident-room console. Dark navy UI frame, intelligence map on the left, evidence paper and tasks on the right; stacks to one column on phones. Deliberately single dark theme. */
+:root{
+  --bg:#070C1F; --panel:#0B122C; --panel-2:#111A3D; --line:#26326A; --fg:#E8ECF8; --muted:#8E99C4;
+  --cyan:#00FCF1; --blue:#1B36FF; --amber:#FFB547; --red:#FF5D73; --green:#3DE39B;
+  --paper:#F4ECD8; --paper-2:#E9DDBF; --ink:#2A2418; --ink-2:#6B5D43; --stamp:#B3261E;
+  --ground:#0E1634; --street:#1E2A57; --street-edge:#2D3B74; --street-ink:#7D89B8; --park:#0F3A3A; --park-edge:#1C5A55;
+  --display:"Syncopate","Arial Black",system-ui,sans-serif;
+  --body:"Josefin Sans","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5;
+  background-image:radial-gradient(ellipse at 20% -10%,rgba(27,54,255,.18),transparent 55%),radial-gradient(ellipse at 110% 10%,rgba(0,252,241,.07),transparent 45%);background-attachment:fixed}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--panel)}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* top bar */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:rgba(11,18,44,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:10px 20px;padding-block:10px}
+.brand{display:flex;flex-direction:column;line-height:1.1;margin-right:auto}
+.brand b{font-family:var(--display);font-size:13px;letter-spacing:.14em}
+.brand span{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.08em}
+.steps{display:flex;gap:4px;flex-wrap:wrap;list-style:none;margin:0;padding:0}
+.steps li{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border:1px solid var(--line);border-radius:3px;color:var(--muted)}
+.steps li.done{color:var(--cyan);border-color:rgba(0,252,241,.35)}
+.steps li.now{background:var(--cyan);color:var(--panel);border-color:var(--cyan);font-weight:600}
+.pts{font-family:var(--mono);font-size:12px;display:flex;align-items:center;gap:8px;padding:5px 10px;border:1px solid var(--line);border-radius:3px;background:var(--panel-2)}
+.pts b{font-size:16px;color:var(--cyan);font-variant-numeric:tabular-nums}
+
+main{padding-block:24px 40px}
+h1,h2,h3{text-wrap:balance;margin:0}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan)}
+.h-scene{font-family:var(--display);font-weight:700;font-size:clamp(20px,3vw,28px);letter-spacing:.04em;text-transform:uppercase;margin-top:6px}
+.lede{color:var(--muted);max-width:62ch;margin:8px 0 0}
+.scene-head{margin-bottom:20px}
+
+.grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px;align-items:start}
+.grid > *{min-width:0}
+.sticky{position:sticky;top:calc(env(safe-area-inset-top,0px) + 76px)}
+@media (max-width:880px){.grid{grid-template-columns:minmax(0,1fr)}.sticky{position:static}}
+
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:18px}
+.panel-title{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.stack{display:flex;flex-direction:column;gap:16px}
+
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--cyan);color:var(--panel);border:0;border-radius:4px;padding:11px 18px;font-weight:700;font-size:15px;letter-spacing:.02em}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.btn.ghost:hover{border-color:var(--cyan)}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+.link{background:none;border:0;color:var(--muted);text-decoration:underline;text-underline-offset:3px;font-size:14px;padding:0}
+.link:hover{color:var(--cyan)}
+
+/* cover */
+.cover{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.9fr);gap:28px;align-items:center;padding-block:12px}
+@media (max-width:880px){.cover{grid-template-columns:minmax(0,1fr)}}
+.cover h1{font-family:var(--display);font-weight:700;font-size:clamp(30px,5.4vw,56px);line-height:1.02;letter-spacing:.02em;text-transform:uppercase}
+.cover h1 em{font-style:normal;color:var(--cyan)}
+.cover p{color:var(--muted);max-width:52ch;font-size:17px}
+.folder{position:relative;background:linear-gradient(180deg,#B38C5E,#A07A4E);border-radius:4px 14px 4px 4px;padding:22px;box-shadow:0 30px 60px -30px rgba(0,0,0,.8);transform:rotate(-1.5deg)}
+.folder::before{content:"";position:absolute;top:-14px;left:18px;width:120px;height:18px;background:#B38C5E;border-radius:6px 6px 0 0}
+.folder .sheet{background:var(--paper);color:var(--ink);border-radius:2px;padding:20px;font-family:var(--mono);font-size:12.5px;line-height:1.6;transform:rotate(2deg)}
+.sheet h3{font-family:var(--display);font-size:15px;letter-spacing:.1em;margin-bottom:8px}
+.stamp{display:inline-block;border:2px solid var(--stamp);color:var(--stamp);font-family:var(--display);font-weight:700;font-size:12px;letter-spacing:.18em;padding:3px 8px;transform:rotate(-6deg);margin:8px 0}
+.sheet dl{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;margin:10px 0 0}
+.sheet dt{color:var(--ink-2)}
+.sheet dd{margin:0}
+.meta-row{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 24px}
+.tag{font-family:var(--mono);font-size:11.5px;padding:4px 9px;border:1px solid var(--line);border-radius:3px;color:var(--muted)}
+
+/* transmission (AI video slot) */
+.tx{background:var(--panel);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.tx-screen{position:relative;aspect-ratio:16/7;max-width:100%;background:radial-gradient(circle at 30% 40%,#18245a,#070c1f 70%);display:flex;align-items:flex-end;gap:16px;padding:16px;overflow:hidden}
+.tx-screen::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 3px);pointer-events:none}
+.tx-chip{position:absolute;top:12px;left:12px;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border:1px dashed rgba(0,252,241,.6);color:var(--cyan);border-radius:3px;background:rgba(7,12,31,.6)}
+.tx-rec{position:absolute;top:12px;right:14px;font-family:var(--mono);font-size:11px;color:var(--red);display:flex;align-items:center;gap:6px}
+.tx-rec i{width:8px;height:8px;border-radius:50%;background:var(--red);animation:blink 1.4s infinite}
+@keyframes blink{50%{opacity:.2}}
+.tx-face{width:min(26%,140px);height:auto;flex:none;align-self:flex-end;margin-bottom:-16px}
+.tx-id{display:flex;flex-direction:column;padding-bottom:4px;min-width:0}
+.tx-id b{font-family:var(--display);font-size:clamp(12px,1.8vw,16px);letter-spacing:.08em;text-transform:uppercase}
+.tx-id span{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.tx-wave{position:absolute;right:16px;bottom:16px;display:flex;gap:3px;align-items:flex-end;height:28px}
+.tx-wave i{width:3px;background:var(--cyan);opacity:.7;border-radius:2px;height:20%}
+.tx.live .tx-wave i{animation:wave 1s ease-in-out infinite}
+@keyframes wave{50%{height:100%}}
+.tx-subs{padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.tx-subs p{margin:0;max-width:68ch;font-size:16.5px}
+.tx.live .tx-subs p{animation:sub .5s both}
+@keyframes sub{from{opacity:0;transform:translateY(6px)}}
+
+.tx-head{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line)}
+.tx-head .tx-rec{position:static}
+.tx-len{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.tx-video{display:block;width:100%;max-width:100%;aspect-ratio:16/9;background:#000}
+details.tx-subs summary{cursor:pointer;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+details.tx-subs p{margin:8px 0 0;color:var(--fg)}
+.tx-skip{padding:0 18px 14px}
+/* suspects */
+.suspects{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:520px){.suspects{grid-template-columns:minmax(0,1fr)}}
+.suspect{background:var(--paper);color:var(--ink);border-radius:3px;padding:14px;display:flex;flex-direction:column;gap:8px;position:relative}
+.suspect .s-head{display:flex;gap:12px;align-items:center}
+.suspect svg{width:58px;height:58px;flex:none;border-radius:2px;background:var(--paper-2)}
+.suspect h4{margin:0;font-family:var(--display);font-size:13px;letter-spacing:.08em}
+.suspect .sub{font-family:var(--mono);font-size:11.5px;color:var(--ink-2)}
+.suspect ul{margin:0;padding-left:18px;font-size:14.5px}
+.suspect .obs{font-size:14px;font-style:italic;border-left:3px solid var(--ink-2);padding:2px 0 2px 10px}
+.suspect .obs b{display:block;font-style:normal;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.suspect .speed{font-family:var(--mono);font-size:12.5px;padding:6px 8px;background:var(--ink);color:var(--paper);border-radius:2px}
+.s1 .speed b{color:var(--amber)} .s2 .speed b{color:var(--cyan)}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:middle;margin-right:4px}
+.dot.s1{background:var(--amber)} .dot.s2{background:var(--cyan)}
+
+table.speeds{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums}
+.tbl{overflow-x:auto}
+.speeds th,.speeds td{padding:7px 6px;text-align:center;border-bottom:1px solid var(--line)}
+.speeds th{font-weight:600;color:var(--muted);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.speeds td button{width:100%;background:none;border:1px solid transparent;border-radius:3px;padding:5px 2px;font-family:var(--mono);font-size:13px}
+.speeds.pick td button{border-color:var(--line)}
+.speeds.pick td button:hover{border-color:var(--cyan);color:var(--cyan)}
+.speeds td button.sel-s1{background:var(--amber);color:var(--panel);font-weight:600}
+.speeds td button.sel-s2{background:var(--cyan);color:var(--panel);font-weight:600}
+.note{font-size:13px;color:var(--muted);margin-top:8px}
+
+/* questions */
+.q{border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px}
+.q:first-child{border-top:0;padding-top:0}
+.q-p{font-size:16px}
+.q-p small{display:block;color:var(--muted);font-size:13.5px;margin-top:2px}
+.q.done .q-p{color:var(--muted);font-size:14.5px}
+.q-a{font-family:var(--mono);font-size:14px;color:var(--green)}
+.q-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.q-in{display:flex;align-items:center;background:var(--panel-2);border:1px solid var(--line);border-radius:4px;min-width:0}
+.q-in:focus-within{border-color:var(--cyan)}
+.q-in input{background:transparent;border:0;color:var(--fg);font-family:var(--mono);font-size:17px;padding:10px 12px;width:9.5em;max-width:46vw;outline:none}
+.q-in span{font-family:var(--mono);color:var(--muted);padding-right:12px;font-size:14px}
+.choices{display:flex;flex-wrap:wrap;gap:8px}
+.choice{background:var(--panel-2);border:1px solid var(--line);border-radius:4px;padding:10px 14px;font-size:15px;text-align:left}
+.choice:hover{border-color:var(--cyan)}
+.choice small{display:block;font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.fb{font-size:14.5px;padding:10px 12px;border-left:3px solid var(--red);background:rgba(255,93,115,.08);border-radius:0 4px 4px 0}
+.fb b{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--red);display:block;margin-bottom:2px}
+.hint{font-size:14.5px;padding:10px 12px;border-left:3px solid var(--amber);background:rgba(255,181,71,.07);border-radius:0 4px 4px 0}
+.demo-a{font-family:var(--mono);font-size:12px;color:var(--amber)}
+.solved-note{font-size:14.5px;padding:10px 12px;border-left:3px solid var(--green);background:rgba(61,227,155,.07);border-radius:0 4px 4px 0}
+
+/* witnesses */
+.wtabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+@media (max-width:520px){.wtabs{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.wtab{background:var(--panel-2);border:1px solid var(--line);border-radius:4px;padding:7px 4px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.wtab b{font-family:var(--mono);font-size:14px}
+.wtab span{font-size:10.5px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.wtab.on{border-color:var(--cyan);box-shadow:inset 0 0 0 1px var(--cyan)}
+.wtab.v-S1 span{color:var(--amber)} .wtab.v-S2 span{color:var(--cyan)} .wtab.v-X span{color:var(--red)}
+.statement{background:var(--paper);color:var(--ink);border-radius:3px;padding:16px 18px;position:relative;box-shadow:0 18px 30px -24px rgba(0,0,0,.9)}
+.statement .st-h{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-family:var(--mono);font-size:11.5px;color:var(--ink-2);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--paper-2);padding-bottom:8px;margin-bottom:10px}
+.statement h4{margin:0 0 2px;font-family:var(--display);font-size:14px;letter-spacing:.06em}
+.statement .where{font-family:var(--mono);font-size:12.5px;color:var(--ink-2);margin-bottom:8px}
+.statement p{margin:0;font-size:15.5px;line-height:1.55;max-width:62ch}
+.statement .verdict-stamp{position:absolute;right:14px;top:40px;border:2px solid currentColor;padding:3px 8px;font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:.14em;transform:rotate(-8deg);background:rgba(244,236,216,.85)}
+.vs-S1{color:#B66F00} .vs-S2{color:#0A7C78} .vs-X{color:var(--stamp)}
+.ref{display:flex;flex-wrap:wrap;gap:8px;font-family:var(--mono);font-size:12px}
+.ref span{padding:4px 8px;border:1px solid var(--line);border-radius:3px;background:var(--panel-2)}
+
+/* map */
+.map{background:var(--ground);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.map svg{display:block;width:100%;height:auto}
+.map-cap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;font-family:var(--mono);font-size:11.5px;color:var(--muted);padding:8px 12px;border-top:1px solid var(--line);background:var(--panel)}
+.m-street{stroke:var(--street);stroke-width:14;stroke-linecap:round;fill:none}
+.m-edge{stroke:var(--street-edge);stroke-width:16;stroke-linecap:round;fill:none}
+.m-sname{fill:var(--street-ink);font-family:var(--mono);font-size:8.5px;letter-spacing:.04em}
+.m-park{fill:var(--park);stroke:var(--park-edge);stroke-width:1}
+.m-pname{fill:#3FA79D;font-family:var(--mono);font-size:9px}
+.m-bld{fill:var(--panel-2);stroke:var(--street-edge)}
+.m-bname{fill:var(--muted);font-family:var(--mono);font-size:8.5px}
+.m-path{stroke:var(--park-edge);stroke-width:3;stroke-dasharray:4 4;fill:none}
+.m-route{stroke:#fff;stroke-width:4;stroke-dasharray:9 6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.m-trail-s1{stroke:var(--amber);stroke-width:5;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:.95}
+.m-trail-s2{stroke:var(--cyan);stroke-width:5;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:.95}
+.m-pursuit{stroke:var(--red);stroke-width:4;stroke-dasharray:8 6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.m-leg rect{fill:var(--paper);}
+.m-leg text{fill:var(--ink);font-family:var(--mono);font-size:10px;font-weight:600}
+.m-pin circle{stroke-width:2.5}
+.m-pin text{font-family:var(--mono);font-size:9px;font-weight:600}
+.m-pin.p-pending circle{fill:var(--panel);stroke:var(--muted)} .m-pin.p-pending text{fill:var(--fg)}
+.m-pin.p-on circle{fill:#fff;stroke:#fff} .m-pin.p-on text{fill:var(--panel)}
+.m-pin.p-S1 circle{fill:var(--amber);stroke:var(--amber)} .m-pin.p-S1 text{fill:var(--panel)}
+.m-pin.p-S2 circle{fill:var(--cyan);stroke:var(--cyan)} .m-pin.p-S2 text{fill:var(--panel)}
+.m-pin.p-X circle{fill:var(--panel);stroke:var(--red)} .m-pin.p-X text{fill:var(--red)}
+.m-pin[data-wit]{cursor:pointer}
+.m-stop rect{fill:var(--red)} .m-stop text{fill:var(--red);font-family:var(--mono);font-size:9px;font-weight:600}
+.m-circle{fill:rgba(255,181,71,.10);stroke:var(--amber);stroke-width:2;stroke-dasharray:6 5}
+.m-cand circle{fill:var(--panel);stroke:var(--fg);stroke-width:2}
+.m-cand text{fill:var(--fg);font-family:var(--mono);font-size:9px}
+.m-scale line{stroke:var(--fg);stroke-width:2}
+.m-scale text{fill:var(--muted);font-family:var(--mono);font-size:8.5px}
+.m-rail{stroke:var(--muted);stroke-width:1.5;fill:none}
+
+/* outcome / closed */
+.next-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:4px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px}
+.stat span{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.stat b{display:block;font-family:var(--display);font-size:22px;margin-top:4px;font-variant-numeric:tabular-nums}
+.report{display:flex;flex-direction:column;gap:10px}
+.rep{display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px;padding:10px 0;border-top:1px solid var(--line);font-size:15px}
+@media (max-width:560px){.rep{grid-template-columns:minmax(0,1fr);gap:2px}}
+.rep .rt{font-family:var(--mono);font-size:12px;color:var(--amber);text-transform:uppercase;letter-spacing:.06em}
+.rep .rq{font-family:var(--mono);font-size:11.5px;color:var(--muted);display:block}
+.locked{background:repeating-linear-gradient(135deg,var(--panel) 0 12px,var(--panel-2) 12px 24px);border:1px dashed var(--line);border-radius:6px;padding:18px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.locked b{font-family:var(--display);font-size:15px;letter-spacing:.06em}
+
+footer{border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;padding-block:14px}
+.toggle{display:inline-flex;gap:8px;align-items:center;cursor:pointer}
+.toggle input{accent-color:var(--amber)}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<style>
+.slip{background:var(--paper);color:var(--ink);border-radius:3px;padding:16px 18px;box-shadow:0 18px 30px -24px rgba(0,0,0,.9)}
+.slip .st-h{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-family:var(--mono);font-size:11.5px;color:var(--ink-2);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--paper-2);padding-bottom:8px;margin-bottom:10px}
+.slip h4{margin:0 0 8px;font-family:var(--display);font-size:14px;letter-spacing:.06em}
+.slip table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums}
+.slip td{padding:5px 4px;border-bottom:1px dashed var(--paper-2);vertical-align:top}
+.slip td.r{text-align:right;white-space:nowrap}
+.slip tr.sum td{font-weight:600;border-bottom:0;border-top:2px solid var(--ink-2)}
+.slip .flag{background:rgba(179,38,30,.12)}
+.slip .sec{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);padding-top:10px}
+.slip p{margin:0 0 6px;font-size:15px}
+.note-book{background:#FBF6E3;background-image:repeating-linear-gradient(180deg,transparent 0 27px,#C9D6EA 27px 28px);color:var(--ink);border-radius:3px;padding:18px 20px 12px 44px;position:relative;font-size:16px;line-height:28px;box-shadow:0 18px 30px -24px rgba(0,0,0,.9)}
+.note-book::before{content:"";position:absolute;left:30px;top:0;bottom:0;width:2px;background:#E7A3A3}
+.note-book p{margin:0}
+.note-book .hand{font-family:"Caveat","Segoe Print","Bradley Hand",cursive;font-size:21px}
+.grid-svg{background:#0E1634;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.grid-svg svg{display:block;width:100%;height:auto;touch-action:manipulation}
+.g-line{stroke:#1E2A57;stroke-width:1}
+.g-axis{stroke:#7D89B8;stroke-width:1.6}
+.g-num{fill:#8E99C4;font-family:var(--mono);font-size:10px}
+.g-pt{fill:var(--cyan)}
+.g-new{fill:var(--amber)}
+.g-hit{fill:transparent;cursor:crosshair}
+.g-outline{fill:rgba(0,252,241,.12);stroke:var(--cyan);stroke-width:2.5;stroke-linejoin:round}
+.g-partial{fill:none;stroke:rgba(0,252,241,.55);stroke-width:2;stroke-dasharray:5 4}
+.coords{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px 10px;font-family:var(--mono);font-size:12.5px}
+.coords span.miss{color:var(--stamp);font-weight:600}
+@media (max-width:520px){.coords{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.keypad{display:flex;gap:8px;justify-content:center;padding:14px;background:#151b2e;border:1px solid var(--line);border-radius:6px}
+.keypad b{width:44px;height:56px;display:grid;place-items:center;font-family:var(--mono);font-size:26px;background:#05080f;border:1px solid #2a3350;border-radius:4px;color:var(--green)}
+.keypad b.e{color:#3a4466}
+.keypad.open{border-color:var(--green);box-shadow:0 0 0 1px var(--green) inset}
+.txt-tx .tx-subs p{margin:0 0 8px}
+.m-mast circle{fill:var(--red)} .m-mast text{fill:var(--fg);font-family:var(--mono);font-size:11px;font-weight:600}
+.m-ring{fill:none;stroke-width:2;stroke-dasharray:6 5}
+.m-ring.a{stroke:var(--amber)} .m-ring.b{stroke:var(--cyan)} .m-ring.c{stroke:#B98CFF}
+.m-sea{fill:#0A2440}
+</style>
+</head><body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html#path" style="text-decoration:none;color:inherit" title="Back to the Academy"><b>← MATHS FORENSICS ACADEMY</b><span>OPERATION CROSSROADS · CASE 02</span></a>
+    <ol class="steps" id="steps"></ol>
+    <div class="pts">Case points <b id="pts">100</b></div>
+  </div>
+</header>
+<main class="wrap" id="app"></main>
+<footer>
+  <div class="wrap">
+    <span>Case 02 of the Operation Crossroads campaign · transmissions are AI-generated</span>
+    <label class="toggle" id="demo-wrap" hidden><input type="checkbox" id="demo"> Teacher view: show answers</label>
+  </div>
+</footer>
+
+<script>
+(function(){
+/* ---------- constants ---------- */
+const SCENES = [['cover','File'],['briefing','Briefing'],['money','Money'],['blueprint','Blueprint'],['safe','Safe'],['signal','Signal'],['closed','Closed']];
+/* recorded transmissions; null = not filmed yet, shown as a written transmission */
+const TXFILE = {brief:'case02_tx01_briefing', work:'case02_tx02_workshop', safe:null, close:null};
+
+/* blueprint: an 8-tooth gear, ENG-A1 */
+const GEAR = [[-1,5],[1,5],[2,3],[3,4],[4,3],[3,2],[5,1],[5,-1],[3,-2],[4,-3],[3,-4],[2,-3],[1,-5],[-1,-5],[-2,-3],[-3,-4],[-4,-3],[-3,-2],[-5,-1],[-5,1],[-3,2],[-4,3],[-3,4],[-2,3]];
+const MISSING = {b1:[4,3], b2:[-5,1], b3:[1,-5], b4:[-3,-2]};
+const MISS_KEYS = Object.values(MISSING).map(p=>p.join(','));
+
+/* signal map: cm offsets from the phone (svg y down), scale 1 cm : 500 m */
+const MU = 34, PX = 330, PY = 250;
+const MAST = {A:{c:[3,-4], r:5, km:2.5, q:'g1', cls:'a'}, B:{c:[-6,0], r:6, km:3, q:'g2', cls:'b'}, C:{c:[0,4], r:4, km:2, q:'g3', cls:'c'}};
+const PLACES = [
+  {id:'ware', name:'Harbour warehouse, Unit 7', p:[0,0]},
+  {id:'mill', name:'The old mill', p:[-1.98,-4.45]},
+  {id:'piston', name:'PistonCraft factory', p:[4.6,1.2]},
+  {id:'flat', name:'Gisela’s flat', p:[-3.4,2.6]},
+  {id:'station', name:'Anton City station', p:[-6.4,-4.6]}
+];
+const sv = p => [PX + p[0]*MU, PY + p[1]*MU];
+
+/* ---------- state ---------- */
+const fresh = () => ({scene:'cover', score:100, errors:[], ans:{}, draft:{}, fb:{}, hinted:{}, tx:{safe:true, close:true}, demo:false, started:null, finished:null, wrong:0});
+let S = fresh();
+
+/* ---------- helpers ---------- */
+const near = (v,a,tol=0.0001) => Math.abs(v-a) <= tol;
+const ok = () => ({ok:true});
+const err = (type,msg) => ({ok:false,type,msg});
+const num = s => { const v = parseFloat(String(s).replace(/,/g,'').replace(/[^0-9.\-]/g,'')); return isNaN(v)?null:v; };
+const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const eur = v => '€' + v.toLocaleString('en-GB',{minimumFractionDigits:0});
+
+/* ---------- questions ---------- */
+const QALL = {
+  m1:{type:'num', unit:'€', pre:true, prompt:'Income tax is <b>20%</b> of Gisela’s gross pay. How much tax does she pay each month?', answerText:'20% of €3,000 = €600',
+    hint:'10% of €3,000 is €300. Double it for 20%.',
+    check:v=>{ if(near(v,600)) return ok(); if(near(v,2400)) return err('Reading the question','€2,400 is what’s left after tax. The question asks for the tax itself.');
+      if(near(v,60)) return err('Percentages','That’s 2%. Find 10% first (€300), then double it.'); if(near(v,6000)) return err('Percentages','Too big. 20% is less than a quarter of €3,000.');
+      return err('Percentages','Find 10% of €3,000 by dividing by 10, then double it.'); }},
+  m2:{type:'num', unit:'€', pre:true, prompt:'She also pays <b>5%</b> into her pension. What is her <b>take-home pay</b> each month?', small:'Take-home pay = gross pay − tax − pension.', answerText:'€3,000 − €600 − €150 = €2,250',
+    hint:'5% is half of 10%. Work out the pension, then take the tax and the pension away from €3,000.',
+    check:v=>{ if(near(v,2250)) return ok(); if(near(v,2400)) return err('Method','You took off the tax but not the pension. 5% of €3,000 is €150.');
+      if(near(v,2850)) return err('Method','You took off the pension but not the tax.'); if(near(v,750)) return err('Reading the question','€750 is the total taken off. Her take-home pay is what’s left.');
+      if(near(v,150)) return err('Reading the question','€150 is the pension. Now take the tax and the pension away from €3,000.');
+      return err('Method','Gross pay minus tax (€600) minus pension (5% of €3,000).'); }},
+  m3:{type:'num', unit:'%', prompt:'What percentage of her take-home pay goes on rent?', answerText:'900 ÷ 2,250 × 100 = 40%',
+    hint:'Rent ÷ take-home pay, then multiply by 100.',
+    check:v=>{ if(near(v,40,0.05)) return ok(); if(near(v,0.4,0.001)) return err('Percentages','0.4 is a decimal. Multiply by 100 to make it a percentage.');
+      if(near(v,30,0.05)) return err('Reading the question','That uses her gross pay. The question asks about her take-home pay, €2,250.');
+      if(near(v,250,0.5)) return err('Method','You divided the wrong way round. Rent ÷ take-home pay.'); return err('Percentages','Divide the rent by her take-home pay, then multiply by 100.'); }},
+  m4:{type:'num', unit:'€', prompt:'How much did she spend <b>altogether</b> in March?', small:'Add up every line under “Money out”.', answerText:'900 + 360 + 390 + 2,450 + 3,150 + 1,750 = €9,000',
+    hint:'There are six payments out. Add them in pairs to keep track.',
+    check:v=>{ if(near(v,9000)) return ok(); if(near(v,1650)) return err('Reading the evidence','That’s only rent, bills and food. Add the three shop payments too.');
+      if(near(v,7350)) return err('Reading the evidence','That’s only the three shop payments. Add rent, bills and food too.');
+      if(v>8000&&v<10000) return err('Arithmetic','Close. Add the six amounts again carefully.'); return err('Reading the evidence','Add every amount under Money out.'); }},
+  m5:{type:'num', unit:'€', prompt:'How much <b>more</b> did she spend than her take-home pay?', answerText:'€9,000 − €2,250 = €6,750',
+    hint:'Spending minus take-home pay.',
+    check:v=>{ if(near(v,6750)) return ok(); if(near(v,6000)) return err('Reading the question','That uses her gross pay. She only gets €2,250 in her account.');
+      if(near(v,-6750)) return err('Method','Right size, wrong way round. She spent more than she earned.'); return err('Method','Take her take-home pay (€2,250) away from her total spending.'); }},
+  m6:{type:'num', unit:'%', prompt:'Look at <b>Money in</b>. What percentage of all the money coming in was from KWG Growth Fund?', answerText:'6,750 ÷ 9,000 × 100 = 75%',
+    hint:'Total money in is €2,250 + €6,750. Divide the KWG payment by that total.',
+    check:v=>{ if(near(v,75,0.05)) return ok(); if(near(v,0.75,0.001)) return err('Percentages','0.75 is a decimal. Multiply by 100.');
+      if(near(v,300,0.5)) return err('Method','You compared KWG with her salary. The question asks for a percentage of <i>all</i> the money in, €9,000.');
+      if(near(v,25,0.05)) return err('Reading the question','25% came from her salary. What percentage came from KWG?'); return err('Percentages','KWG payment ÷ total money in × 100.'); }},
+
+  b1:{type:'pt', target:MISSING.b1, prompt:'Plot the first missing point: <b>(4, 3)</b>.', answerText:'(4, 3)'},
+  b2:{type:'pt', target:MISSING.b2, prompt:'Plot <b>(−5, 1)</b>.', answerText:'(−5, 1)'},
+  b3:{type:'pt', target:MISSING.b3, prompt:'Plot <b>(1, −5)</b>.', answerText:'(1, −5)'},
+  b4:{type:'pt', target:MISSING.b4, prompt:'Plot <b>(−3, −2)</b>.', answerText:'(−3, −2)'},
+  b5:{type:'choice', prompt:'The outline is complete. What was Gisela printing?', answerText:'An engine gear',
+    choices:()=>[{v:'gun',label:'A gun part'},{v:'gear',label:'An engine gear'},{v:'key',label:'A door key'},{v:'watch',label:'A watch face'}],
+    hint:'Look at the edge. What kind of part has teeth all the way round?',
+    check:v=>v==='gear'?ok():err('Reading the evidence','Look at the edge: teeth all the way round, and a hole in the middle for an axle.')},
+  b6:{type:'num', unit:'teeth', prompt:'How many teeth does the gear have?', answerText:'8',
+    hint:'Count the points that stick out, going round once.',
+    check:v=>near(v,8)?ok():(near(v,16)||near(v,24)?err('Reading the evidence','Count the teeth, not the corners. Each tooth has two corners.'):err('Reading the evidence','Go round the outline once and count each tooth.'))},
+  b7:{type:'choice', prompt:'Which piece of evidence from Case 01 does this match?', answerText:'The grey plastic part with a toothed edge from Ethel Harper’s bin',
+    choices:()=>[{v:'holdall',label:'The brown leather holdall'},{v:'part',label:'The grey plastic part from Ethel Harper’s bin'},{v:'notes',label:'The bundled banknotes'},{v:'ticket',label:'The train to Anton City'}],
+    hint:'In Case 01, something with a toothed edge was pushed into a wheelie bin.',
+    check:v=>v==='part'?ok():err('Reading the evidence','Think back to Statement B1: a small grey plastic part with a toothed edge.')},
+
+  s1:{type:'num', prompt:'Digits 1 and 2: what is the next number in <b>3, 7, 11, 15, …</b>?', answerText:'19 (add 4 each time)',
+    hint:'What do you add to get from one number to the next?',
+    check:v=>{ if(near(v,19)) return ok(); if(near(v,4)) return err('Reading the question','4 is the rule. Use it to find the next number.');
+      if(near(v,18)||near(v,20)) return err('Sequences','Check the gap between the numbers again: 3 to 7, 7 to 11, 11 to 15.'); return err('Sequences','Find the difference between the terms, then add it to 15.'); }},
+  s2:{type:'num', prompt:'Digits 3 and 4: what is the <b>6th square number</b>?', answerText:'6 × 6 = 36',
+    hint:'The square numbers start 1, 4, 9, 16, …',
+    check:v=>{ if(near(v,36)) return ok(); if(near(v,12)) return err('Method','That’s 6 × 2. Squaring means 6 × 6.');
+      if(near(v,25)) return err('Reading the question','25 is the 5th square number. Count on one more.'); if(near(v,49)) return err('Reading the question','49 is the 7th. You need the 6th.');
+      return err('Method','The 6th square number is 6 × 6.'); }},
+  s3:{type:'num', prompt:'Digits 5 and 6: the sequence has <b>nth term 4n − 1</b>. What is the <b>7th term</b>?', answerText:'4 × 7 − 1 = 27',
+    hint:'Replace n with 7, then work it out.',
+    check:v=>{ if(near(v,27)) return ok(); if(near(v,28)) return err('Method','You multiplied 4 by 7 but forgot to subtract 1.');
+      if(near(v,31)) return err('Method','That’s the 8th term. Use n = 7.'); if(near(v,46)||near(v,47)) return err('Method','4n means 4 × n, not 4 followed by n.');
+      return err('Method','Put n = 7 into 4n − 1.'); }},
+
+  g1:{type:'num', unit:'cm', prompt:'Mast A picked up the phone about <b>2.5 km</b> away. How far is that on the map?', small:'Scale: 1 cm on the map = 500 m.', answerText:'2.5 km = 2,500 m; 2,500 ÷ 500 = 5 cm',
+    hint:'Change km into metres first (× 1,000), then divide by 500.',
+    check:v=>scaleCheck(v,5,2.5)},
+  g2:{type:'num', unit:'cm', prompt:'Mast B picked it up about <b>3 km</b> away. How far is that on the map?', small:'Scale: 1 cm = 500 m.', answerText:'3,000 ÷ 500 = 6 cm',
+    hint:'3 km is 3,000 m. How many lots of 500 m is that?', check:v=>scaleCheck(v,6,3)},
+  g3:{type:'num', unit:'cm', prompt:'Mast C picked it up about <b>2 km</b> away. How far is that on the map?', small:'Scale: 1 cm = 500 m.', answerText:'2,000 ÷ 500 = 4 cm',
+    hint:'2 km is 2,000 m.', check:v=>scaleCheck(v,4,2)},
+  g4:{type:'choice', prompt:'The three circles are on the map. Where is the phone?', answerText:'Harbour warehouse, Unit 7',
+    choices:()=>PLACES.map(p=>({v:p.id,label:p.name})),
+    hint:'The phone is the right distance from all three masts, so it sits where all three circles cross.',
+    check:v=>v==='ware'?ok():(v==='mill'?err('Reasoning','The old mill is on circles A and B, but not on circle C. The phone has to be on all three.'):err('Reasoning','That place isn’t on all three circles. Find the one point where every circle crosses.'))}
+};
+Object.keys(QALL).forEach(k=>QALL[k].id=k);
+function scaleCheck(v,cm,km){ if(near(v,cm,0.01)) return ok(); if(near(v,km,0.01)) return err('Units','That’s still in kilometres. Convert to map centimetres.');
+  if(near(v,km*1000,0.5)) return err('Scale','That’s the distance in metres. Now divide by 500.'); if(near(v,km*1000*500,1)||near(v,km*500,0.5)) return err('Scale','You multiplied by 500. Going from real life to the map, divide.');
+  if(near(v,km*1000/50,0.01)||near(v,km*1000/5,0.01)) return err('Scale','Check the scale: 1 cm = 500 m.'); return err('Scale','Change the km to metres, then divide by 500.'); }
+
+/* ---------- components ---------- */
+function transmission(id, who, lines, len){
+  const f = TXFILE[id];
+  if(!f) return `<section class="tx txt-tx">
+    <div class="tx-head"><span class="tx-rec"><i></i>INCOMING · ${who.toUpperCase()}</span><span class="tx-len">Written transmission</span></div>
+    <div class="tx-subs">${lines.map(l=>`<p>${l}</p>`).join('')}</div></section>`;
+  return `<section class="tx">
+    <div class="tx-head"><span class="tx-rec"><i></i>INCOMING · ${who.toUpperCase()}</span><span class="tx-len">${len}</span></div>
+    <video class="tx-video" data-tx="${id}" controls playsinline preload="metadata" poster="video/${f}.jpg" src="video/${f}.mp4"></video>
+    <details class="tx-subs"><summary>Transcript</summary>${lines.map(l=>`<p>${l}</p>`).join('')}</details>
+    <div class="tx-skip" data-skipwrap="${id}" ${S.tx[id]?'hidden':''}><button class="link" data-skip="${id}">Can’t play sound? Read the transcript and continue</button></div>
+  </section>`;
+}
+function after(id, html){ return `<div class="next-row" data-after="${id}" ${S.tx[id]?'':'hidden'}>${html}</div>`; }
+function unlockTx(id){ S.tx[id]=true; try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(_){} app.querySelectorAll(`[data-after="${id}"]`).forEach(e=>e.hidden=false); const w=app.querySelector(`[data-skipwrap="${id}"]`); if(w) w.hidden=true; }
+
+function qHTML(q){
+  const done = q.id in S.ans;
+  const demo = S.demo ? `<div class="demo-a">Answer: ${q.answerText}</div>` : '';
+  if(done){
+    let shown = S.ans[q.id];
+    if(q.type==='choice'){ const c=q.choices().find(c=>c.v===shown); shown=c?c.label:shown; }
+    if(q.type==='pt') shown = '('+shown.replace(',', ', ').replace(/-/g,'−')+')';
+    const unit = q.unit==='€' ? '' : (q.unit?' '+q.unit:'');
+    return `<div class="q done"><div class="q-p">${q.prompt}</div><div class="q-a">✓ ${q.unit==='€'?'€':''}${esc(shown)}${unit}</div></div>`;
+  }
+  let body = '';
+  if(q.type==='num'){
+    const pre = q.unit==='€';
+    body = `<form class="q-row" data-q="${q.id}"><label class="q-in">${pre?'<span style="padding:0 0 0 12px">€</span>':''}<input id="in-${q.id}" inputmode="decimal" autocomplete="off" aria-label="Your answer" value="${esc(S.draft[q.id]||'')}"><span>${pre?'':(q.unit||'')}</span></label><button class="btn" type="submit">Check</button></form>`;
+  } else if(q.type==='choice'){
+    body = `<div class="choices">${q.choices().map(c=>`<button class="choice" data-q="${q.id}" data-v="${c.v}">${c.label}${c.sub?`<small>${c.sub}</small>`:''}</button>`).join('')}</div>`;
+  } else if(q.type==='pt'){
+    body = `<div class="note">Tap the point on the blueprint grid.</div>`;
+  }
+  const fb = S.fb[q.id] ? `<div class="fb" role="status"><b>${S.fb[q.id].type}</b>${S.fb[q.id].msg}</div>` : '';
+  const hint = q.hint ? (S.hinted[q.id] ? `<div class="hint">${q.hint}</div>` : `<div><button class="link" data-hint="${q.id}">Need a hint? (−3 points)</button></div>`) : '';
+  return `<div class="q"><div class="q-p">${q.prompt}${q.small?`<small>${q.small}</small>`:''}</div>${body}${fb}${hint}${demo}</div>`;
+}
+function qList(ids){ let html=''; for(const id of ids){ html+=qHTML(QALL[id]); if(!(id in S.ans)) break; } return html; }
+const solved = ids => ids.every(id=>id in S.ans);
+const count = ids => ids.filter(i=>i in S.ans).length;
+
+/* point questions: checked on a grid tap */
+function ptCheck(q, x, y){
+  const [tx,ty] = q.target;
+  if(x===tx && y===ty) return ok();
+  if(x===ty && y===tx) return err('Coordinates','You swapped the numbers. The x-coordinate comes first: go across, then up or down.');
+  if(x===-tx && y===ty) return err('Coordinates','Check the sign of x. Negative x is to the left of the y-axis, positive x to the right.');
+  if(x===tx && y===-ty) return err('Coordinates','Check the sign of y. Negative y is below the x-axis.');
+  if(x===-tx && y===-ty) return err('Coordinates','Both signs are the wrong way round. Positive x is right, positive y is up.');
+  return err('Coordinates','Start at (0, 0). Go across to the x-coordinate first, then up or down to the y-coordinate.');
+}
+const activePt = () => ['b1','b2','b3','b4'].find(id=>!(id in S.ans)) || null;
+
+/* ---------- exhibits ---------- */
+function payslip(){
+  return `<article class="slip"><div class="st-h"><span>Exhibit E1 · Payslip</span><span>March</span></div>
+    <h4>PISTONCRAFT S.L.</h4>
+    <table><tr><td>Employee</td><td class="r">Gisela Bergar</td></tr><tr><td>Job</td><td class="r">Project manager</td></tr>
+    <tr><td>Gross monthly pay</td><td class="r">€3,000.00</td></tr><tr><td>Income tax (20%)</td><td class="r">${'m1' in S.ans?'−€600.00':'?'}</td></tr>
+    <tr><td>Pension (5%)</td><td class="r">${'m2' in S.ans?'−€150.00':'?'}</td></tr>
+    <tr class="sum"><td>Take-home pay</td><td class="r">${'m2' in S.ans?'€2,250.00':'?'}</td></tr></table></article>`;
+}
+const STMT_IN = [['1 Mar','PISTONCRAFT S.L. · SALARY',2250],['15 Mar','KWG GROWTH FUND · TRANSFER',6750]];
+const STMT_OUT = [['2 Mar','Rent · Calle Mayor 14',900],['5 Mar','Electricity, water, phone',360],['all month','Supermercado Sol (food)',390],['8 Mar','Boutique Valentin (clothes)',2450],['16 Mar','Joyería Real (jewellery)',3150],['22 Mar','Galería Norte (art)',1750]];
+function statement(){
+  const flag = 'm5' in S.ans;
+  return `<article class="slip"><div class="st-h"><span>Exhibit E2 · Bank statement</span><span>Banco Anton · March</span></div>
+    <h4>GISELA BERGAR · CURRENT ACCOUNT</h4>
+    <table><tr><td colspan="3" class="sec">Money in</td></tr>
+    ${STMT_IN.map(r=>`<tr class="${flag&&r[2]===6750?'flag':''}"><td>${r[0]}</td><td>${r[1]}</td><td class="r">${eur(r[2])}</td></tr>`).join('')}
+    <tr><td colspan="3" class="sec">Money out</td></tr>
+    ${STMT_OUT.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td class="r">${eur(r[2])}</td></tr>`).join('')}</table></article>`;
+}
+function gridSVG(){
+  const U=28, O=7*U, N=6; const P=([x,y])=>[O+x*U, O-y*U];
+  let s = `<svg viewBox="0 0 ${2*O} ${2*O}" role="img" aria-label="Blueprint grid from minus 6 to 6">`;
+  for(let i=-N;i<=N;i++){ s+=`<line class="g-line" x1="${O+i*U}" y1="${O-N*U}" x2="${O+i*U}" y2="${O+N*U}"/><line class="g-line" x1="${O-N*U}" y1="${O+i*U}" x2="${O+N*U}" y2="${O+i*U}"/>`; }
+  s+=`<line class="g-axis" x1="${O-N*U-8}" y1="${O}" x2="${O+N*U+8}" y2="${O}"/><line class="g-axis" x1="${O}" y1="${O-N*U-8}" x2="${O}" y2="${O+N*U+8}"/>`;
+  s+=`<text class="g-num" x="${O+N*U+14}" y="${O+4}">x</text><text class="g-num" x="${O-4}" y="${O-N*U-14}">y</text>`;
+  for(let i=-N;i<=N;i++){ if(!i) continue; s+=`<text class="g-num" x="${O+i*U}" y="${O+14}" text-anchor="middle">${i<0?'−'+(-i):i}</text><text class="g-num" x="${O-8}" y="${O-i*U+3.5}" text-anchor="end">${i<0?'−'+(-i):i}</text>`; }
+  const placed = new Set(Object.entries(MISSING).filter(([k])=>k in S.ans).map(([,p])=>p.join(',')));
+  const all = placed.size===4;
+  const pts = GEAR.filter(p=>!MISS_KEYS.includes(p.join(','))||placed.has(p.join(',')));
+  if(all){ s+=`<polygon class="g-outline" points="${GEAR.map(p=>P(p).join(',')).join(' ')}"/><circle cx="${O}" cy="${O}" r="${1.4*U}" fill="#0E1634" stroke="var(--cyan)" stroke-width="2.5"/>`; }
+  else { const has = p => !MISS_KEYS.includes(p.join(','))||placed.has(p.join(','));
+    GEAR.forEach((p,i)=>{ const q=GEAR[(i+1)%GEAR.length]; if(has(p)&&has(q)){ const [x1,y1]=P(p),[x2,y2]=P(q); s+=`<line class="g-partial" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`; } }); }
+  pts.forEach(p=>{ const [x,y]=P(p); s+=`<circle class="${placed.has(p.join(','))?'g-new':'g-pt'}" cx="${x}" cy="${y}" r="4"/>`; });
+  if(activePt()){ for(let x=-N;x<=N;x++) for(let y=-N;y<=N;y++){ const [cx,cy]=P([x,y]); s+=`<rect class="g-hit" data-gx="${x}" data-gy="${y}" x="${cx-U/2}" y="${cy-U/2}" width="${U}" height="${U}" aria-label="(${x}, ${y})"/>`; } }
+  return s+'</svg>';
+}
+function printJob(){
+  const placed = new Set(Object.entries(MISSING).filter(([k])=>k in S.ans).map(([,p])=>p.join(',')));
+  const fmt = p => '('+p.map(n=>n<0?'−'+(-n):n).join(', ')+')';
+  return `<article class="slip"><div class="st-h"><span>Exhibit E3 · Print job</span><span>File ENG-A1.job · 24 points</span></div>
+    <p style="font-size:14px">Outline points, in order. Four were lost when the file was damaged.</p>
+    <div class="coords">${GEAR.map(p=>{ const k=p.join(','), miss=MISS_KEYS.includes(k)&&!placed.has(k); return `<span class="${miss?'miss':''}">${miss?'?? LOST':fmt(p)}</span>`; }).join('')}</div>
+    <p style="font-size:14px;margin-top:10px">Recovered from the printer’s memory: ${Object.values(MISSING).map(fmt).join(', ')}.</p></article>`;
+}
+function notebook(){
+  return `<article class="note-book"><p class="hand">Safe — don’t write the code down!!</p>
+    <p class="hand">1st + 2nd: the next number in 3, 7, 11, 15 …</p>
+    <p class="hand">3rd + 4th: the 6th square number</p>
+    <p class="hand">5th + 6th: 7th term of 4n − 1</p></article>`;
+}
+function keypad(){
+  const d = ('s1' in S.ans?'19':'__') + ('s2' in S.ans?'36':'__') + ('s3' in S.ans?'27':'__');
+  return `<div class="keypad ${solved(['s1','s2','s3'])?'open':''}" aria-label="Safe keypad">${[...d].map(c=>`<b class="${c==='_'?'e':''}">${c==='_'?'•':c}</b>`).join('')}</div>`;
+}
+function mastSVG(){
+  let s = `<svg viewBox="0 0 660 480" role="img" aria-label="Anton City map with three phone masts"><rect width="660" height="480" fill="var(--ground)"/>`;
+  s += `<path class="m-sea" d="M0 440 C100 430 200 400 270 330 C300 292 320 276 345 268 C420 262 470 300 520 340 C580 380 620 390 660 390 L660 480 L0 480Z"/><text class="m-pname" x="560" y="455">HARBOUR</text>`;
+  const roads = [[[0,250],[660,250]],[[330,0],[330,300]],[[40,60],[620,60]],[[150,0],[150,480]],[[500,0],[500,330]],[[0,160],[660,160]]];
+  roads.forEach(r=>s+=`<polyline class="m-edge" points="${r.map(p=>p.join(',')).join(' ')}" style="stroke-width:10"/>`);
+  roads.forEach(r=>s+=`<polyline class="m-street" points="${r.map(p=>p.join(',')).join(' ')}" style="stroke-width:8"/>`);
+  Object.entries(MAST).forEach(([k,m])=>{ if(m.q in S.ans){ const [x,y]=sv(m.c); s+=`<circle class="m-ring ${m.cls}" cx="${x}" cy="${y}" r="${m.r*MU}"/>`; } });
+  PLACES.forEach(p=>{ const [x,y]=sv(p.p); const right = x<520; s+=`<g class="m-cand"><circle cx="${x}" cy="${y}" r="5"/><text x="${right?x+9:x-9}" y="${y-8}" text-anchor="${right?'start':'end'}">${p.name}</text></g>`; });
+  Object.entries(MAST).forEach(([k,m])=>{ const [x,y]=sv(m.c); s+=`<g class="m-mast"><circle cx="${x}" cy="${y}" r="9"/><text x="${x}" y="${y+4}" text-anchor="middle" fill="#fff">${k}</text></g>`; });
+  s += `<g class="m-scale"><line x1="20" y1="455" x2="${20+2*MU}" y2="455"/><line x1="20" y1="450" x2="20" y2="460"/><line x1="${20+MU}" y1="451" x2="${20+MU}" y2="459"/><line x1="${20+2*MU}" y1="450" x2="${20+2*MU}" y2="460"/>
+    <text x="20" y="444" text-anchor="middle">0</text><text x="${20+2*MU}" y="444" text-anchor="middle">1 km</text><text x="${20+2*MU+12}" y="459">1 cm : 500 m</text></g>`;
+  return s+'</svg>';
+}
+
+/* ---------- scenes ---------- */
+function scCover(){
+  return `<section class="cover">
+    <div>
+      <div class="eyebrow">Operation Crossroads · Case 02</div>
+      <h1>The Dragon’s <em>Mouth</em></h1>
+      <p>Suspect 2 stepped off the 10:41 in Anton City and vanished. The part from Ethel Harper’s bin leads to an engineer living far beyond her salary. Follow the money, crack her safe and trace her phone.</p>
+      <div class="meta-row"><span class="tag">KS3 · Years 7–8</span><span class="tag">Percentages</span><span class="tag">Coordinates</span><span class="tag">Sequences</span><span class="tag">Scale and loci</span><span class="tag">~25 minutes</span></div>
+      <button class="btn" data-go="briefing">Open the case file</button>
+    </div>
+    <div class="folder" aria-hidden="true"><div class="sheet">
+      <h3>CASE 02 · ANTON CITY</h3>
+      <span class="stamp">CONFIDENTIAL</span>
+      <dl><dt>Person of interest</dt><dd>Gisela Bergar</dd><dt>Job</dt><dd>Project manager, PistonCraft</dd><dt>Link</dt><dd>3D-printed part, Case 01</dd><dt>Lead officer</dt><dd>Comisaria Jefe Ortiz Moreno</dd><dt>Assigned</dt><dd>Insp. Bancroft → you</dd><dt>Status</dt><dd>Whereabouts unknown</dd></dl>
+    </div></div>
+  </section>`;
+}
+function scBriefing(){
+  return `<div class="scene-head"><div class="eyebrow">Step 1 · Briefing</div><h2 class="h-scene">Incoming transmission</h2></div>
+  <div class="stack" style="max-width:860px">
+    ${transmission('brief','Inspector Bancroft',['Detective. Good to have you back. Suspect 2 got off the 10:41 in Anton City, and disappeared.','Anton City police lost her outside the station.','But the part from Ethel Harper’s bin had a printer serial number inside it. It traces to one person: Gisela Bergar, a project manager at PistonCraft, an engine-parts company.','Comisaria Jefe Ortiz Moreno’s team searched her flat this morning. Gisela wasn’t there. What they found doesn’t add up.','Designer clothes. Jewellery. Art on every wall. On a project manager’s salary.','Her payslips and bank statements are in your case file. Work out what she earns, what she spends, and how much is coming from somewhere else.','Follow the money, Detective. Numbers don’t lie.'],'1 min 15 s')}
+    ${after('brief',`<button class="btn" data-go="money">Open the bank records</button>`)}
+  </div>`;
+}
+function scMoney(){
+  const pre=['m1','m2'], post=['m3','m4','m5','m6'], ids=[...pre,...post];
+  return `<div class="scene-head"><div class="eyebrow">Step 2 · The money</div><h2 class="h-scene">Follow the money</h2>
+    <p class="lede">Start with her payslip: what does Gisela actually take home? Then check her bank statement against it.</p></div>
+  <div class="grid">
+    <div class="stack">${payslip()}${solved(pre)?statement():`<div class="locked"><b>EXHIBIT E2 · BANK STATEMENT</b><span class="note" style="margin:0">Work out her take-home pay to open it.</span></div>`}</div>
+    <div class="panel sticky"><div class="panel-title"><span>Your tasks</span><span>${count(ids)} / 6</span></div>
+      <div class="stack">${qList(ids)}
+      ${solved(ids)?`<div class="solved-note">€6,750 a month from a fund nobody at PistonCraft has heard of: three-quarters of everything Gisela gets. That’s the money paying for the clothes, the jewellery and the art.</div><div class="next-row"><button class="btn" data-go="blueprint">Go to the workshop</button></div>`:''}</div></div>
+  </div>`;
+}
+function scBlueprint(){
+  const ids=['b1','b2','b3','b4','b5','b6','b7'];
+  const tx = transmission('work','Comisaria Jefe Ortiz Moreno',['Detective. Comisaria Jefe Belén Ortiz Moreno, Anton City Police. Inspector Bancroft tells me you’re good with numbers. I hope so.','Behind a false panel in Gisela’s kitchen, we found a staircase. It leads down to a workshop.','Three 3D printers, a metal lathe, and boxes of finished parts ready to ship.','This print job was still loaded on the main printer. It’s a list of coordinates. Plot them, and tell me what she was making.','And there’s a safe. Six digits. Gisela left herself a clue in her notebook. It’s in your case file.','Crack that code, and we find out who she’s working for. Suerte, Detective.'],'59 s');
+  if(!S.tx.work) return `<div class="scene-head"><div class="eyebrow">Step 3 · The workshop</div><h2 class="h-scene">Incoming transmission</h2></div><div class="stack" style="max-width:860px">${tx}${after('work',`<button class="btn" data-go="blueprint">Plot the print job</button>`)}</div>`;
+  return `<div class="scene-head"><div class="eyebrow">Step 3 · The blueprint</div><h2 class="h-scene">What was she printing?</h2>
+    <p class="lede">Four points of the print job were lost. Plot them on the grid to finish the outline, then identify the part.</p></div>
+  <div class="grid">
+    <div class="sticky stack"><div class="grid-svg">${gridSVG()}</div></div>
+    <div class="stack">
+      <div class="panel"><div class="panel-title"><span>Your tasks</span><span>${count(ids)} / 7</span></div>
+        <div class="stack">${qList(ids)}
+        ${solved(ids)?`<div class="solved-note">An engine gear: a fake PistonCraft part, printed in a hidden workshop. The same design as the part dumped in Scoby.</div><div class="next-row"><button class="btn" data-go="safe">Open the safe</button></div>`:''}</div></div>
+      ${printJob()}
+      <details class="panel"><summary class="eyebrow" style="cursor:pointer">Replay the workshop transmission</summary><div style="margin-top:12px">${tx}</div></details>
+    </div>
+  </div>`;
+}
+function scSafe(){
+  const ids=['s1','s2','s3'];
+  return `<div class="scene-head"><div class="eyebrow">Step 4 · The safe</div><h2 class="h-scene">Crack the code</h2>
+    <p class="lede">Gisela didn’t write the code down. She wrote clues to it. Each clue gives two digits.</p></div>
+  <div class="grid">
+    <div class="sticky stack">${notebook()}${keypad()}</div>
+    <div class="stack">
+      <div class="panel"><div class="panel-title"><span>Your tasks</span><span>${count(ids)} / 3</span></div><div class="stack">${qList(ids)}
+        ${solved(ids)?`<div class="solved-note"><b>193627.</b> The safe clicks open. Inside: €40,000 in cash, a ledger with a Titan Industries logo on the cover, and a cheap pay-as-you-go phone.</div>`:''}</div></div>
+      ${solved(ids)? transmission('safe','Inspector Bancroft',['Good work, Detective. The safe’s open.','That phone in there is the one Gisela used to call her contacts. It was switched on last night, and three phone masts picked up its signal.','Each mast can tell us roughly how far away the phone was. It can’t tell us which direction.','Draw those distances on the map. Where all three meet, that’s where she was.','Go.']) + after('safe',`<button class="btn" data-go="signal">Trace the phone</button>`) : ''}
+    </div>
+  </div>`;
+}
+function scSignal(){
+  const ids=['g1','g2','g3','g4'];
+  return `<div class="scene-head"><div class="eyebrow">Step 5 · The signal</div><h2 class="h-scene">Trace the phone</h2>
+    <p class="lede">Each mast picked up the phone at a certain distance. Every point that distance from a mast lies on a circle round it. Convert each distance to map centimetres and the circle is drawn for you.</p></div>
+  <div class="grid">
+    <div class="sticky"><div class="map">${mastSVG()}<div class="map-cap"><span>Masts A, B and C</span><span>1 cm : 500 m</span></div></div></div>
+    <div class="stack">
+      <div class="panel"><div class="panel-title"><span>Your tasks</span><span>${count(ids)} / 4</span></div><div class="stack">${qList(ids)}
+      ${solved(ids)?`<div class="solved-note">All three circles cross at the harbour warehouse. Comisaria Ortiz Moreno’s units are on their way.</div><div class="next-row"><button class="btn" data-go="closed">Close the case</button></div>`:''}</div></div>
+    </div>
+  </div>`;
+}
+function rank(s){ return s>=90?'Detective Chief Inspector':s>=75?'Detective Inspector':s>=60?'Detective Sergeant':'Detective Constable'; }
+const WHERE = {m1:'Income tax',m2:'Take-home pay',m3:'Rent percentage',m4:'Total spending',m5:'Extra spending',m6:'KWG percentage',b1:'Plot (4, 3)',b2:'Plot (−5, 1)',b3:'Plot (1, −5)',b4:'Plot (−3, −2)',b5:'The part',b6:'Counting teeth',b7:'Case 01 link',s1:'Safe digits 1–2',s2:'Safe digits 3–4',s3:'Safe digits 5–6',g1:'Mast A',g2:'Mast B',g3:'Mast C',g4:'The location'};
+function scClosed(){
+  if(!S.finished) S.finished = Date.now();
+  const mins = S.started ? Math.max(1,Math.round((S.finished-S.started)/60000)) : '–';
+  const total = Object.keys(QALL).length;
+  const firstTry = total - new Set(S.errors.filter(e=>e.type!=='Hint used').map(e=>e.q)).size;
+  const byType = {}; S.errors.forEach(e=>{(byType[e.type]=byType[e.type]||[]).push(e);});
+  const rep = Object.keys(byType).length ? Object.entries(byType).sort((a,b)=>b[1].length-a[1].length).map(([t,list])=>
+    `<div class="rep"><div class="rt">${t} × ${list.length}</div><div>${list.slice(0,3).map(e=>`<div><span class="rq">${e.where}</span>${e.msg}</div>`).join('')}</div></div>`).join('')
+    : `<div class="rep"><div class="rt">None</div><div>No technique errors logged. Every answer was right first time.</div></div>`;
+  return `<div class="scene-head"><div class="eyebrow">Case 02 · Closed</div><h2 class="h-scene">Gisela Bergar in custody</h2>
+    <p class="lede">Arrested at the harbour warehouse with three crates of fake engine parts.</p></div>
+  <div class="stack">
+    ${transmission('close','Inspector Bancroft',['Anton City police went into the harbour warehouse at dawn. Gisela Bergar was there, packing three crates of engine parts.','She’s in custody. The parts are fakes, made to look like PistonCraft originals.','And the ledger from her safe tells us who’s paying. PistonCraft is owned by Titan Industries.','One page has a date, a time and two words: Montague Hall.','Get some rest, Detective. Something big is being planned.'])}
+    <div class="stats">
+      <div class="stat"><span>Case points</span><b>${S.score}</b></div>
+      <div class="stat"><span>Rank</span><b style="font-size:15px">${rank(S.score)}</b></div>
+      <div class="stat"><span>Right first time</span><b>${firstTry} / ${total}</b></div>
+      <div class="stat"><span>Time on case</span><b>${mins} min</b></div>
+    </div>
+    <div class="panel"><div class="panel-title"><span>Forensic report · where your points went</span><span>${S.errors.length} error${S.errors.length===1?'':'s'}</span></div><div class="report">${rep}</div></div>
+    <div class="locked"><div><div class="eyebrow">Next case</div><b>CASE 03 · THE STATELY HEIST</b><div class="note">Montague Hall. Coming soon.</div></div></div>
+    <div class="next-row"><a class="btn" href="index.html#path" style="text-decoration:none">Back to the Academy</a><button class="btn ghost" data-restart="1">Replay Case 02</button></div>
+  </div>`;
+}
+
+/* ---------- render ---------- */
+const app = document.getElementById('app');
+const KEY='mfa.case02';
+function render(){
+  const idx = SCENES.findIndex(s=>s[0]===S.scene);
+  document.getElementById('steps').innerHTML = SCENES.map((s,i)=>`<li class="${i<idx?'done':i===idx?'now':''}">${s[1]}</li>`).join('');
+  document.getElementById('pts').textContent = S.score;
+  document.getElementById('demo').checked = S.demo;
+  const fn = {cover:scCover,briefing:scBriefing,money:scMoney,blueprint:scBlueprint,safe:scSafe,signal:scSignal,closed:scClosed}[S.scene];
+  app.innerHTML = fn();
+  try{ localStorage.setItem(KEY, JSON.stringify(S)); if(S.scene==='closed') localStorage.setItem('mfa.case.02', JSON.stringify({closed:true, score:S.score})); }catch(_){}
+}
+function go(scene){ S.scene=scene; if(scene==='briefing'&&!S.started) S.started=Date.now(); render(); window.scrollTo({top:0,behavior:'smooth'}); }
+function wrong(id, r, raw){
+  const q=QALL[id];
+  S.score = Math.max(0, S.score-5); S.wrong++;
+  S.errors.push({q:id, type:r.type, msg:r.msg, where:WHERE[id]||id});
+  S.fb[id] = {type:r.type, msg:r.msg};
+  if(q.type==='num') S.draft[id]=raw;
+}
+function answer(id, raw){
+  const q = QALL[id]; if(!q || id in S.ans) return;
+  let val = raw;
+  if(q.type==='num'){ val = num(raw); if(val===null){ S.fb[id]={type:'Check',msg:'Type a number first.'}; render(); focusIn(id); return; } }
+  const r = q.check(val);
+  if(r.ok){ S.ans[id] = q.type==='num' ? (Math.abs(val)>=1000 ? val.toLocaleString('en-GB') : String(val)) : val; delete S.fb[id]; delete S.draft[id]; render(); focusNext(); }
+  else { wrong(id, r, raw); render(); focusIn(id); }
+}
+function plot(x,y){
+  const id = activePt(); if(!id) return; const q=QALL[id];
+  const r = ptCheck(q,x,y);
+  if(r.ok){ S.ans[id]=x+','+y; delete S.fb[id]; } else wrong(id,r);
+  render();
+}
+function focusIn(id){ const el=document.getElementById('in-'+id); if(el){ el.focus(); el.select(); } }
+function focusNext(){ const el=app.querySelector('.q:not(.done) input'); if(el) el.focus({preventScroll:true}); }
+
+app.addEventListener('submit',e=>{ const f=e.target.closest('form[data-q]'); if(!f) return; e.preventDefault(); answer(f.dataset.q, f.querySelector('input').value); });
+app.addEventListener('input',e=>{ const f=e.target.closest('form[data-q]'); if(f) S.draft[f.dataset.q]=e.target.value; });
+app.addEventListener('click',e=>{
+  const g = e.target.closest('[data-gx]'); if(g){ plot(+g.dataset.gx, +g.dataset.gy); return; }
+  const t = e.target.closest('[data-go],[data-skip],[data-hint],[data-restart],.choice');
+  if(!t) return;
+  if(t.dataset.go) return go(t.dataset.go);
+  if(t.dataset.skip){ const d=app.querySelector(`[data-skipwrap="${t.dataset.skip}"]`)?.previousElementSibling; if(d) d.open=true; unlockTx(t.dataset.skip); return; }
+  if(t.dataset.hint){ const h=t.dataset.hint; if(!S.hinted[h]){ S.hinted[h]=true; S.score=Math.max(0,S.score-3); S.errors.push({q:h,type:'Hint used',msg:'Took a hint.',where:WHERE[h]||h}); } render(); return; }
+  if(t.dataset.restart){ const demo=S.demo; S=fresh(); S.demo=demo; render(); window.scrollTo({top:0}); return; }
+  if(t.classList.contains('choice')) answer(t.dataset.q, t.dataset.v);
+});
+app.addEventListener('play',e=>{ const v=e.target; if(v.matches&&v.matches('video[data-tx]')) unlockTx(v.dataset.tx); },true);
+document.getElementById('demo').addEventListener('change',e=>{ S.demo=e.target.checked; render(); });
+const teacherCheck=()=>{ const t=location.hash==='#teacher'; document.getElementById('demo-wrap').hidden=!t; if(!t && S.demo){ S.demo=false; render(); } };
+window.addEventListener('hashchange',teacherCheck);
+
+/* ---------- boot ---------- */
+let saved=null; try{ saved=JSON.parse(localStorage.getItem(KEY)||'null'); }catch(_){}
+if(saved && saved.scene){ S=Object.assign(fresh(), saved); S.tx=Object.assign(fresh().tx, saved.tx||{}); }
+render(); teacherCheck();
+})();
+</script>
+</body></html>
