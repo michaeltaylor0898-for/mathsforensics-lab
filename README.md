@@ -13,7 +13,7 @@ Live site: https://lab.mathsforensics.com
 
 ## Written answers (prototype)
 
-1. Run `supabase/migrations/007_written_marking.sql` in the SQL Editor.
+1. Run `supabase/migrations/010_written_marking.sql` in the SQL Editor.
 2. Add secrets: `ANTHROPIC_API_KEY`, and `PURGE_KEY` (any long random string).
 3. Deploy: `supabase functions deploy mark-written --no-verify-jwt`
 4. Upload `site/written/` to the `lab.mathsforensics.com` folder, so it's at lab.mathsforensics.com/written/.

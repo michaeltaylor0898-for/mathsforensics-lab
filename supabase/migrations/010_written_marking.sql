@@ -1,4 +1,4 @@
--- Migration 007: AI marking of handwritten working (prototype).
+-- Migration 010: AI marking of handwritten working (prototype).
 -- Run once in Supabase → SQL Editor (safe to run again).
 --
 -- written_marks  one row per marked answer: score, the full case report, and where the image is stored.

@@ -9,11 +9,11 @@
 //
 // Deploy:   supabase functions deploy mark-written --no-verify-jwt   (the function checks the sign-in itself)
 // Secrets:  ANTHROPIC_API_KEY=<key from console.anthropic.com>
-//           PURGE_KEY=<long random string> (for the daily image clean-up, see migration 007)
+//           PURGE_KEY=<long random string> (for the daily image clean-up, see migration 010)
 //           optional: IMAGE_DAYS (default 7), MONITOR_MODEL (default claude-haiku-5-5, the fast model for Mike mode), MIKE_WEEKLY (default 400, Exam Pass only),
 //           MARKING_MODEL (default claude-sonnet-5-5), FREE_WEEKLY (default 3), FULL_WEEKLY (default 40),
 //                     ALLOWED_ORIGINS (comma-separated; default lab.mathsforensics.com + localhost)
-// Needs migration 007 (written_marks table + written-work storage bucket).
+// Needs migration 010 (written_marks table + written-work storage bucket).
 import { createClient } from "npm:@supabase/supabase-js@2.45.4";
 import { byId, publicQuestion, SCHEMES } from "./schemes.ts";
 import { type AiCheck, type AiLight, type AiMarking, applyCheck, applyMonitor, applyRules, CHECK_PROMPT, CHECK_TOOL, checkText, MARKING_TOOL, MONITOR_PROMPT, MONITOR_TOOL, monitorText, schemeText, SYSTEM_PROMPT } from "./marking.ts";
