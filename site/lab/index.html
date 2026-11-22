@@ -6938,9 +6938,9 @@ async function renderOwner(){
     <form id="fSchool" class="grid2" novalidate><label>School name<input class="inp" id="s-name"></label><label>Seats<input class="inp" id="s-seats" type="number" min="1" value="100"></label>
       <label>Licence ends<input class="inp" id="s-exp" type="date" value="${schoolYearEnd().slice(0,10)}"></label><label>Admin name<input class="inp" id="s-aname"></label><label>Admin email<input class="inp" id="s-aemail" type="email"></label>
       <p class="formerr" hidden></p><button class="btn" type="submit">Create licence</button></form></details></div>
-  <div class="panel"><h2>Exam Passes</h2>
-    <div class="tablewrap"><table class="plain"><thead><tr><th>Buyer email</th><th>Order</th><th>Bought</th><th>Expires</th><th>Account</th></tr></thead><tbody>
-    ${o.passes.map(p=>`<tr><td>${esc(p.email)}</td><td><code>${esc(p.order_ref)}</code></td><td>${fmtDate(p.created_at)}</td><td>${fmtDate(p.expires_at)}</td><td>${p.has_account?`<span class="pill ok">Signed up</span>${lastFor(p.email)?` <span class="hint">last sign-in ${lastFor(p.email).toLowerCase()}</span>`:''}`:'<span class="pill">Waiting</span>'}</td></tr>`).join('')}</tbody></table></div>
+  <div class="panel"><h2>Passes sold</h2>
+    <div class="tablewrap"><table class="plain"><thead><tr><th>Buyer email</th><th>Pass</th><th>Order</th><th>Bought</th><th>Expires</th><th>Account</th></tr></thead><tbody>
+    ${o.passes.map(p=>`<tr><td>${esc(p.email)}</td><td>${({exam_pass:'Lab Exam Pass',academy_pass:'Academy Pass',teacher_pro:'Teacher Pro'})[p.kind]||esc(p.kind||'')}${p.kind==='academy_pass'?(p.payload&&p.payload.learner_id?' <span class="pill ok">given to a child</span>':' <span class="pill">not given to a child yet</span>'):''}</td><td><code>${esc(p.order_ref)}</code></td><td>${fmtDate(p.created_at)}</td><td>${fmtDate(p.expires_at)}</td><td>${p.has_account?`<span class="pill ok">Signed up</span>${lastFor(p.email)?` <span class="hint">last sign-in ${lastFor(p.email).toLowerCase()}</span>`:''}`:'<span class="pill">Waiting</span>'}</td></tr>`).join('')}</tbody></table></div>
     <form id="fSale" class="inline" novalidate><input class="inp" id="sale-email" type="email" placeholder="buyer@example.com" aria-label="Buyer email"><button class="ghost" type="submit">Record a sale</button><p class="formerr" hidden></p></form>
     <p class="hint">Live, the Systeme.io "sale completed" webhook adds a row here automatically. When the buyer signs up with that email, their account unlocks.</p></div>
   <div id="reportsHost"></div>`;
