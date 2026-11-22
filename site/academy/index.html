@@ -105,6 +105,7 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .steps3 i.ok{background:var(--good)}
 .lockrow{display:flex;gap:14px;align-items:center;border:1px dashed var(--line);border-radius:14px;padding:16px 18px;background:repeating-linear-gradient(135deg,var(--panel) 0 12px,#0f1736 12px 24px)}
 .lockrow svg{width:28px;height:28px;flex:none;color:var(--muted)}
+.lockico{display:inline-flex;width:24px;height:24px;flex:none;color:var(--muted)}.lockico svg{width:24px;height:24px}
 
 /* topic */
 .crumbs{display:flex;gap:8px;align-items:center;font-size:15px;color:var(--muted);flex-wrap:wrap}
@@ -236,7 +237,7 @@ a.workitem:hover{border-color:var(--cyan)}
   </div>
 </header>
 <main class="wrap" id="app" tabindex="-1"></main>
-<footer><div class="wrap"><span>Maths Forensics Academy · Years 7 to 9 · Version 22 Nov 2026 (i)</span><span><span id="footnote">Progress is saved on this device only.</span> <a href="../privacy.html">Privacy</a></span></div></footer>
+<footer><div class="wrap"><span>Maths Forensics Academy · Years 7 to 9 · Version 22 Nov 2026 (j)</span><span><span id="footnote">Progress is saved on this device only.</span> <a href="../privacy.html">Privacy</a></span></div></footer>
 
 <script>
 "use strict";
@@ -2245,8 +2246,9 @@ function lockedPanel(t) {
   const parent = ACC.me && ACC.me.role === "parent";
   const what = !ACC.me ? `<p class="muted" style="margin:0">Sign in to unlock every topic. Parents can create an account and get an Academy Pass.</p><div class="row"><a class="btn" href="${SIGN_IN_URL}">Sign in</a></div>`
     : parent ? `<p class="muted" style="margin:0">An Academy Pass opens every topic, award test and case for ${esc(STORE.name)} for 12 months.</p><div class="row">${(ACC.me.spare_passes | 0) ? `<a class="btn" href="#children">Give ${esc(STORE.name)} a pass</a>` : CFG.academyCheckoutUrl ? `<a class="btn" href="${CFG.academyCheckoutUrl}">Get an Academy Pass</a>` : `<span class="small muted">Academy Passes go on sale soon.</span>`}</div>`
+    : (ACC.me.spare_passes | 0) ? `<p class="muted" style="margin:0">You have an Academy Pass waiting. Add your child to this account and the pass unlocks every topic for them.</p><div class="row"><a class="btn" href="#add-child">Add my child</a></div>`
     : `<p class="muted" style="margin:0">Ask a parent to get you an Academy Pass, or ask your teacher to open the Academy for your class.</p>`;
-  return `<section class="panel stack" style="max-width:640px;margin-top:18px"><div class="row" style="gap:10px">${LOCK}<div class="h3" style="margin:0">Part of the Academy Pass</div></div>
+  return `<section class="panel stack" style="max-width:640px;margin-top:18px"><div class="row" style="gap:10px;align-items:center"><span class="lockico">${LOCK}</span><div class="h3" style="margin:0">Part of the Academy Pass</div></div>
     <p style="margin:0">${esc(t.name)} isn't one of the free topics.</p>${what}
     <div><a class="linkbtn" href="#path">Back to the free topics</a></div></section>`;
 }
