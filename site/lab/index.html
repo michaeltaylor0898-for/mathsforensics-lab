@@ -762,6 +762,14 @@ tr.sessrow>td{background:var(--ink);text-align:left;padding:10px 14px}
 .casebar .qflag{margin-left:auto;font-size:13px;color:var(--muted);white-space:nowrap}
 .casebar .qflag:hover{color:var(--cyan)}
 .doors label.tick{display:flex;gap:8px;align-items:center;cursor:pointer}.doors label.tick input{width:20px;height:20px;accent-color:var(--cyan,#00FCF1)}
+.doorcards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+.doorcard{display:flex;flex-direction:column;gap:4px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.02)}
+.doorcard b{font-size:19px}.doorcard span:last-child{font-size:14.5px;color:var(--muted)}
+.doorcard.ac{border-top:3px solid #FFB86B}.doorcard.ac .eyebrow{color:#FFB86B}.doorcard.lab{border-top:3px solid var(--cyan,#00FCF1)}
+@media (max-width:620px){.doorcards{grid-template-columns:1fr}}
+.newclass{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;padding:16px;border:1px dashed var(--line);border-radius:14px;margin:14px 0 6px}
+.newclass label{display:flex;flex-direction:column;gap:4px;font-size:13.5px;color:var(--muted)}
+.newclass .inp{min-width:220px}
 </style>
 </head>
 <body>
@@ -6369,17 +6377,22 @@ function renderAuth(){
     S.authNote=/expired|invalid/i.test(m)?'That email link has expired or has already been used. Some email systems open links automatically to check them, which uses them up. Ask for a new link below, then open it from the email.':'Sign-in did not finish: '+m;
     if(/expired|invalid/i.test(m)) S.authTab='reset'}
   $('#nav').innerHTML='';$('#who').innerHTML='';
+  {const w=document.querySelector('header .wm small');if(w)w.textContent='HQ · ACADEMY AND LAB'}
   const signin=S.authTab==='signin';
   view.className='auth';
   view.innerHTML=`
   <section class="pitch">
-    <span class="eyebrow">GCSE Maths · all exam boards · grades 1–9</span>
-    <h1>Find the marks you're losing.</h1>
-    <p class="lede">Practice questions with fresh numbers every time, marked instantly. When an answer is wrong, the Maths Forensics Lab names the exact technique error, so students fix the habit, not just the question.</p>
+    <span class="eyebrow">Maths Forensics HQ · sign in</span>
+    <h1>One sign-in for the Academy and the Lab.</h1>
+    <p class="lede">Use the account your school or family set up. Once you've signed in, HQ opens the right place for you, depending on your classes and what you've bought.</p>
+    <div class="doorcards">
+      <div class="doorcard ac"><span class="eyebrow">Years 7 to 9 · KS3</span><b>The Academy</b><span>Step-by-step maths, games and case files with Inspector Bancroft. For students in an Academy class, and children added by a parent with an Academy Pass.</span></div>
+      <div class="doorcard lab"><span class="eyebrow">GCSE · grades 1 to 9</span><b>The Lab</b><span>Practice that names the exact error, exam questions and papers. For students in a Lab class, and anyone with an Exam Pass.</span></div>
+    </div>
     <ul class="ticks">
-      <li><b>${Object.keys(TOP).length} topics live</b> across ${STRANDS.length} strands, up to grade 9</li>
-      <li><b>${Object.keys(ERR).length} named technique errors</b> logged in every student's case file</li>
-      <li><b>Exam Pass</b> for students, <b>per-seat licences</b> for schools</li>
+      <li><b>Teachers:</b> sign in to make classes, switch on the Academy or the Lab for each one, and set work.</li>
+      <li><b>Parents:</b> bought an Academy Pass? Create an account with the email you paid with, then add your child.</li>
+      <li><b>Students:</b> got a class code from your teacher? Create your account and enter it.</li>
     </ul>
   </section>
   <section class="authcard">
@@ -6435,6 +6448,7 @@ function alertBox(msg){const p=document.createElement('p');p.className='toast';p
 
 /* ---------- shell ---------- */
 function renderShell(){
+  {const w=document.querySelector('header .wm small');if(w)w.textContent='LAB · GCSE MATHS'}
   $('#nav').innerHTML=VIEWS[S.user.role].map(([k,l])=>`<button role="tab" data-view="${k}" aria-selected="${S.view===k}">${l}</button>`).join('');
   $('#who').innerHTML=`<button class="ghost sm reportbtn" type="button" data-feedback title="Report a bug, a wrong mark or send an idea">⚑ <span>Report a problem</span></button>${isFreeIndividual()?'<button class="upgradepill" type="button" data-upgrade="pass" title="Unlock every topic until your exams">⭐ Upgrade</button>':''}<span class="whoname">${esc(S.user.name)}</span><span class="tag">${isFreeIndividual()?'Free plan':ROLE_LABEL[S.user.role]}</span><button class="link" id="signout">Sign out</button>`;
   $('#signout').onclick=signOut;
@@ -6709,12 +6723,19 @@ async function renderClasses(){
   view.className='page';
   const classes=await api.teacherClasses(S.user.id);
   if(!S.teacherClass&&classes[0]) S.teacherClass=classes[0].id;
-  view.innerHTML=`<div><span class="eyebrow">Teacher</span><h1 class="ph">My classes</h1></div>
+  view.innerHTML=`<div class="row" style="justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px"><div><span class="eyebrow">Teacher</span><h1 class="ph">My classes</h1></div><a class="ghost" href="/academy/#teach" style="text-decoration:none">Academy progress view →</a></div>
   <div class="tabsrow">${classes.map(c=>`<button class="chip" data-class="${c.id}" aria-pressed="${c.id===S.teacherClass}">${esc(c.name)} <span class="hint">${c.students}</span></button>`).join('')}
-    <form id="fClass" class="inline" novalidate><input class="inp" id="c-name" placeholder="New class, e.g. 11X3" aria-label="New class name"><button class="ghost" type="submit">Add class</button><p class="formerr" hidden></p></form></div>
+    </div>
+  <form id="fClass" class="newclass" novalidate><b style="flex-basis:100%;font-size:16px">＋ Make a new class</b>
+    <label>Class name<input class="inp" id="c-name" placeholder="e.g. 7X1 or 11X3" aria-label="New class name"></label>
+    <label>This class uses<select class="inp" id="c-doors"><option value="ac">The Academy (Years 7 to 9)</option><option value="lab">The Lab (GCSE)</option><option value="both">Both (a strong Year 9 set)</option></select></label>
+    <button class="btn" type="submit">Make the class</button><p class="formerr" hidden style="flex-basis:100%"></p>
+    <span class="hint" style="flex-basis:100%">You get a 6-letter class code to share. Students create an account, enter the code, and they're in.</span></form>
   <div id="classDetail">${classes.length?'':'<div class="empty"><b>No classes yet</b>Add a class, then share its code with your students.</div>'}</div>`;
   view.onclick=e=>{const c=e.target.closest('[data-class]');if(c){S.teacherClass=c.dataset.class;renderClasses()}};
-  const fc=$('#fClass'); fc.onsubmit=e=>{e.preventDefault();busy(fc,async()=>{const c=await api.createClass(S.user.id,$('#c-name').value);S.teacherClass=c.id;renderClasses()})};
+  const fc=$('#fClass'); fc.onsubmit=e=>{e.preventDefault();busy(fc,async()=>{const c=await api.createClass(S.user.id,$('#c-name').value);const dv=$('#c-doors').value;
+    try{await api.setDoors(c.id,{academy:dv!=='lab',lab:dv!=='ac'})}catch(er){alertBox('Class made, but the Academy switch failed: '+er.message)}
+    S.teacherClass=c.id;renderClasses()})};
   if(S.teacherClass) renderClassDetail(await api.classDetail(S.teacherClass));
 }
 function smCell(mine){
