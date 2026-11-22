@@ -281,7 +281,8 @@
 @container (max-width:720px){.mf .sitefoot .cols>div:first-child{grid-column:1/-1}}
 
 .mf a.brand .fb{display:flex;align-items:center;gap:12px}
-.mf a.brand img.logoimg{height:58px;width:auto;display:block}
-.mf a.brand img.logoimg+.fb{display:none}
+.mf a.brand{gap:12px}.mf a.brand img.logoimg{height:54px;width:auto;display:block}
+.mf a.brand img.logoimg+.fb svg{display:none}
+.mf a.brand .wm .c{color:var(--cyan)}
 .mf .sitefoot a.brand img.logoimg{height:64px}
 @container (max-width:720px){.mf a.brand img.logoimg{height:46px}}
