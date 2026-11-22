@@ -790,7 +790,7 @@ tr.sessrow>td{background:var(--ink);text-align:left;padding:10px 14px}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-<script>window.MF_CONFIG={"supabaseUrl": "https://duvxykqlrekqhfvsvnrj.supabase.co", "supabaseAnonKey": "sb_publishable_llHxDDCcByPpdbi5G2Hqtg_DqGcnuHn", "checkoutUrl": "https://www.mathsforensics.com/mathsforensics-lab-checkout", "kitCheckoutUrl": ""};</script>
+<script>window.MF_CONFIG={"supabaseUrl": "https://duvxykqlrekqhfvsvnrj.supabase.co", "supabaseAnonKey": "sb_publishable_llHxDDCcByPpdbi5G2Hqtg_DqGcnuHn", "checkoutUrl": "https://www.mathsforensics.com/mathsforensics-lab-checkout", "kitCheckoutUrl": "https://www.mathsforensics.com/exam-season-kit-checkout"};</script>
 <script>
 /* ===== core: helpers, parsers, diagrams, error library ===== */
 const $=s=>document.querySelector(s);
@@ -5576,7 +5576,7 @@ function guideHTML(){
 /* ===== Upgrading from the free plan (individual students, not in a school licence) =====
  Upgrade buttons appear in the header, on the Today page, on the Account page and wherever something is locked.
  They open the Systeme.io checkout with the student's email filled in, so the payment unlocks this account. */
-const PASS_PRICES=()=>{const launch=Date.now()<Date.UTC(2027,1,1);return {launch,pass:launch?49:59,passLater:59,kit:launch?69:79,kitLater:79}};
+const PASS_PRICES=()=>{const launch=Date.now()<Date.UTC(2027,2,1);return {launch,pass:launch?49:59,passLater:59,kit:launch?69:79,kitLater:79}};
 const isFreeIndividual=()=>!!(S.user&&S.user.role==='student'&&S.access&&S.access.level!=='full');
 function checkoutLink(kind){
   const base=kind==='kit'?(api.kitCheckoutUrl||''):(api.checkoutUrl||''); if(!base) return '';
@@ -5601,7 +5601,7 @@ function upgradeBannerHTML(){
       <h2>Unlock every topic until your exams</h2>
       <ul class="upfeat">${PASS_FEATURES().slice(0,4).map(f=>`<li>${f}</li>`).join('')}</ul>
       <div class="row"><button class="btn" type="button" data-upgrade="pass">Get the Exam Pass · ${priceTag(P.pass,P.passLater,P.launch)}</button><button class="link" type="button" data-view-go="account">Compare plans</button></div>
-      ${P.launch?'<p class="hint">Launch price until 31 January. One payment, no subscription.</p>':'<p class="hint">One payment, no subscription.</p>'}</div>
+      ${P.launch?'<p class="hint">Launch price until 28 February. One payment, no subscription.</p>':'<p class="hint">One payment, no subscription.</p>'}</div>
     <div class="upcode"><h3>In a school class?</h3><p class="hint">Enter the code from your teacher and your school licence unlocks everything.</p>
       <form id="fJoinToday" class="joinform" novalidate><input class="inp codeinp" id="jt-code" placeholder="HX7K2Q" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Class code"><button class="ghost" type="submit">Join my class</button><p class="formerr" hidden></p></form></div></div>`;
 }
@@ -5618,7 +5618,7 @@ function planCardsHTML(){
     <div class="plan"><span class="eyebrow">Best value for mocks</span><h3>Exam Season Kit</h3><p class="planprice">${priceTag(P.kit,P.kitLater,P.launch)}</p>
       <ul class="upfeat"><li>Everything in the Exam Pass</li><li>The Cold Case full collection: 9 original practice papers (3 sets of Paper 1, 2 and 3) as PDFs</li><li>Rehearse under real exam conditions before your mocks</li></ul>${btn('kit','Get the Exam Season Kit')}</div>
   </div>
-  <p class="hint">${P.launch?'Launch prices until 31 January. ':''}One payment, no subscription. Checkout runs on mathsforensics.com: pay with <b>${esc(S.user.email)}</b> and this account unlocks automatically, usually within a minute.${demo?' In this demo, the buttons simulate a completed purchase.':''}</p>`;
+  <p class="hint">${P.launch?'Launch prices until 28 February. ':''}One payment, no subscription. Checkout runs on mathsforensics.com: pay with <b>${esc(S.user.email)}</b> and this account unlocks automatically, usually within a minute.${demo?' In this demo, the buttons simulate a completed purchase.':''}</p>`;
 }
 // When the student comes back from the checkout tab, check whether the payment has arrived
 async function checkPaymentArrived(quiet){
