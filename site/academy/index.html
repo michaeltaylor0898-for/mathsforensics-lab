@@ -219,6 +219,9 @@ a.workitem:hover{border-color:var(--cyan)}
 .workitem .due.soon{color:#FFB86B}.workitem .due.over{color:var(--bad,#FF5D73)}
 .chip.warn{color:#FFB86B;border-color:#FFB86B}
 @media (max-width:560px){.workitem{flex-direction:column;align-items:flex-start}.wi-side{align-items:flex-start;text-align:left}}
+.tclass{margin-bottom:16px}.tclass.off{opacity:.85}
+.ttable{width:100%;border-collapse:collapse;font-size:15px}.ttable th{text-align:left;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:8px 10px;border-bottom:1px solid var(--line)}
+.ttable td{padding:9px 10px;border-bottom:1px solid rgba(38,51,106,.5)}.ttable td.num{font-family:var(--f-mono)}
 </style>
 </head>
 <body>
@@ -233,7 +236,7 @@ a.workitem:hover{border-color:var(--cyan)}
   </div>
 </header>
 <main class="wrap" id="app" tabindex="-1"></main>
-<footer><div class="wrap"><span>Maths Forensics Academy · Years 7 to 9 · Version 20 Nov 2026 (g)</span><span><span id="footnote">Progress is saved on this device only.</span> <a href="../privacy.html">Privacy</a></span></div></footer>
+<footer><div class="wrap"><span>Maths Forensics Academy · Years 7 to 9 · Version 22 Nov 2026 (h)</span><span><span id="footnote">Progress is saved on this device only.</span> <a href="../privacy.html">Privacy</a></span></div></footer>
 
 <script>
 "use strict";
@@ -1585,6 +1588,12 @@ function status(id) {
 function renderCadet() {
   const n = STORE.topics ? TOPICS.filter(t => prog(t.id).secured).length : 0;
   const ft = $("#footnote");
+  if (isStaff()) {
+    $("#cadet").innerHTML = `<b>Teacher ${esc(ACC.me.name || "")}</b><a class="linkbtn" href="#teach" style="font-size:12.5px">My classes</a> · <a class="linkbtn" href="#path" style="font-size:12.5px">Student view</a> · <button class="linkbtn" id="signout2" style="font-size:12.5px">Sign out</button>`;
+    $("#signout2").onclick = accSignOut;
+    if (ft) ft.textContent = "Signed in as a teacher. Your own practice in the student view is saved to your account.";
+    return;
+  }
   if (ACC.on) {
     const parent = ACC.me.role === "parent";
     const st = ACC.state === "error" ? `<br><span style="color:var(--warn)">Not saved yet: check your connection</span>` : "";
@@ -2244,6 +2253,43 @@ function lockedPanel(t) {
 function alertMsg(m) { const d = document.createElement("div"); d.className = "fb no"; d.style.cssText = "position:fixed;left:16px;right:16px;bottom:16px;max-width:560px;margin:auto;z-index:50"; d.innerHTML = `<b>Something went wrong</b>${esc(m)}`; document.body.appendChild(d); setTimeout(() => d.remove(), 6000); }
 
 /* ---------- router ---------- */
+const isStaff = () => LIVE && ACC.me && ["teacher", "schooladmin", "owner"].includes(ACC.me.role);
+async function screenTeach() {
+  app.innerHTML = `<div class="panel"><p class="muted">Loading your classes…</p></div>`;
+  let classes = [], err = "";
+  try {
+    const u = (await ACC.sb.auth.getUser()).data.user;
+    const r = await ACC.sb.from("classes").select("id,name,code,academy_on,lab_on,key_stage,created_at").eq("teacher_id", u.id).order("created_at");
+    if (r.error) throw new Error(r.error.message);
+    classes = r.data || [];
+    for (const c of classes) {
+      const m = await ACC.sb.from("class_members").select("user_id", { count: "exact", head: true }).eq("class_id", c.id); c.n = m.count || 0;
+      if (c.academy_on) { const pr = await ACC.sb.rpc("academy_class_progress", { p_class: c.id }); c.progress = pr.error ? null : (pr.data || []); }
+    }
+  } catch (e) { err = e.message; }
+  const bronzeIds = TOPICS.map(t => t.id);
+  const row = st => { const tp = st.topics || {}; const sec = bronzeIds.filter(id => tp[id] && tp[id].secured).length;
+    const last = Object.values(tp).map(x => x.updated_at).filter(Boolean).sort().pop();
+    const cs = n => tp["case-" + n] && tp["case-" + n].secured ? `✓ ${tp["case-" + n].practised | 0} pts` : tp["case-" + n] ? "Started" : "–";
+    return `<tr><td><b>${esc(st.name || "Student")}</b></td><td class="num">${sec} / ${bronzeIds.length}</td><td>${cs("01")}</td><td>${cs("02")}</td><td class="muted small">${last ? new Date(last).toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : "Not yet"}</td></tr>`; };
+  const card = c => c.academy_on ? `<section class="panel tclass">
+      <div class="row" style="justify-content:space-between;align-items:flex-start;gap:12px"><div><div class="eyebrow">Academy class · code ${esc(c.code || "")}</div><h2 style="margin:4px 0 0">${esc(c.name)}</h2><span class="muted small">${c.n} student${c.n === 1 ? "" : "s"}</span></div>
+      <a class="btn" href="/lab/?class=${c.id}">Set work and see who's done it</a></div>
+      ${c.progress && c.progress.length ? `<div style="overflow-x:auto;margin-top:16px"><table class="ttable"><thead><tr><th>Student</th><th>Bronze topics secured</th><th>Case 01</th><th>Case 02</th><th>Last active</th></tr></thead><tbody>${c.progress.map(row).join("")}</tbody></table></div>`
+        : `<p class="muted" style="margin:14px 0 0">No students yet. They join with the code <b>${esc(c.code || "")}</b>: they sign in at lab.mathsforensics.com and enter it, then choose the Academy.</p>`}
+    </section>` : `<section class="panel tclass off"><div class="row" style="justify-content:space-between;align-items:center;gap:12px"><div><div class="eyebrow">Lab class · GCSE</div><h2 style="margin:4px 0 0">${esc(c.name)}</h2><span class="muted small">${c.n} student${c.n === 1 ? "" : "s"} · the Academy is off for this class</span></div>
+      <button class="btn ghost" data-open="${c.id}" data-lab="${c.lab_on === false ? "" : "1"}">Open the Academy for this class</button></div></section>`;
+  const ac = classes.filter(c => c.academy_on), other = classes.filter(c => !c.academy_on);
+  app.innerHTML = `<div class="eyebrow">Teacher</div><h1 class="h1" style="margin:6px 0 8px">Your Academy classes</h1>
+    <p class="muted" style="max-width:70ch;margin:0 0 22px">See how each class is getting on in the Academy. To set work, open the class: you choose an Academy topic or a case, and students see it at the top of their Academy page.</p>
+    ${err ? `<div class="panel"><p>We couldn't load your classes: ${esc(err)}</p></div>` : ""}
+    ${ac.map(card).join("") || (!err ? `<div class="panel"><p style="margin:0">None of your classes has the Academy switched on yet.${other.length ? " Open it for a class below." : ""}</p></div>` : "")}
+    ${other.length ? `<h2 class="eyebrow" style="margin:30px 0 12px">Your other classes</h2>${other.map(card).join("")}` : ""}
+    <div class="row" style="margin-top:26px;gap:10px;flex-wrap:wrap"><a class="btn ghost" href="/lab/">Make a new class in the Lab</a><a class="btn ghost" href="#path">Preview the Academy as a student</a></div>`;
+  app.querySelectorAll("[data-open]").forEach(b => b.onclick = async () => { b.disabled = true; b.textContent = "Opening…";
+    const { error } = await ACC.sb.rpc("set_class_doors", { p_class: b.dataset.open, p_key_stage: "ks3", p_lab: !!b.dataset.lab, p_academy: true });
+    if (error) { b.disabled = false; b.textContent = "Couldn't open it: " + error.message; return; } screenTeach(); });
+}
 function route() {
   try { speechSynthesis.cancel(); } catch (e) {}
   if (LIVE && !ACC.ready) { screenLoading(); return; }
@@ -2252,6 +2298,7 @@ function route() {
   if (LIVE && ACC.me) {
     const ed = h.match(/^#edit-([0-9a-f-]{36})$/);
     if (h === "#add-child") { screenAddChild(); window.scrollTo(0, 0); return; }
+    if (isStaff() && (!h || h === "#" || h === "#teach")) { screenTeach(); window.scrollTo(0, 0); return; }
     if (ACC.me.role === "parent") {
       if (ed) { screenAddChild(ed[1]); window.scrollTo(0, 0); return; }
       if (!ACC.learner || h === "#children") { if (ACC.on && h === "#children") { accFlush(); ACC.on = false; ACC.learner = null; try { sessionStorage.removeItem("mfa.child"); } catch (e) {} renderCadet(); } screenChildren(); window.scrollTo(0, 0); return; }

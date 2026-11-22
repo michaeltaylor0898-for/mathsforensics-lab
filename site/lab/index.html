@@ -6335,6 +6335,7 @@ async function afterLogin(){
   S.diags=S.user.role==='student'?await api.diagnostics(S.user.id):[];
   S.prevSession=lastSession(S.attempts); // snapshot at sign-in, so "last time" doesn't change as they answer today
   S.view=VIEWS[S.user.role][0][0]; S.teacherClass=null; S.helpTab=null;
+  {const qc=new URLSearchParams(location.search).get('class'); if(qc&&S.user.role==='teacher'&&/^[0-9a-f-]{36}$/.test(qc)){S.teacherClass=qc;S.view='classes'}}
   if(!G[S.topic]) S.topic='pct';
   renderShell(); go(S.view);
   refreshReportBadge();
