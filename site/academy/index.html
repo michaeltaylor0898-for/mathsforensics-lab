@@ -204,6 +204,7 @@ a.casetile:hover{border-color:var(--cyan);transform:translateY(-2px)}
 .casetile-body b{font-size:19px}
 .casetile .strand{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan)}
 .casetile .meta{margin-top:auto;padding-top:8px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.casetile.locked .casetile-img{filter:grayscale(1) brightness(.5)}
 .casetile.soon{border-style:dashed;opacity:.75;justify-content:flex-end;min-height:160px}
 .casebanner{display:flex;flex-direction:column;gap:2px;margin:12px 0 4px;padding:12px 16px;border:1px solid var(--cyan);border-radius:12px;background:rgba(0,252,241,.06);text-decoration:none;color:inherit;max-width:640px}
 .casebanner b{font-size:17px}
@@ -1649,10 +1650,10 @@ function screenPath() {
     <section class="casefeat" aria-label="Case files">
       <div class="casefeat-hd"><div><div class="eyebrow">Case files · Operation Crossroads</div><h2>Use your maths to crack real cases</h2>
         <p class="muted">Inspector Bancroft briefs you on video. Then you work through the evidence: every answer moves the case on, and every mistake is logged in your forensic report.</p></div></div>
-      <div class="casegrid">${CASES.map(c => { const st = casePlayed(c.n); return `<a class="casetile" href="${caseHref(c)}">
+      <div class="casegrid">${CASES.map(c => { const st = casePlayed(c.n); return `<a class="casetile${caseLocked(c) ? " locked" : ""}" href="${caseHref(c)}"${caseLocked(c) ? ` title="Close Case 01 first"` : ""}>
         <span class="casetile-img" style="background-image:url('video/${c.poster}')"></span>
         <span class="casetile-body"><span class="strand">Case ${c.n}</span><b>${c.name}</b><span class="muted small">${c.blurb}</span>
-        <span class="meta"><span class="chip">${c.maths}</span><span class="chip ${st.closed ? "secured" : "learning"}">${st.closed ? `Closed · ${st.score} pts` : st.open ? "Continue the case" : "Open the case"}</span></span></span></a>`; }).join("")}
+        <span class="meta"><span class="chip">${c.maths}</span>${caseChip(c, st)}</span></span></a>`; }).join("")}
         <div class="casetile soon"><span class="casetile-body"><span class="strand">Case 03</span><b>The Stately Heist</b><span class="muted small">Montague Hall. A new case every month.</span><span class="meta"><span class="chip">Coming soon</span></span></span></div></div>
     </section>
     <h2 class="eyebrow" style="margin:34px 0 12px">Bronze topics</h2>
@@ -1769,7 +1770,9 @@ const CASES = [
   { n: "02", name: "The Dragon\u2019s Mouth", href: "case-02.html", poster: "case02_tx01_briefing.jpg", maths: "Percentages · coordinates · sequences", blurb: "Follow the money, plot a stolen blueprint, crack a safe and trace a phone across Anton City." }
 ];
 const LSUF = () => (ACC.on && ACC.learner ? "." + ACC.learner.id : "");
-const caseHref = c => c.href + (ACC.on && ACC.learner ? "?l=" + ACC.learner.id : "");
+const caseLocked = c => c.n === "02" && !casePlayed("01").closed;
+const caseHref = c => { const q = []; if (ACC.on && ACC.learner) q.push("l=" + ACC.learner.id); if (c.n === "02" && casePlayed("01").closed) q.push("c1=1"); return (caseLocked(c) ? "case-01.html" : c.href) + (q.length ? "?" + q.join("&") : ""); };
+const caseChip = (c, st) => caseLocked(c) ? `<span class="chip">🔒 Close Case 01 first</span>` : `<span class="chip ${st.closed ? "secured" : "learning"}">${st.closed ? `Closed · ${st.score} pts` : st.open ? "Continue the case" : "Open the case"}</span>`;
 function caseState(n) { try { const d = JSON.parse(localStorage.getItem("mfa.case." + n + LSUF()) || "null"); if (d && d.closed) return { closed: true, score: d.score }; return { open: !!localStorage.getItem("mfa.case" + n + LSUF()) }; } catch (e) { return {}; } }
 /* a case's progress is kept as topic "case-nn", so it syncs with the account and the teacher can see it */
 function caseSync() {
@@ -1784,7 +1787,7 @@ const casePlayed = n => { const p = STORE.topics["case-" + n]; return p && p.sec
 function acWorkKind(a) { const [, sub, id] = String(a.topic || "").split(":"); return { sub, id }; }
 function acWorkStatus(a) {
   const k = acWorkKind(a);
-  if (k.sub === "case") { const st = casePlayed(k.id); return st.closed ? ["done", `Case closed · ${st.score} points`] : st.open ? ["progress", "Case opened, not closed yet"] : ["none", "Not started"]; }
+  if (k.sub === "case") { const st = casePlayed(k.id); if (k.id === "02" && !casePlayed("01").closed) return ["none", "Close Case 01 first"]; return st.closed ? ["done", `Case closed · ${st.score} points`] : st.open ? ["progress", "Case opened, not closed yet"] : ["none", "Not started"]; }
   const p = STORE.topics[k.id] || {};
   if (k.sub === "secure") return p.secured ? ["done", `Secured · ${p.best | 0}/5 in the check`] : (p.checks | 0) ? ["help", `Best ${p.best | 0}/5 so far: you need 4 out of 5`] : (p.learned || p.practised) ? ["progress", "Started: finish with the Check"] : ["none", "Not started"];
   if (p.learned && ((p.practised | 0) >= 5 || p.secured)) return ["done", `Learned · ${p.practised | 0} practised`];
@@ -1817,7 +1820,7 @@ function workPanel() {
 const CASE_FOR = { "metric-units": ["01"], "speed-distance-time": ["01"], "scale-drawings": ["01", "02"], "percentages-of-amounts": ["02"], "coordinates": ["02"], "sequences": ["02"], "nth-term": ["02"], "constructions": ["02"] };
 const caseCard = c => { const st = casePlayed(c.n); return `<a class="tcard casecard" href="${caseHref(c)}" style="text-decoration:none;color:inherit">
       <span class="strand">Case file ${c.n} · Inspector Bancroft</span><h3>${c.name}</h3><span class="muted small">${c.blurb}</span>
-      <span class="meta"><span class="chip">${c.maths}</span><span class="chip ${st.closed ? "secured" : "learning"}">${st.closed ? `Closed · ${st.score} pts` : st.open ? "Continue the case" : "Open the case"}</span></span></a>`; };
+      <span class="meta"><span class="chip">${c.maths}</span>${caseChip(c, st)}</span></a>`; };
 const GAMES = {
   "simplifying": [{ name: "Evidence Locker", href: "like-terms.html", tag: "Algebra", blurb: "Sort every term into the right locker, then total each one to write the expression in its simplest form. Three levels, up to x², xy and minus signs.", meta: "3 levels · 10 cases" }, irGame("KA", "algebra")],
   "factors-multiples": [{ name: "The Suspect's Vault", href: "vault.html", tag: "Number and algebra", blurb: "Crack five suspects' vaults before the alarm: sequences, prime factor trees and index laws, then spin the combination dial and name the culprit.", meta: "3 levels · 5 vaults" }],

@@ -761,6 +761,7 @@ tr.sessrow>td{background:var(--ink);text-align:left;padding:10px 14px}
 @media (max-width:720px){.reportbtn span{display:none}}
 .casebar .qflag{margin-left:auto;font-size:13px;color:var(--muted);white-space:nowrap}
 .casebar .qflag:hover{color:var(--cyan)}
+.doors label.tick{display:flex;gap:8px;align-items:center;cursor:pointer}.doors label.tick input{width:20px;height:20px;accent-color:var(--cyan,#00FCF1)}
 </style>
 </head>
 <body>
@@ -4815,6 +4816,7 @@ const demoStore=(()=>{
       const diagnostics=db.diagnostics.filter(d=>ids.includes(d.user_id));
       return {...c,students,attempts,assignments,diagnostics,roster:db.roster.filter(r=>r.class_id===classId).map(r=>({...r}))};
     },
+    async setDoors(classId,{academy,lab}){const c=db.classes.find(x=>x.id===classId);if(!academy&&!lab) fail('Keep at least one door open.');c.academy_on=!!academy;c.lab_on=!!lab;save()},
     async createAssignment(classId,{topic,target,due_at,title}){
       if(!asgValid(topic)) fail('Choose what to set.');
       if(asgKind({topic}).kind!=='practice') target=1;
@@ -5074,6 +5076,11 @@ function supabaseStore(cfg){
       if(c.academy_on){const ap=await sb.rpc('academy_class_progress',{p_class:classId});
         if(!ap.error) for(const x of (ap.data||[])) if(x.user) academy[x.user]=x.topics||{};}
       return {...c,students,attempts,assignments,diagnostics:dg.error?[]:dg.data,roster:ro.error?[]:ro.data,academy};
+    },
+    async setDoors(classId,{academy,lab}){
+      const ks=academy&&!lab?'ks3':'ks4';
+      const {error}=await sb.rpc('set_class_doors',{p_class:classId,p_key_stage:ks,p_lab:!!lab,p_academy:!!academy});
+      if(error) throw new Error(/function|schema cache/.test(error.message)?'The Academy isn\u2019t set up on this database yet (migration 007).':friendly(error.message));
     },
     async createAssignment(classId,{topic,target,due_at,title}){
       if(!asgValid(topic)) throw new Error('Choose what to set.');
@@ -6733,6 +6740,11 @@ function renderClassDetail(d){
   $('#classDetail').innerHTML=`
   <div class="classhead"><div><h2>${esc(d.name)}</h2><span class="hint">${d.students.length} student${d.students.length===1?'':'s'}</span></div>
     <div class="row"><button class="btn" id="toSetWork" type="button">＋ Set work</button><button class="ghost" id="toReport" type="button">📄 Reports</button><div class="codebox"><span class="eyebrow">Class code</span><b id="code">${d.code}</b><button class="ghost sm" id="copy">Copy</button></div></div></div>
+  <div class="panel doors"><div class="phead"><h2>What this class uses</h2><span class="hint">Students see the doors you open. Academy classes get the Academy free with your school licence.</span></div>
+    <form id="fDoors" class="row" style="gap:18px;flex-wrap:wrap;align-items:center">
+      <label class="tick"><input type="checkbox" id="door-ac" ${d.academy_on?'checked':''}> <b>The Academy</b> <span class="hint">Years 7 to 9</span></label>
+      <label class="tick"><input type="checkbox" id="door-lab" ${d.lab_on!==false?'checked':''}> <b>The Lab</b> <span class="hint">GCSE</span></label>
+      <button class="ghost sm" type="submit">Save</button><p class="formerr" hidden></p></form></div>
   ${followUpHTML(d)}
   ${(d.roster||[]).some(r=>!r.claimed_at)||!d.students.length?classListHTML(d):''}
   ${setWorkHTML(d,liveTopics)}
@@ -6753,6 +6765,7 @@ function renderClassDetail(d){
   $('#toSetWork').onclick=()=>{$('#setwork').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(()=>$('#a-kind').focus({preventScroll:true}),350)};
   $('#classDetail').querySelectorAll('[data-copy]').forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(b.dataset.copy);alertBox('Follow-up list copied')}catch(e){alertBox('Copy not available in this browser')}});
   $('#copy').onclick=async()=>{try{await navigator.clipboard.writeText(d.code);alertBox('Class code copied')}catch(e){const r=document.createRange();r.selectNodeContents($('#code'));getSelection().removeAllRanges();getSelection().addRange(r)}};
+  const fdoor=$('#fDoors'); if(fdoor) fdoor.onsubmit=e=>{e.preventDefault();busy(fdoor,async()=>{await api.setDoors(d.id,{academy:$('#door-ac').checked,lab:$('#door-lab').checked});alertBox($('#door-ac').checked?'The Academy is open for '+d.name:'Saved');renderClassDetail(await api.classDetail(d.id))})};
   const fa=$('#fAsg'), kindSel=$('#a-kind');
   const syncKind=()=>{const k=kindSel.value;const dn=$('#a-due-n');if(dn)dn.textContent=k==='practice'?4:(k==='diag'||k.startsWith('paper'))?2:3;$('#a-topic-l').hidden=k==='exam'||k==='diag'||k.startsWith('paper')||k.startsWith('ac-');$('#a-actopic-l').hidden=!(k==='ac-learn'||k==='ac-secure');$('#a-accase-l').hidden=k!=='ac-case';$('#a-exam-l').hidden=k!=='exam';$('#a-target-l').hidden=k!=='practice'};
   kindSel.onchange=syncKind; syncKind();

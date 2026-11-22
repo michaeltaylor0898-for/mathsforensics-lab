@@ -273,6 +273,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;
   <div class="wrap">
     <a class="brand" href="index.html#path" style="text-decoration:none;color:inherit" title="Back to the Academy"><b>← MATHS FORENSICS ACADEMY</b><span>OPERATION CROSSROADS · CASE 02</span></a>
     <ol class="steps" id="steps"></ol>
+    <button class="pts" id="snd" type="button" style="cursor:pointer;font-family:var(--mono);font-size:12px">🔊 Sound on</button>
     <div class="pts">Case points <b id="pts">100</b></div>
   </div>
 </header>
@@ -286,6 +287,21 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;
 
 <script>
 (function(){
+/* ---------- sound effects (Web Audio, no files) ---------- */
+const SFX=(()=>{let ctx=null,on=true;try{on=localStorage.getItem('mfa.sound')!=='off'}catch(_){}
+  const ac=()=>{if(!ctx){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;ctx=new C()}if(ctx.state==='suspended')ctx.resume();return ctx};
+  const tone=(f,t0,d,type,v,f2)=>{const c=ac();if(!c)return;const t=c.currentTime+t0,o=c.createOscillator(),g=c.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);
+    g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(v||.16,t+.015);g.gain.exponentialRampToValueAtTime(0.0001,t+d);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+d+.05)};
+  const P={
+    ok:()=>{tone(784,0,.13,'triangle',.17);tone(1175,.09,.24,'triangle',.17)},
+    no:()=>{tone(233,0,.2,'square',.05,175)},
+    blip:()=>{tone(1320,0,.08,'sine',.12)},
+    step:()=>{tone(523,0,.12,'triangle');tone(659,.09,.12,'triangle');tone(784,.18,.14,'triangle');tone(1047,.27,.32,'triangle',.18)},
+    unlock:()=>{[0,.08,.16].forEach((t,i)=>tone(2200-i*300,t,.04,'square',.06));tone(196,.3,.3,'sawtooth',.06,262);tone(523,.42,.18,'triangle');tone(784,.52,.18,'triangle');tone(1047,.62,.45,'triangle',.18)},
+    win:()=>{[523,659,784,1047].forEach((f,i)=>tone(f,i*.13,.3,'triangle',.17));tone(784,.6,.8,'triangle',.12);tone(1047,.6,.8,'triangle',.15)}};
+  return {play:k=>{if(on&&P[k])try{P[k]()}catch(_){}},get on(){return on},toggle(){on=!on;try{localStorage.setItem('mfa.sound',on?'on':'off')}catch(_){}return on}};})();
+function bindSound(){const b=document.getElementById('snd');if(!b)return;const set=()=>{b.textContent=SFX.on?'🔊 Sound on':'🔇 Sound off';b.setAttribute('aria-pressed',SFX.on)};set();b.onclick=()=>{SFX.toggle();set();SFX.play('blip')}}
+
 /* ---------- constants ---------- */
 const SCENES = [['cover','File'],['briefing','Briefing'],['money','Money'],['blueprint','Blueprint'],['safe','Safe'],['signal','Signal'],['closed','Closed']];
 /* recorded transmissions; null = not filmed yet, shown as a written transmission */
@@ -642,7 +658,7 @@ function render(){
   app.innerHTML = fn();
   try{ localStorage.setItem(KEY, JSON.stringify(S)); if(S.scene==='closed') localStorage.setItem('mfa.case.02'+SUF, JSON.stringify({closed:true, score:S.score})); }catch(_){}
 }
-function go(scene){ S.scene=scene; if(scene==='briefing'&&!S.started) S.started=Date.now(); render(); window.scrollTo({top:0,behavior:'smooth'}); }
+function go(scene){ if(scene==='closed'&&S.scene!=='closed') SFX.play('win'); S.scene=scene; if(scene==='briefing'&&!S.started) S.started=Date.now(); render(); window.scrollTo({top:0,behavior:'smooth'}); }
 function wrong(id, r, raw){
   const q=QALL[id];
   S.score = Math.max(0, S.score-5); S.wrong++;
@@ -655,13 +671,13 @@ function answer(id, raw){
   let val = raw;
   if(q.type==='num'){ val = num(raw); if(val===null){ S.fb[id]={type:'Check',msg:'Type a number first.'}; render(); focusIn(id); return; } }
   const r = q.check(val);
-  if(r.ok){ S.ans[id] = q.type==='num' ? (Math.abs(val)>=1000 ? val.toLocaleString('en-GB') : String(val)) : val; delete S.fb[id]; delete S.draft[id]; render(); focusNext(); }
-  else { wrong(id, r, raw); render(); focusIn(id); }
+  if(r.ok){ S.ans[id] = q.type==='num' ? (Math.abs(val)>=1000 ? val.toLocaleString('en-GB') : String(val)) : val; delete S.fb[id]; delete S.draft[id]; const nb=app.querySelectorAll('.solved-note').length; render(); SFX.play(id==='s3'?'unlock':app.querySelectorAll('.solved-note').length>nb?'step':'ok'); focusNext(); }
+  else { SFX.play('no'); wrong(id, r, raw); render(); focusIn(id); }
 }
 function plot(x,y){
   const id = activePt(); if(!id) return; const q=QALL[id];
   const r = ptCheck(q,x,y);
-  if(r.ok){ S.ans[id]=x+','+y; delete S.fb[id]; } else wrong(id,r);
+  if(r.ok){ S.ans[id]=x+','+y; delete S.fb[id]; SFX.play(id==='b4'?'step':'ok'); } else { SFX.play('no'); wrong(id,r); }
   render();
 }
 function focusIn(id){ const el=document.getElementById('in-'+id); if(el){ el.focus(); el.select(); } }
@@ -687,7 +703,17 @@ window.addEventListener('hashchange',teacherCheck);
 /* ---------- boot ---------- */
 let saved=null; try{ saved=JSON.parse(localStorage.getItem(KEY)||'null'); }catch(_){}
 if(saved && saved.scene){ S=Object.assign(fresh(), saved); S.tx=Object.assign(fresh().tx, saved.tx||{}); }
-render(); teacherCheck();
+const C1OK=(()=>{try{const d=JSON.parse(localStorage.getItem('mfa.case.01'+SUF)||'null');if(d&&d.closed)return true}catch(_){}return new URLSearchParams(location.search).get('c1')==='1'||location.hash==='#teacher'})();
+if(!C1OK && !(saved && saved.scene && saved.scene!=='cover')){
+  document.getElementById('steps').innerHTML='';
+  app.innerHTML=`<section class="cover"><div>
+    <div class="eyebrow">Operation Crossroads · Case 02</div>
+    <h1>The Dragon\u2019s <em>Mouth</em></h1>
+    <p>This case file is sealed until you close <b>Case 01: The Scoby Stop</b>. Case 02 picks up exactly where Case 01 ends, so crack that one first.</p>
+    <div class="next-row"><a class="btn" href="case-01.html${L?'?l='+L:''}" style="text-decoration:none">Open Case 01</a><a class="btn ghost" href="index.html#path" style="text-decoration:none">Back to the Academy</a></div></div>
+    <div class="folder" aria-hidden="true"><div class="sheet"><h3>CASE 02 · ANTON CITY</h3><span class="stamp">SEALED</span><dl><dt>Opens when</dt><dd>Case 01 is closed</dd></dl></div></div></section>`;
+  bindSound();
+} else { render(); teacherCheck(); bindSound(); }
 })();
 </script>
 </body></html>
