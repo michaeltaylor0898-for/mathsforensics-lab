@@ -5,6 +5,7 @@
 // Deploy:   supabase functions deploy systeme-webhook --no-verify-jwt
 // Secrets:  WEBHOOK_KEY=<long random string>  EXAM_PASS_PLANS=<comma-separated product / price plan names that unlock the Lab>
 //           ACADEMY_PASS_PLANS=<comma-separated product / price plan names that unlock the Academy>
+//           TEACHER_PRO_PLANS=<comma-separated product / price plan names for Incident Room Teacher Pro> (optional)
 // Systeme.io → Automations → workflow "Sale completed" → Send webhook to:
 //           https://<project-ref>.supabase.co/functions/v1/systeme-webhook?key=<WEBHOOK_KEY>
 //
@@ -64,16 +65,20 @@ Deno.serve(async (req) => {
   const plans = (name: string) => (Deno.env.get(name) ?? "").split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
   const examPlans = plans("EXAM_PASS_PLANS").length ? plans("EXAM_PASS_PLANS") : plans("EXAM_PASS_PLAN");
   const academyPlans = plans("ACADEMY_PASS_PLANS");
-  if (!examPlans.length && !academyPlans.length) return new Response("EXAM_PASS_PLANS / ACADEMY_PASS_PLANS secrets not set: sale ignored", { status: 200 });
+  const teacherPlans = plans("TEACHER_PRO_PLANS");
+  if (!examPlans.length && !academyPlans.length && !teacherPlans.length) return new Response("EXAM_PASS_PLANS / ACADEMY_PASS_PLANS secrets not set: sale ignored", { status: 200 });
   const text = JSON.stringify(data).toLowerCase();
-  const isExam = examPlans.some((w) => text.includes(w));
-  const isAcademy = academyPlans.some((w) => text.includes(w));
-  if (!isExam && !isAcademy) return new Response("Not a pass sale", { status: 200 });
+  // Teacher Pro is checked first, so a plan name like "Teacher Pro" can't be mistaken for an Exam Pass
+  const isTeacher = teacherPlans.some((w) => text.includes(w));
+  const isExam = !isTeacher && examPlans.some((w) => text.includes(w));
+  const isAcademy = !isTeacher && academyPlans.some((w) => text.includes(w));
+  if (!isExam && !isAcademy && !isTeacher) return new Response("Not a pass sale", { status: 200 });
 
   const key = serviceKey();
   if (!key) return new Response("No server key: add an Edge Function secret called SERVICE_KEY", { status: 500 });
   const db = createClient(Deno.env.get("SUPABASE_URL")!, key);
   const rows = [];
+  if (isTeacher) rows.push({ email: String(email).toLowerCase(), kind: "teacher_pro", expires_at: new Date(Date.now() + 368 * 864e5).toISOString(), source: "systeme.io", order_ref: `SIO-${orderRef}`, payload: body }); // one year plus a few days' grace
   if (isExam) rows.push({ email: String(email).toLowerCase(), kind: "exam_pass", expires_at: passExpiry(), source: "systeme.io", order_ref: `SIO-${orderRef}`, payload: body });
   // One Academy Pass covers one child for 12 months. The parent gives it to a child in the Academy.
   if (isAcademy) rows.push({ email: String(email).toLowerCase(), kind: "academy_pass", expires_at: academyExpiry(), source: "systeme.io", order_ref: `SIO-${orderRef}${isExam ? "-ACADEMY" : ""}`, payload: body });
