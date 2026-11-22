@@ -236,7 +236,7 @@ a.workitem:hover{border-color:var(--cyan)}
   </div>
 </header>
 <main class="wrap" id="app" tabindex="-1"></main>
-<footer><div class="wrap"><span>Maths Forensics Academy · Years 7 to 9 · Version 22 Nov 2026 (h)</span><span><span id="footnote">Progress is saved on this device only.</span> <a href="../privacy.html">Privacy</a></span></div></footer>
+<footer><div class="wrap"><span>Maths Forensics Academy · Years 7 to 9 · Version 22 Nov 2026 (i)</span><span><span id="footnote">Progress is saved on this device only.</span> <a href="../privacy.html">Privacy</a></span></div></footer>
 
 <script>
 "use strict";
@@ -1597,7 +1597,7 @@ function renderCadet() {
   if (ACC.on) {
     const parent = ACC.me.role === "parent";
     const st = ACC.state === "error" ? `<br><span style="color:var(--warn)">Not saved yet: check your connection</span>` : "";
-    $("#cadet").innerHTML = `<b>Cadet ${esc(STORE.name)}</b>Bronze: ${n} of ${TOPICS.length} secured${st}<br>${parent ? `<a class="linkbtn" href="#children" style="font-size:12.5px">Switch child</a> · ` : ""}<button class="linkbtn" id="signout2" style="font-size:12.5px">Sign out</button>`;
+    $("#cadet").innerHTML = `<b>Cadet ${esc(STORE.name)}</b>Bronze: ${n} of ${TOPICS.length} secured${st}<br>${parent ? `<a class="linkbtn" href="#children" style="font-size:12.5px">Switch child</a> · ` : (ACC.me.role === "student" && (ACC.me.spare_passes | 0) > 0) ? `<a class="linkbtn" href="#add-child" style="font-size:12.5px">Add my child</a> · ` : ""}<button class="linkbtn" id="signout2" style="font-size:12.5px">Sign out</button>`;
     $("#signout2").onclick = accSignOut;
     if (ft) ft.textContent = "Progress is saved to your account.";
     return;
@@ -1632,7 +1632,7 @@ function screenPath() {
   const pct = Math.round(secured / TOPICS.length * 100);
   const allDone = secured === TOPICS.length;
   const next = TOPICS.find(t => !prog(t.id).secured && isOpen(t.id)) || TOPICS.find(t => !prog(t.id).secured);
-  const parentHint = LIVE && ACC.on && ACC.me.role === "student" && ACC.access.level !== "full" && !Object.values(STORE.topics).some(p => p.learned || p.practised || p.secured)
+  const parentHint = LIVE && ACC.on && ACC.me.role === "student" && ACC.access.level !== "full" && ((ACC.me.spare_passes | 0) > 0 || !Object.entries(STORE.topics).some(([k, p]) => !k.startsWith("case-") && (p.learned || p.practised || p.secured)))
     ? `<section class="panel stack" style="margin-bottom:18px${ACC.me.spare_passes ? ";border-color:var(--cyan)" : ""}"><div class="h3" style="margin:0">${ACC.me.spare_passes ? "Your Academy Pass is ready" : "Setting this up for your child?"}</div><p class="small muted" style="margin:0">${ACC.me.spare_passes ? "Add your child to this account to use it. They don't need an email." : "Add your child to this account instead. They don't need an email."}</p><div><a class="btn small ghost" href="#add-child">Add my child</a></div></section>` : "";
   app.innerHTML = `${importBanner()}${parentHint}${workPanel()}
     <div class="eyebrow">Your training pathway</div>
