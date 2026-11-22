@@ -37,6 +37,7 @@ SOFT = [
     (r'<span class="tag jan">(From January|January)</span>', '<span class="tag jan">Coming soon</span>'),
     (r'<span class="tag jan">Jan</span>', '<span class="tag jan">Soon</span>'),
     (r'Forensic Marking, from January', 'Forensic Marking (coming soon)'),
+    (r'Forensic Marking · from January', 'Forensic Marking · coming soon'),
     (r', from January', ' (coming soon)'),
     (r'and from January, your handwritten working', 'and soon, your handwritten working'),
     (r'It launches in January\. ', "It's coming soon. "),
