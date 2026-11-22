@@ -32,6 +32,16 @@ LAUNCH = [
     (r'<span class="badge jan">JANUARY</span>', '<span class="badge">EVERYTHING</span>'),
     (r'href="\{\{FI_WAITLIST\}\}">Join the list</a>', 'href="{{FI_CHECKOUT}}">Get The Full Investigation</a>'),
 ]
+# Soft-launch edition: features still being finished say "Coming soon" (no dates)
+SOFT = [
+    (r'<span class="tag jan">(From January|January)</span>', '<span class="tag jan">Coming soon</span>'),
+    (r'<span class="tag jan">Jan</span>', '<span class="tag jan">Soon</span>'),
+    (r'Forensic Marking, from January', 'Forensic Marking (coming soon)'),
+    (r', from January', ' (coming soon)'),
+    (r'and from January, your handwritten working', 'and soon, your handwritten working'),
+    (r'It launches in January\. ', "It's coming soon. "),
+    (r'<span class="badge jan">JANUARY</span>', '<span class="badge jan">COMING SOON</span>'),
+]
 EDITION = os.environ.get("EDITION", "launch")
 
 def blocks(name):
@@ -41,6 +51,8 @@ def blocks(name):
     raw = "<!-- BLOCK: 0 header -->\n" + hd + "\n" + (src / f"{name}.html").read_text() + "\n<!-- BLOCK: 99 footer -->\n" + (src / "_footer.html").read_text()
     if EDITION == "launch":
         for a, b in LAUNCH: raw = re.sub(a, b, raw)
+    else:
+        for a, b in SOFT: raw = re.sub(a, b, raw)
     parts = re.split(r"<!-- BLOCK: ([^>]*?) -->", raw)
     return [(parts[i].strip(), fill(parts[i + 1].strip())) for i in range(1, len(parts), 2)]
 
