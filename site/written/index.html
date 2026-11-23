@@ -116,6 +116,31 @@ h1{font-family:var(--f-display);font-weight:600;font-size:clamp(22px,4.5vw,30px)
 .fr{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;font-size:.82em;line-height:1.1;margin:0 1px}.fr span:first-child{border-bottom:1.2px solid currentColor;padding:0 2px}.eq{white-space:nowrap}
 .qtext small{display:block;margin-top:6px;color:var(--muted);font-size:14px}
 
+/* whole-paper marking */
+.whole{margin-top:14px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;border:1px solid rgba(0,252,241,.35);background:rgba(0,252,241,.05);border-radius:12px;padding:12px 14px}
+.whole p{margin:0;font-size:15px}.whole b{color:var(--cyan)}
+#paperRun{margin-top:18px}
+#paperRun h2{font-family:var(--f-display);font-size:20px;margin:0 0 4px}
+.pages{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin:12px 0}
+.pg{position:relative;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff;aspect-ratio:3/4}
+.pg img{width:100%;height:100%;object-fit:cover;display:block}
+.pg span{position:absolute;left:4px;top:4px;background:var(--ink);color:var(--text);font-family:var(--f-mono);font-size:11px;padding:1px 6px;border-radius:4px}
+.pg button{position:absolute;right:4px;top:4px;background:var(--ink);border:1px solid var(--line);border-radius:6px;color:var(--text);width:26px;height:26px;padding:0;line-height:1}
+.pg.add{display:grid;place-items:center;background:var(--panel);border-style:dashed;color:var(--muted);font-size:14px;text-align:center;cursor:pointer;padding:8px}
+.prog{list-style:none;margin:12px 0 0;padding:0;font-size:15px}
+.prog li{padding:6px 0;border-bottom:1px solid var(--line);display:flex;gap:10px}
+.prog li i{font-style:normal;font-family:var(--f-mono);color:var(--muted);min-width:64px}
+.ptable{width:100%;border-collapse:collapse;margin-top:14px;font-size:15px}
+.ptable th{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+.ptable td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+.ptable tr[data-part]{cursor:pointer}.ptable tr[data-part]:hover td{background:var(--panel2)}
+.ptable .sc{font-family:var(--f-mono);font-weight:700;white-space:nowrap}
+.ptable .full{color:var(--good)}.ptable .some{color:var(--cyan)}.ptable .none{color:var(--bad)}.ptable .miss{color:var(--muted)}
+.bars{display:grid;gap:8px;margin-top:10px}
+.bar{display:grid;grid-template-columns:150px 1fr 40px;gap:10px;align-items:center;font-size:14px}
+.bar div{height:10px;border-radius:5px;background:var(--line);overflow:hidden}.bar div i{display:block;height:100%;background:var(--cyan)}
+@media (max-width:520px){.bar{grid-template-columns:110px 1fr 34px}}
+
 /* the case report */
 #report:empty{display:none}
 #report{margin-top:18px}
@@ -217,6 +242,9 @@ summary{cursor:pointer;font-weight:600}
 
 <section id="report" aria-live="polite"></section>
 </div>
+
+<section id="paperRun" hidden aria-live="polite"></section>
+<input type="file" id="pageFiles" accept="image/*" multiple hidden>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
@@ -321,7 +349,10 @@ function renderChooser(){
     body=`<p class="hint">Work through a Cold Case paper question by question.</p><div class="papers">${S.papers.map(p=>{const qs=S.questions.filter(q=>q.source?.paper===p);const calc=qs[0]?.calculator;
       return `<button class="paper" data-paper="${esc(p)}"><b>${esc(paperName(p))}</b><span>${calc?'Calculator':'Non-calculator'} · ${qs.reduce((a,q)=>a+q.marks,0)} marks · ${qs.filter(q=>seen.has(q.id)).length}/${qs.length} parts tried</span></button>`}).join('')}</div>`;
   }else{
-    body=`<button class="back" data-back="paper">← All papers</button>${paperNav()}`;
+    const mx=S.questions.filter(q=>q.source?.paper===V.paper).reduce((a,q)=>a+q.marks,0);
+    body=`<button class="back" data-back="paper">← All papers</button>${paperNav()}
+      <div class="whole"><p><b>Done the whole paper on paper?</b> Photograph every page and we'll find and mark all ${mx} marks at once.</p>
+      <button class="btn" data-wholepaper="1">Mark my whole paper</button></div>`;
   }
   c.innerHTML=tabs+`<div class="pane">${body}</div>`;
 }
@@ -363,6 +394,7 @@ $('#chooser').addEventListener('click',e=>{const t=e.target.closest('button');if
   if(d.slevel){const pool=levelPool(S.questions,d.slevel);if(pool.length)show(pick(pool),pool,LV_NAME[d.slevel]);return}
   if(d.paper){V.paper=d.paper;renderChooser();const first=S.questions.filter(q=>q.source?.paper===V.paper).sort((a,b)=>qnum(a)-qnum(b)||(a.source.part||'').localeCompare(b.source.part||''))[0];show(first,null,'');renderChooser();return}
   if(d.q){show(S.questions.find(q=>q.id===d.q),null,'');renderChooser();return}
+  if(d.wholepaper){openPaperRun(V.paper);return}
 });
 $('#casebar').addEventListener('click',e=>{
   if(e.target.closest('#another')&&V.pool){show(pick(V.pool),V.pool,V.poolName);return}
@@ -469,21 +501,21 @@ $('#submit').onclick=async()=>{
   finally{$('#submit').disabled=false}
 };
 
-function renderReport(r){
-  S.last=r;
+function renderReport(r,box){
+  box=box||$('#report');S.last=r;
   if(r.status!=='marked'){
     const msg={unreadable:'We couldn\'t read enough of that to mark it. Try writing a little larger, one step per line.',
       blank:'We couldn\'t find any working in that. Make sure your working is in the picture.',
       wrong_question:'That looks like working for a different question. Check you picked the right one.'}[r.status];
-    $('#report').innerHTML=`<div class="card"><p style="margin:0">${msg}</p><p class="foot">This still counts towards this week's allowance.</p></div>`;return;
+    box.innerHTML=`<div class="card"><p style="margin:0">${msg}</p><p class="foot">${r.run?'':'This still counts towards this week\'s allowance.'}</p></div>`;return;
   }
   const pct=Math.round(100*r.score/r.max),col=r.score===r.max?'var(--good)':r.score===0?'var(--bad)':'var(--cyan)';
   const li=r.points.map(p=>`<li class="${p.awarded?'yes':'no'}"><span class="code">${esc(p.code)}</span><span class="mk" aria-label="${p.awarded?'awarded':'not awarded'}">${p.awarded?'✓':'✗'}</span>
     <span>${esc(p.overridden||p.reason)}${p.follow_through?'<span class="ft" title="Earned using your own earlier value">FOLLOW-THROUGH</span>':''}</span>
     ${p.evidence?`<span class="ev">Line ${p.line}: <span>${esc(p.evidence)}</span></span>`:''}</li>`).join('');
   const list=(cls,title,a,ol)=>a?.length?`<div class="sect ${cls}"><h3>${title}</h3><${ol?'ol':'ul'}>${a.map(x=>`<li>${esc(x)}</li>`).join('')}</${ol?'ol':'ul'}></div>`:'';
-  $('#report').innerHTML=`<div class="card">
-    <div class="eyebrow">Case report · ${esc(S.q?label(S.q):(r.question?.id||''))}</div>
+  box.innerHTML=`<div class="card">
+    <div class="eyebrow">Case report · ${esc(r.question?.source?label(r.question):S.q?label(S.q):(r.question?.id||''))}</div>
     <div class="verdict" style="margin-top:10px"><div class="ring" style="--p:${pct};--c:${col}"><b>${r.score}/${r.max}</b></div>
       <div><span class="eyebrow">Finding</span><p>${esc(r.verdict)}</p></div></div>
     ${r.needs_review?`<div class="notice">Provisional mark. ${esc(r.review_note||'Some of this was hard to judge.')} If it looks wrong, use “Dispute a mark” below.</div>`:''}
@@ -501,12 +533,109 @@ function renderReport(r){
       <button class="btn ghost" id="dsend">Send to Mike</button></div></details>`:''}
     <p class="foot">${r.remaining_week!=null?`${r.remaining_week} marked answer${r.remaining_week===1?'':'s'} left this week. `:''}AI marking is checked against the mark scheme, but it can still get things wrong. The picture of your working is deleted after 7 days, so dispute a mark before then; your marks and feedback stay in your Lab profile.</p>
   </div>`;
-  const ds=$('#dsend');if(ds)ds.onclick=async()=>{
+  const ds=box.querySelector('#dsend');if(ds)ds.onclick=async()=>{
     ds.disabled=true;
     const res=await fetch(FN,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+S.session.access_token,apikey:CFG.supabaseAnonKey},
-      body:JSON.stringify({action:'dispute',mark_id:r.mark_id,note:$('#dnote').value})}).catch(()=>null);
-    $('#disp').innerHTML=res?.ok?'<summary>Dispute sent</summary><p class="foot">Thanks. A person will check this mark.</p>':'<summary>Dispute a mark</summary><p class="err">Couldn\'t send that. Try again later.</p>';
+      body:JSON.stringify({action:'dispute',mark_id:r.mark_id,note:box.querySelector('#dnote').value})}).catch(()=>null);
+    box.querySelector('#disp').innerHTML=res?.ok?'<summary>Dispute sent</summary><p class="foot">Thanks. A person will check this mark.</p>':'<summary>Dispute a mark</summary><p class="err">Couldn\'t send that. Try again later.</p>';
   };
+}
+
+/* ---------- whole-paper marking ---------- */
+// The student photographs every page. For each page a fast check finds which parts have working on it, then each
+// part is marked exactly like a single question. A part that appears on two pages keeps its best mark.
+const P={paper:null,run:null,pages:[],results:{},busy:false,max:0};
+const CAT={R:'Reading the question',M:'Method',A:'Accuracy'};
+const post=async b=>{const r=await fetch(FN,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+S.session.access_token,apikey:CFG.supabaseAnonKey},body:JSON.stringify(b)});
+  const j=await r.json().catch(()=>({error:'No answer from the marker. Try again.'}));if(!r.ok||j.error){const e=new Error(j.error||'Something went wrong.');e.status=r.status;throw e}return j};
+function partsOf(paper){return S.questions.filter(q=>q.source?.paper===paper).sort((a,b)=>qnum(a)-qnum(b)||(a.source.part||'').localeCompare(b.source.part||''))}
+function openPaperRun(paper){
+  if(P.paper!==paper){P.paper=paper;P.run=null;P.pages=[];P.results={};P.max=partsOf(paper).reduce((a,q)=>a+q.marks,0)}
+  $('#chooser').hidden=true;$('#work').hidden=true;$('#paperRun').hidden=false;renderPaperRun();
+  $('#paperRun').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function renderPaperRun(){
+  const box=$('#paperRun'),done=Object.keys(P.results).length;
+  const thumbs=P.pages.map((pg,i)=>`<div class="pg"><img src="${pg.src}" alt="Page ${i+1}"><span>${i+1}${pg.state==='done'?' ✓':''}</span>${pg.state?'':`<button data-rm="${i}" aria-label="Remove page ${i+1}">×</button>`}</div>`).join('');
+  box.innerHTML=`<button class="back" data-closerun="1">← Back to ${esc(paperName(P.paper))}</button>
+    <div class="card"><h2>Mark my whole paper</h2><p class="hint">${esc(paperName(P.paper))} · ${P.max} marks. Add a clear photo of every page you wrote on, in any order. Flat page, good light, the whole page in the picture.</p>
+    <div class="pages">${thumbs}<label class="pg add" for="pageFiles">+ Add page photos</label></div>
+    <div class="submit" style="margin-top:4px"><button class="btn" id="runGo" ${P.busy||!P.pages.some(p=>!p.state)?'disabled':''}>${P.run?'Mark the new pages':'Mark my paper'}</button>
+    <span class="hint" id="runStatus">${P.busy?'Marking… keep this page open.':P.pages.length?'':'Nothing added yet.'}</span></div>
+    <ul class="prog" id="prog">${P.pages.filter(p=>p.log).map((p,i)=>`<li><i>Page ${P.pages.indexOf(p)+1}</i><span>${p.log}</span></li>`).join('')}</ul></div>
+    <div id="paperReport">${done?paperReport():''}</div><div id="paperDetail"></div>`;
+}
+$('#pageFiles').onchange=async e=>{
+  for(const f of e.target.files){
+    const bmp=await createImageBitmap(f,{imageOrientation:'from-image'}).catch(()=>null);if(!bmp)continue;
+    const long=1800,k=Math.min(1,long/Math.max(bmp.width,bmp.height)),c=document.createElement('canvas');
+    c.width=bmp.width*k;c.height=bmp.height*k;c.getContext('2d').drawImage(bmp,0,0,c.width,c.height);
+    let src=c.toDataURL('image/jpeg',.82);if(src.length>3.6e6)src=c.toDataURL('image/jpeg',.6);
+    P.pages.push({src,state:null,log:''});
+  }
+  e.target.value='';renderPaperRun();
+};
+$('#paperRun').addEventListener('click',async e=>{
+  const t=e.target.closest('button');if(!t)return;
+  if(t.dataset.rm){P.pages.splice(+t.dataset.rm,1);renderPaperRun();return}
+  if(t.dataset.closerun){$('#paperRun').hidden=true;$('#chooser').hidden=false;renderChooser();return}
+  if(t.id==='runGo'){runPaper();return}
+});
+$('#paperRun').addEventListener('click',e=>{const tr=e.target.closest('tr[data-part]');if(!tr)return;const r=P.results[tr.dataset.part];
+  if(r){renderReport(r,$('#paperDetail'));$('#paperDetail').scrollIntoView({behavior:'smooth',block:'start'})}});
+function better(a,b){if(!a)return b;if(b.status!=='marked')return a;if(a.status!=='marked')return b;return b.score>a.score?b:a}
+async function runPaper(){
+  await who();
+  if(!S.session){$('#runStatus').innerHTML='<a href="../" style="color:var(--cyan)">Sign in to the Lab</a> first, then come back here.';return}
+  P.busy=true;renderPaperRun();
+  try{
+    if(!P.run){const j=await post({action:'paper_start',paper:P.paper});P.run=j.run}
+    for(const pg of P.pages){
+      if(pg.state)continue;
+      pg.state='busy';pg.log='Looking for your answers…';renderPaperRun();
+      const d=await post({action:'detect',run:P.run,image:pg.src});
+      if(!d.readable&&!d.parts.length){pg.state='done';pg.log='Couldn\'t read this page. Take the photo again, flat and in good light, and add it.';renderPaperRun();continue}
+      if(!d.parts.length){pg.state='done';pg.log='No working found on this page.';renderPaperRun();continue}
+      const names=d.parts.map(id=>{const q=S.questions.find(x=>x.id===id);return q?`Q${q.source.q}${q.source.part||''}`:id});
+      pg.log=`Found ${names.join(', ')}. Marking…`;renderPaperRun();
+      let next=0;const worker=async()=>{while(next<d.parts.length){const id=d.parts[next++];
+        try{const r=await post({run:P.run,question_id:id,image:pg.src});P.results[id]=better(P.results[id],r);markSeen(id)}
+        catch(err){if(err.status===410||err.status===429)throw err;console.warn(id,err)}}};
+      await Promise.all([worker(),worker(),worker()]);
+      pg.state='done';pg.log=`Marked ${names.join(', ')}.`;renderPaperRun();
+    }
+  }catch(err){
+    const st=$('#runStatus');P.busy=false;P.pages.forEach(p=>{if(p.state==='busy'){p.state=null;p.log=''}});renderPaperRun();
+    $('#runStatus').innerHTML=`<span class="err">${esc(err.message)}</span>`;if(err.status===410)P.run=null;return;
+  }
+  P.busy=false;renderPaperRun();$('#paperReport').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function paperReport(){
+  const parts=partsOf(P.paper),got=parts.map(q=>({q,r:P.results[q.id]}));
+  const score=got.reduce((a,x)=>a+(x.r?.status==='marked'?x.r.score:0),0);
+  const missing=got.filter(x=>!x.r||x.r.status!=='marked');
+  const pct=Math.round(100*score/P.max);
+  // Where the marks went: lost marks by Mark Recovery Log category, and by topic
+  const lost={},topics={};let lostTotal=0;
+  got.forEach(({q,r})=>{if(r?.status!=='marked'||r.score===r.max)return;const n=r.max-r.score;lostTotal+=n;
+    const c=r.unprotected?'M':(r.root_cause?.category||'A');lost[c]=(lost[c]||0)+n;
+    const t=TOP[q.topic]?.name||q.topic;topics[t]=(topics[t]||0)+n});
+  const bars=Object.entries(lost).sort((a,b)=>b[1]-a[1]).map(([c,n])=>`<div class="bar"><span>${esc(CAT[c]||'Other')}</span><div><i style="width:${Math.round(100*n/Math.max(1,lostTotal))}%"></i></div><b>${n}</b></div>`).join('');
+  const tops=Object.entries(topics).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const row=({q,r})=>{const lab=`Q${q.source.q}${q.source.part||''}`;
+    if(!r)return `<tr><td>${lab}</td><td>${esc(TOP[q.topic]?.name||q.topic)}</td><td class="sc miss">–/${q.marks}</td><td class="miss">No working found</td></tr>`;
+    if(r.status!=='marked')return `<tr data-part="${q.id}"><td>${lab}</td><td>${esc(TOP[q.topic]?.name||q.topic)}</td><td class="sc miss">–/${q.marks}</td><td class="miss">${r.status==='unreadable'?'Couldn\'t read it':'No working found'}</td></tr>`;
+    const cls=r.score===r.max?'full':r.score===0?'none':'some';
+    return `<tr data-part="${q.id}"><td>${lab}</td><td>${esc(TOP[q.topic]?.name||q.topic)}</td><td class="sc ${cls}">${r.score}/${r.max}</td><td>${esc(r.verdict||'')}</td></tr>`};
+  const col=pct>=70?'var(--good)':pct>=40?'var(--cyan)':'var(--bad)';
+  return `<div class="card" style="margin-top:14px"><div class="eyebrow">Case report · ${esc(paperName(P.paper))}</div>
+    <div class="verdict" style="margin-top:10px"><div class="ring" style="--p:${pct};--c:${col}"><b>${pct}%</b></div>
+    <div><span class="eyebrow">Total</span><p>${score} out of ${P.max} marks${missing.length?` · ${missing.length} part${missing.length>1?'s':''} not found`:''}</p></div></div>
+    ${missing.length?`<div class="notice">We couldn't find working for ${missing.map(x=>'Q'+x.q.source.q+(x.q.source.part||'')).join(', ')}. If you answered ${missing.length>1?'them':'it'}, add a photo of that page and mark again. Those parts count as 0 until then.</div>`:''}
+    ${lostTotal?`<div class="sect"><h3>Where the ${lostTotal} lost marks went</h3><div class="bars">${bars}</div></div>
+    <div class="sect"><h3>Topics that cost the most</h3><ol>${tops.map(([t,n])=>`<li>${esc(t)}: ${n} mark${n>1?'s':''}</li>`).join('')}</ol></div>`:''}
+    <table class="ptable"><thead><tr><th>Q</th><th>Topic</th><th>Mark</th><th>Finding</th></tr></thead><tbody>${got.map(row).join('')}</tbody></table>
+    <p class="foot">Tap a question to see its full case report. AI marking can get things wrong: dispute any mark from its report. Photos are deleted after 7 days.</p></div>`;
 }
 
 // What a real report looks like, using the completing-the-square example
