@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Written Evidence · Maths Forensics Lab</title>
+<title>Forensic Marking · Maths Forensics Lab</title>
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Josefin+Sans:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -39,6 +39,7 @@ header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-betw
 .wm small{display:block;font-family:var(--f-mono);font-weight:500;font-size:11px;letter-spacing:.18em;color:var(--cyan);margin-top:4px}
 #who{font-size:14px;color:var(--muted)}
 #who a{color:var(--cyan)}
+.backlab{display:inline-block;margin-top:14px;color:var(--cyan);font-weight:600;text-decoration:none}
 .proto{display:inline-block;margin-top:14px;font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;color:var(--warn);border:1px solid rgba(255,200,87,.4);border-radius:4px;padding:3px 8px}
 
 h1{font-family:var(--f-display);font-weight:600;font-size:clamp(22px,4.5vw,30px);margin:10px 0 6px}
@@ -141,6 +142,28 @@ h1{font-family:var(--f-display);font-weight:600;font-size:clamp(22px,4.5vw,30px)
 .bar div{height:10px;border-radius:5px;background:var(--line);overflow:hidden}.bar div i{display:block;height:100%;background:var(--cyan)}
 @media (max-width:520px){.bar{grid-template-columns:110px 1fr 34px}}
 
+/* Mike mode: the avatar floats bottom right and changes colour as he watches the working */
+.mikesw{display:inline-flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:14px;font-weight:600}
+.mikesw[aria-pressed="true"]{border-color:var(--cyan);color:var(--cyan)}
+.mikesw i{width:30px;height:16px;border-radius:8px;background:var(--line);position:relative;transition:background .2s}
+.mikesw i::after{content:"";position:absolute;left:2px;top:2px;width:12px;height:12px;border-radius:50%;background:var(--text);transition:left .2s}
+.mikesw[aria-pressed="true"] i{background:var(--cyan)}.mikesw[aria-pressed="true"] i::after{left:16px;background:var(--ink)}
+.mike{position:fixed;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:20;display:grid;justify-items:end;gap:6px}
+.mikebtn{position:relative;border:0;background:none;padding:0;border-radius:50%}
+.mike .ring{display:grid;place-items:center;width:76px;height:76px;border-radius:50%;background:var(--mc,#56608a);box-shadow:0 8px 24px rgba(0,0,0,.45);transition:background .3s}
+.mike .ring svg,.mike .ring img{width:64px;height:64px;border-radius:50%;display:block;object-fit:cover}
+.mike[data-light="green"]{--mc:var(--good)} .mike[data-light="amber"]{--mc:var(--warn)} .mike[data-light="red"]{--mc:var(--bad)}
+.mike[data-light="red"] .ring{animation:pulse 1.2s ease-in-out 3}
+.mike[data-watching="1"] .ring{animation:look 1.6s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 10px rgba(255,107,122,.25),0 8px 24px rgba(0,0,0,.45)}}
+@keyframes look{50%{transform:rotate(-6deg)}}
+@media (prefers-reduced-motion:reduce){.mike .ring{animation:none!important}}
+.mstate{position:absolute;right:-2px;bottom:-2px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--ink);border:2px solid var(--mc,#56608a);font-weight:700;font-size:14px;color:var(--mc,#93a0c8)}
+.mlabel{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.14em;color:var(--muted);margin-right:18px}
+.bubble{max-width:min(300px,calc(100vw - 32px));background:var(--panel);border:1px solid var(--mc,var(--line));border-radius:12px 12px 4px 12px;padding:10px 12px;font-size:14.5px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.bubble b{display:block;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;color:var(--mc,var(--muted));margin-bottom:2px}
+.bubble a{color:var(--cyan)}
+
 /* the case report */
 #report:empty{display:none}
 #report{margin-top:18px}
@@ -188,14 +211,14 @@ summary{cursor:pointer;font-weight:600}
 <body>
 <div class="wrap">
 <header>
-  <a class="brand" href="../">
+  <a class="brand" href="../lab/">
     <svg viewBox="0 0 40 46" aria-hidden="true"><defs><clipPath id="mfShield"><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z"/></clipPath></defs><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z" fill="#111a3d"/><g clip-path="url(#mfShield)" fill="none" stroke="#00FCF1"><path d="M10.5 0V46M20.5 0V46M30.5 0V46M0 12.5H40M0 22.5H40M0 32.5H40" stroke-opacity=".25" stroke-width=".7"/><path d="M6 33C12 31 15.5 25 19 21S27 13.5 34 12.5" stroke-opacity=".9" stroke-width="1.6" stroke-linecap="round"/></g><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z" fill="none" stroke="#00FCF1" stroke-width="2.2" stroke-linejoin="round"/><circle cx="19" cy="21" r="6.2" fill="#111a3d" stroke="#00FCF1" stroke-width="2.6"/><circle cx="19" cy="21" r="1.6" fill="#00FCF1"/><path d="M23.4 25.4 28.8 30.8" stroke="#1B36FF" stroke-width="3.8" stroke-linecap="round"/></svg>
-    <div class="wm">MATHS FORENSICS<small>LAB · WRITTEN EVIDENCE</small></div>
+    <div class="wm">MATHS FORENSICS<small>LAB · FORENSIC MARKING</small></div>
   </a>
   <div id="who"></div>
 </header>
 
-<span class="proto">PROTOTYPE · NOT LINKED FROM THE LAB YET</span>
+<a class="backlab" href="../lab/">← Back to the Lab</a>
 <h1>Show your working. We'll mark every line.</h1>
 <p class="hint">Write your answer below with a stylus or finger, or photograph your work on paper. Each mark is checked against an exam-style mark scheme, and you'll see exactly where any marks were lost.</p>
 
@@ -216,6 +239,7 @@ summary{cursor:pointer;font-weight:600}
     <button class="tool" data-tool="eraser" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M8 20h12M5 15l9-9 5 5-8 8H8z"/></svg>Eraser</button>
     <button class="tool" id="undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 14L4 9l5-5M4 9h11a5 5 0 010 10h-3"/></svg>Undo</button>
     <span class="spacer"></span>
+    <button class="mikesw" id="mikeSw" aria-pressed="false" title="Mike watches as you write and warns you at the step where students usually slip"><i></i>Mike mode</button>
     <button class="tool" id="clear">Clear</button>
   </div>
   <div class="sheet" id="sheet">
@@ -244,6 +268,14 @@ summary{cursor:pointer;font-weight:600}
 </div>
 
 <section id="paperRun" hidden aria-live="polite"></section>
+<div class="mike" id="mike" hidden>
+  <div class="bubble" id="mikeBubble" role="status" aria-live="polite" hidden></div>
+  <button class="mikebtn" id="mikeBtn" aria-label="Mike: tap to see what he noticed">
+    <span class="ring" id="mikeRing"><img src="../media/mike-avatar.webp" alt=""></span>
+    <span class="mstate" id="mikeState">·</span>
+  </button>
+  <span class="mlabel" id="mikeLabel">MIKE</span>
+</div>
 <input type="file" id="pageFiles" accept="image/*" multiple hidden>
 </div>
 
@@ -262,7 +294,7 @@ const S={questions:FALLBACK,q:null,mode:'draw',session:null,photo:null,last:null
 /* ---------- who's signed in (same session as the Lab) ---------- */
 async function who(){
   if(sb){const {data}=await sb.auth.getSession(); S.session=data.session}
-  $('#who').innerHTML=S.session?`Signed in as <b>${esc(S.session.user.email)}</b>`:`<a href="../">Sign in to the Lab</a> to have your work marked`;
+  $('#who').innerHTML=S.session?`Signed in as <b>${esc(S.session.user.email)}</b>`:`<a href="../lab/">Sign in to the Lab</a> to have your work marked`;
 }
 async function loadQuestions(){
   try{const r=await fetch(FN);if(r.ok){const j=await r.json();if(j.questions?.length)S.questions=j.questions.filter(q=>!q.draft)}}catch(e){}
@@ -322,7 +354,7 @@ function prepare(){
     const f=qnum(q)/(last[p]||1);q.level=f<=.34?'e':f<=.67?'m':'h'});
   S.papers=[...new Set(S.questions.map(q=>q.source?.paper).filter(Boolean))].sort((a,b)=>paperName(a).localeCompare(paperName(b)));
 }
-const V={way:'topic',topic:null,paper:null,pool:null,poolName:''};
+const V={way:(()=>{const w=new URLSearchParams(location.search).get('way');return ['topic','surprise','paper'].includes(w)?w:'topic'})(),topic:null,paper:null,pool:null,poolName:''};
 function pick(pool){const fresh=pool.filter(q=>!seen.has(q.id)&&q!==S.q);const from=fresh.length?fresh:pool.filter(q=>q!==S.q);const list=from.length?from:pool;return list[Math.floor(Math.random()*list.length)]}
 function levelButtons(pool,attr){
   return `<div class="levels">${['e','m','h'].map(l=>{const n=pool.filter(q=>q.level===l).length;
@@ -355,6 +387,7 @@ function renderChooser(){
       <button class="btn" data-wholepaper="1">Mark my whole paper</button></div>`;
   }
   c.innerHTML=tabs+`<div class="pane">${body}</div>`;
+  if(typeof renderMike==='function')setTimeout(renderMike);
 }
 function paperNav(){
   const qs=S.questions.filter(q=>q.source?.paper===V.paper).sort((a,b)=>qnum(a)-qnum(b)||(a.source.part||'').localeCompare(b.source.part||''));
@@ -433,9 +466,9 @@ pad.addEventListener('pointermove',e=>{
   for(const ev of (e.getCoalescedEvents?.()||[e]))cur.pts.push(pos(ev));
   drawStroke({erase:cur.erase,pts:cur.pts.slice(-2-((e.getCoalescedEvents?.()||[e]).length))});
 });
-const end=()=>{cur=null;redraw()};
+const end=()=>{const was=!!cur;cur=null;redraw();if(was&&M.on)scheduleLook()};
 pad.addEventListener('pointerup',end);pad.addEventListener('pointercancel',end);
-function clearPad(){strokes=[];padH=420;sizePad()}
+function clearPad(){strokes=[];padH=420;sizePad();if(typeof resetMike==='function')resetMike()}
 $('#undo').onclick=()=>{strokes.pop();redraw()};
 $('#clear').onclick=()=>{if(!strokes.length||confirm('Clear all your working?'))clearPad()};
 $('#more').onclick=()=>{padH+=240;sizePad()};
@@ -478,7 +511,7 @@ $('#rotate').onclick=()=>{rot=(rot+90)%360;showPhoto()};
 $('#retake').onclick=()=>$('#file').click();
 
 document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{
-  S.mode=b.dataset.mode;document.querySelectorAll('[data-mode]').forEach(x=>x.setAttribute('aria-selected',x===b));
+  S.mode=b.dataset.mode;document.querySelectorAll('[data-mode]').forEach(x=>x.setAttribute('aria-selected',x===b));renderMike();
   $('#drawMode').hidden=S.mode!=='draw';$('#photoMode').hidden=S.mode!=='photo';if(S.mode==='draw')sizePad();
 });
 
@@ -488,7 +521,7 @@ $('#submit').onclick=async()=>{
   const image=S.mode==='draw'?padImage():S.photo;
   if(!image){$('#status').textContent=S.mode==='draw'?'Write your working first.':'Add a photo first.';return}
   await who();
-  if(!S.session){$('#status').innerHTML='<a href="../" style="color:var(--cyan)">Sign in to the Lab</a> first, then come back here.';return}
+  if(!S.session){$('#status').innerHTML='<a href="../lab/" style="color:var(--cyan)">Sign in to the Lab</a> first, then come back here.';return}
   $('#status').textContent='';$('#submit').disabled=true;
   $('#report').innerHTML=`<div class="card loading">${magnifier}<span>Examining the evidence, line by line…</span></div>`;
   try{
@@ -551,7 +584,7 @@ const post=async b=>{const r=await fetch(FN,{method:'POST',headers:{'Content-Typ
 function partsOf(paper){return S.questions.filter(q=>q.source?.paper===paper).sort((a,b)=>qnum(a)-qnum(b)||(a.source.part||'').localeCompare(b.source.part||''))}
 function openPaperRun(paper){
   if(P.paper!==paper){P.paper=paper;P.run=null;P.pages=[];P.results={};P.max=partsOf(paper).reduce((a,q)=>a+q.marks,0)}
-  $('#chooser').hidden=true;$('#work').hidden=true;$('#paperRun').hidden=false;renderPaperRun();
+  $('#chooser').hidden=true;$('#work').hidden=true;$('#paperRun').hidden=false;renderPaperRun();renderMike();
   $('#paperRun').scrollIntoView({behavior:'smooth',block:'start'});
 }
 function renderPaperRun(){
@@ -586,7 +619,7 @@ $('#paperRun').addEventListener('click',e=>{const tr=e.target.closest('tr[data-p
 function better(a,b){if(!a)return b;if(b.status!=='marked')return a;if(a.status!=='marked')return b;return b.score>a.score?b:a}
 async function runPaper(){
   await who();
-  if(!S.session){$('#runStatus').innerHTML='<a href="../" style="color:var(--cyan)">Sign in to the Lab</a> first, then come back here.';return}
+  if(!S.session){$('#runStatus').innerHTML='<a href="../lab/" style="color:var(--cyan)">Sign in to the Lab</a> first, then come back here.';return}
   P.busy=true;renderPaperRun();
   try{
     if(!P.run){const j=await post({action:'paper_start',paper:P.paper});P.run=j.run}
@@ -637,6 +670,55 @@ function paperReport(){
     <table class="ptable"><thead><tr><th>Q</th><th>Topic</th><th>Mark</th><th>Finding</th></tr></thead><tbody>${got.map(row).join('')}</tbody></table>
     <p class="foot">Tap a question to see its full case report. AI marking can get things wrong: dispute any mark from its report. Photos are deleted after 7 days.</p></div>`;
 }
+
+/* ---------- Mike mode ----------
+   After each pause in writing (2.5 s with the pen up), the working so far goes to Mike's fast checker. He answers with
+   a light (green / amber / red) and a short warning at the step where students usually slip, never the answer.
+   Comes with the Exam Season Kit and The Full Investigation; the server checks the plan. */
+const MIKE_SVG=`<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#111a3d"/><g fill="none" stroke="#E8ECF8" stroke-width="2.4" stroke-linecap="round"><path d="M17 27c1-9 7-14 15-14s14 5 15 14"/><circle cx="25" cy="31" r="5"/><circle cx="39" cy="31" r="5"/><path d="M30 31h4M20 31h-3M44 31h3"/><path d="M26 42c3 3 9 3 12 0"/></g><path d="M17 26c3-6 9-9 15-9s12 3 15 9c-4-3-9-5-15-5s-11 2-15 5z" fill="#E8ECF8"/></svg><!--/AVATAR-->`;
+// Mike's photo lives on the server (media/mike-avatar.webp), never in the repository; until it's there, a drawn avatar
+{const im=$('#mikeRing img'),fb=()=>{$('#mikeRing').innerHTML=MIKE_SVG};if(im){if(im.complete&&!im.naturalWidth)fb();else im.addEventListener('error',fb)}}
+const M={on:false,timer:null,busy:false,again:false,sent:0,light:null,zones:[],qid:null};
+let mikeBubbleTimer;
+function resetMike(){clearTimeout(M.timer);M.sent=0;M.light=null;M.zones=[];M.qid=S.q?.id||null;renderMike()}
+function scheduleLook(delay=2500){clearTimeout(M.timer);M.timer=setTimeout(look,delay)}
+async function look(){
+  if(!M.on||S.mode!=='draw'||!S.q||cur)return;
+  const n=strokes.length;if(!strokes.some(s=>!s.erase)||n===M.sent)return;
+  if(M.busy){M.again=true;return}
+  await who();if(!S.session){mikeSay('SIGN IN','<a href="../lab/">Sign in to the Lab</a> and Mike can watch your working.');return}
+  M.busy=true;M.sent=n;const qid=S.q.id;renderMike();
+  try{
+    const r=await fetch(FN,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+S.session.access_token,apikey:CFG.supabaseAnonKey},
+      body:JSON.stringify({action:'monitor',question_id:qid,image:padImage(),shown:M.zones})});
+    const j=await r.json().catch(()=>({error:'Mike couldn\'t look just now. Keep going.'}));
+    if(qid!==S.q?.id){M.busy=false;return}
+    if(r.status===403){M.busy=false;setMike(false);mikeSay('MIKE MODE',esc(j.error||'')+' <a href="https://www.mathsforensics.com/the-lab">See the plans</a>',true);return}
+    if(!r.ok||j.error)throw new Error(j.error||'Mike couldn\'t look just now. Keep going.');
+    const prev=M.light?.light;M.light=j;if(j.zone)M.zones.push(j.zone);
+    if(j.light==='red'||j.zone||(j.light==='amber'&&prev!=='amber'))openMikeBubble(true);
+  }catch(e){M.light={light:'amber',line:null,message:e.message}}
+  M.busy=false;renderMike();
+  if(M.again){M.again=false;scheduleLook(300)}
+}
+function mikeSay(title,html,stay){const b=$('#mikeBubble');$('#mike').hidden=false;b.innerHTML=`<b>${title}</b>${html}`;b.hidden=false;clearTimeout(mikeBubbleTimer);if(!stay)mikeBubbleTimer=setTimeout(()=>b.hidden=true,6000)}
+function openMikeBubble(auto){
+  const L=M.light;if(!L)return;
+  const LN={green:'LOOKING GOOD',amber:L.zone?'DANGER ZONE':'BE CAREFUL',red:'SERIOUS ERROR',blank:'NOTHING YET',unreadable:'CAN\'T READ IT'};
+  mikeSay(`${LN[L.light]||''}${L.line&&!/^line/i.test(L.message||'')?' · LINE '+L.line:''}`,esc(L.message||''),!auto||L.light==='red');
+}
+function renderMike(){
+  const box=$('#mike');box.hidden=!M.on||S.mode!=='draw'||$('#work').hidden;if(box.hidden)return;
+  const L=M.light;box.dataset.light=L?L.light:'';box.dataset.watching=M.busy?'1':'0';
+  $('#mikeState').textContent=M.busy?'…':L?{green:'✓',amber:'!',red:'✗'}[L.light]||'·':'·';
+  $('#mikeLabel').textContent=M.busy?'MIKE · LOOKING':L?{green:'MIKE · GOOD',amber:'MIKE · CAREFUL',red:'MIKE · STOP'}[L.light]||'MIKE':'MIKE · WATCHING';
+  if(!L&&!M.busy)$('#mikeBubble').hidden=true;
+}
+function setMike(on){M.on=on;$('#mikeSw').setAttribute('aria-pressed',on);try{localStorage.setItem('mf-mike',on?'1':'0')}catch(e){}
+  if(!on){clearTimeout(M.timer);$('#mike').hidden=true;$('#mikeBubble').hidden=true}else{renderMike();if(strokes.some(s=>!s.erase))scheduleLook(200)}}
+$('#mikeSw').onclick=()=>{setMike(!M.on);if(M.on&&!M.light)mikeSay('WATCHING','Write your first line. Mike looks when you pause.')};
+$('#mikeBtn').onclick=()=>{const b=$('#mikeBubble');if(!b.hidden){b.hidden=true;return}if(M.light)openMikeBubble(false);else mikeSay('WATCHING','Write your first line. Mike looks when you pause.')};
+try{if(localStorage.getItem('mf-mike')==='1')setTimeout(()=>setMike(true))}catch(e){}
 
 // What a real report looks like, using the completing-the-square example
 const SAMPLE={status:'marked',unprotected:null,score:2,max:5,mark_id:null,question:FALLBACK[0],remaining_week:null,needs_review:false,review_note:null,
