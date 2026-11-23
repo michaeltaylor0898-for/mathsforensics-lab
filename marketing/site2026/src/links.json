@@ -32,5 +32,8 @@
   "TERMS": "https://lab.mathsforensics.com/terms.html",
   "TEACHER_PRO_CHECKOUT": "https://www.mathsforensics.com/incident-room-teacherpro-checkout",
   "INCIDENT_ROOM": "https://lab.mathsforensics.com/incident-room/",
-  "FORENSIC_MARKING": "https://lab.mathsforensics.com/written/"
+  "FORENSIC_MARKING": "https://lab.mathsforensics.com/written/",
+  "CC_SINGLE_CHECKOUT": "https://www.mathsforensics.com/cold-case-order",
+  "CC_COMPLETE_CHECKOUT": "https://www.mathsforensics.com/cold-case-complete-order",
+  "CC_MW_CHECKOUT": "https://www.mathsforensics.com/cold-case-mw-order"
 }

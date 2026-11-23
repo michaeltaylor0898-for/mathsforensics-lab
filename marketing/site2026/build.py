@@ -7,7 +7,7 @@ out = root / ("out" if os.environ.get("EDITION", "launch") == "launch" else "out
 out.mkdir(exist_ok=True)
 CSS = (src / "style.css").read_text()
 LINKS = json.loads((src / "links.json").read_text())
-PAGES = [("home", "Homepage", "/"), ("academy", "Academy", "/academy"), ("gcse", "GCSE (the Lab)", "/the-lab"), ("schools", "Schools", "/schools"), ("about", "About", "/about")]
+PAGES = [("home", "Homepage", "/"), ("academy", "Academy", "/academy"), ("gcse", "GCSE (the Lab)", "/the-lab"), ("schools", "Schools", "/schools"), ("about", "About", "/about"), ("coldcase", "Cold Case", "/cold-case")]
 PHOTO = '<span>YOUR PHOTO HERE<br>{label}</span>'
 
 def fill(s):
@@ -72,7 +72,7 @@ for name, title, path in PAGES:
     preview.append((name, title, path, "".join(f'<div class="mf">\n{b}\n</div>\n' for _, b in bl)))
 
 # preview: every page on one artifact, switched by #name; site links point at the matching preview page
-url2page = {LINKS[k]: n for k, n in [("HOME", "home"), ("ACADEMY_PAGE", "academy"), ("GCSE_PAGE", "gcse"), ("SCHOOLS_PAGE", "schools"), ("ABOUT", "about")]}
+url2page = {LINKS[k]: n for k, n in [("HOME", "home"), ("ACADEMY_PAGE", "academy"), ("GCSE_PAGE", "gcse"), ("SCHOOLS_PAGE", "schools"), ("ABOUT", "about"), ("COLD_CASE", "coldcase")]}
 nav = "".join(f'<a href="#{n}" data-p="{n}">{t}</a>' for n, t, _, _ in preview)
 pages = ""
 for n, t, path, body in preview:
