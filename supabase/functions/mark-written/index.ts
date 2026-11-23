@@ -64,6 +64,27 @@ const MAX_IMAGE_BYTES = 3_000_000;
 const ORIGINS = (Deno.env.get("ALLOWED_ORIGINS") ?? "https://lab.mathsforensics.com,http://localhost:8000,http://127.0.0.1:8000")
   .split(",").map((s) => s.trim());
 
+// Without a forced tool choice a model sometimes sends a list as a JSON string ("[\"line 1\", ...]"), a list as
+// lines of text, or true/false as words. Put every field back in the shape the schema asks for before marking.
+function tidyToolInput(input: any, schema: any): any {
+  const props = schema?.properties ?? {};
+  const out: any = { ...input };
+  for (const [k, spec] of Object.entries<any>(props)) {
+    let v = out[k];
+    if (v === undefined || v === null) continue;
+    if (spec.type === "array" && typeof v === "string") {
+      const t = v.trim();
+      try { const j = JSON.parse(t); v = Array.isArray(j) ? j : [j]; } catch { v = spec.items?.type === "string" ? t.split(/\n+/).map((x) => x.trim()).filter(Boolean) : []; }
+    }
+    if (spec.type === "object" && typeof v === "string") { try { v = JSON.parse(v); } catch { /* leave it */ } }
+    if (spec.type === "boolean" && typeof v === "string") v = /^(true|yes)$/i.test(v.trim());
+    if (spec.type === "integer" || spec.type === "number") { if (typeof v === "string" && v.trim() !== "" && !isNaN(+v)) v = +v; }
+    if (spec.type === "array" && Array.isArray(v) && spec.items?.type === "object") v = v.map((x: any) => typeof x === "string" ? (() => { try { return JSON.parse(x); } catch { return x; } })() : x).map((x: any) => x && typeof x === "object" ? tidyToolInput(x, spec.items) : x);
+    out[k] = v;
+  }
+  return out;
+}
+
 const promptOneLine = (s: { promptText?: string; prompt: string }) =>
   (s.promptText ?? s.prompt).replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim().slice(0, 140);
 
@@ -308,7 +329,7 @@ Deno.serve(async (req) => {
       console.error("AI incomplete", out.stop_reason, JSON.stringify(out.usage));
       lastProblem = `AI stopped early (${out.stop_reason}, ${out.usage?.output_tokens} tokens)`; return null;
     }
-    return { input, usage: out.usage };
+    return { input: tidyToolInput(input, tool.input_schema), usage: out.usage };
   };
 
   // Mike mode: a quick traffic light on the fast model; its own weekly allowance; no image is kept

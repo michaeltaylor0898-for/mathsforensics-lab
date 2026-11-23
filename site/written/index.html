@@ -39,6 +39,7 @@ header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-betw
 .wm small{display:block;font-family:var(--f-mono);font-weight:500;font-size:11px;letter-spacing:.18em;color:var(--cyan);margin-top:4px}
 #who{font-size:14px;color:var(--muted)}
 #who a{color:var(--cyan)}
+.linkbtn{background:none;border:0;padding:0;color:var(--cyan);font:inherit;text-decoration:underline;cursor:pointer}
 .backlab{display:inline-block;margin-top:14px;color:var(--cyan);font-weight:600;text-decoration:none}
 .proto{display:inline-block;margin-top:14px;font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;color:var(--warn);border:1px solid rgba(255,200,87,.4);border-radius:4px;padding:3px 8px}
 
@@ -297,7 +298,6 @@ summary{cursor:pointer;font-weight:600}
 
 <div class="submit">
   <button class="btn" id="submit">Submit for marking</button>
-  <button class="btn ghost" id="sample">See an example report</button>
   <span class="hint" id="status"></span>
 </div>
 
@@ -407,7 +407,7 @@ function renderChooser(){
     body=STRANDS.map(([st,ts])=>{const list=ts.filter(t=>have[t[0]]);if(!list.length)return'';
       const wide=matchMedia('(min-width:700px)').matches;
       return `<details class="strand" ${wide?'open':''}><summary>${esc(st)}<small>${list.length} topics</small></summary><div class="chips">${list.map(t=>`<button class="chip" data-topic="${t[0]}">${esc(t[1])}<small>${have[t[0]]}</small></button>`).join('')}</div></details>`}).join('');
-    body=`<p class="hint">Choose a topic, then how hard you'd like the question.</p>${body}`;
+    body=`<p class="hint">Choose a topic, then how hard you'd like the question. New here? <button class="linkbtn" data-example="1">See what a case report looks like</button>.</p>${body}`;
   }else if(V.way==='topic'){
     const pool=S.questions.filter(q=>q.topic===V.topic);
     body=`<button class="back" data-back="topic">← All topics</button><h2 style="font-family:var(--f-display);font-size:20px;margin:0">${esc(TOP[V.topic]?.name||V.topic)}</h2>
@@ -468,8 +468,9 @@ $('#chooser').addEventListener('click',e=>{const t=e.target.closest('button');if
   if(d.paper){V.paper=d.paper;renderChooser();const first=S.questions.filter(q=>q.source?.paper===V.paper).sort((a,b)=>qnum(a)-qnum(b)||(a.source.part||'').localeCompare(b.source.part||''))[0];show(first,null,'');renderChooser();return}
   if(d.q){show(S.questions.find(q=>q.id===d.q),null,'');renderChooser();return}
   if(d.wholepaper){openPaperRun(V.paper);return}
+  if(d.example){showExample();return}
   if(d.rep){const row=MY.find(x=>x.id===d.rep),q=row&&S.questions.find(x=>x.id===row.question_id);if(!q)return;
-    show(q,null,'');renderReport({...row.result,mark_id:row.id,question:q});$('#report').scrollIntoView({behavior:'smooth',block:'start'});return}
+    show(q,null,'');renderReport({...row.result,mark_id:row.id,question:q});S.markedFor=workSig();updateSubmit();$('#report').scrollIntoView({behavior:'smooth',block:'start'});return}
 });
 $('#casebar').addEventListener('click',e=>{
   if(e.target.closest('#another')&&V.pool){show(pick(V.pool),V.pool,V.poolName);return}
@@ -510,7 +511,7 @@ pad.addEventListener('pointermove',e=>{
 });
 const end=()=>{const was=!!cur;cur=null;redraw();if(was&&M.on)scheduleLook()};
 pad.addEventListener('pointerup',end);pad.addEventListener('pointercancel',end);
-function clearPad(){strokes=[];padH=420;sizePad();if(typeof resetMike==='function')resetMike();if(typeof resetCoach==='function')resetCoach()}
+function clearPad(){strokes=[];padH=420;sizePad();S.markedFor=null;if(typeof updateSubmit==='function')setTimeout(updateSubmit);if(typeof resetMike==='function')resetMike();if(typeof resetCoach==='function')resetCoach()}
 $('#undo').onclick=()=>{strokes.pop();redraw()};
 $('#clear').onclick=()=>{if(!strokes.length||confirm('Clear all your working?'))clearPad()};
 $('#more').onclick=()=>{padH+=240;sizePad()};
@@ -572,9 +573,24 @@ $('#submit').onclick=async()=>{
     const j=await r.json().catch(()=>({error:'The marker didn\'t answer. Try again.'}));
     if(!r.ok||j.error)throw new Error(j.error||'Something went wrong.');
     if(!j.help)j.help={mode:C.help,clues:C.clues};renderReport(j);
+    if(j.status==='marked')S.markedFor=workSig();
   }catch(e){$('#report').innerHTML=`<div class="card err">${esc(e.message)}</div>`}
-  finally{$('#submit').disabled=false}
+  finally{$('#submit').disabled=false;updateSubmit()}
 };
+// Once a question is marked, its report stays: Submit is locked until the working changes, so a stray press can't
+// replace a good report (or use up another marked question). To question a mark, the report has "Send to Mike".
+function workSig(){return S.mode==='draw'?'d'+strokes.length+':'+strokes.reduce((a,x)=>a+x.pts.length,0):'p'+(S.photo?S.photo.length:0)}
+function updateSubmit(){
+  const b=$('#submit');if(!b)return;
+  if(S.markedFor==='example'){b.disabled=false;b.textContent='Submit for marking';return}
+  const locked=S.markedFor&&S.markedFor===workSig();
+  b.disabled=!!locked;b.textContent=locked?'Marked ✓':S.markedFor?'Mark my changed working':'Submit for marking';
+  $('#status').innerHTML=locked?'This is your mark. Change your working to have it marked again, or use <b>Send to Mike</b> in the report to question a mark.':S.markedFor?'Marking again uses another marked question.':'';
+}
+['pointerup','pointercancel'].forEach(ev=>$('#pad').addEventListener(ev,()=>setTimeout(updateSubmit)));
+['undo','clear','rotate','retake'].forEach(id=>{const el=$('#'+id);if(el)el.addEventListener('click',()=>setTimeout(updateSubmit))});
+$('#file').addEventListener('change',()=>setTimeout(updateSubmit,600));
+document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>setTimeout(updateSubmit)));
 
 function renderReport(r,box){
   box=box||$('#report');S.last=r;
@@ -836,7 +852,7 @@ const SAMPLE={status:'marked',unprotected:null,score:2,max:5,mark_id:null,questi
   went_right:['M1: subtracting 16 and 4 to get (x − 4)² − 20 = 0 was the right process.','M1: square rooting both sides with ± was correct.','√20 = 2√5 was simplified correctly.'],
   went_wrong:['B1, A1, A1: all three were lost to the sign of the bracket on line 1.','Line 3 is missing the ±. It only appears on line 4. Write it as soon as you square root.'],
   fix:['Half of +8 is +4, so start with (x + 4)² − 16 − 4 = 0.','That gives (x + 4)² = 20, so x + 4 = ±√20.','Take away 4: x = −4 ± √20 = −4 ± 2√5.','Check: expand (x + 4)² in your head. Does it give +8x?']};
-$('#sample').onclick=()=>{if(!S.q||$('#work').hidden){V.pool=null;S.q=Object.assign({level:'h'},FALLBACK[0]);$('#work').hidden=false;$('#chooser').hidden=true;renderQ()}renderReport(SAMPLE);$('#report').scrollIntoView({behavior:'smooth',block:'start'})};
+function showExample(){V.pool=null;S.q=Object.assign({level:'h'},FALLBACK[0]);$('#work').hidden=false;$('#chooser').hidden=true;renderQ();clearPad();clearPhoto();renderReport(SAMPLE);S.markedFor='example';updateSubmit();$('#report').scrollIntoView({behavior:'smooth',block:'start'})}
 
 who();loadQuestions();sizePad();
 </script>
