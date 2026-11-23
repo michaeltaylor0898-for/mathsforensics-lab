@@ -1,0 +1,196 @@
+{
+ "product": "academy",
+ "code": "MF-ACAD-SILVER-RATIO-SHARE",
+ "title": "Sharing in a ratio",
+ "level_line": "Academy · Silver",
+ "time": "About 40 minutes",
+ "notes": [
+  "<b>1.</b> Add the numbers in the ratio to find the total number of <b>parts</b>.",
+  "<b>2.</b> Divide the amount by the number of parts to find <b>one part</b>.",
+  "<b>3.</b> Multiply one part by each number in the ratio. Check your shares add up to the total.",
+  "Share £20 in the ratio 1 : 3 → 4 parts → £5 a part → <b>£5 and £15</b>."
+ ],
+ "levels": {
+  "s": "the method, step by step",
+  "e": "parts, differences and twists",
+  "m": "multi-step problems"
+ },
+ "sections": {
+  "s": {
+   "blurb": "Use the three steps in the case notes.",
+   "questions": [
+    {
+     "text": [
+      "Share £30 in the ratio 2 : 3."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer_label": "£ ______ and",
+     "answer": "£12 and £18",
+     "working": "5 parts, £6 a part."
+    },
+    {
+     "text": [
+      "Share 56 sweets in the ratio 3 : 4."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer_label": "______ and",
+     "answer": "24 and 32",
+     "working": "7 parts, 8 sweets a part."
+    },
+    {
+     "text": [
+      "Share 45 m of rope in the ratio 1 : 2 : 6."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer_label": "Answer (three lengths)",
+     "answer": "5 m, 10 m and 30 m",
+     "working": "9 parts, 5 m a part."
+    },
+    {
+     "text": [
+      "Amy and Ben share £40 in the ratio 3 : 5.",
+      "How much does <b>Ben</b> get?"
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer_label": "£",
+     "answer": "£25",
+     "working": "8 parts, £5 a part, Ben gets 5 parts.",
+     "tip": "Read who the question asks about. Lots of students work out both shares correctly, then write down Amy's."
+    },
+    {
+     "text": [
+      "A recipe uses flour and sugar in the ratio 5 : 2.",
+      "There are 350 g of flour and sugar altogether. How much <b>flour</b> is there?"
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer_label": "g",
+     "answer": "250 g",
+     "working": "7 parts, 50 g a part, flour is 5 parts."
+    },
+    {
+     "text": [
+      "Share 60 in the ratio 4 : 8. Simplify the ratio first, then check your answer works for 4 : 8 too."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer_label": "______ and",
+     "answer": "20 and 40",
+     "working": "4 : 8 = 1 : 2. 3 parts, 20 a part."
+    }
+   ]
+  },
+  "e": {
+   "blurb": "You're not always told the total. Find one part first.",
+   "questions": [
+    {
+     "text": [
+      "A bag has red and blue counters in the ratio 3 : 7.",
+      "There are 24 more blue counters than red counters. How many counters are in the bag?"
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "60 counters",
+     "working": "The difference is 7 − 3 = 4 parts = 24, so one part is 6. Total 10 parts = 60.",
+     "tip": "The <b>difference</b> between two shares is also a number of parts. Here it's 7 − 3 = 4 parts."
+    },
+    {
+     "text": [
+      "Ali, Ben and Cara share some money in the ratio 2 : 3 : 5.",
+      "Cara gets £36 more than Ali. How much money was shared?"
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer_label": "£",
+     "answer": "£120",
+     "working": "5 − 2 = 3 parts = £36, one part £12, 10 parts = £120."
+    },
+    {
+     "text": [
+      "The ratio of boys to girls in a club is 4 : 5.",
+      "There are 45 girls. How many students are in the club?"
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "81 students",
+     "working": "5 parts = 45, one part 9, 9 parts = 81."
+    },
+    {
+     "text": [
+      "Share £84 between Jo, Kim and Lee so that Jo gets twice as much as Kim, and Kim gets three times as much as Lee."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer_label": "Jo £ ____ Kim £ ____ Lee £",
+     "answer": "Jo £50.40, Kim £25.20, Lee £8.40",
+     "working": "Lee : Kim : Jo = 1 : 3 : 6, 10 parts, £8.40 a part."
+    },
+    {
+     "text": [
+      "Sam was asked to share £60 in the ratio 1 : 3. Here is his working."
+     ],
+     "tampered": "£60 ÷ 3 = £20<br>1 × £20 = £20 and 3 × £20 = £60<br>Answer: £20 and £40",
+     "marks": 2,
+     "lines": 2,
+     "answer_label": "Correct answer",
+     "answer": "He divided by 3, not 4 parts. £15 and £45.",
+     "working": "His shares don't add up to £60 either: always check."
+    }
+   ]
+  },
+  "m": {
+   "blurb": "No hints. Plan before you calculate.",
+   "questions": [
+    {
+     "text": [
+      "The ratio of Tom's money to Sam's money is 3 : 5.",
+      "Tom gives Sam £10. Now the ratio is 1 : 3.",
+      "How much money did Tom have at the start?"
+     ],
+     "marks": 4,
+     "lines": 5,
+     "answer_label": "£",
+     "answer": "£30",
+     "working": "Tom 3<i>x</i>, Sam 5<i>x</i>. 3(3<i>x</i> − 10) = 5<i>x</i> + 10, so <i>x</i> = 10. Tom had £30, Sam £50; after: £20 and £60."
+    },
+    {
+     "text": [
+      "Purple paint is made by mixing red and blue paint in the ratio 2 : 3.",
+      "Lara has 500 ml of red and 900 ml of blue. What is the most purple paint she can make?"
+     ],
+     "marks": 3,
+     "lines": 4,
+     "answer_label": "ml",
+     "answer": "1250 ml",
+     "working": "All the red: one part 250 ml, needs 750 ml blue (she has 900). 500 + 750 = 1250 ml.",
+     "tip": "Check both colours. Using all the blue would need 600 ml of red, and she only has 500 ml."
+    },
+    {
+     "text": [
+      "A bag holds 40 counters. Red to green is 3 : 5.",
+      "How many green counters must be added so the ratio of red to green becomes 1 : 3?"
+     ],
+     "marks": 3,
+     "lines": 4,
+     "answer": "20 green counters",
+     "working": "15 red, 25 green. For 1 : 3, green must be 45: add 20."
+    },
+    {
+     "text": [
+      "<i>a</i> : <i>b</i> = 2 : 3 and <i>b</i> : <i>c</i> = 4 : 5.",
+      "Write <i>a</i> : <i>b</i> : <i>c</i> in its simplest form. Explain each step."
+     ],
+     "marks": 3,
+     "lines": 4,
+     "answer_label": "<i>a</i> : <i>b</i> : <i>c</i> =",
+     "answer": "8 : 12 : 15",
+     "working": "Make <i>b</i> the same in both: 2 : 3 = 8 : 12 and 4 : 5 = 12 : 15."
+    }
+   ]
+  }
+ }
+}
