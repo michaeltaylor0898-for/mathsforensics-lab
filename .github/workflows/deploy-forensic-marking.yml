@@ -58,6 +58,8 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
           local-dir: site/written/
           server-dir: ${{ secrets.FTP_LAB_DIR }}written/
           dangerous-clean-slate: false
