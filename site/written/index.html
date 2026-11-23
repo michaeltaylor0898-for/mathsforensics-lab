@@ -164,6 +164,34 @@ h1{font-family:var(--f-display);font-weight:600;font-size:clamp(22px,4.5vw,30px)
 .bubble b{display:block;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;color:var(--mc,var(--muted));margin-bottom:2px}
 .bubble a{color:var(--cyan)}
 
+/* help modes: exam, coached, Mike */
+.helpbar{margin:16px 0 10px}
+.helpmodes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
+.helpmodes button{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px;text-align:left;color:var(--text)}
+.helpmodes button b{display:block;font-size:16px}.helpmodes button span{display:block;font-size:13px;color:var(--muted);margin-top:2px}
+.helpmodes button[aria-checked="true"]{border-color:var(--cyan);box-shadow:inset 0 0 0 1px var(--cyan)}.helpmodes button[aria-checked="true"] b{color:var(--cyan)}
+@media (max-width:560px){.helpmodes button span{display:none}.helpmodes button{text-align:center}}
+#coachBox .card{margin-top:0;margin-bottom:10px}
+#coachBox h3{font-family:var(--f-display);font-size:15px;margin:0 0 4px}
+.cbtns{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.cbtn{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:7px 12px;font-weight:600;font-size:14px;color:var(--text)}
+.cbtn:not(:disabled):hover{border-color:var(--cyan)}.cbtn:disabled{opacity:.5}
+.keys,.clues{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px}
+.keys li{font-size:14.5px}.keys b{color:var(--cyan)}.keys span{display:block;color:var(--muted);font-size:14px}
+.clues li{font-size:14.5px;border-left:2px solid var(--cyan);padding-left:10px}
+.clues li i{display:block;font-style:normal;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;color:var(--cyan)}
+.traps label{display:flex;gap:8px;align-items:flex-start;font-size:14.5px;margin-top:6px}
+.checkmsg{margin-top:10px;font-size:14.5px;padding:9px 11px;border-radius:8px;background:var(--panel2)}
+.checkmsg.on_track{border-left:3px solid var(--good)}.checkmsg.problem{border-left:3px solid var(--warn)}
+.examnote b{color:var(--warn)}
+.coachgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.tag.assist{color:var(--warn);border-color:rgba(255,200,87,.4)}
+/* my reports */
+.reports{display:grid;gap:8px}
+.rep{display:grid;grid-template-columns:1fr auto;gap:4px 12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px;text-align:left;color:var(--text)}
+.rep:hover{border-color:var(--cyan)}.rep b{font-size:16px}.rep span{font-size:13px;color:var(--muted)}
+.rep .sc{grid-row:span 2;align-self:center;font-family:var(--f-mono);font-weight:700;font-size:18px}
+
 /* the case report */
 #report:empty{display:none}
 #report{margin-top:18px}
@@ -228,6 +256,16 @@ summary{cursor:pointer;font-weight:600}
 <div class="casebar" id="casebar"></div>
 <section class="card" id="qcard"></section>
 
+<div class="helpbar">
+  <span class="eyebrow">How do you want to work?</span>
+  <div class="helpmodes" role="radiogroup" aria-label="Help while you work">
+    <button role="radio" data-help="exam" aria-checked="false"><b>Exam</b><span>No help, like the real thing</span></button>
+    <button role="radio" data-help="coached" aria-checked="true"><b>Coached</b><span>Key words, clues and a check</span></button>
+    <button role="radio" data-help="mike" aria-checked="false"><b>Mike mode</b><span>Mike watches as you write</span></button>
+  </div>
+</div>
+<section id="coachBox" aria-live="polite"></section>
+
 <div class="modes" role="tablist">
   <button role="tab" aria-selected="true" data-mode="draw">Write here</button>
   <button role="tab" aria-selected="false" data-mode="photo">Upload a photo</button>
@@ -239,7 +277,6 @@ summary{cursor:pointer;font-weight:600}
     <button class="tool" data-tool="eraser" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M8 20h12M5 15l9-9 5 5-8 8H8z"/></svg>Eraser</button>
     <button class="tool" id="undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 14L4 9l5-5M4 9h11a5 5 0 010 10h-3"/></svg>Undo</button>
     <span class="spacer"></span>
-    <button class="mikesw" id="mikeSw" aria-pressed="false" title="Mike watches as you write and warns you at the step where students usually slip"><i></i>Mike mode</button>
     <button class="tool" id="clear">Clear</button>
   </div>
   <div class="sheet" id="sheet">
@@ -260,7 +297,7 @@ summary{cursor:pointer;font-weight:600}
 
 <div class="submit">
   <button class="btn" id="submit">Submit for marking</button>
-  <button class="btn ghost" id="sample">See a sample report</button>
+  <button class="btn ghost" id="sample">See an example report</button>
   <span class="hint" id="status"></span>
 </div>
 
@@ -271,7 +308,7 @@ summary{cursor:pointer;font-weight:600}
 <div class="mike" id="mike" hidden>
   <div class="bubble" id="mikeBubble" role="status" aria-live="polite" hidden></div>
   <button class="mikebtn" id="mikeBtn" aria-label="Mike: tap to see what he noticed">
-    <span class="ring" id="mikeRing"><img src="../media/mike-avatar.webp" alt=""></span>
+    <span class="ring" id="mikeRing"><img src="../media/mike.png" alt="" style="object-position:50% 20%"></span>
     <span class="mstate" id="mikeState">·</span>
   </button>
   <span class="mlabel" id="mikeLabel">MIKE</span>
@@ -354,7 +391,7 @@ function prepare(){
     const f=qnum(q)/(last[p]||1);q.level=f<=.34?'e':f<=.67?'m':'h'});
   S.papers=[...new Set(S.questions.map(q=>q.source?.paper).filter(Boolean))].sort((a,b)=>paperName(a).localeCompare(paperName(b)));
 }
-const V={way:(()=>{const w=new URLSearchParams(location.search).get('way');return ['topic','surprise','paper'].includes(w)?w:'topic'})(),topic:null,paper:null,pool:null,poolName:''};
+const V={way:(()=>{const w=new URLSearchParams(location.search).get('way');return ['topic','surprise','paper','mine'].includes(w)?w:'topic'})(),topic:null,paper:null,pool:null,poolName:''};
 function pick(pool){const fresh=pool.filter(q=>!seen.has(q.id)&&q!==S.q);const from=fresh.length?fresh:pool.filter(q=>q!==S.q);const list=from.length?from:pool;return list[Math.floor(Math.random()*list.length)]}
 function levelButtons(pool,attr){
   return `<div class="levels">${['e','m','h'].map(l=>{const n=pool.filter(q=>q.level===l).length;
@@ -363,7 +400,7 @@ function levelButtons(pool,attr){
 }
 function renderChooser(){
   const c=$('#chooser');
-  const tabs=`<div class="ways" role="tablist">${[['topic','By topic'],['surprise','Surprise me'],['paper','Full paper']].map(([k,t])=>`<button role="tab" data-way="${k}" aria-selected="${V.way===k}">${t}</button>`).join('')}</div>`;
+  const tabs=`<div class="ways" role="tablist">${[['topic','By topic'],['surprise','Surprise me'],['paper','Full paper'],['mine','My reports']].map(([k,t])=>`<button role="tab" data-way="${k}" aria-selected="${V.way===k}">${t}</button>`).join('')}</div>`;
   let body='';
   if(V.way==='topic'&&!V.topic){
     const have={};S.questions.forEach(q=>{have[q.topic]=(have[q.topic]||0)+1});
@@ -377,6 +414,9 @@ function renderChooser(){
       <p class="hint">How hard should the question be?</p>${levelButtons(pool,'tlevel')}`;
   }else if(V.way==='surprise'){
     body=`<p class="hint">A question from any topic. How hard?</p>${levelButtons(S.questions,'slevel')}`;
+  }else if(V.way==='mine'){
+    body=`<p class="hint">Every question you've had marked, newest first. Tap one to see its case report again.</p><div class="reports" id="myReports"><p class="hint">Loading…</p></div>`;
+    setTimeout(loadMyReports);
   }else if(!V.paper){
     body=`<p class="hint">Work through a Cold Case paper question by question.</p><div class="papers">${S.papers.map(p=>{const qs=S.questions.filter(q=>q.source?.paper===p);const calc=qs[0]?.calculator;
       return `<button class="paper" data-paper="${esc(p)}"><b>${esc(paperName(p))}</b><span>${calc?'Calculator':'Non-calculator'} · ${qs.reduce((a,q)=>a+q.marks,0)} marks · ${qs.filter(q=>seen.has(q.id)).length}/${qs.length} parts tried</span></button>`}).join('')}</div>`;
@@ -428,6 +468,8 @@ $('#chooser').addEventListener('click',e=>{const t=e.target.closest('button');if
   if(d.paper){V.paper=d.paper;renderChooser();const first=S.questions.filter(q=>q.source?.paper===V.paper).sort((a,b)=>qnum(a)-qnum(b)||(a.source.part||'').localeCompare(b.source.part||''))[0];show(first,null,'');renderChooser();return}
   if(d.q){show(S.questions.find(q=>q.id===d.q),null,'');renderChooser();return}
   if(d.wholepaper){openPaperRun(V.paper);return}
+  if(d.rep){const row=MY.find(x=>x.id===d.rep),q=row&&S.questions.find(x=>x.id===row.question_id);if(!q)return;
+    show(q,null,'');renderReport({...row.result,mark_id:row.id,question:q});$('#report').scrollIntoView({behavior:'smooth',block:'start'});return}
 });
 $('#casebar').addEventListener('click',e=>{
   if(e.target.closest('#another')&&V.pool){show(pick(V.pool),V.pool,V.poolName);return}
@@ -468,7 +510,7 @@ pad.addEventListener('pointermove',e=>{
 });
 const end=()=>{const was=!!cur;cur=null;redraw();if(was&&M.on)scheduleLook()};
 pad.addEventListener('pointerup',end);pad.addEventListener('pointercancel',end);
-function clearPad(){strokes=[];padH=420;sizePad();if(typeof resetMike==='function')resetMike()}
+function clearPad(){strokes=[];padH=420;sizePad();if(typeof resetMike==='function')resetMike();if(typeof resetCoach==='function')resetCoach()}
 $('#undo').onclick=()=>{strokes.pop();redraw()};
 $('#clear').onclick=()=>{if(!strokes.length||confirm('Clear all your working?'))clearPad()};
 $('#more').onclick=()=>{padH+=240;sizePad()};
@@ -511,7 +553,7 @@ $('#rotate').onclick=()=>{rot=(rot+90)%360;showPhoto()};
 $('#retake').onclick=()=>$('#file').click();
 
 document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{
-  S.mode=b.dataset.mode;document.querySelectorAll('[data-mode]').forEach(x=>x.setAttribute('aria-selected',x===b));renderMike();
+  S.mode=b.dataset.mode;document.querySelectorAll('[data-mode]').forEach(x=>x.setAttribute('aria-selected',x===b));renderMike();renderCoach();
   $('#drawMode').hidden=S.mode!=='draw';$('#photoMode').hidden=S.mode!=='photo';if(S.mode==='draw')sizePad();
 });
 
@@ -526,10 +568,10 @@ $('#submit').onclick=async()=>{
   $('#report').innerHTML=`<div class="card loading">${magnifier}<span>Examining the evidence, line by line…</span></div>`;
   try{
     const r=await fetch(FN,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+S.session.access_token,apikey:CFG.supabaseAnonKey},
-      body:JSON.stringify({question_id:S.q.id,image})});markSeen(S.q.id);
+      body:JSON.stringify({question_id:S.q.id,image,help:{mode:C.help,clues:C.clues,keys:C.keys}})});markSeen(S.q.id);
     const j=await r.json().catch(()=>({error:'The marker didn\'t answer. Try again.'}));
     if(!r.ok||j.error)throw new Error(j.error||'Something went wrong.');
-    renderReport(j);
+    if(!j.help)j.help={mode:C.help,clues:C.clues};renderReport(j);
   }catch(e){$('#report').innerHTML=`<div class="card err">${esc(e.message)}</div>`}
   finally{$('#submit').disabled=false}
 };
@@ -549,6 +591,7 @@ function renderReport(r,box){
   const list=(cls,title,a,ol)=>a?.length?`<div class="sect ${cls}"><h3>${title}</h3><${ol?'ol':'ul'}>${a.map(x=>`<li>${esc(x)}</li>`).join('')}</${ol?'ol':'ul'}></div>`:'';
   box.innerHTML=`<div class="card">
     <div class="eyebrow">Case report · ${esc(r.question?.source?label(r.question):S.q?label(S.q):(r.question?.id||''))}</div>
+    ${r.help?`<div class="tags" style="margin-top:6px">${r.help.clues?`<span class="tag assist">ASSISTED · ${r.help.clues} CLUE${r.help.clues>1?'S':''}</span>`:''}${r.help.mode==='mike'?'<span class="tag">COACHED BY MIKE</span>':''}${r.help.mode==='exam'?'<span class="tag">EXAM CONDITIONS</span>':''}</div>`:''}
     <div class="verdict" style="margin-top:10px"><div class="ring" style="--p:${pct};--c:${col}"><b>${r.score}/${r.max}</b></div>
       <div><span class="eyebrow">Finding</span><p>${esc(r.verdict)}</p></div></div>
     ${r.needs_review?`<div class="notice">Provisional mark. ${esc(r.review_note||'Some of this was hard to judge.')} If it looks wrong, use “Dispute a mark” below.</div>`:''}
@@ -676,7 +719,7 @@ function paperReport(){
    a light (green / amber / red) and a short warning at the step where students usually slip, never the answer.
    Comes with the Exam Season Kit and The Full Investigation; the server checks the plan. */
 const MIKE_SVG=`<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#111a3d"/><g fill="none" stroke="#E8ECF8" stroke-width="2.4" stroke-linecap="round"><path d="M17 27c1-9 7-14 15-14s14 5 15 14"/><circle cx="25" cy="31" r="5"/><circle cx="39" cy="31" r="5"/><path d="M30 31h4M20 31h-3M44 31h3"/><path d="M26 42c3 3 9 3 12 0"/></g><path d="M17 26c3-6 9-9 15-9s12 3 15 9c-4-3-9-5-15-5s-11 2-15 5z" fill="#E8ECF8"/></svg><!--/AVATAR-->`;
-// Mike's photo lives on the server (media/mike-avatar.webp), never in the repository; until it's there, a drawn avatar
+// Mike's photo lives on the server (media/mike.png, the same one the website uses), never in the repository; until it's there, a drawn avatar
 {const im=$('#mikeRing img'),fb=()=>{$('#mikeRing').innerHTML=MIKE_SVG};if(im){if(im.complete&&!im.naturalWidth)fb();else im.addEventListener('error',fb)}}
 const M={on:false,timer:null,busy:false,again:false,sent:0,light:null,zones:[],qid:null};
 let mikeBubbleTimer;
@@ -693,7 +736,7 @@ async function look(){
       body:JSON.stringify({action:'monitor',question_id:qid,image:padImage(),shown:M.zones})});
     const j=await r.json().catch(()=>({error:'Mike couldn\'t look just now. Keep going.'}));
     if(qid!==S.q?.id){M.busy=false;return}
-    if(r.status===403){M.busy=false;setMike(false);mikeSay('MIKE MODE',esc(j.error||'')+' <a href="https://www.mathsforensics.com/the-lab">See the plans</a>',true);return}
+    if(r.status===403){M.busy=false;setHelp('coached');mikeSay('MIKE MODE',esc(j.error||'')+' <a href="https://www.mathsforensics.com/the-lab">See the plans</a>',true);return}
     if(!r.ok||j.error)throw new Error(j.error||'Mike couldn\'t look just now. Keep going.');
     const prev=M.light?.light;M.light=j;if(j.zone)M.zones.push(j.zone);
     if(j.light==='red'||j.zone||(j.light==='amber'&&prev!=='amber'))openMikeBubble(true);
@@ -714,11 +757,70 @@ function renderMike(){
   $('#mikeLabel').textContent=M.busy?'MIKE · LOOKING':L?{green:'MIKE · GOOD',amber:'MIKE · CAREFUL',red:'MIKE · STOP'}[L.light]||'MIKE':'MIKE · WATCHING';
   if(!L&&!M.busy)$('#mikeBubble').hidden=true;
 }
-function setMike(on){M.on=on;$('#mikeSw').setAttribute('aria-pressed',on);try{localStorage.setItem('mf-mike',on?'1':'0')}catch(e){}
+function setMike(on){M.on=on;
   if(!on){clearTimeout(M.timer);$('#mike').hidden=true;$('#mikeBubble').hidden=true}else{renderMike();if(strokes.some(s=>!s.erase))scheduleLook(200)}}
-$('#mikeSw').onclick=()=>{setMike(!M.on);if(M.on&&!M.light)mikeSay('WATCHING','Write your first line. Mike looks when you pause.')};
 $('#mikeBtn').onclick=()=>{const b=$('#mikeBubble');if(!b.hidden){b.hidden=true;return}if(M.light)openMikeBubble(false);else mikeSay('WATCHING','Write your first line. Mike looks when you pause.')};
-try{if(localStorage.getItem('mf-mike')==='1')setTimeout(()=>setMike(true))}catch(e){}
+setTimeout(()=>setHelp(C.help));
+
+/* ---------- how to work: exam, coached, Mike ---------- */
+const C={help:'coached',keys:false,clues:0,traps:false,check:null,checking:false};
+try{const h=localStorage.getItem('mf-help');if(['exam','coached','mike'].includes(h))C.help=h}catch(e){}
+function resetCoach(){C.keys=false;C.clues=0;C.check=null;C.checking=false;renderCoach()}
+function setHelp(h){C.help=h;try{localStorage.setItem('mf-help',h)}catch(e){}
+  document.querySelectorAll('[data-help]').forEach(b=>b.setAttribute('aria-checked',b.dataset.help===h));
+  setMike(h==='mike');renderCoach()}
+function renderCoach(){
+  const box=$('#coachBox'),q=S.q;if(!box)return;
+  if(!q){box.innerHTML='';return}
+  if(C.help==='exam'){box.innerHTML=`<div class="card"><p class="examnote" style="margin:0"><b>Exam conditions.</b> No key words, clues or checks. Aim for about a minute per mark: ${q.marks} mark${q.marks>1?'s':''}, so about ${q.marks} minute${q.marks>1?'s':''}.</p></div>`;return}
+  if(C.help==='mike'){box.innerHTML=`<div class="card"><p class="hint" style="margin:0">${S.mode==='draw'?'Write on the pad below. After each pause, Mike looks over your working. <b style="color:var(--good)">Green</b>: on track. <b style="color:var(--warn)">Amber</b>: a step where students often lose marks. <b style="color:var(--bad)">Red</b>: a mistake that will cost marks. He never gives the answer.':'Mike mode watches the writing pad. Switch to <b>Write here</b> to use it.'}</p></div>`;return}
+  const c=q.coach||{};const keys=c.keyWords||[],clues=c.clues||[],traps=c.traps||[];
+  box.innerHTML=`<div class="coachgrid">
+    <div class="card"><h3>1 · Read the question</h3>
+      <p class="hint" style="margin:0">Which words decide what the answer must look like? Think first, then check.</p>
+      ${C.keys?`<ul class="keys">${keys.map(k=>`<li><b>${esc(k.text)}</b><span>${esc(k.why)}</span></li>`).join('')}</ul>`:`<div class="cbtns"><button class="cbtn" data-c="keys" ${keys.length?'':'disabled'}>Show the key words</button></div>`}</div>
+    <div class="card"><h3>2 · Clues</h3>
+      <p class="hint" style="margin:0">${C.clues?`${C.clues} of ${clues.length} used. Marks after a clue show as assisted.`:'Stuck? Each clue gives a little more. Marks after a clue show as assisted.'}</p>
+      ${C.clues?`<ol class="clues">${clues.slice(0,C.clues).map((t,i)=>`<li><i>CLUE ${i+1}</i>${esc(t)}</li>`).join('')}</ol>`:''}
+      <div class="cbtns"><button class="cbtn" data-c="clue" ${C.clues>=clues.length?'disabled':''}>${C.clues>=clues.length?'No more clues':`Show clue ${C.clues+1}`}</button></div></div>
+    <div class="card"><h3>3 · Check my working</h3>
+      <p class="hint" style="margin:0">Halfway and unsure? The checker points to the first problem in your lines so far, never the answer. It uses one of your marked questions.</p>
+      ${C.check?`<div class="checkmsg ${C.check.status}">${C.check.line?`<b>Line ${C.check.line}.</b> `:''}${esc(C.check.message||'')}</div>`:''}
+      <div class="cbtns"><button class="cbtn" data-c="check" ${C.checking?'disabled':''}>${C.checking?'Checking…':'Check my working'}</button></div></div>
+    ${traps.length?`<div class="card traps"><h3>4 · Before you hand it in</h3>${traps.map(t=>`<label><input type="checkbox"> ${esc(t)}</label>`).join('')}</div>`:''}
+  </div>`;
+}
+$('#coachBox').addEventListener('click',async e=>{const b=e.target.closest('[data-c]');if(!b||b.disabled)return;
+  if(b.dataset.c==='keys'){C.keys=true;renderCoach();return}
+  if(b.dataset.c==='clue'){C.clues++;renderCoach();return}
+  if(b.dataset.c==='check'){
+    const image=S.mode==='draw'?(strokes.some(s=>!s.erase)?padImage():null):S.photo;
+    if(!image){C.check={status:'problem',message:S.mode==='draw'?'Write some working first.':'Add a photo first.'};renderCoach();return}
+    await who();if(!S.session){C.check={status:'problem',message:'Sign in to the Lab to use the checker.'};renderCoach();return}
+    C.checking=true;renderCoach();
+    try{const r=await fetch(FN,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+S.session.access_token,apikey:CFG.supabaseAnonKey},
+        body:JSON.stringify({action:'check',question_id:S.q.id,image})});
+      const j=await r.json().catch(()=>({error:'No answer from the checker.'}));
+      C.check=(!r.ok||j.error)?{status:'problem',message:j.error||'Something went wrong.'}:j;
+    }catch(err){C.check={status:'problem',message:'Couldn\'t reach the checker. Check your connection.'}}
+    C.checking=false;renderCoach();
+  }
+});
+document.querySelectorAll('[data-help]').forEach(b=>b.onclick=()=>setHelp(b.dataset.help));
+
+/* ---------- my reports ---------- */
+let MY=[];
+async function loadMyReports(){
+  const box=$('#myReports');if(!box)return;
+  await who();
+  if(!sb||!S.session){box.innerHTML='<p class="hint"><a href="../lab/" style="color:var(--cyan)">Sign in to the Lab</a> to see your case reports.</p>';return}
+  const {data,error}=await sb.from('written_marks').select('id,question_id,status,score,max_marks,created_at,result').eq('status','marked').order('created_at',{ascending:false}).limit(30);
+  if(error){box.innerHTML=`<p class="hint">Couldn't load your reports: ${esc(error.message)}</p>`;return}
+  MY=data||[];
+  if(!MY.length){box.innerHTML='<p class="hint">No marked questions yet. Your case reports will appear here.</p>';return}
+  box.innerHTML=MY.map(r=>{const q=S.questions.find(x=>x.id===r.question_id);const when=new Date(r.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+    return `<button class="rep" data-rep="${r.id}"><b>${esc(q?(TOP[q.topic]?.name||q.topic):r.question_id)}</b><span class="sc">${r.score??'–'}/${r.max_marks??'–'}</span><span>${esc(q?label(q):'')} · ${when}${r.result?.run?' · whole paper':''}</span></button>`}).join('');
+}
 
 // What a real report looks like, using the completing-the-square example
 const SAMPLE={status:'marked',unprotected:null,score:2,max:5,mark_id:null,question:FALLBACK[0],remaining_week:null,needs_review:false,review_note:null,

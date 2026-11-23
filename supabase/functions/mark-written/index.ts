@@ -272,6 +272,7 @@ Deno.serve(async (req) => {
   const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
   if (!apiKey) return fail("Server not set up: missing ANTHROPIC_API_KEY", 500);
   const started = Date.now();
+  let lastProblem = ""; // why the last AI call failed, shown to staff so problems can be diagnosed from the page
   const ask = async (system: string, tool: typeof MARKING_TOOL | typeof CHECK_TOOL | typeof MONITOR_TOOL, text: string, maxTokens: number, model = MODEL) => {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -288,10 +289,17 @@ Deno.serve(async (req) => {
         ] }],
       }),
     });
-    if (!res.ok) { console.error("AI error", res.status, await res.text()); return null; }
+    if (!res.ok) {
+      const t = await res.text(); console.error("AI error", res.status, t);
+      lastProblem = `AI ${res.status}: ${t.slice(0, 200)}`; return null;
+    }
     const out = await res.json();
     const input = (out.content ?? []).find((c: any) => c.type === "tool_use")?.input;
-    return input ? { input, usage: out.usage } : null;
+    if (!input || out.stop_reason === "max_tokens") {
+      console.error("AI incomplete", out.stop_reason, JSON.stringify(out.usage));
+      lastProblem = `AI stopped early (${out.stop_reason}, ${out.usage?.output_tokens} tokens)`; return null;
+    }
+    return { input, usage: out.usage };
   };
 
   // Mike mode: a quick traffic light on the fast model; its own weekly allowance; no image is kept
@@ -309,8 +317,8 @@ Deno.serve(async (req) => {
 
   // "Check my working": counts towards the weekly allowance; no image is kept
   if (body.action === "check") {
-    const got = await ask(CHECK_PROMPT, CHECK_TOOL, checkText(scheme), 600);
-    if (!got) return fail("The checker is busy. Try again in a minute.", 503);
+    const got = await ask(CHECK_PROMPT, CHECK_TOOL, checkText(scheme), 1500);
+    if (!got) return fail("The checker couldn't finish. Try again in a minute." + (access?.source === "staff" ? ` [${lastProblem}]` : ""), 503);
     const check = applyCheck(scheme, got.input as AiCheck);
     await db.from("written_marks").insert({
       user_id: user.id, question_id: scheme.id, topic: scheme.topic, status: "check", result: check, model: MODEL,
@@ -323,8 +331,13 @@ Deno.serve(async (req) => {
   const pageNote = run
     ? `\n\nTHIS PHOTO IS A WHOLE PAGE of the student's paper and may show working for other questions too. Mark only the working for Question ${scheme.source?.q}${scheme.source?.part ? `(${scheme.source.part})` : ""}. Ignore everything else on the page. If there is no working for this part on the page, use status "blank".`
     : "";
-  const got = await ask(SYSTEM_PROMPT, MARKING_TOOL, schemeText(scheme) + pageNote, 2000);
-  if (!got) return fail("The marker is busy. Try again in a minute.", 503);
+  // How the student worked: exam conditions, coached (clues used) or Mike mode. Shown on the report and kept for The Investigation.
+  const h = body.help && typeof body.help === "object" ? body.help as Record<string, unknown> : null;
+  const help = h && ["exam", "coached", "mike"].includes(String(h.mode))
+    ? { mode: String(h.mode), clues: Math.max(0, Math.min(3, Number(h.clues) || 0)), keys: !!h.keys } : null;
+  // A full case report (transcription, every point, feedback) is long: give it plenty of room
+  const got = await ask(SYSTEM_PROMPT, MARKING_TOOL, schemeText(scheme) + pageNote, 8000);
+  if (!got) return fail("The marker couldn't finish this one. Try again in a minute." + (access?.source === "staff" ? ` [${lastProblem}]` : ""), 503);
   const out = { usage: got.usage };
   const result = applyRules(scheme, got.input as AiMarking);
 
@@ -340,7 +353,7 @@ Deno.serve(async (req) => {
     id: markId, user_id: user.id, question_id: scheme.id, topic: scheme.topic,
     image_path: up.error ? null : imagePath,
     score: result.score, max_marks: result.max, status: result.status,
-    result: run ? { ...result, run: run.id } : result, needs_review: result.needs_review, model: MODEL,
+    result: { ...result, ...(run ? { run: run.id } : {}), ...(help ? { help } : {}) }, needs_review: result.needs_review, model: MODEL,
     input_tokens: out.usage?.input_tokens ?? null, output_tokens: out.usage?.output_tokens ?? null,
     ms: Date.now() - started,
   });
@@ -356,6 +369,6 @@ Deno.serve(async (req) => {
     if (r.error) console.error("Attempt save failed", r.error.message);
   }
 
-  return json({ mark_id: insErr ? null : markId, question: publicQuestion(scheme), ...result, run: run?.id ?? null, plan: tier,
+  return json({ mark_id: insErr ? null : markId, question: publicQuestion(scheme), ...result, help, run: run?.id ?? null, plan: tier,
     remaining_week: run ? null : limit - (count ?? 0) - 1 });
 });
