@@ -67,6 +67,9 @@ jobs:
           { echo "FTP_U=$u"; echo "FTP_P=$p"; echo "FTP_S=$(printf '%s' "$FTP_SERVER" | tr -d '[:space:]')"; } >> "$GITHUB_ENV"
       - name: Upload site/written to lab.mathsforensics.com/written/
         if: env.FTP_SERVER != ''
+        # The host currently refuses FTP logins from GitHub (530), so the page is uploaded by hand for now.
+        # Don't let that turn the whole deploy red: the function deploy above is what matters.
+        continue-on-error: true
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ env.FTP_S }}
