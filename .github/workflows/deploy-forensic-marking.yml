@@ -39,7 +39,11 @@ jobs:
         with: { version: latest }
       - name: Deploy mark-written
         if: env.SUPABASE_ACCESS_TOKEN != ''
-        run: supabase functions deploy mark-written --no-verify-jwt --project-ref duvxykqlrekqhfvsvnrj
+        run: |
+          # Strip stray spaces or line breaks from a pasted token, and describe its shape (never the token itself)
+          T="$(printf '%s' "$SUPABASE_ACCESS_TOKEN" | tr -d '[:space:]')"
+          echo "Token: ${#T} characters, starts with '${T:0:4}'"
+          SUPABASE_ACCESS_TOKEN="$T" supabase functions deploy mark-written --no-verify-jwt --project-ref duvxykqlrekqhfvsvnrj
       - name: Waiting for setup
         if: env.SUPABASE_ACCESS_TOKEN == ''
         run: echo "::warning::SUPABASE_ACCESS_TOKEN isn't set yet, so the function wasn't deployed."
