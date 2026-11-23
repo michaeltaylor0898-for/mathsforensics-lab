@@ -42,9 +42,6 @@ header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-betw
 .proto{display:inline-block;margin-top:14px;font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;color:var(--warn);border:1px solid rgba(255,200,87,.4);border-radius:4px;padding:3px 8px}
 
 h1{font-family:var(--f-display);font-weight:600;font-size:clamp(22px,4.5vw,30px);margin:10px 0 6px}
-.picker{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0 12px}
-.picker button{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 11px;font-family:var(--f-mono);font-size:12.5px;color:var(--muted)}
-.picker button[aria-pressed="true"]{border-color:var(--cyan);color:var(--cyan)}
 
 .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
 .qhead{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
@@ -75,6 +72,49 @@ h1{font-family:var(--f-display);font-weight:600;font-size:clamp(22px,4.5vw,30px)
 .btn{background:var(--blue);color:#fff;border:0;border-radius:10px;padding:12px 18px;font-weight:700;font-size:16px}
 .btn.ghost{background:var(--panel2);border:1px solid var(--line);color:var(--text)}
 .submit{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+
+
+/* choosing a question */
+.chooser{margin:18px 0 14px}
+.ways{display:flex;gap:4px;background:var(--ink);border:1px solid var(--line);border-radius:10px;padding:4px;width:max-content;max-width:100%;flex-wrap:wrap}
+.ways button{background:none;border:0;padding:7px 14px;border-radius:7px;font-weight:600;font-size:15px;color:var(--muted)}
+.ways button[aria-selected="true"]{background:var(--blue);color:#fff}
+.pane{margin-top:12px}
+.strand{margin-top:10px;border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+.strand summary{font-family:var(--f-display);font-size:13px;font-weight:600;letter-spacing:.04em;color:var(--cyan)}
+.strand summary small{font-family:var(--f-mono);color:var(--muted);font-weight:500;margin-left:6px}
+.strand .chips{margin-top:10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:15px;display:inline-flex;gap:8px;align-items:center;text-align:left}
+.chip small{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.chip:hover{border-color:var(--cyan)}
+.chip[aria-pressed="true"]{border-color:var(--cyan);color:var(--cyan)}
+.levels{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:10px}
+.level{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;text-align:left}
+.level b{display:block;font-size:17px}
+.level span{display:block;font-size:13px;color:var(--muted);margin-top:2px}
+.level:not(:disabled):hover{border-color:var(--cyan)}
+.level .dots{float:right;letter-spacing:2px;color:var(--cyan);font-size:12px}
+.papers{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
+.paper{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;text-align:left}
+.paper:hover{border-color:var(--cyan)}
+.paper b{display:block}.paper span{font-size:13px;color:var(--muted)}
+.qnav{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.qnav button{min-width:44px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.qnav button[aria-pressed="true"]{border-color:var(--cyan);color:var(--cyan)}
+.back{background:none;border:0;color:var(--cyan);padding:0;font-size:15px;font-weight:600;margin-bottom:6px}
+.casebar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:18px 0 10px}
+.casebar .what{flex:1;min-width:200px}
+.casebar .what b{display:block;font-size:17px}
+.casebar .what span{font-size:13px;color:var(--muted)}
+.diff{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;padding:2px 6px;border-radius:4px;border:1px solid}
+.diff.e{color:var(--good);border-color:rgba(61,220,151,.4)}.diff.m{color:var(--warn);border-color:rgba(255,200,87,.4)}.diff.h{color:var(--bad);border-color:rgba(255,107,122,.4)}
+.earlier{margin:0 0 10px;padding:8px 12px;border-left:3px solid var(--line);color:var(--muted);font-size:15px}
+.earlier .eyebrow{display:block;margin-bottom:2px}
+.diagram{margin:12px 0 4px;max-width:360px;color:var(--text)}.diagram svg{width:100%;height:auto;display:block}
+#qcard table.qt{border-collapse:collapse;display:block;overflow-x:auto;max-width:100%;margin:10px 0;font-size:15px;line-height:1.35}#qcard .qt th,#qcard .qt td{border:1px solid var(--line);padding:3px 10px;text-align:center}
+.fr{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;font-size:.82em;line-height:1.1;margin:0 1px}.fr span:first-child{border-bottom:1.2px solid currentColor;padding:0 2px}.eq{white-space:nowrap}
+.qtext small{display:block;margin-top:6px;color:var(--muted);font-size:14px}
 
 /* the case report */
 #report:empty{display:none}
@@ -134,8 +174,10 @@ summary{cursor:pointer;font-weight:600}
 <h1>Show your working. We'll mark every line.</h1>
 <p class="hint">Write your answer below with a stylus or finger, or photograph your work on paper. Each mark is checked against an exam-style mark scheme, and you'll see exactly where any marks were lost.</p>
 
-<div class="picker" id="picker" role="group" aria-label="Questions"></div>
+<section class="chooser" id="chooser" aria-label="Choose a question"></section>
 
+<div id="work" hidden>
+<div class="casebar" id="casebar"></div>
 <section class="card" id="qcard"></section>
 
 <div class="modes" role="tablist">
@@ -175,6 +217,7 @@ summary{cursor:pointer;font-weight:600}
 
 <section id="report" aria-live="polite"></section>
 </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>
@@ -186,7 +229,7 @@ const sb=window.supabase?window.supabase.createClient(CFG.supabaseUrl,CFG.supaba
 
 // Used until the function is deployed, and for the sample report
 const FALLBACK=[{id:'csq-01',topic:'csq',tier:'H',calculator:false,marks:5,prompt:'By completing the square, solve &nbsp;<b>x² + 8x − 4 = 0</b><br>Give your answers in surd form.'}];
-const S={questions:FALLBACK,q:FALLBACK[0],mode:'draw',session:null,photo:null,last:null};
+const S={questions:FALLBACK,q:null,mode:'draw',session:null,photo:null,last:null};
 
 /* ---------- who's signed in (same session as the Lab) ---------- */
 async function who(){
@@ -194,20 +237,137 @@ async function who(){
   $('#who').innerHTML=S.session?`Signed in as <b>${esc(S.session.user.email)}</b>`:`<a href="../">Sign in to the Lab</a> to have your work marked`;
 }
 async function loadQuestions(){
-  try{const r=await fetch(FN);if(r.ok){const j=await r.json();if(j.questions?.length){S.questions=j.questions;S.q=j.questions[0]}}}catch(e){}
-  renderPicker();renderQ();
+  try{const r=await fetch(FN);if(r.ok){const j=await r.json();if(j.questions?.length)S.questions=j.questions.filter(q=>!q.draft)}}catch(e){}
+  prepare();renderChooser();
 }
-function renderPicker(){
-  $('#picker').innerHTML=S.questions.map(q=>`<button aria-pressed="${q.id===S.q.id}" data-q="${q.id}">${esc(q.id)}</button>`).join('');
+
+/* ---------- topics, papers and difficulty ---------- */
+const STRANDS=[
+ ['Number',[
+  ['place','Place value and ordering',1],['negnum','Negative numbers',1],['powroot','Powers and roots',2],['fdp','Fractions, decimals and percentages',2],
+  ['round','Rounding and estimation',2],['frac','Adding and subtracting fractions',3],['fracmul','Multiplying and dividing fractions',3],
+  ['hcf','HCF and LCM',3],['pfd','Prime factor decomposition',3],['ind','Laws of indices',4],['errint','Error intervals',4],
+  ['sf','Standard form calculations',4],['surd','Simplifying surds',7],['fracind','Fractional and negative indices',8],
+  ['recur','Recurring decimals to fractions',8],['bounds','Upper and lower bounds',9],
+  ['ratio','Sharing in a ratio',3,'Ratio, proportion and rates of change'],['pct','Percentage change',3],['bestbuy','Best buys',3],['sdp','Speed, density and pressure',4],
+  ['rev','Reverse percentages',5],['cint','Compound interest and depreciation',5],['dirprop','Direct proportion',5],
+  ['growth','Growth and decay graphs',6],['invprop','Inverse proportion',7]]],
+ ['Algebra',[
+  ['simp','Simplifying expressions',1,'Expressions and equations'],['subst','Substitution',2],['brackets','Expanding and factorising single brackets',3],['lin','Solving linear equations',3],
+  ['formeq','Forming and solving equations',4],['rearr','Rearranging formulae',4],['exp','Expanding double brackets',4],['factq','Factorising quadratics: x² + bx + c',4],
+  ['simlin','Simultaneous equations',5],['linineq','Linear inequalities',5],['triple','Expanding triple brackets',6],['factq2','Factorising quadratics: ax² + bx + c',7],
+  ['qform','The quadratic formula',7],['aproof','Algebraic proof',7],['csq','Completing the square',8],['qineq','Quadratic inequalities',8],
+  ['simquad','Simultaneous equations: linear and quadratic',8],['algfrac','Algebraic fractions',9],
+  ['nthlin','Linear sequences: nth term',4,'Sequences'],['geoseq','Geometric and other sequences',5],['nthquad','Quadratic sequences: nth term',8],
+  ['graphshape','Recognising graphs',4,'Graphs'],['sline','Straight-line graphs',5],['quadgraph','Quadratic graphs: roots and turning points',5],['perp','Perpendicular lines',8],
+  ['gradarea','Gradients and areas under graphs',8],['graphtrans','Graph transformations',8],['circleeq','Equation of a circle',8],['tangent','Equation of a tangent to a circle',9],
+  ['funcmach','Function machines and f(x)',3,'Functions'],['comp','Composite functions',8],['inv','Inverse functions',8],['iter','Iteration',8]]],
+ ['Shape, space and measures',[
+  ['anglefacts','Angle facts',2,'Angles and geometry'],['parallel','Angles in parallel lines',2],['polygon','Angles in polygons',3],['transform','Transformations',3],
+  ['loci','Constructions and loci',4],['bearing','Bearings',4],['circthm','Circle theorems',7],['congproof','Congruence proofs',7],['vecproof','Vectors and proof',8],
+  ['area','Area and perimeter',2,'Length, area and volume'],['circum','Circumference of a circle',3],['units','Converting area and volume units',3],['scale','Scale drawings and maps',4],
+  ['circ','Area of a circle',4],['volprism','Volume of prisms and cylinders',4],['surface','Surface area',5],['simlen','Similar shapes: lengths',5],['arcs','Arcs and sectors',6],
+  ['similar','Similar shapes: area and volume',7],['volcone','Volume of cones, spheres and pyramids',7],
+  ['pyth',"Pythagoras' theorem",4,'Pythagoras and trigonometry'],['trig','Right-angled trigonometry',5],['exacttrig','Exact trig values',6],
+  ['siner','Sine rule',7],['cosr','Cosine rule',7],['areasin','Area of a triangle: ½ab sin C',7],['trig3d','3D trigonometry and Pythagoras',9]]],
+ ['Data handling and probability',[
+  ['mean','Averages from a list',2,'Statistics'],['twoway','Two-way tables',2],['pie','Pie charts',3],['stem','Stem-and-leaf diagrams',3],['scatter','Scatter graphs',3],
+  ['freqtab','Averages from frequency tables',4],['compare','Comparing distributions',4],['gmean','Estimated mean from grouped data',4],['sampling','Sampling and capture–recapture',5],
+  ['cumfreq','Cumulative frequency and box plots',6],['hist','Histograms',8],
+  ['prob','Single-event probability',2,'Probability'],['freqtree','Frequency trees',3],['relfreq','Relative frequency',3],['counting','Product rule for counting',5],['venn','Venn diagrams',5],['tree','Tree diagrams',5],
+  ['cond','Probability without replacement',7]]],
+];
+const TOP={};STRANDS.forEach(([s,ts])=>ts.forEach(([id,name,grade])=>{TOP[id]={id,name,grade,strand:s}}));
+const PAPERS={'CC-Z/H':'Cold Case Zero','CC-MW/1':'Most Wanted · Paper 1','CC-MW/2':'Most Wanted · Paper 2'};
+const paperName=c=>PAPERS[c]||c.replace(/^CC-([A-Z])\/(\d)H?$/,(m,x,n)=>`Cold Case ${x} · Paper ${n}`);
+const LEVELS={e:['Easy','Early questions on the paper'],m:['Medium','Middle of the paper'],h:['Hard','Final questions and grade 8–9']};
+const qnum=q=>parseInt(q.source?.q,10)||0;
+const label=q=>q.source?.paper?`${paperName(q.source.paper)} · Q${q.source.q}${q.source.part||''}`:'Practice question';
+let seen=new Set();try{seen=new Set(JSON.parse(localStorage.getItem('mf-written-seen')||'[]'))}catch(e){}
+function markSeen(id){seen.add(id);try{localStorage.setItem('mf-written-seen',JSON.stringify([...seen].slice(-400)))}catch(e){}}
+// Difficulty comes from where a question sits on its paper: papers get harder as they go on. Most Wanted is all grade 8–9.
+function prepare(){
+  const last={};S.questions.forEach(q=>{const p=q.source?.paper;if(p)last[p]=Math.max(last[p]||0,qnum(q))});
+  S.questions.forEach(q=>{const p=q.source?.paper;
+    if(!p){q.level='m';return}
+    if(/^CC-MW/.test(p)){q.level='h';return}
+    const f=qnum(q)/(last[p]||1);q.level=f<=.34?'e':f<=.67?'m':'h'});
+  S.papers=[...new Set(S.questions.map(q=>q.source?.paper).filter(Boolean))].sort((a,b)=>paperName(a).localeCompare(paperName(b)));
+}
+const V={way:'topic',topic:null,paper:null,pool:null,poolName:''};
+function pick(pool){const fresh=pool.filter(q=>!seen.has(q.id)&&q!==S.q);const from=fresh.length?fresh:pool.filter(q=>q!==S.q);const list=from.length?from:pool;return list[Math.floor(Math.random()*list.length)]}
+function levelButtons(pool,attr){
+  return `<div class="levels">${['e','m','h'].map(l=>{const n=pool.filter(q=>q.level===l).length;
+    return `<button class="level" data-${attr}="${l}" ${n?'':'disabled'}><span class="dots">${l==='e'?'●':l==='m'?'●●':'●●●'}</span><b>${LEVELS[l][0]}</b><span>${n?`${n} question${n>1?'s':''}`:'None yet'}</span></button>`}).join('')}
+    <button class="level" data-${attr}="any"><b>Any</b><span>Mix of all three</span></button></div>`;
+}
+function renderChooser(){
+  const c=$('#chooser');
+  const tabs=`<div class="ways" role="tablist">${[['topic','By topic'],['surprise','Surprise me'],['paper','Full paper']].map(([k,t])=>`<button role="tab" data-way="${k}" aria-selected="${V.way===k}">${t}</button>`).join('')}</div>`;
+  let body='';
+  if(V.way==='topic'&&!V.topic){
+    const have={};S.questions.forEach(q=>{have[q.topic]=(have[q.topic]||0)+1});
+    body=STRANDS.map(([st,ts])=>{const list=ts.filter(t=>have[t[0]]);if(!list.length)return'';
+      const wide=matchMedia('(min-width:700px)').matches;
+      return `<details class="strand" ${wide?'open':''}><summary>${esc(st)}<small>${list.length} topics</small></summary><div class="chips">${list.map(t=>`<button class="chip" data-topic="${t[0]}">${esc(t[1])}<small>${have[t[0]]}</small></button>`).join('')}</div></details>`}).join('');
+    body=`<p class="hint">Choose a topic, then how hard you'd like the question.</p>${body}`;
+  }else if(V.way==='topic'){
+    const pool=S.questions.filter(q=>q.topic===V.topic);
+    body=`<button class="back" data-back="topic">← All topics</button><h2 style="font-family:var(--f-display);font-size:20px;margin:0">${esc(TOP[V.topic]?.name||V.topic)}</h2>
+      <p class="hint">How hard should the question be?</p>${levelButtons(pool,'tlevel')}`;
+  }else if(V.way==='surprise'){
+    body=`<p class="hint">A question from any topic. How hard?</p>${levelButtons(S.questions,'slevel')}`;
+  }else if(!V.paper){
+    body=`<p class="hint">Work through a Cold Case paper question by question.</p><div class="papers">${S.papers.map(p=>{const qs=S.questions.filter(q=>q.source?.paper===p);const calc=qs[0]?.calculator;
+      return `<button class="paper" data-paper="${esc(p)}"><b>${esc(paperName(p))}</b><span>${calc?'Calculator':'Non-calculator'} · ${qs.reduce((a,q)=>a+q.marks,0)} marks · ${qs.filter(q=>seen.has(q.id)).length}/${qs.length} parts tried</span></button>`}).join('')}</div>`;
+  }else{
+    body=`<button class="back" data-back="paper">← All papers</button>${paperNav()}`;
+  }
+  c.innerHTML=tabs+`<div class="pane">${body}</div>`;
+}
+function paperNav(){
+  const qs=S.questions.filter(q=>q.source?.paper===V.paper).sort((a,b)=>qnum(a)-qnum(b)||(a.source.part||'').localeCompare(b.source.part||''));
+  return `<h2 style="font-family:var(--f-display);font-size:20px;margin:0">${esc(paperName(V.paper))}</h2><div class="qnav">${qs.map(q=>`<button data-q="${q.id}" aria-pressed="${S.q?.id===q.id}" title="${seen.has(q.id)?'Tried':''}">${q.source.q}${q.source.part||''}${seen.has(q.id)?'✓':''}</button>`).join('')}</div>`;
+}
+function show(q,pool,poolName){
+  S.q=q;V.pool=pool;V.poolName=poolName;
+  $('#work').hidden=false;
+  if(V.way!=='paper')$('#chooser').hidden=true;
+  renderQ();clearPad();clearPhoto();$('#report').innerHTML='';$('#status').textContent='';
+  $('#casebar').scrollIntoView({behavior:'smooth',block:'start'});
 }
 function renderQ(){
-  const q=S.q;
-  $('#qcard').innerHTML=`<div class="qhead"><span class="eyebrow">Question</span><span class="qmarks">[${q.marks}]</span></div>
-    <p class="qtext">${q.prompt}</p>
-    <div class="tags"><span class="tag">${q.tier==='H'?'HIGHER':'FOUNDATION'}</span><span class="tag">${q.calculator?'CALCULATOR':'NON-CALCULATOR'}</span></div>`;
+  const q=S.q,lv=q.level||'m';
+  $('#casebar').innerHTML=`<div class="what"><b>${esc(TOP[q.topic]?.name||q.topic||'Question')}</b><span>${esc(label(q))}</span></div>
+    ${V.way!=='paper'&&V.pool&&V.pool.length>1?`<button class="btn ghost" id="another">Another ${esc(V.poolName)} question</button>`:''}
+    <button class="btn ghost" id="change">${V.way==='paper'?'Choose another paper':'Change topic'}</button>`;
+  // Later parts often lean on earlier ones ("Hence…", "Use your graph…"), so show the earlier parts of the same question
+  const earlier=q.source?.part?S.questions.filter(x=>x.source?.paper===q.source.paper&&x.source.q===q.source.q&&(x.source.part||'')<q.source.part)
+    .sort((a,b)=>a.source.part.localeCompare(b.source.part)):[];
+  const shownDiagram=new Set();
+  const earlierHTML=earlier.map(x=>{const d=x.diagram&&!shownDiagram.has(x.diagram)?(shownDiagram.add(x.diagram),`<div class="diagram">${x.diagram}</div>`):'';
+    return `<div class="earlier"><span class="eyebrow">Part (${esc(x.source.part)})</span>${x.prompt}${d}</div>`}).join('');
+  const diagram=q.diagram&&!shownDiagram.has(q.diagram)?`<div class="diagram">${q.diagram}</div>`:'';
+  $('#qcard').innerHTML=`${earlierHTML}<div class="qhead"><span class="eyebrow">${q.source?.part?`Part (${esc(q.source.part)})`:'Question'}</span><span class="qmarks">[${q.marks} mark${q.marks>1?'s':''}]</span></div>
+    <div class="qtext">${q.prompt}${diagram}</div>
+    <div class="tags"><span class="diff ${lv}">${LEVELS[lv][0].toUpperCase()}</span><span class="tag">${q.tier==='H'?'HIGHER':'FOUNDATION'}</span><span class="tag">${q.calculator?'CALCULATOR':'NON-CALCULATOR'}</span></div>`;
+  if(V.way==='paper'){const n=$('#chooser .qnav');if(n)n.outerHTML=paperNav().replace(/^<h2[^]*?<\/h2>/,'')}
 }
-$('#picker').addEventListener('click',e=>{const b=e.target.closest('[data-q]');if(!b)return;
-  S.q=S.questions.find(q=>q.id===b.dataset.q);renderPicker();renderQ();clearPad();clearPhoto();$('#report').innerHTML='';});
+function levelPool(pool,l){return l==='any'?pool:pool.filter(q=>q.level===l)}
+const LV_NAME={e:'easy',m:'medium',h:'hard',any:''};
+$('#chooser').addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;const d=t.dataset;
+  if(d.way){V.way=d.way;V.topic=null;V.paper=null;$('#work').hidden=true;renderChooser();return}
+  if(d.back){V.topic=null;V.paper=null;$('#work').hidden=true;renderChooser();return}
+  if(d.topic){V.topic=d.topic;renderChooser();return}
+  if(d.tlevel){const pool=levelPool(S.questions.filter(q=>q.topic===V.topic),d.tlevel);if(pool.length)show(pick(pool),pool,LV_NAME[d.tlevel]);return}
+  if(d.slevel){const pool=levelPool(S.questions,d.slevel);if(pool.length)show(pick(pool),pool,LV_NAME[d.slevel]);return}
+  if(d.paper){V.paper=d.paper;renderChooser();const first=S.questions.filter(q=>q.source?.paper===V.paper).sort((a,b)=>qnum(a)-qnum(b)||(a.source.part||'').localeCompare(b.source.part||''))[0];show(first,null,'');renderChooser();return}
+  if(d.q){show(S.questions.find(q=>q.id===d.q),null,'');renderChooser();return}
+});
+$('#casebar').addEventListener('click',e=>{
+  if(e.target.closest('#another')&&V.pool){show(pick(V.pool),V.pool,V.poolName);return}
+  if(e.target.closest('#change')){$('#work').hidden=true;$('#chooser').hidden=false;if(V.way==='paper')V.paper=null;renderChooser();$('#chooser').scrollIntoView({behavior:'smooth',block:'start'})}
+});
 
 /* ---------- writing pad ---------- */
 const pad=$('#pad'),ctx=pad.getContext('2d');
@@ -301,7 +461,7 @@ $('#submit').onclick=async()=>{
   $('#report').innerHTML=`<div class="card loading">${magnifier}<span>Examining the evidence, line by line…</span></div>`;
   try{
     const r=await fetch(FN,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+S.session.access_token,apikey:CFG.supabaseAnonKey},
-      body:JSON.stringify({question_id:S.q.id,image})});
+      body:JSON.stringify({question_id:S.q.id,image})});markSeen(S.q.id);
     const j=await r.json().catch(()=>({error:'The marker didn\'t answer. Try again.'}));
     if(!r.ok||j.error)throw new Error(j.error||'Something went wrong.');
     renderReport(j);
@@ -323,7 +483,7 @@ function renderReport(r){
     ${p.evidence?`<span class="ev">Line ${p.line}: <span>${esc(p.evidence)}</span></span>`:''}</li>`).join('');
   const list=(cls,title,a,ol)=>a?.length?`<div class="sect ${cls}"><h3>${title}</h3><${ol?'ol':'ul'}>${a.map(x=>`<li>${esc(x)}</li>`).join('')}</${ol?'ol':'ul'}></div>`:'';
   $('#report').innerHTML=`<div class="card">
-    <div class="eyebrow">Case report · ${esc(r.question?.id||S.q.id)}</div>
+    <div class="eyebrow">Case report · ${esc(S.q?label(S.q):(r.question?.id||''))}</div>
     <div class="verdict" style="margin-top:10px"><div class="ring" style="--p:${pct};--c:${col}"><b>${r.score}/${r.max}</b></div>
       <div><span class="eyebrow">Finding</span><p>${esc(r.verdict)}</p></div></div>
     ${r.needs_review?`<div class="notice">Provisional mark. ${esc(r.review_note||'Some of this was hard to judge.')} If it looks wrong, use “Dispute a mark” below.</div>`:''}
@@ -363,7 +523,7 @@ const SAMPLE={status:'marked',unprotected:null,score:2,max:5,mark_id:null,questi
   went_right:['M1: subtracting 16 and 4 to get (x − 4)² − 20 = 0 was the right process.','M1: square rooting both sides with ± was correct.','√20 = 2√5 was simplified correctly.'],
   went_wrong:['B1, A1, A1: all three were lost to the sign of the bracket on line 1.','Line 3 is missing the ±. It only appears on line 4. Write it as soon as you square root.'],
   fix:['Half of +8 is +4, so start with (x + 4)² − 16 − 4 = 0.','That gives (x + 4)² = 20, so x + 4 = ±√20.','Take away 4: x = −4 ± √20 = −4 ± 2√5.','Check: expand (x + 4)² in your head. Does it give +8x?']};
-$('#sample').onclick=()=>{S.q=FALLBACK[0];renderPicker();renderQ();renderReport(SAMPLE);$('#report').scrollIntoView({behavior:'smooth',block:'start'})};
+$('#sample').onclick=()=>{if(!S.q||$('#work').hidden){V.pool=null;S.q=Object.assign({level:'h'},FALLBACK[0]);$('#work').hidden=false;$('#chooser').hidden=true;renderQ()}renderReport(SAMPLE);$('#report').scrollIntoView({behavior:'smooth',block:'start'})};
 
 who();loadQuestions();sizePad();
 </script>
