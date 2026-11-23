@@ -6289,10 +6289,10 @@ function renderHelp(){
 const ROLE_LABEL={student:'Student',teacher:'Teacher',schooladmin:'School admin',owner:'Owner'};
 const STRAND_SHORT={'Number':'Number','Algebra':'Algebra','Shape, space and measures':'Shape','Data handling and probability':'Data & prob.'};
 const VIEWS={
-  student:[['today','Today'],['practise','Practise'],['casefile','Case file'],['account','Account'],['help','Help']],
+  student:[['today','Today'],['practise','Practise'],['marking','Marking'],['casefile','Case file'],['account','Account'],['help','Help']],
   teacher:[['classes','My classes'],['practise','Practise'],['account','Account'],['help','Help']],
   schooladmin:[['school','School licence'],['practise','Practise'],['account','Account'],['help','Help']],
-  owner:[['owner','Licences'],['practise','Practise'],['account','Account'],['help','Help']],
+  owner:[['owner','Licences'],['practise','Practise'],['marking','Marking'],['account','Account'],['help','Help']],
 };
 const S={diags:[],run:null,user:null,access:{level:'none'},view:'practise',topic:'pct',band:'all',Q:null,done:false,attempts:[],assignments:[],caseNo:427,streak:0,best:0,teacherClass:null,authTab:'signin'};
 const view=$('#view');
@@ -6457,7 +6457,7 @@ $('#nav').addEventListener('click',e=>{const b=e.target.closest('[data-view]');i
 function go(v){
   S.view=v; document.querySelectorAll('#nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.view===v));
   view.onclick=null; view.className=''; stopTimer(); TIMER.start=0;
-  ({today:renderToday,practise:renderPractise,casefile:renderCasefile,account:renderAccount,classes:renderClasses,school:renderSchool,owner:renderOwner,help:renderHelp})[v]();
+  ({today:renderToday,practise:renderPractise,marking:renderMarking,casefile:renderCasefile,account:renderAccount,classes:renderClasses,school:renderSchool,owner:renderOwner,help:renderHelp})[v]();
   window.scrollTo({top:0});
 }
 
@@ -6638,6 +6638,23 @@ async function finish(res){
   const smb=document.querySelector('.smbar'); if(smb) smb.hidden=true; refreshLearn();
   $('#out').querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>b.dataset.act==='retry'?newCase():showBrief(res.k==='trap'?res.id:null,true));
   renderBoard();
+}
+
+/* ---------- student: Forensic Marking ---------- */
+// The marking itself lives at /written/ (its own page: writing pad, photos, case reports). This tab is the way in.
+function renderMarking(){
+  view.className='page';
+  const paid=S.access.level==='full';
+  const way=(k,t,d)=>`<a class="doorcard" href="../written/?way=${k}" style="text-decoration:none;color:inherit"><b>${t}</b><span>${d}</span></a>`;
+  view.innerHTML=`<div><span class="eyebrow">Forensic Marking</span><h1 class="ph">Show your working. We mark every line.</h1></div>
+  <div class="panel"><p>Write your answer on screen with a stylus or finger, or photograph your work on paper. Every method and accuracy mark is checked against an exam-style mark scheme, and you see exactly which line earned or lost each mark, and how to fix it.</p>
+  <p class="hint">${paid?'Your plan includes marked questions every week. Whole papers and Mike mode come with the Exam Season Kit and The Full Investigation.':'The free plan includes 1 marked question a week. The Exam Pass gives you 5 a week.'}</p></div>
+  <div class="doors" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px">
+    ${way('topic','By topic','Pick a topic, then easy, medium or hard.')}
+    ${way('surprise','Surprise me','A question from any topic at the level you choose.')}
+    ${way('paper','A whole Cold Case paper','Question by question, or photograph every page and have the whole paper marked.')}
+  </div>
+  <p class="hint" style="margin-top:14px">Photos of your working are deleted after 7 days. Your marks and feedback stay in your Case file. <a href="../ai-marking.html" style="color:var(--cyan)">How AI marking works</a></p>`;
 }
 
 /* ---------- student: case file ---------- */
