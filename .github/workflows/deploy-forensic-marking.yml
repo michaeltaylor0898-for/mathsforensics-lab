@@ -36,7 +36,7 @@ jobs:
         run: deno test --no-check marking_test.ts
       - uses: supabase/setup-cli@v1
         if: env.SUPABASE_ACCESS_TOKEN != ''
-        with: { version: latest }
+        with: { version: 2.9.8 } # pinned: "latest" asks GitHub every run and can hit its rate limit
       - name: Deploy mark-written
         if: env.SUPABASE_ACCESS_TOKEN != ''
         run: |
