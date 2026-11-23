@@ -8,7 +8,7 @@
 #   FTP_USERNAME           cPanel FTP account
 #   FTP_PASSWORD           its password
 #   FTP_LAB_DIR            the Lab folder as the FTP account sees it, ending in a slash, e.g. lab.mathsforensics.com/
-# No keys are ever written into this repository.
+# No keys are ever written into this repository. First live deploy: 23 Nov 2026.
 name: Deploy Forensic Marking
 
 on:
