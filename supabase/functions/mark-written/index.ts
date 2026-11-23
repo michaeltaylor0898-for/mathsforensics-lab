@@ -273,28 +273,37 @@ Deno.serve(async (req) => {
   if (!apiKey) return fail("Server not set up: missing ANTHROPIC_API_KEY", 500);
   const started = Date.now();
   let lastProblem = ""; // why the last AI call failed, shown to staff so problems can be diagnosed from the page
-  const ask = async (system: string, tool: typeof MARKING_TOOL | typeof CHECK_TOOL | typeof MONITOR_TOOL, text: string, maxTokens: number, model = MODEL) => {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-      body: JSON.stringify({
-        model,
-        max_tokens: maxTokens,
-        system: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }],
-        tools: [tool],
-        tool_choice: { type: "tool", name: tool.name },
-        messages: [{ role: "user", content: [
-          { type: "image", source: { type: "base64", media_type: mediaType, data: b64 } },
-          { type: "text", text },
-        ] }],
-      }),
-    });
-    if (!res.ok) {
-      const t = await res.text(); console.error("AI error", res.status, t);
-      lastProblem = `AI ${res.status}: ${t.slice(0, 200)}`; return null;
+  // Newer models don't accept a forced tool choice, so the instruction asks for the tool and the call allows it;
+  // a model that still answers in plain text gets one firmer retry.
+  const ask = async (system: string, tool: { name: string; description: string; input_schema: unknown }, text: string, maxTokens: number, model = MODEL) => {
+    const call = async (choice: Record<string, unknown>, extra = "") => {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "content-type": "application/json" },
+        body: JSON.stringify({
+          model,
+          max_tokens: maxTokens,
+          system: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }],
+          tools: [tool],
+          tool_choice: choice,
+          messages: [{ role: "user", content: [
+            { type: "image", source: { type: "base64", media_type: mediaType, data: b64 } },
+            { type: "text", text: text + `\n\nGive your answer only by calling the ${tool.name} tool, once.` + extra },
+          ] }],
+        }),
+      });
+      return res;
+    };
+    let res = await call({ type: "tool", name: tool.name });
+    let body = res.ok ? null : await res.text();
+    if (!res.ok && res.status === 400 && /tool_choice/i.test(body ?? "")) { res = await call({ type: "auto" }); body = res.ok ? null : await res.text(); }
+    if (!res.ok) { console.error("AI error", res.status, body); lastProblem = `AI ${res.status}: ${(body ?? "").slice(0, 200)}`; return null; }
+    let out = await res.json();
+    let input = (out.content ?? []).find((c: any) => c.type === "tool_use")?.input;
+    if (!input && out.stop_reason !== "max_tokens") {
+      const again = await call({ type: "auto" }, " Do not reply in text: call the tool.");
+      if (again.ok) { out = await again.json(); input = (out.content ?? []).find((c: any) => c.type === "tool_use")?.input; }
     }
-    const out = await res.json();
-    const input = (out.content ?? []).find((c: any) => c.type === "tool_use")?.input;
     if (!input || out.stop_reason === "max_tokens") {
       console.error("AI incomplete", out.stop_reason, JSON.stringify(out.usage));
       lastProblem = `AI stopped early (${out.stop_reason}, ${out.usage?.output_tokens} tokens)`; return null;
