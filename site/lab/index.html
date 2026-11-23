@@ -6290,8 +6290,8 @@ const ROLE_LABEL={student:'Student',teacher:'Teacher',schooladmin:'School admin'
 const STRAND_SHORT={'Number':'Number','Algebra':'Algebra','Shape, space and measures':'Shape','Data handling and probability':'Data & prob.'};
 const VIEWS={
   student:[['today','Today'],['practise','Practise'],['marking','Marking'],['casefile','Case file'],['account','Account'],['help','Help']],
-  teacher:[['classes','My classes'],['practise','Practise'],['account','Account'],['help','Help']],
-  schooladmin:[['school','School licence'],['practise','Practise'],['account','Account'],['help','Help']],
+  teacher:[['classes','My classes'],['practise','Practise'],['marking','Marking'],['account','Account'],['help','Help']],
+  schooladmin:[['school','School licence'],['practise','Practise'],['marking','Marking'],['account','Account'],['help','Help']],
   owner:[['owner','Licences'],['practise','Practise'],['marking','Marking'],['account','Account'],['help','Help']],
 };
 const S={diags:[],run:null,user:null,access:{level:'none'},view:'practise',topic:'pct',band:'all',Q:null,done:false,attempts:[],assignments:[],caseNo:427,streak:0,best:0,teacherClass:null,authTab:'signin'};
@@ -6648,7 +6648,7 @@ function renderMarking(){
   const way=(k,t,d)=>`<a class="doorcard" href="../written/?way=${k}" style="text-decoration:none;color:inherit"><b>${t}</b><span>${d}</span></a>`;
   view.innerHTML=`<div><span class="eyebrow">Forensic Marking</span><h1 class="ph">Show your working. We mark every line.</h1></div>
   <div class="panel"><p>Write your answer on screen with a stylus or finger, or photograph your work on paper. Every method and accuracy mark is checked against an exam-style mark scheme, and you see exactly which line earned or lost each mark, and how to fix it.</p>
-  <p class="hint">${paid?'Your plan includes marked questions every week. Whole papers and Mike mode come with the Exam Season Kit and The Full Investigation.':'The free plan includes 1 marked question a week. The Exam Pass gives you 5 a week.'}</p></div>
+  <p class="hint">${S.access.source==='staff'?'As a teacher you can try everything students can: single questions, whole papers, coached mode and Mike mode.':paid?'Your plan includes marked questions every week. Whole papers and Mike mode come with the Exam Season Kit and The Full Investigation.':'The free plan includes 1 marked question a week. The Exam Pass gives you 5 a week.'}</p></div>
   <div class="doors" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px">
     ${way('topic','By topic','Pick a topic, then easy, medium or hard.')}
     ${way('surprise','Surprise me','A question from any topic at the level you choose.')}
