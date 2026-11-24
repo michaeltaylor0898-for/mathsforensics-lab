@@ -47,7 +47,7 @@ EDITION = os.environ.get("EDITION", "launch")
 
 def blocks(name):
     hd = (src / "_header.html").read_text()
-    for pg in ["gcse", "academy", "schools", "about"]:
+    for pg in ["gcse", "academy", "schools", "about", "coldcase", "jumpstart"]:
         hd = hd.replace("{{CUR_" + pg + "}}", ' aria-current="page"' if pg == name else "")
     raw = "<!-- BLOCK: 0 header -->\n" + hd + "\n" + (src / f"{name}.html").read_text() + "\n<!-- BLOCK: 99 footer -->\n" + (src / "_footer.html").read_text()
     if EDITION == "launch":
