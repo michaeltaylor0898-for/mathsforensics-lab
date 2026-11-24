@@ -151,8 +151,8 @@ def build(s):
                         f'{f"<div class=w>{q["working"]}</div>" if q.get("working") else ""}<div class="a">✓ {q["answer"]}</div></div></div>')
     lock = ""
     if s.get("free"):
-        lu = s["marked_url"]
-        lock = f'<div class="marked" style="margin:1mm 0 3mm"><div><b>Mastery solutions are in the Lab.</b> Grades 8 and 9 are won on method, so a bare answer won\'t tell you much. Photograph or write your Mastery working in <b>Forensic Marking</b> and get it marked mark by mark, with the full solution and the mistake behind every lost mark. Your first marked question is free.<br><span style="color:#9AA6CC;font-size:8pt">{E(lu)}</span></div><img src="{qr(lu)}" alt="QR code"></div>'
+        lu = s["marked_url"].rstrip("/") + "/?sheet=CF-" + s["code"].split("MF-CF-",1)[1]
+        lock = f'<div class="marked" style="margin:1mm 0 3mm"><div><b>Mastery solutions are in the Lab.</b> Grades 8 and 9 are won on method, so a bare answer won\'t tell you much. Photograph or write your Mastery working in <b>Forensic Marking</b> and get it marked mark by mark, with the full solution and the mistake behind every lost mark. Your first marked question is free.<br><span style="color:#9AA6CC;font-size:8pt">{E(lu.replace("https://",""))}</span></div><img src="{qr(lu)}" alt="QR code"></div>'
     marks = {k: sum(q["marks"] for q in s["sections"][k]["questions"]) for k in "sem"}
     nx = s["next"]
     end = f"""<h2 class="st pb">Knowledge check: solutions</h2><p style="margin:0 0 3mm;font-size:9.2pt;color:var(--muted)">Check your method as well as your answer. In the exam, an answer with no working usually earns the final mark at most.</p>
