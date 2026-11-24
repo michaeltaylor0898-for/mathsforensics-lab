@@ -37,5 +37,6 @@
   "CC_COMPLETE_CHECKOUT": "https://www.mathsforensics.com/cold-case-complete-order",
   "CC_MW_CHECKOUT": "https://www.mathsforensics.com/cold-case-mw-order",
   "JUMPSTART_CHECKOUT": "https://www.mathsforensics.com/a-level-checkout",
-  "ALEVEL_CHECK": "https://www.mathsforensics.com/a-level-readiness-check"
+  "ALEVEL_CHECK": "https://www.mathsforensics.com/a-level-readiness-check",
+  "WORKSHEETS": "https://lab.mathsforensics.com/sheets/"
 }
