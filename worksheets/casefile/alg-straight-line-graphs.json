@@ -1,0 +1,221 @@
+{
+ "code": "MF-CF-ALG-SLINE",
+ "product_line": "Case file worksheet · GCSE",
+ "strand": "Graphs",
+ "title": "Straight-line graphs",
+ "level_line": "GCSE Higher",
+ "time": "About 50 minutes",
+ "cover_sub": "y = mx + c tells you everything about a line. Secure gradient and intercept, extend to equations through two points and parallel lines, then master perpendicular lines and bisectors.",
+ "levels": {
+  "s": "grades 4–5",
+  "e": "grades 6–7",
+  "m": "grades 8–9"
+ },
+ "levels_long": {
+  "s": "Gradient, y-intercept, and points on a line.",
+  "e": "Equations through two points, parallel lines, axes and midpoints, and tampered evidence.",
+  "m": "Perpendicular lines, bisectors and unknown coordinates."
+ },
+ "briefing": [
+  "Every straight line can be written as <i>y</i> = <i>m</i><i>x</i> + <i>c</i>. <b>m</b> is the gradient: how far it goes up for every 1 across. <b>c</b> is the y-intercept: where it crosses the <i>y</i>-axis.",
+  "Gradient = <span class=\"frac\"><span class=\"nu\">change in <i>y</i></span><span class=\"de\">change in <i>x</i></span></span>. <b>Parallel</b> lines have the same gradient. <b>Perpendicular</b> gradients multiply to −1: flip the fraction and change the sign."
+ ],
+ "method": [
+  "Rearrange to <i>y</i> = … first if the equation isn't in that form.",
+  "Find the gradient: from the equation, or change in y over change in x.",
+  "Substitute a point the line passes through to find c.",
+  "Write the final equation and check one point in it."
+ ],
+ "example": {
+  "question": "Find the equation of the line through (2, 5) and (6, 13).",
+  "steps": [
+   "Gradient = <span class=\"frac\"><span class=\"nu\">13 − 5</span><span class=\"de\">6 − 2</span></span> = <span class=\"frac\"><span class=\"nu\">8</span><span class=\"de\">4</span></span> = 2.",
+   "So <i>y</i> = 2<i>x</i> + <i>c</i>.",
+   "Substitute (2, 5): 5 = 2 × 2 + <i>c</i>, so <i>c</i> = 1.",
+   "Check with (6, 13): 2 × 6 + 1 = 13 ✓"
+  ],
+  "answer": "<i>y</i> = 2<i>x</i> + 1"
+ },
+ "free": true,
+ "marked_url": "https://lab.mathsforensics.com/written/",
+ "marked_topic": "Straight-line graphs",
+ "sections": {
+  "s": {
+   "blurb": "The method, step by step. Show every line.",
+   "questions": [
+    {
+     "text": [
+      "Write down the gradient and the <i>y</i>-intercept of <i>y</i> = 3<i>x</i> − 5."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "Gradient 3, y-intercept −5",
+     "answer_label": "Gradient ____ Intercept"
+    },
+    {
+     "text": [
+      "Find the gradient of the line through (1, 2) and (4, 11)."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "3",
+     "answer_label": "Answer",
+     "working": "9 ÷ 3."
+    },
+    {
+     "text": [
+      "Write down the equation of the line with gradient 2 that crosses the y-axis at (0, 7)."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "<i>y</i> = 2<i>x</i> + 7",
+     "answer_label": "Equation"
+    },
+    {
+     "text": [
+      "Does the point (4, 5) lie on the line <i>y</i> = 2<i>x</i> − 2? Show how you decide."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "No: when x = 4, y = 6, not 5.",
+     "answer_label": "Yes / No"
+    },
+    {
+     "text": [
+      "Find the gradient of the line 2<i>y</i> − 6<i>x</i> = 8."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "3",
+     "answer_label": "Answer",
+     "working": "Rearrange: <i>y</i> = 3<i>x</i> + 4.",
+     "tip": "The gradient is the number in front of <i>x</i> only once <i>y</i> is on its own. It isn't 6 or −6."
+    }
+   ]
+  },
+  "e": {
+   "blurb": "A step is hidden, or there's a context to unpick. One piece of tampered evidence.",
+   "questions": [
+    {
+     "text": [
+      "Find the equation of the line through (1, 7) and (4, 1)."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "<i>y</i> = −2<i>x</i> + 9",
+     "answer_label": "Equation",
+     "working": "Gradient −6 ÷ 3 = −2; 7 = −2 + c."
+    },
+    {
+     "text": [
+      "Find the equation of the line parallel to <i>y</i> = 4<i>x</i> − 1 that passes through (2, 3)."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "<i>y</i> = 4<i>x</i> − 5",
+     "answer_label": "Equation",
+     "working": "Same gradient 4; 3 = 8 + c."
+    },
+    {
+     "text": [
+      "Find where the line 3<i>x</i> + 4<i>y</i> = 24 crosses each axis."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "(8, 0) and (0, 6)",
+     "answer_label": "Points",
+     "working": "Put y = 0, then x = 0."
+    },
+    {
+     "text": [
+      "Find the midpoint of the line segment from (−2, 5) to (6, −1)."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "(2, 2)",
+     "answer_label": "( ____ , ____ )",
+     "working": "Average the x values, then the y values."
+    },
+    {
+     "text": [
+      "Kai found the gradient of the line through (1, 7) and (5, −1). Find his mistake and give the correct gradient."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "−2",
+     "answer_label": "Gradient",
+     "working": "He mixed the order: change in y on top, in the same order as x. (−1 − 7) ÷ (5 − 1).",
+     "tampered": "(5 − 1) ÷ (−1 − 7) = 4 ÷ −8 = −½"
+    }
+   ]
+  },
+  "m": {
+   "blurb": "No hints. Plan before you calculate.",
+   "questions": [
+    {
+     "text": [
+      "Find the equation of the line perpendicular to <i>y</i> = ½<i>x</i> + 3 that passes through (4, 1)."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "<i>y</i> = −2<i>x</i> + 9",
+     "answer_label": "Equation",
+     "working": "Perpendicular gradient −2; 1 = −8 + c."
+    },
+    {
+     "text": [
+      "A is (1, 2) and B is (7, 10). Find the equation of the perpendicular bisector of AB."
+     ],
+     "marks": 4,
+     "lines": 5,
+     "answer": "3<i>x</i> + 4<i>y</i> = 36 (or <i>y</i> = −¾<i>x</i> + 9)",
+     "answer_label": "Equation",
+     "working": "Midpoint (4, 6). Gradient AB = 8/6 = 4/3, so the bisector's is −3/4.",
+     "tip": "A perpendicular bisector goes through the <b>midpoint</b>, at right angles. You need both facts."
+    },
+    {
+     "text": [
+      "Show that the lines 2<i>y</i> = 3<i>x</i> + 4 and 3<i>y</i> + 2<i>x</i> = 6 are perpendicular."
+     ],
+     "marks": 2,
+     "lines": 4,
+     "answer": "Gradients 3/2 and −2/3, and 3/2 × −2/3 = −1.",
+     "answer_label": false
+    },
+    {
+     "text": [
+      "A line has gradient −3 and passes through (<i>k</i>, 7) and (3, <i>k</i>). Find <i>k</i>."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "<i>k</i> = 1",
+     "answer_label": "<i>k</i> =",
+     "working": "(k − 7) ÷ (3 − k) = −3, so k − 7 = 3k − 9."
+    },
+    {
+     "text": [
+      "Find the area of the triangle enclosed by the line <i>y</i> = 2<i>x</i> + 4 and the two axes."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "4 square units",
+     "answer_label": "Area",
+     "working": "Crosses at (−2, 0) and (0, 4): ½ × 2 × 4."
+    }
+   ]
+  }
+ },
+ "closed_title": "Straight-line graphs",
+ "closed_points": [
+  "Read the gradient and intercept from y = mx + c, rearranging first if needed.",
+  "Find the gradient between two points, keeping the order consistent.",
+  "Find the equation of a line from two points, or a point and a parallel line.",
+  "Use perpendicular gradients and midpoints to find a bisector.",
+  "Find where a line meets the axes, and use it in area problems."
+ ],
+ "next": {
+  "title": "Practise every GCSE topic in the Lab",
+  "text": "New numbers every time, feedback that names the mistake behind each wrong answer, and handwritten working marked like an examiner. Start free.",
+  "url": "https://www.mathsforensics.com/the-lab"
+ }
+}

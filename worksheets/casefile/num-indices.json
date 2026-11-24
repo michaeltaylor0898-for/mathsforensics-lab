@@ -1,0 +1,222 @@
+{
+ "code": "MF-CF-NUM-INDICES",
+ "product_line": "Case file worksheet · GCSE",
+ "strand": "Number",
+ "title": "Indices",
+ "level_line": "GCSE Higher",
+ "time": "About 50 minutes",
+ "cover_sub": "Powers follow rules, and the rules never change. Secure the three laws, extend to negative and fractional powers, then master equations where the unknown is in the power.",
+ "levels": {
+  "s": "grades 4–5",
+  "e": "grades 6–7",
+  "m": "grades 8–9"
+ },
+ "levels_long": {
+  "s": "The three laws: multiply, divide, power of a power.",
+  "e": "Zero, negative and fractional indices, brackets, and tampered evidence.",
+  "m": "Unknowns in the power, and writing everything with one base."
+ },
+ "briefing": [
+  "When you <b>multiply</b> powers of the same base, add the indices. When you <b>divide</b>, subtract them. A <b>power of a power</b>: multiply them.",
+  "A <b>negative</b> index means one over: <i>a</i><sup>−n</sup> = 1 ÷ <i>a</i><sup>n</sup>. A <b>fractional</b> index means a root: <i>a</i><sup>1/n</sup> is the <i>n</i>th root, and <i>a</i><sup>m/n</sup> is the <i>n</i>th root, raised to the power <i>m</i>. Anything to the power 0 is 1."
+ ],
+ "method": [
+  "Deal with numbers and letters separately.",
+  "Apply one law at a time, writing each step.",
+  "For a fractional index, take the root first: the numbers stay small.",
+  "For an index equation, write both sides as powers of the same base, then set the indices equal."
+ ],
+ "example": {
+  "question": "Evaluate 64<sup>−2/3</sup>.",
+  "steps": [
+   "The negative means one over: 64<sup>−2/3</sup> = 1 ÷ 64<sup>2/3</sup>.",
+   "The denominator 3 means cube root: ∛64 = 4.",
+   "The numerator 2 means square it: 4² = 16.",
+   "So the answer is 1 ÷ 16."
+  ],
+  "answer": "1/16"
+ },
+ "free": true,
+ "marked_url": "https://lab.mathsforensics.com/written/",
+ "marked_topic": "Laws of indices",
+ "sections": {
+  "s": {
+   "blurb": "The method, step by step. Show every line.",
+   "questions": [
+    {
+     "text": [
+      "Simplify <i>a</i><sup>5</sup> × <i>a</i><sup>3</sup>."
+     ],
+     "marks": 1,
+     "lines": 2,
+     "answer": "<i>a</i><sup>8</sup>",
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "Simplify <i>y</i><sup>9</sup> ÷ <i>y</i><sup>4</sup>."
+     ],
+     "marks": 1,
+     "lines": 2,
+     "answer": "<i>y</i><sup>5</sup>",
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "Simplify (<i>x</i><sup>3</sup>)<sup>4</sup>."
+     ],
+     "marks": 1,
+     "lines": 2,
+     "answer": "<i>x</i><sup>12</sup>",
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "Simplify 3<i>a</i><sup>4</sup> × 5<i>a</i><sup>2</sup>."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "15<i>a</i><sup>6</sup>",
+     "answer_label": "Answer",
+     "working": "Multiply the numbers, add the indices.",
+     "tip": "Numbers multiply, indices add. 3 × 5 = 15, not 8."
+    },
+    {
+     "text": [
+      "Write 2<sup>3</sup> × 2<sup>4</sup> ÷ 2<sup>2</sup> as a single power of 2, then work out its value."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "2<sup>5</sup> = 32",
+     "answer_label": "Answer",
+     "working": "3 + 4 − 2 = 5."
+    }
+   ]
+  },
+  "e": {
+   "blurb": "A step is hidden, or there's a context to unpick. One piece of tampered evidence.",
+   "questions": [
+    {
+     "text": [
+      "Evaluate 64<sup>2/3</sup>."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "16",
+     "answer_label": "Answer",
+     "working": "∛64 = 4, then 4² = 16."
+    },
+    {
+     "text": [
+      "Write as fractions: (a) 5<sup>−2</sup> (b) (<span class=\"frac\"><span class=\"nu\">2</span><span class=\"de\">3</span></span>)<sup>−1</sup>"
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "(a) 1/25 (b) 3/2",
+     "answer_label": "(a) ____ (b)",
+     "working": "A negative index flips the fraction."
+    },
+    {
+     "text": [
+      "Simplify (2<i>x</i><sup>3</sup><i>y</i>)<sup>4</sup>."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "16<i>x</i><sup>12</sup><i>y</i><sup>4</sup>",
+     "answer_label": "Answer",
+     "working": "Every factor inside is raised to the power 4.",
+     "tip": "The 2 is raised to the power 4 as well: 2⁴ = 16, not 8."
+    },
+    {
+     "text": [
+      "Simplify <span class=\"frac\"><span class=\"nu\">12<i>a</i><sup>7</sup><i>b</i><sup>3</sup></span><span class=\"de\">4<i>a</i><sup>2</sup><i>b</i><sup>5</sup></span></span>."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "3<i>a</i><sup>5</sup><i>b</i><sup>−2</sup>, or 3<i>a</i><sup>5</sup> ÷ <i>b</i><sup>2</sup>",
+     "answer_label": "Answer",
+     "working": "12 ÷ 4, then subtract indices."
+    },
+    {
+     "text": [
+      "Sara simplified (3<i>x</i><sup>2</sup>)<sup>3</sup>. Find her mistake and give the correct answer."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "27<i>x</i><sup>6</sup>",
+     "answer_label": "Answer",
+     "working": "She didn't cube the 3: 3³ = 27.",
+     "tampered": "(3x²)³ = 3x⁶"
+    }
+   ]
+  },
+  "m": {
+   "blurb": "No hints. Plan before you calculate.",
+   "questions": [
+    {
+     "text": [
+      "Solve 2<sup><i>x</i> + 3</sup> = 32."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "<i>x</i> = 2",
+     "answer_label": "<i>x</i> =",
+     "working": "32 = 2⁵, so <i>x</i> + 3 = 5."
+    },
+    {
+     "text": [
+      "Solve 9<sup><i>x</i></sup> = 27<sup><i>x</i> − 1</sup>."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "<i>x</i> = 3",
+     "answer_label": "<i>x</i> =",
+     "working": "3<sup>2<i>x</i></sup> = 3<sup>3<i>x</i> − 3</sup>, so 2<i>x</i> = 3<i>x</i> − 3.",
+     "tip": "Write both sides as powers of the <b>same base</b>. 9 and 27 are both powers of 3."
+    },
+    {
+     "text": [
+      "Evaluate (<span class=\"frac\"><span class=\"nu\">27</span><span class=\"de\">8</span></span>)<sup>−2/3</sup>. Give your answer as a fraction."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "4/9",
+     "answer_label": "Answer",
+     "working": "Flip: (8/27)<sup>2/3</sup>. Cube root: 2/3. Square: 4/9."
+    },
+    {
+     "text": [
+      "2<sup><i>a</i></sup> = 8<sup><i>x</i></sup> × 4<sup>2<i>x</i> + 1</sup>. Find <i>a</i> in terms of <i>x</i>."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "<i>a</i> = 7<i>x</i> + 2",
+     "answer_label": "<i>a</i> =",
+     "working": "2<sup>3<i>x</i></sup> × 2<sup>4<i>x</i> + 2</sup> = 2<sup>7<i>x</i> + 2</sup>."
+    },
+    {
+     "text": [
+      "Show that 16<sup>3/4</sup> × 2<sup>−1</sup> = 4."
+     ],
+     "marks": 2,
+     "lines": 3,
+     "answer": "16<sup>3/4</sup> = (⁴√16)³ = 2³ = 8, and 8 × ½ = 4.",
+     "answer_label": false
+    }
+   ]
+  }
+ },
+ "closed_title": "Indices",
+ "closed_points": [
+  "Multiply, divide and raise powers using the three laws.",
+  "Work with zero and negative indices.",
+  "Evaluate fractional indices by taking the root first.",
+  "Simplify expressions with numbers, letters and brackets.",
+  "Solve equations by writing both sides with the same base."
+ ],
+ "next": {
+  "title": "Practise every GCSE topic in the Lab",
+  "text": "New numbers every time, feedback that names the mistake behind each wrong answer, and handwritten working marked like an examiner. Start free.",
+  "url": "https://www.mathsforensics.com/the-lab"
+ }
+}

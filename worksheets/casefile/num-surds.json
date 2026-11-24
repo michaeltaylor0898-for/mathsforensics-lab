@@ -1,0 +1,225 @@
+{
+ "code": "MF-CF-NUM-SURDS",
+ "product_line": "Case file worksheet · GCSE",
+ "strand": "Number",
+ "title": "Surds",
+ "level_line": "GCSE Higher",
+ "time": "About 50 minutes",
+ "cover_sub": "Exact answers, no rounding. Secure simplifying and multiplying, extend to brackets and rationalising, then master surd algebra in shapes and equations.",
+ "levels": {
+  "s": "grades 4–5",
+  "e": "grades 6–7",
+  "m": "grades 8–9"
+ },
+ "levels_long": {
+  "s": "Simplify, add, multiply, and rationalise a simple denominator.",
+  "e": "Expanding brackets, conjugates, and tampered evidence.",
+  "m": "Rationalising harder fractions, surds in shapes and equations."
+ },
+ "briefing": [
+  "A surd is a root that isn't a whole number, like <span class=\"rad\">√<span class=\"ov\">2</span></span>. Keep it as a surd and the answer stays <b>exact</b>.",
+  "Key facts: <span class=\"rad\">√<span class=\"ov\"><i>ab</i></span></span> = <span class=\"rad\">√<span class=\"ov\"><i>a</i></span></span> × <span class=\"rad\">√<span class=\"ov\"><i>b</i></span></span>, and <span class=\"rad\">√<span class=\"ov\"><i>a</i></span></span> × <span class=\"rad\">√<span class=\"ov\"><i>a</i></span></span> = <i>a</i>. To <b>simplify</b>, find the biggest square number that's a factor. To <b>rationalise</b> a denominator, multiply top and bottom by the surd, or by the <b>conjugate</b> if the denominator is a bracket: for 3 − <span class=\"rad\">√<span class=\"ov\">2</span></span>, multiply by 3 + <span class=\"rad\">√<span class=\"ov\">2</span></span>."
+ ],
+ "method": [
+  "Look for the largest square factor: 4, 9, 16, 25, 36, 49…",
+  "Only like surds add: 2√3 + 5√3 = 7√3, but √2 + √3 can't be simplified.",
+  "Expand brackets term by term, just like algebra.",
+  "Rationalise: multiply top and bottom by the same thing, so the value doesn't change."
+ ],
+ "example": {
+  "question": "Rationalise the denominator of <span class=\"frac\"><span class=\"nu\">10</span><span class=\"de\">3 − <span class=\"rad\">√<span class=\"ov\">2</span></span></span></span>.",
+  "steps": [
+   "The denominator is a bracket, so multiply top and bottom by the conjugate, 3 + √2.",
+   "Top: 10(3 + √2) = 30 + 10√2.",
+   "Bottom: (3 − √2)(3 + √2) = 9 − 2 = 7. The surds cancel.",
+   "So the answer is (30 + 10√2) ÷ 7."
+  ],
+  "answer": "<span class=\"frac\"><span class=\"nu\">30 + 10<span class=\"rad\">√<span class=\"ov\">2</span></span></span><span class=\"de\">7</span></span>"
+ },
+ "free": true,
+ "marked_url": "https://lab.mathsforensics.com/written/",
+ "marked_topic": "Simplifying surds",
+ "sections": {
+  "s": {
+   "blurb": "The method, step by step. Show every line.",
+   "questions": [
+    {
+     "text": [
+      "Simplify <span class=\"rad\">√<span class=\"ov\">50</span></span>."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "5√2",
+     "answer_label": "Answer",
+     "working": "√(25 × 2)."
+    },
+    {
+     "text": [
+      "Simplify <span class=\"rad\">√<span class=\"ov\">12</span></span> + <span class=\"rad\">√<span class=\"ov\">27</span></span>."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "5√3",
+     "answer_label": "Answer",
+     "working": "2√3 + 3√3."
+    },
+    {
+     "text": [
+      "Simplify <span class=\"rad\">√<span class=\"ov\">3</span></span> × <span class=\"rad\">√<span class=\"ov\">12</span></span>."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "6",
+     "answer_label": "Answer",
+     "working": "√36."
+    },
+    {
+     "text": [
+      "Expand and simplify <span class=\"rad\">√<span class=\"ov\">5</span></span>(2 + <span class=\"rad\">√<span class=\"ov\">5</span></span>)."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "2√5 + 5",
+     "answer_label": "Answer",
+     "working": "√5 × √5 = 5.",
+     "tip": "√5 × √5 = 5. A common slip is writing 25, or leaving it as √25."
+    },
+    {
+     "text": [
+      "Rationalise the denominator of <span class=\"frac\"><span class=\"nu\">6</span><span class=\"de\"><span class=\"rad\">√<span class=\"ov\">3</span></span></span></span>."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "2√3",
+     "answer_label": "Answer",
+     "working": "Multiply top and bottom by √3: 6√3 ÷ 3."
+    }
+   ]
+  },
+  "e": {
+   "blurb": "A step is hidden, or there's a context to unpick. One piece of tampered evidence.",
+   "questions": [
+    {
+     "text": [
+      "Expand and simplify (3 + <span class=\"rad\">√<span class=\"ov\">2</span></span>)(3 − <span class=\"rad\">√<span class=\"ov\">2</span></span>)."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "7",
+     "answer_label": "Answer",
+     "working": "9 − 2: the surd terms cancel."
+    },
+    {
+     "text": [
+      "Expand and simplify (2 + <span class=\"rad\">√<span class=\"ov\">3</span></span>)²."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "7 + 4√3",
+     "answer_label": "Answer",
+     "working": "4 + 4√3 + 3.",
+     "tip": "Write the bracket out twice. (2 + √3)² is not 4 + 3."
+    },
+    {
+     "text": [
+      "Rationalise the denominator of <span class=\"frac\"><span class=\"nu\">4</span><span class=\"de\"><span class=\"rad\">√<span class=\"ov\">5</span></span> − 1</span></span>. Simplify your answer."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "√5 + 1",
+     "answer_label": "Answer",
+     "working": "× (√5 + 1): 4(√5 + 1) ÷ (5 − 1)."
+    },
+    {
+     "text": [
+      "A rectangle measures (3 + <span class=\"rad\">√<span class=\"ov\">5</span></span>) cm by (3 − <span class=\"rad\">√<span class=\"ov\">5</span></span>) cm. Find its area."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "4 cm²",
+     "answer_label": "cm²",
+     "working": "9 − 5."
+    },
+    {
+     "text": [
+      "Ali expanded (<span class=\"rad\">√<span class=\"ov\">3</span></span> + 1)². Find his mistake and give the correct answer."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "4 + 2√3",
+     "answer_label": "Answer",
+     "working": "He squared each term but missed the middle terms: 3 + 2√3 + 1.",
+     "tampered": "(√3 + 1)² = 3 + 1 = 4"
+    }
+   ]
+  },
+  "m": {
+   "blurb": "No hints. Plan before you calculate.",
+   "questions": [
+    {
+     "text": [
+      "Rationalise the denominator of <span class=\"frac\"><span class=\"nu\">2 + <span class=\"rad\">√<span class=\"ov\">3</span></span></span><span class=\"de\">2 − <span class=\"rad\">√<span class=\"ov\">3</span></span></span></span>. Give your answer in the form <i>a</i> + <i>b</i>√3."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "7 + 4√3",
+     "answer_label": "Answer",
+     "working": "× (2 + √3): (2 + √3)² ÷ (4 − 3)."
+    },
+    {
+     "text": [
+      "A right-angled triangle has shorter sides (2 + <span class=\"rad\">√<span class=\"ov\">3</span></span>) cm and (2 − <span class=\"rad\">√<span class=\"ov\">3</span></span>) cm. Find the exact length of the hypotenuse."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "√14 cm",
+     "answer_label": "cm",
+     "working": "(7 + 4√3) + (7 − 4√3) = 14."
+    },
+    {
+     "text": [
+      "Solve <i>x</i><span class=\"rad\">√<span class=\"ov\">2</span></span> + 3 = <i>x</i><span class=\"rad\">√<span class=\"ov\">8</span></span> − 5. Give your answer in the form <i>k</i>√2."
+     ],
+     "marks": 4,
+     "lines": 5,
+     "answer": "<i>x</i> = 4√2",
+     "answer_label": "<i>x</i> =",
+     "working": "√8 = 2√2, so 8 = <i>x</i>√2 and <i>x</i> = 8 ÷ √2.",
+     "tip": "Simplify √8 first. Then you have like surds you can collect."
+    },
+    {
+     "text": [
+      "Show that <span class=\"frac\"><span class=\"nu\"><span class=\"rad\">√<span class=\"ov\">12</span></span> + <span class=\"rad\">√<span class=\"ov\">75</span></span></span><span class=\"de\"><span class=\"rad\">√<span class=\"ov\">3</span></span></span></span> is a whole number, and find it."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "7",
+     "answer_label": "Answer",
+     "working": "(2√3 + 5√3) ÷ √3 = 7√3 ÷ √3."
+    },
+    {
+     "text": [
+      "Show that (<span class=\"rad\">√<span class=\"ov\"><i>a</i></span></span> + <span class=\"rad\">√<span class=\"ov\"><i>b</i></span></span>)² − (<span class=\"rad\">√<span class=\"ov\"><i>a</i></span></span> − <span class=\"rad\">√<span class=\"ov\"><i>b</i></span></span>)² = 4<span class=\"rad\">√<span class=\"ov\"><i>ab</i></span></span>."
+     ],
+     "marks": 2,
+     "lines": 4,
+     "answer": "(a + 2√(ab) + b) − (a − 2√(ab) + b) = 4√(ab).",
+     "answer_label": false
+    }
+   ]
+  }
+ },
+ "closed_title": "Surds",
+ "closed_points": [
+  "Simplify a surd using its largest square factor.",
+  "Add, subtract and multiply surds.",
+  "Expand brackets containing surds, using the conjugate to clear them.",
+  "Rationalise any denominator, including a bracket.",
+  "Keep answers exact in shapes and equations."
+ ],
+ "next": {
+  "title": "Practise every GCSE topic in the Lab",
+  "text": "New numbers every time, feedback that names the mistake behind each wrong answer, and handwritten working marked like an examiner. Start free.",
+  "url": "https://www.mathsforensics.com/the-lab"
+ }
+}
