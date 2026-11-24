@@ -6,15 +6,20 @@
 <style>
 :root{--ink:#0B122C;--panel:#111A3D;--line:#26336A;--text:#E8ECF8;--muted:#9AA6CC;--cyan:#00FCF1;--blue:#1B36FF;--teal:#00A99F}
 *{box-sizing:border-box}body{margin:0;background:var(--ink);color:var(--text);font-family:"Josefin Sans",system-ui,sans-serif;font-size:18px;line-height:1.55}
-a{color:var(--cyan)}.w{max-width:960px;margin:0 auto;padding:0 20px}
+a{color:var(--cyan)}.w{max-width:1120px;margin:0 auto;padding:0 20px}
 header{border-bottom:1px solid var(--line)}header .w{display:flex;align-items:center;justify-content:space-between;height:64px}
 .logo{display:flex;gap:10px;align-items:center;color:#fff;text-decoration:none;font-family:Unbounded,sans-serif;font-weight:800;font-size:15px;letter-spacing:.04em}
 .logo img{width:26px;height:30px}
-nav a{color:var(--muted);text-decoration:none;margin-left:18px;font-size:16px}nav a:hover{color:#fff}
+.nav{display:flex;align-items:center;gap:18px}.nav a{color:#C6CEE8;text-decoration:none;font-size:15.5px;font-weight:600}.nav a:hover,.nav a.cur{color:var(--cyan)}
+.nav a.hq,.drop a.hq{background:var(--cyan);color:var(--ink);padding:9px 16px;border-radius:10px}
+.menu{display:none;position:relative}.menu summary{list-style:none;cursor:pointer;font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:.14em;border:1px solid var(--line);border-radius:10px;padding:9px 14px}
+.menu summary::-webkit-details-marker{display:none}.drop{position:absolute;right:0;top:46px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;min-width:220px;z-index:5}
+.drop a{color:#fff;text-decoration:none;padding:9px 10px;border-radius:8px}.drop a.hq{margin-top:6px;text-align:center}
+@media(max-width:1100px){.nav{display:none}.menu{display:block}}
 .eb{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan)}
 h1{font-family:Unbounded,sans-serif;font-weight:800;font-size:clamp(30px,5vw,48px);line-height:1.08;margin:10px 0 14px}
 h2{font-family:Unbounded,sans-serif;font-weight:600;font-size:clamp(21px,3vw,27px);margin:0 0 12px}
-.hero{padding:44px 0 30px}.lede{color:#C6CEE8;font-size:20px;max-width:720px}
+.hero{padding-top:44px;padding-bottom:30px}.lede{color:#C6CEE8;font-size:20px;max-width:720px}
 .btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
 .btn{display:inline-block;background:var(--cyan);color:var(--ink);font-weight:700;text-decoration:none;padding:13px 22px;border-radius:999px}
 .btn.ghost{background:transparent;color:#fff;border:1.5px solid var(--line)}
@@ -36,10 +41,9 @@ ul.tick{padding-left:0;list-style:none}ul.tick li{padding-left:26px;position:rel
 .tile{display:block;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;text-decoration:none;color:#fff}
 .tile:hover{border-color:var(--cyan)}.tile small{display:block;color:var(--muted);font-size:15px;margin-top:4px}
 footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);font-size:15px}
-@media(max-width:720px){.levels,.lab{grid-template-columns:1fr}nav a.hide{display:none}}
+@media(max-width:720px){.levels,.lab{grid-template-columns:1fr}}
 </style><script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Forming and solving equations worksheet", "description": "Free printable GCSE maths forming and solving equations worksheet with answers. Securing, Extending and Mastery sections from grade 4 to grade 9, plus exam tips on where marks are lost.", "educationalLevel": "GCSE", "learningResourceType": "Worksheet", "isAccessibleForFree": true, "inLanguage": "en-GB", "url": "https://lab.mathsforensics.com/sheets/forming-equations/", "provider": {"@type": "Organization", "name": "Maths Forensics", "url": "https://www.mathsforensics.com"}}</script></head><body>
-<header><div class="w"><a class="logo" href="/sheets/"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2046%22%3E%3Cpath%20d%3D%22M20%202%2037%208v14c0%2011-7.5%2018.5-17%2022C10.5%2040.5%203%2033%203%2022V8z%22%20fill%3D%22%230B122C%22%20stroke%3D%22%2300FCF1%22%20stroke-width%3D%223.2%22%20stroke-linejoin%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2219%22%20cy%3D%2221%22%20r%3D%226.6%22%20fill%3D%22none%22%20stroke%3D%22%2300FCF1%22%20stroke-width%3D%223.8%22%2F%3E%3Cpath%20d%3D%22M23.8%2025.8%2028.6%2030.6%22%20stroke%3D%22%231B36FF%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E" alt="">MATHS FORENSICS</a>
-<nav><a href="/sheets/">Free worksheets</a><a href="/lab/">The Lab</a><a class="hide" href="https://www.mathsforensics.com/">mathsforensics.com</a></nav></div></header>
+<header><div class="w"><a class="logo" href="https://www.mathsforensics.com/"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2046%22%3E%3Cpath%20d%3D%22M20%202%2037%208v14c0%2011-7.5%2018.5-17%2022C10.5%2040.5%203%2033%203%2022V8z%22%20fill%3D%22%230B122C%22%20stroke%3D%22%2300FCF1%22%20stroke-width%3D%223.2%22%20stroke-linejoin%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2219%22%20cy%3D%2221%22%20r%3D%226.6%22%20fill%3D%22none%22%20stroke%3D%22%2300FCF1%22%20stroke-width%3D%223.8%22%2F%3E%3Cpath%20d%3D%22M23.8%2025.8%2028.6%2030.6%22%20stroke%3D%22%231B36FF%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E" alt="">MATHS FORENSICS</a><nav class="nav"><a href="https://www.mathsforensics.com/">Home</a><a href="https://www.mathsforensics.com/the-lab">GCSE</a><a href="https://www.mathsforensics.com/cold-case">Past papers</a><a href="/sheets/" class="cur">Worksheets</a><a href="https://www.mathsforensics.com/academy">Years 7–9</a><a href="https://www.mathsforensics.com/jumpstart-lab">A-Level</a><a href="https://www.mathsforensics.com/schools">Schools</a><a href="https://www.mathsforensics.com/about">About</a><a class="hq" href="https://lab.mathsforensics.com/">Log in to HQ</a></nav><details class="menu"><summary>MENU</summary><div class="drop"><a href="https://www.mathsforensics.com/">Home</a><a href="https://www.mathsforensics.com/the-lab">GCSE</a><a href="https://www.mathsforensics.com/cold-case">Past papers</a><a href="/sheets/">Worksheets</a><a href="https://www.mathsforensics.com/academy">Years 7–9</a><a href="https://www.mathsforensics.com/jumpstart-lab">A-Level</a><a href="https://www.mathsforensics.com/schools">Schools</a><a href="https://www.mathsforensics.com/about">About</a><a class="hq" href="https://lab.mathsforensics.com/">Log in to HQ</a></div></details></div></header>
 <main><div class="w hero"><span class="eb">Free GCSE maths worksheet · Algebra</span><h1>Forming and solving equations</h1>
 <p class="lede">Turn words into algebra, then solve it. Secure linear equations, extend to brackets, fractions and shapes, then master the problems that become quadratics.</p>
 <div class="btns"><a class="btn" href="/sheets/pdf/forming-equations.pdf" download>Download the free PDF</a><a class="btn ghost" href="/lab/">Practise it in the Lab</a></div>

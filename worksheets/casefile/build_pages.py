@@ -10,15 +10,20 @@ def strip(s): return re.sub(r"<[^>]+>","",s)
 CSS="""
 :root{--ink:#0B122C;--panel:#111A3D;--line:#26336A;--text:#E8ECF8;--muted:#9AA6CC;--cyan:#00FCF1;--blue:#1B36FF;--teal:#00A99F}
 *{box-sizing:border-box}body{margin:0;background:var(--ink);color:var(--text);font-family:"Josefin Sans",system-ui,sans-serif;font-size:18px;line-height:1.55}
-a{color:var(--cyan)}.w{max-width:960px;margin:0 auto;padding:0 20px}
+a{color:var(--cyan)}.w{max-width:1120px;margin:0 auto;padding:0 20px}
 header{border-bottom:1px solid var(--line)}header .w{display:flex;align-items:center;justify-content:space-between;height:64px}
 .logo{display:flex;gap:10px;align-items:center;color:#fff;text-decoration:none;font-family:Unbounded,sans-serif;font-weight:800;font-size:15px;letter-spacing:.04em}
 .logo img{width:26px;height:30px}
-nav a{color:var(--muted);text-decoration:none;margin-left:18px;font-size:16px}nav a:hover{color:#fff}
+.nav{display:flex;align-items:center;gap:18px}.nav a{color:#C6CEE8;text-decoration:none;font-size:15.5px;font-weight:600}.nav a:hover,.nav a.cur{color:var(--cyan)}
+.nav a.hq,.drop a.hq{background:var(--cyan);color:var(--ink);padding:9px 16px;border-radius:10px}
+.menu{display:none;position:relative}.menu summary{list-style:none;cursor:pointer;font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:.14em;border:1px solid var(--line);border-radius:10px;padding:9px 14px}
+.menu summary::-webkit-details-marker{display:none}.drop{position:absolute;right:0;top:46px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;min-width:220px;z-index:5}
+.drop a{color:#fff;text-decoration:none;padding:9px 10px;border-radius:8px}.drop a.hq{margin-top:6px;text-align:center}
+@media(max-width:1100px){.nav{display:none}.menu{display:block}}
 .eb{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan)}
 h1{font-family:Unbounded,sans-serif;font-weight:800;font-size:clamp(30px,5vw,48px);line-height:1.08;margin:10px 0 14px}
 h2{font-family:Unbounded,sans-serif;font-weight:600;font-size:clamp(21px,3vw,27px);margin:0 0 12px}
-.hero{padding:44px 0 30px}.lede{color:#C6CEE8;font-size:20px;max-width:720px}
+.hero{padding-top:44px;padding-bottom:30px}.lede{color:#C6CEE8;font-size:20px;max-width:720px}
 .btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
 .btn{display:inline-block;background:var(--cyan);color:var(--ink);font-weight:700;text-decoration:none;padding:13px 22px;border-radius:999px}
 .btn.ghost{background:transparent;color:#fff;border:1.5px solid var(--line)}
@@ -40,7 +45,7 @@ ul.tick{padding-left:0;list-style:none}ul.tick li{padding-left:26px;position:rel
 .tile{display:block;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;text-decoration:none;color:#fff}
 .tile:hover{border-color:var(--cyan)}.tile small{display:block;color:var(--muted);font-size:15px;margin-top:4px}
 footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);font-size:15px}
-@media(max-width:720px){.levels,.lab{grid-template-columns:1fr}nav a.hide{display:none}}
+@media(max-width:720px){.levels,.lab{grid-template-columns:1fr}}
 """
 def page(title,desc,canon,body,ld=""):
     return f"""<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,8 +54,7 @@ def page(title,desc,canon,body,ld=""):
 <link rel="icon" href="{FAV}"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Josefin+Sans:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
 <style>{CSS}</style>{ld}</head><body>
-<header><div class="w"><a class="logo" href="/sheets/"><img src="{FAV}" alt="">MATHS FORENSICS</a>
-<nav><a href="/sheets/">Free worksheets</a><a href="/lab/">The Lab</a><a class="hide" href="https://www.mathsforensics.com/">mathsforensics.com</a></nav></div></header>
+<header><div class="w"><a class="logo" href="https://www.mathsforensics.com/"><img src="{FAV}" alt="">MATHS FORENSICS</a><nav class="nav"><a href="https://www.mathsforensics.com/">Home</a><a href="https://www.mathsforensics.com/the-lab">GCSE</a><a href="https://www.mathsforensics.com/cold-case">Past papers</a><a href="/sheets/" class="cur">Worksheets</a><a href="https://www.mathsforensics.com/academy">Years 7–9</a><a href="https://www.mathsforensics.com/jumpstart-lab">A-Level</a><a href="https://www.mathsforensics.com/schools">Schools</a><a href="https://www.mathsforensics.com/about">About</a><a class="hq" href="https://lab.mathsforensics.com/">Log in to HQ</a></nav><details class="menu"><summary>MENU</summary><div class="drop"><a href="https://www.mathsforensics.com/">Home</a><a href="https://www.mathsforensics.com/the-lab">GCSE</a><a href="https://www.mathsforensics.com/cold-case">Past papers</a><a href="/sheets/">Worksheets</a><a href="https://www.mathsforensics.com/academy">Years 7–9</a><a href="https://www.mathsforensics.com/jumpstart-lab">A-Level</a><a href="https://www.mathsforensics.com/schools">Schools</a><a href="https://www.mathsforensics.com/about">About</a><a class="hq" href="https://lab.mathsforensics.com/">Log in to HQ</a></div></details></div></header>
 {body}
 <footer><div class="w">© Maths Forensics · Free GCSE maths worksheets, Securing to Mastery · <a href="https://www.mathsforensics.com/">mathsforensics.com</a> · <a href="/privacy.html">Privacy</a></div></footer></body></html>"""
 def qhtml(q,k):
