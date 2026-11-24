@@ -1627,15 +1627,43 @@ function screenName() {
   setTimeout(() => $("#cadetname").focus(), 50);
 }
 
+/* students join their class with the teacher's 6-character code, the same code the Lab uses */
+let joinMsg = "";
+function classJoinPanel() {
+  if (!(LIVE && ACC.on && ACC.me && ACC.me.role === "student" && ACC.access.level !== "full")) return joinMsg;
+  return `${joinMsg}<section class="panel irjoin" style="margin-bottom:18px"><div><div class="h3" style="margin:0">Got a class code from your teacher?</div><span class="muted small">Enter it to join your class and unlock every topic. <a class="linkbtn" href="#add-child" style="font-size:inherit">Parent setting this up for a child?</a></span></div>
+    <form class="irjoinrow" id="acJoin" novalidate><input class="irjoincode" id="acCode" maxlength="6" placeholder="HX7K2Q" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Class code"><button class="btn" type="submit">Join</button></form>
+    <span class="muted small" id="acJoinErr" role="alert" style="flex-basis:100%;color:var(--red,#ff5a6e)"></span></section>`;
+}
+async function joinClassByCode(code) {
+  const id = await rpc("join_class", { p_code: String(code).trim().toUpperCase() });
+  const { data } = await ACC.sb.from("classes").select("name,academy_on,lab_on").eq("id", id).single();
+  return data || { name: "your class", academy_on: true };
+}
+document.addEventListener("submit", async e => {
+  if (!e.target || e.target.id !== "acJoin") return;
+  e.preventDefault();
+  const err = $("#acJoinErr"), btn = e.target.querySelector("button"), code = $("#acCode").value.replace(/\s+/g, "");
+  if (code.length !== 6) { err.textContent = "Class codes have 6 letters and numbers."; return; }
+  btn.disabled = true; err.textContent = "";
+  try {
+    const c = await joinClassByCode(code);
+    await accLoadMe();
+    joinMsg = c.academy_on
+      ? `<div class="fb ok" style="margin-bottom:18px"><b>You're in ${esc(c.name)}</b>Every Academy topic is now unlocked.</div>`
+      : `<div class="fb ok" style="margin-bottom:18px"><b>You're in ${esc(c.name)}</b>That's a GCSE class in the Lab. <a href="/lab/">Open the Lab</a></div>`;
+    renderCadet(); route();
+  } catch (x) { err.textContent = x.message; btn.disabled = false; }
+});
 function screenPath() {
   caseSync();
   const secured = TOPICS.filter(t => prog(t.id).secured).length;
   const pct = Math.round(secured / TOPICS.length * 100);
   const allDone = secured === TOPICS.length;
   const next = TOPICS.find(t => !prog(t.id).secured && isOpen(t.id)) || TOPICS.find(t => !prog(t.id).secured);
-  const parentHint = LIVE && ACC.on && ACC.me.role === "student" && ACC.access.level !== "full" && ((ACC.me.spare_passes | 0) > 0 || !Object.entries(STORE.topics).some(([k, p]) => !k.startsWith("case-") && (p.learned || p.practised || p.secured)))
+  const parentHint = LIVE && ACC.on && ACC.me.role === "student" && ACC.access.level !== "full" && (ACC.me.spare_passes | 0) > 0
     ? `<section class="panel stack" style="margin-bottom:18px${ACC.me.spare_passes ? ";border-color:var(--cyan)" : ""}"><div class="h3" style="margin:0">${ACC.me.spare_passes ? "Your Academy Pass is ready" : "Setting this up for your child?"}</div><p class="small muted" style="margin:0">${ACC.me.spare_passes ? "Add your child to this account to use it. They don't need an email." : "Add your child to this account instead. They don't need an email."}</p><div><a class="btn small ghost" href="#add-child">Add my child</a></div></section>` : "";
-  app.innerHTML = `${importBanner()}${parentHint}${workPanel()}
+  app.innerHTML = `${importBanner()}${classJoinPanel()}${parentHint}${workPanel()}
     <div class="eyebrow">Your training pathway</div>
     <h1 class="h1">Working towards Bronze</h1>
     <p class="lede">Secure every topic by getting 4 out of 5 in its check. Then sit the Bronze award test and score 80% or more to earn your certificate.</p>
@@ -2278,7 +2306,7 @@ async function screenTeach() {
       <div class="row" style="justify-content:space-between;align-items:flex-start;gap:12px"><div><div class="eyebrow">Academy class · code ${esc(c.code || "")}</div><h2 style="margin:4px 0 0">${esc(c.name)}</h2><span class="muted small">${c.n} student${c.n === 1 ? "" : "s"}</span></div>
       <a class="btn" href="/lab/?class=${c.id}">Set work and see who's done it</a></div>
       ${c.progress && c.progress.length ? `<div style="overflow-x:auto;margin-top:16px"><table class="ttable"><thead><tr><th>Student</th><th>Bronze topics secured</th><th>Case 01</th><th>Case 02</th><th>Last active</th></tr></thead><tbody>${c.progress.map(row).join("")}</tbody></table></div>`
-        : `<p class="muted" style="margin:14px 0 0">No students yet. They join with the code <b>${esc(c.code || "")}</b>: they sign in at lab.mathsforensics.com and enter it, then choose the Academy.</p>`}
+        : `<p class="muted" style="margin:14px 0 0">No students yet. They sign in to the Academy with their school account and enter the code <b>${esc(c.code || "")}</b>.</p>`}
     </section>` : `<section class="panel tclass off"><div class="row" style="justify-content:space-between;align-items:center;gap:12px"><div><div class="eyebrow">Lab class · GCSE</div><h2 style="margin:4px 0 0">${esc(c.name)}</h2><span class="muted small">${c.n} student${c.n === 1 ? "" : "s"} · the Academy is off for this class</span></div>
       <button class="btn ghost" data-open="${c.id}" data-lab="${c.lab_on === false ? "" : "1"}">Open the Academy for this class</button></div></section>`;
   const ac = classes.filter(c => c.academy_on), other = classes.filter(c => !c.academy_on);

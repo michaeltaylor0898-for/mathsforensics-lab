@@ -5046,7 +5046,8 @@ function supabaseStore(cfg){
     async resetMyProgress(userId){must(await sb.from('attempts').delete().eq('user_id',userId))},
     async joinClass(userId,code){
       const id=must(await sb.rpc('join_class',{p_code:String(code).trim().toUpperCase()}));
-      return must(await sb.from('classes').select('id,name').eq('id',id).single());
+      const r=await sb.from('classes').select('id,name,academy_on,lab_on').eq('id',id).single();
+      return r.error?must(await sb.from('classes').select('id,name').eq('id',id).single()):r.data;
     },
     async studentClasses(){return must(await sb.rpc('my_classes'))},
     async studentAssignments(userId){
@@ -5478,7 +5479,7 @@ function joinBoxHTML(){
 }
 function bindJoinBox(){
   const f=$('#fJoinToday'); if(!f) return;
-  f.onsubmit=e=>{e.preventDefault();busy(f,async()=>{const c=await api.joinClass(S.user.id,$('#jt-code').value);S.user=await api.session();S.access=await api.access(S.user);S.assignments=await api.studentAssignments(S.user.id);renderShell();alertBox('You joined '+c.name);renderToday()})};
+  f.onsubmit=e=>{e.preventDefault();busy(f,async()=>{const c=await api.joinClass(S.user.id,$('#jt-code').value);if(academyOnly(c))return;S.user=await api.session();S.access=await api.access(S.user);S.assignments=await api.studentAssignments(S.user.id);renderShell();alertBox('You joined '+c.name+(c.academy_on?'. Your Academy topics are unlocked too.':''));renderToday()})};
 }
 
 /* ---------- welcome back: last session + next move ---------- */
@@ -6444,6 +6445,7 @@ function renderAuth(){
   const fu=$('#fSignup'); if(fu) fu.onsubmit=e=>{e.preventDefault();busy(fu,async()=>{const r=await api.signUp({name:$('#su-name').value,email:$('#su-email').value,pw:$('#su-pw').value,code:$('#su-code').value});if(r&&r.needsConfirm){S.authTab='confirm';S.confirmEmail=r.email;renderAuth();return}S.user=r;await afterLogin()})};
   const fr_=$('#fReset'); if(fr_) fr_.onsubmit=e=>{e.preventDefault();busy(fr_,async()=>{await api.resetPassword($('#rs-email').value);formErr(fr_,'');fr_.innerHTML='<p>If there is an account for that email, a reset link is on its way.</p>'})};
 }
+function academyOnly(c){if(c&&c.academy_on&&c.lab_on===false&&api.mode==='live'){alertBox('You joined '+c.name+'. Taking you to the Academy…');setTimeout(()=>location.href='/academy/',1200);return true}return false}
 function alertBox(msg){const p=document.createElement('p');p.className='toast';p.textContent=msg;document.body.appendChild(p);setTimeout(()=>p.remove(),4000)}
 
 /* ---------- shell ---------- */
@@ -6730,7 +6732,7 @@ async function renderAccount(){
   view.innerHTML=`<div><span class="eyebrow">Account</span><h1 class="ph">${esc(u.name)}</h1><p class="hint">${esc(u.email)} · ${ROLE_LABEL[u.role]}</p></div>${lic}
   ${api.mode==='demo'?`<div class="panel"><h2>Demo data</h2><p class="hint">Everything in this prototype is stored in this browser only. Resetting restores the example school, classes and accounts.</p><div class="row"><button class="ghost" id="resetDemo">Reset demo data</button></div></div>`:''}`;
   ['buy','buyKit'].forEach(id=>{const b=$('#'+id); if(b) b.onclick=async()=>{await api.recordSale(u.email);S.access=await api.access(u);renderShell();alertBox('Payment received. Exam Pass active.');renderAccount()}});
-  const fj=$('#fJoin'); if(fj) fj.onsubmit=e=>{e.preventDefault();busy(fj,async()=>{const c=await api.joinClass(u.id,$('#j-code').value);S.user=await api.session();S.access=await api.access(S.user);S.assignments=await api.studentAssignments(u.id);renderShell();alertBox('Joined '+c.name);renderAccount()})};
+  const fj=$('#fJoin'); if(fj) fj.onsubmit=e=>{e.preventDefault();busy(fj,async()=>{const c=await api.joinClass(u.id,$('#j-code').value);if(academyOnly(c))return;S.user=await api.session();S.access=await api.access(S.user);S.assignments=await api.studentAssignments(u.id);renderShell();alertBox('Joined '+c.name+(c.academy_on?'. Your Academy topics are unlocked too.':''));renderAccount()})};
   const rf=$('#refresh'); if(rf) rf.onclick=()=>checkPaymentArrived(false);
   const rd=$('#resetDemo'); if(rd) rd.onclick=async e=>{const b=e.currentTarget;if(b.dataset.armed){await api.resetDemo();S.user=null;renderAuth()}else{b.dataset.armed=1;b.textContent='Tap again to reset everything'}};
 }
