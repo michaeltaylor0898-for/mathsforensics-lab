@@ -1154,7 +1154,9 @@ a.gsw.labback { display: inline-flex; align-items: center; }
 .hw-tap { cursor: pointer; }
 .hw-tap:hover .hw-pt { fill: var(--amber); }
 .hw-tap:hover rect { fill: rgba(255,200,87,.12); }
-.hw-miss { stroke: #9fc3e6; stroke-width: 2.5; stroke-linecap: round; opacity: .8; }
+.hw-miss { stroke: #EAF2FF; stroke-width: 4; stroke-linecap: round; } .hw-missb { stroke: #160E2E; stroke-width: 8; stroke-linecap: round; opacity: .85; }
+.hw-water { stroke: rgba(190,225,255,.45); stroke-width: 2; stroke-linecap: round; }
+.hw-jam circle { fill: none; stroke: var(--amber); stroke-width: 2.5; stroke-dasharray: 4 3; } .hw-jam text { fill: var(--amber); font: 700 14px "JetBrains Mono", monospace; }
 .hw-hit { fill: #ff8a3d; } .hw-hitc { fill: #ffe08a; }
 .hw-sunk { fill: #c0303f; } .hw-sunkx { stroke: #fff; stroke-width: 3; stroke-linecap: round; }
 .hw-boat { fill: rgba(255,255,255,.12); stroke: #e8f2ff; stroke-width: 2; }
@@ -1172,7 +1174,7 @@ a.gsw.labback { display: inline-flex; align-items: center; }
 @keyframes hwBoom { from { r: 6; opacity: 1; } to { r: 34; opacity: 0; } }
 .hw-key2 { display: flex; gap: 12px; align-items: center; justify-content: center; margin: 0; }
 .hw-key2 .k { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
-.hw-key2 .k.miss { background: #9fc3e6; } .hw-key2 .k.hit { background: #ff8a3d; } .hw-key2 .k.sunk { background: #c0303f; }
+.hw-key2 { flex-wrap: wrap; } .hw-key2 .k.miss, .hw-key2 .k.water, .hw-key2 .k.jam { background: none; width: auto; height: auto; border-radius: 0; font-weight: 800; } .hw-key2 .k.miss { color: #EAF2FF; font-size: 15px; } .hw-key2 .k.water { color: rgba(190,225,255,.6); } .hw-key2 .k.jam { color: var(--amber); } .hw-key2 .k.hit { background: #ff8a3d; } .hw-key2 .k.sunk { background: #c0303f; }
 .hw-prompt { margin: 0; font-size: 1.05rem; }
 .hw-ans, .hw-vec { display: flex; align-items: center; justify-content: center; gap: 6px; font-family: var(--mono); font-size: 1.4rem; }
 .hw-vcol { display: flex; flex-direction: column; gap: 6px; }
@@ -10353,7 +10355,12 @@ const HW = (() => {
     const b = boatAt(boats, x, y);
     if (!b) { shots[k] = "m"; return { result: "miss" }; }
     b.hits.push(k); shots[k] = "h";
-    if (b.hits.length >= b.len) { b.pts.forEach(([px, py]) => { shots[key(px, py)] = "s"; }); b.sunk = true; return { result: "sunk", boat: b.name }; }
+    if (b.hits.length >= b.len) {
+      b.pts.forEach(([px, py]) => { shots[key(px, py)] = "s"; }); b.sunk = true;
+      /* boats never touch, so the points around a sunk boat are open water */
+      b.pts.forEach(([px, py]) => { for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) { const nk = key(px + dx, py + dy); if (!shots[nk]) shots[nk] = "w"; } });
+      return { result: "sunk", boat: b.name };
+    }
     return { result: "hit", boat: b.name };
   }
   const allSunk = boats => boats.every(b => b.sunk);
@@ -10572,7 +10579,10 @@ function hwChart(o) {
   });
   for (let y = b; y >= a; y--) for (let x = a; x <= b; x++) {
     const k = HW.key(x, y), st = shots[k];
-    const mark = st === "m" ? `<path d="M${X(x) - 6} ${Y(y) - 6}l12 12M${X(x) + 6} ${Y(y) - 6}l-12 12" class="hw-miss"/>`
+    const xp = r => `M${X(x) - r} ${Y(y) - r}l${2 * r} ${2 * r}M${X(x) + r} ${Y(y) - r}l${-2 * r} ${2 * r}`;
+    const mark = st === "m" ? `<path d="${xp(9)}" class="hw-missb"/><path d="${xp(9)}" class="hw-miss"/>`
+      : st === "w" ? `<path d="${xp(4)}" class="hw-water"/>`
+      : !st && o.jammed && o.jammed[k] ? `<g class="hw-jam"><circle cx="${X(x)}" cy="${Y(y)}" r="11"/><text x="${X(x)}" y="${Y(y) + 5}" text-anchor="middle">?</text></g>`
       : st === "h" ? `<circle cx="${X(x)}" cy="${Y(y)}" r="11" class="hw-hit"/><circle cx="${X(x)}" cy="${Y(y)}" r="5" class="hw-hitc"/>`
       : st === "s" ? `<circle cx="${X(x)}" cy="${Y(y)}" r="12" class="hw-sunk"/><path d="M${X(x) - 6} ${Y(y) - 6}l12 12M${X(x) + 6} ${Y(y) - 6}l-12 12" class="hw-sunkx"/>`
       : `<circle cx="${X(x)}" cy="${Y(y)}" r="3.5" class="hw-pt"/>`;
@@ -10718,7 +10728,7 @@ function hwSoloDraw() {
     document.getElementById("hwGoBattle").onclick = () => { H.mine = H.place.boats.map(b => ({ name: b.name, len: b.len, pts: b.pts, hits: [] })); H.phase = "aim"; H.setup = HW.turnSetup(H.mod, H.big, H.level); Sound.play("reveal"); hwSoloDraw(); };
     return;
   }
-  const chart = hwChart({ mod: H.mod, big: H.big, shots: H.shots, aim: H.aim, launcher: H.setup && H.setup.launcher, buoy: H.setup && H.setup.buoy, sonar: H.sonar, arrow: H.mod === "vec" && H.phase === "solve",
+  const chart = hwChart({ mod: H.mod, big: H.big, shots: H.shots, jammed: H.jammed, aim: H.aim, launcher: H.setup && H.setup.launcher, buoy: H.setup && H.setup.buoy, sonar: H.sonar, arrow: H.mod === "vec" && H.phase === "solve",
     click: H.phase === "aim" || H.phase === "solve" || H.phase === "ping", landed: H.landed, landedCls: H.landedCls, reveal: H.phase === "end" ? H.boats : null });
   let panel = "";
   if (H.phase === "sonarq") {
@@ -10737,7 +10747,7 @@ function hwSoloDraw() {
       ${H.phase === "aim" && H.sonarLeft ? `<div class="row"><button class="btn" id="hwSonar">📡 Use sonar (${H.sonarLeft} left)</button></div>` : ""}`;
   }
   const own = H.mine ? `<span class="eyebrow">Your harbour</span><div class="hw-mini">${hwChart({ mod: H.mod, big: H.big, shots: H.myShots, boats: H.mine, landed: H.aiLanded, landedCls: H.aiLandedCls })}</div>` : "";
-  set(`${hwHud(H)}<div class="hw-wrap"><section class="panel hw-chartp"><span class="eyebrow">The smugglers' harbour</span>${chart}<p class="muted small hw-key2"><span class="k miss"></span>miss <span class="k hit"></span>hit <span class="k sunk"></span>sunk</p></section><section class="panel hw-side">${panel}${H.phase !== "end" ? own : ""}</section></div>`, true);
+  set(`${hwHud(H)}<div class="hw-wrap"><section class="panel hw-chartp"><span class="eyebrow">The smugglers' harbour</span>${chart}<p class="muted small hw-key2"><span class="k miss">✕</span>missed <span class="k hit"></span>hit <span class="k sunk"></span>sunk <span class="k water">×</span>no boat (next to a sunk boat) <span class="k jam">?</span>not fired (radar jammed)</p></section><section class="panel hw-side">${panel}${H.phase !== "end" ? own : ""}</section></div>`, true);
   document.getElementById("hwQuit").onclick = () => { S.hw = null; Sound.stopMusic(); signIn(); };
   app.querySelectorAll(".hw-chartp [data-pt]").forEach(g => g.onclick = () => hwTap(hwPt(g)));
   app.querySelectorAll("[data-hf]").forEach(b => b.onclick = () => { H.fi = +b.dataset.hf; hwSoloDraw(); });
@@ -10768,7 +10778,7 @@ function hwSoloFire() {
     const work = HW.working(H.mod, H.setup, x, y);
     H.stats.jams.push({ prompt: hwPrompt(H.mod, H.setup, H.aim).replace(/<[^>]+>/g, ""), work, slip: c.slip });
     H.msg = { t: `📻 <b>Radar jammed!</b> ${esc(c.slip)}<span class="hw-work">✏️ ${esc(work)}</span>You lose your turn.`, cls: "no" };
-    Sound.play("wrong"); H.landed = null;
+    Sound.play("wrong"); H.landed = null; H.jammed = Object.assign(H.jammed || {}, { [HW.key(x, y)]: 1 });
   } else {
     H.stats.right += 1; H.streak += 1; H.level += 1;
     let bonus = "";
@@ -10967,7 +10977,7 @@ function hwTick() {
   const c = document.getElementById("hwClock"); if (c) c.textContent = pvClock(hwLeft(H));
   hwDrawHost();
 }
-const hwHits = (H, t) => Object.values(H.shots[hwOther(t)]).filter(v => v !== "m").length;
+const hwHits = (H, t) => Object.values(H.shots[hwOther(t)]).filter(v => v === "h" || v === "s").length;
 function hwEnd(winner) {
   const H = S.host; if (H.phase === "end") return;
   if (!winner) { const r = hwHits(H, "red"), b = hwHits(H, "blue"); winner = r > b ? "red" : b > r ? "blue" : "draw"; }
