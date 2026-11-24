@@ -135,7 +135,7 @@ def build(s):
             n += 1
             tip = f'<div class="tip"><b class="mono">Forensic tip</b>{q["tip"]}</div>' if q.get("tip") else ""
             kc += f'<div class="qg">{question(n, q)}{tip}</div>'
-        if k == "m" and s.get("marked_url"):
+        if k == "m" and s.get("marked_url") and not s.get("free"):
             kc += f'<div class="marked"><div><b>Get your Mastery working marked.</b> Open Forensic Marking, choose <b>{E(s["marked_topic"])}</b>, then write or photograph your working. Every mark explained, line by line.<br><span style="color:#9AA6CC;font-size:8pt">{E(s["marked_url"])}</span></div><img src="{qr(s["marked_url"])}" alt="QR code"></div>'
     sols, n = [], 0
     for k in "sem":

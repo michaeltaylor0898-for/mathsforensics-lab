@@ -1,0 +1,222 @@
+{
+ "code": "MF-CF-ALG-FORMEQ",
+ "product_line": "Case file worksheet · GCSE",
+ "strand": "Algebra",
+ "title": "Forming and solving equations",
+ "level_line": "GCSE Higher",
+ "time": "About 50 minutes",
+ "cover_sub": "Turn words into algebra, then solve it. Secure linear equations, extend to brackets, fractions and shapes, then master the problems that become quadratics.",
+ "levels": {
+  "s": "grades 4–5",
+  "e": "grades 6–7",
+  "m": "grades 8–9"
+ },
+ "levels_long": {
+  "s": "Linear equations: one and two steps, brackets, unknowns on both sides.",
+  "e": "Forming equations from shapes and words, fractions, and tampered evidence.",
+  "m": "Equations from problems that turn quadratic, and proof."
+ },
+ "briefing": [
+  "An equation is a balance: do the <b>same</b> to both sides and it stays true. To <b>form</b> an equation, give the unknown a letter, write two expressions for the same thing, and set them equal.",
+  "Brackets first, fractions next (multiply every term by the denominator), then collect the letters on the side with more of them."
+ ],
+ "method": [
+  "Define your letter: what does <i>x</i> stand for?",
+  "Write an expression for each fact, then make them equal.",
+  "Expand brackets, clear fractions, collect like terms, solve.",
+  "Answer the question that was asked, with units, and check it."
+ ],
+ "example": {
+  "question": "A rectangle's length is 3 cm more than twice its width. Its perimeter is 42 cm. Find its area.",
+  "steps": [
+   "Let the width be <i>w</i> cm. Then the length is 2<i>w</i> + 3.",
+   "Perimeter: 2(<i>w</i> + 2<i>w</i> + 3) = 42, so 6<i>w</i> + 6 = 42.",
+   "6<i>w</i> = 36, so <i>w</i> = 6. The length is 15 cm.",
+   "Area = 6 × 15 = 90 cm². Check: 2(6 + 15) = 42 ✓"
+  ],
+  "answer": "90 cm²"
+ },
+ "free": true,
+ "marked_url": "https://lab.mathsforensics.com/written/",
+ "marked_topic": "Forming and solving equations",
+ "sections": {
+  "s": {
+   "blurb": "The method, step by step. Show every line.",
+   "questions": [
+    {
+     "text": [
+      "Solve 5<i>x</i> − 7 = 18."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "<i>x</i> = 5",
+     "answer_label": "<i>x</i> ="
+    },
+    {
+     "text": [
+      "Solve 3(<i>x</i> + 4) = 27."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "<i>x</i> = 5",
+     "answer_label": "<i>x</i> =",
+     "working": "3<i>x</i> + 12 = 27, or divide by 3 first."
+    },
+    {
+     "text": [
+      "Solve 7<i>x</i> − 3 = 4<i>x</i> + 15."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "<i>x</i> = 6",
+     "answer_label": "<i>x</i> =",
+     "working": "3<i>x</i> = 18."
+    },
+    {
+     "text": [
+      "Solve (<i>x</i> + 5) ÷ 3 = 4."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "<i>x</i> = 7",
+     "answer_label": "<i>x</i> =",
+     "working": "<i>x</i> + 5 = 12."
+    },
+    {
+     "text": [
+      "I think of a number, multiply it by 4 and subtract 9. The answer is 31. Form an equation and solve it to find my number."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "10",
+     "answer_label": "Number",
+     "working": "4<i>n</i> − 9 = 31.",
+     "tip": "The method mark is for the equation. Write it down before you solve it, even if you can do it in your head."
+    }
+   ]
+  },
+  "e": {
+   "blurb": "A step is hidden, or there's a context to unpick. One piece of tampered evidence.",
+   "questions": [
+    {
+     "text": [
+      "A rectangle has length (2<i>x</i> + 3) cm and width (<i>x</i> − 1) cm. Its perimeter is 34 cm. Find its area."
+     ],
+     "marks": 4,
+     "lines": 4,
+     "answer": "52 cm²",
+     "answer_label": "cm²",
+     "working": "6<i>x</i> + 4 = 34, <i>x</i> = 5: 13 cm by 4 cm."
+    },
+    {
+     "text": [
+      "Solve 4(2<i>x</i> − 1) = 3(<i>x</i> + 7)."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "<i>x</i> = 5",
+     "answer_label": "<i>x</i> =",
+     "working": "8<i>x</i> − 4 = 3<i>x</i> + 21."
+    },
+    {
+     "text": [
+      "The angles of a triangle are (<i>x</i> + 20)°, 2<i>x</i>° and (3<i>x</i> − 20)°. Find the largest angle."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "70°",
+     "answer_label": "°",
+     "working": "6<i>x</i> = 180, <i>x</i> = 30: angles 50°, 60°, 70°."
+    },
+    {
+     "text": [
+      "Solve (2<i>x</i> − 1)/3 − (<i>x</i> + 2)/4 = 1."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "<i>x</i> = 4.4",
+     "answer_label": "<i>x</i> =",
+     "working": "× 12: 4(2<i>x</i> − 1) − 3(<i>x</i> + 2) = 12, so 5<i>x</i> − 10 = 12.",
+     "tip": "When you multiply through, the minus sign in front of the second fraction applies to <b>both</b> terms: −3(<i>x</i> + 2) = −3<i>x</i> − 6."
+    },
+    {
+     "text": [
+      "Amir solved 3(<i>x</i> − 2) = 2<i>x</i> + 5. Find his mistake and solve the equation correctly."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "<i>x</i> = 11",
+     "answer_label": "<i>x</i> =",
+     "working": "He only multiplied the <i>x</i> by 3: 3(<i>x</i> − 2) = 3<i>x</i> − 6.",
+     "tampered": "3x − 2 = 2x + 5<br>x = 7"
+    }
+   ]
+  },
+  "m": {
+   "blurb": "No hints. Plan before you calculate.",
+   "questions": [
+    {
+     "text": [
+      "A detective is three times as old as her trainee. In 8 years' time she will be twice as old as him. How old are they now?"
+     ],
+     "marks": 4,
+     "lines": 5,
+     "answer": "Trainee 8, detective 24",
+     "answer_label": "Ages",
+     "working": "3<i>t</i> + 8 = 2(<i>t</i> + 8)."
+    },
+    {
+     "text": [
+      "Solve 3/(<i>x</i> − 1) = 5/(<i>x</i> + 3)."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "<i>x</i> = 7",
+     "answer_label": "<i>x</i> =",
+     "working": "3(<i>x</i> + 3) = 5(<i>x</i> − 1)."
+    },
+    {
+     "text": [
+      "An isosceles triangle has two equal sides of (2<i>x</i> + 3) cm and a base of (<i>x</i> + 5) cm. Its perimeter is 46 cm. Find the length of each side."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "17 cm, 17 cm and 12 cm",
+     "answer_label": "Sides",
+     "working": "5<i>x</i> + 11 = 46, <i>x</i> = 7."
+    },
+    {
+     "text": [
+      "A rectangle's length is 4 cm more than its width. Its area is 96 cm². Find its perimeter."
+     ],
+     "marks": 4,
+     "lines": 5,
+     "answer": "40 cm",
+     "answer_label": "cm",
+     "working": "<i>w</i>(<i>w</i> + 4) = 96 → <i>w</i>² + 4<i>w</i> − 96 = 0 → (<i>w</i> + 12)(<i>w</i> − 8) = 0, <i>w</i> = 8. Reject −12: a length can't be negative."
+    },
+    {
+     "text": [
+      "Prove that the sum of any three consecutive whole numbers is a multiple of 3."
+     ],
+     "marks": 2,
+     "lines": 4,
+     "answer": "<i>n</i> + (<i>n</i> + 1) + (<i>n</i> + 2) = 3<i>n</i> + 3 = 3(<i>n</i> + 1), a multiple of 3."
+    }
+   ]
+  }
+ },
+ "closed_title": "Forming and solving equations",
+ "closed_points": [
+  "Solve linear equations with brackets, fractions and unknowns on both sides.",
+  "Form an equation from words or a diagram, defining your letter.",
+  "Answer the question asked, not just the value of <i>x</i>.",
+  "Recognise when a problem gives a quadratic, and reject impossible answers.",
+  "Write a short algebraic proof."
+ ],
+ "next": {
+  "title": "Practise every GCSE topic in the Lab",
+  "text": "New numbers every time, feedback that names the mistake behind each wrong answer, and handwritten working marked like an examiner. Start free.",
+  "url": "https://www.mathsforensics.com/the-lab"
+ }
+}

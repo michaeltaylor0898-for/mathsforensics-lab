@@ -1,0 +1,227 @@
+{
+ "code": "MF-CF-NUM-PCT",
+ "product_line": "Case file worksheet · GCSE",
+ "strand": "Number",
+ "title": "Percentages",
+ "level_line": "GCSE Higher",
+ "time": "About 50 minutes",
+ "cover_sub": "Multipliers do the heavy lifting. Secure percentage change, extend to reverse percentages and compound growth, then master the multi-step problems examiners love.",
+ "levels": {
+  "s": "grades 4–5",
+  "e": "grades 6–7",
+  "m": "grades 8–9"
+ },
+ "levels_long": {
+  "s": "Percentages of amounts, increase, decrease, percentage change.",
+  "e": "Reverse percentages, compound interest, depreciation, and tampered evidence.",
+  "m": "Repeated change, unknown rates and comparisons."
+ },
+ "briefing": [
+  "A <b>multiplier</b> turns any percentage change into one calculation. Increase by 15%: × 1.15. Decrease by 15%: × 0.85.",
+  "<b>Percentage change</b> = change ÷ original × 100. <b>Reverse percentage</b>: divide by the multiplier to get back to the original. <b>Compound change</b>: multiply by the multiplier once for every year, so original × multiplier<sup>n</sup>."
+ ],
+ "method": [
+  "Decide: percentage of, change, reverse, or repeated change?",
+  "Write the multiplier (100% ± the change, as a decimal).",
+  "Multiply, divide, or use a power.",
+  "Check: does the answer make sense? A price after an increase should be bigger."
+ ],
+ "example": {
+  "question": "After a 20% price rise, a forensic camera costs £96. What was the price before the rise?",
+  "steps": [
+   "A 20% rise means the new price is 120% of the original: multiplier 1.2.",
+   "Original × 1.2 = £96.",
+   "Original = £96 ÷ 1.2 = £80.",
+   "Check: £80 × 1.2 = £96 ✓"
+  ],
+  "answer": "£80"
+ },
+ "free": true,
+ "marked_url": "https://lab.mathsforensics.com/written/",
+ "marked_topic": "Percentage change",
+ "sections": {
+  "s": {
+   "blurb": "The method, step by step. Show every line.",
+   "questions": [
+    {
+     "text": [
+      "Find 35% of £240."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "£84",
+     "answer_label": "£",
+     "working": "0.35 × 240."
+    },
+    {
+     "text": [
+      "Increase £64 by 15%."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "£73.60",
+     "answer_label": "£",
+     "working": "64 × 1.15."
+    },
+    {
+     "text": [
+      "A laptop's price falls from £450 to £378. Work out the percentage decrease."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "16%",
+     "answer_label": "%",
+     "working": "Change £72. 72 ÷ 450 × 100.",
+     "tip": "Divide by the <b>original</b> amount, not the new one."
+    },
+    {
+     "text": [
+      "Write 18 out of 75 as a percentage."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "24%",
+     "answer_label": "%",
+     "working": "18 ÷ 75 × 100."
+    },
+    {
+     "text": [
+      "An evidence store holds 1250 items. 8% are fingerprint samples. How many items are not fingerprint samples?"
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "1150",
+     "answer_label": "Answer",
+     "working": "92% of 1250, or 1250 − 100."
+    }
+   ]
+  },
+  "e": {
+   "blurb": "A step is hidden, or there's a context to unpick. One piece of tampered evidence.",
+   "questions": [
+    {
+     "text": [
+      "A coat costs £56 in a sale with 30% off. What was its price before the sale?"
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "£80",
+     "answer_label": "£",
+     "working": "Sale price is 70%: 56 ÷ 0.7.",
+     "tip": "Don't add 30% of £56 back on. The 30% was taken off the <b>original</b> price, so divide by 0.7."
+    },
+    {
+     "text": [
+      "£2000 is invested at 3% compound interest per year. Work out its value after 4 years."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "£2251.02",
+     "answer_label": "£",
+     "working": "2000 × 1.03⁴ = 2251.0176…"
+    },
+    {
+     "text": [
+      "A car bought for £18,000 loses 15% of its value each year. Work out its value after 3 years."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "£11,054.25",
+     "answer_label": "£",
+     "working": "18000 × 0.85³."
+    },
+    {
+     "text": [
+      "A town's population is 12,000 after a 25% increase. What was it before?"
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "9,600",
+     "answer_label": "Answer",
+     "working": "12000 ÷ 1.25."
+    },
+    {
+     "text": [
+      "Ben was asked to find the value of £80 after 3 years at 5% compound interest. Find his mistake and give the correct value."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "£92.61",
+     "answer_label": "Correct value £",
+     "working": "He used simple interest (5% × 3). Compound: 80 × 1.05³ = 92.61.",
+     "tampered": "5% × 3 years = 15%<br>£80 × 1.15 = £92<br>Answer: £92"
+    }
+   ]
+  },
+  "m": {
+   "blurb": "No hints. Plan before you calculate.",
+   "questions": [
+    {
+     "text": [
+      "A price is increased by 20%, then the new price is decreased by 20%. Find the overall percentage change."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "A 4% decrease",
+     "answer_label": "Overall change",
+     "working": "1.2 × 0.8 = 0.96."
+    },
+    {
+     "text": [
+      "A colony of bacteria grows by <i>x</i>% each day. It grows from 5000 to 5618 in 2 days. Find <i>x</i>."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "<i>x</i> = 6",
+     "answer_label": "<i>x</i> =",
+     "working": "(1 + <i>x</i>/100)² = 5618 ÷ 5000 = 1.1236, so 1 + <i>x</i>/100 = 1.06."
+    },
+    {
+     "text": [
+      "An amount is invested at 4% compound interest. After 3 years it is worth £5624.32. How much was invested?"
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "£5000",
+     "answer_label": "£",
+     "working": "5624.32 ÷ 1.04³ = 5624.32 ÷ 1.124864."
+    },
+    {
+     "text": [
+      "A jacket costs £120. Shop A takes 25% off, then a further 10% off the reduced price. Shop B takes 33% off.",
+      "Which shop is cheaper, and by how much?"
+     ],
+     "marks": 4,
+     "lines": 5,
+     "answer": "Shop B, by 60p",
+     "answer_label": "Shop ____ by",
+     "working": "A: 120 × 0.75 × 0.9 = £81. B: 120 × 0.67 = £80.40.",
+     "tip": "25% then 10% is <b>not</b> 35% off. Multiply the multipliers: 0.75 × 0.9 = 0.675, which is 32.5% off."
+    },
+    {
+     "text": [
+      "A painting gains 10% in value each year. After how many whole years will its value first be more than double what it is now?"
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "8 years",
+     "answer_label": "years",
+     "working": "1.1⁷ = 1.949, 1.1⁸ = 2.144."
+    }
+   ]
+  }
+ },
+ "closed_title": "Percentages",
+ "closed_points": [
+  "Use a multiplier for any percentage increase or decrease.",
+  "Work out a percentage change, dividing by the original amount.",
+  "Undo a percentage change by dividing by the multiplier.",
+  "Model compound growth and depreciation with powers.",
+  "Combine several changes by multiplying their multipliers."
+ ],
+ "next": {
+  "title": "Practise every GCSE topic in the Lab",
+  "text": "New numbers every time, feedback that names the mistake behind each wrong answer, and handwritten working marked like an examiner. Start free.",
+  "url": "https://www.mathsforensics.com/the-lab"
+ }
+}

@@ -1,0 +1,225 @@
+{
+ "code": "MF-CF-ALG-QUADEQ",
+ "product_line": "Case file worksheet · GCSE",
+ "strand": "Algebra",
+ "title": "Quadratic equations",
+ "level_line": "GCSE Higher",
+ "time": "About 50 minutes",
+ "cover_sub": "Three ways to crack a quadratic. Secure factorising, extend to the formula and completing the square, then master disguised quadratics and the discriminant.",
+ "levels": {
+  "s": "grades 4–5",
+  "e": "grades 6–7",
+  "m": "grades 8–9"
+ },
+ "levels_long": {
+  "s": "Solving by factorising, including a ≠ 1.",
+  "e": "The formula, completing the square, forming a quadratic, and tampered evidence.",
+  "m": "Disguised quadratics, the discriminant and context problems."
+ },
+ "briefing": [
+  "A quadratic equation has an <i>x</i>² term. Rearrange to <b>= 0</b> first. Then: <b>factorise</b> if it factorises, use the <b>formula</b> <i>x</i> = (−<i>b</i> ± √(<i>b</i>² − 4<i>ac</i>)) ÷ 2<i>a</i> when it doesn't, and <b>complete the square</b> when the question asks for surd form or a turning point.",
+  "The <b>discriminant</b> <i>b</i>² − 4<i>ac</i> tells you how many solutions there are: positive, two; zero, one; negative, none."
+ ],
+ "method": [
+  "Rearrange so one side is 0.",
+  "Choose: factorise, formula, or complete the square.",
+  "Solve each bracket, or substitute carefully into the formula, with brackets round negatives.",
+  "Give both solutions, rounded as asked, and reject any that don't fit a context."
+ ],
+ "example": {
+  "question": "Solve 2<i>x</i>² − 3<i>x</i> − 7 = 0, giving your answers to 2 decimal places.",
+  "steps": [
+   "It doesn't factorise, so use the formula with <i>a</i> = 2, <i>b</i> = −3, <i>c</i> = −7.",
+   "<i>x</i> = (3 ± √((−3)² − 4 × 2 × (−7))) ÷ 4 = (3 ± √65) ÷ 4.",
+   "√65 = 8.0623, so <i>x</i> = 11.0623 ÷ 4 or −5.0623 ÷ 4.",
+   "Check by substituting one answer: 2(2.77)² − 3(2.77) − 7 ≈ 0 ✓"
+  ],
+  "answer": "<i>x</i> = 2.77 or <i>x</i> = −1.27"
+ },
+ "free": true,
+ "marked_url": "https://lab.mathsforensics.com/written/",
+ "marked_topic": "The quadratic formula",
+ "sections": {
+  "s": {
+   "blurb": "The method, step by step. Show every line.",
+   "questions": [
+    {
+     "text": [
+      "Solve <i>x</i>² + 7<i>x</i> + 12 = 0."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "<i>x</i> = −3 or <i>x</i> = −4",
+     "answer_label": "<i>x</i> =",
+     "working": "(<i>x</i> + 3)(<i>x</i> + 4) = 0."
+    },
+    {
+     "text": [
+      "Solve <i>x</i>² − 5<i>x</i> = 0."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "<i>x</i> = 0 or <i>x</i> = 5",
+     "answer_label": "<i>x</i> =",
+     "working": "<i>x</i>(<i>x</i> − 5) = 0.",
+     "tip": "Don't divide both sides by <i>x</i>: you lose the solution <i>x</i> = 0. Factorise instead."
+    },
+    {
+     "text": [
+      "Solve <i>x</i>² − 49 = 0."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "<i>x</i> = 7 or <i>x</i> = −7",
+     "answer_label": "<i>x</i> =",
+     "working": "Difference of two squares, or <i>x</i>² = 49."
+    },
+    {
+     "text": [
+      "Solve <i>x</i>² − 2<i>x</i> − 15 = 0."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "<i>x</i> = 5 or <i>x</i> = −3",
+     "answer_label": "<i>x</i> =",
+     "working": "(<i>x</i> − 5)(<i>x</i> + 3) = 0."
+    },
+    {
+     "text": [
+      "Solve 2<i>x</i>² + 7<i>x</i> + 3 = 0."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "<i>x</i> = −½ or <i>x</i> = −3",
+     "answer_label": "<i>x</i> =",
+     "working": "(2<i>x</i> + 1)(<i>x</i> + 3) = 0."
+    }
+   ]
+  },
+  "e": {
+   "blurb": "A step is hidden, or there's a context to unpick. One piece of tampered evidence.",
+   "questions": [
+    {
+     "text": [
+      "Solve 3<i>x</i>² − 5<i>x</i> − 4 = 0. Give your answers to 2 decimal places."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "<i>x</i> = 2.26 or <i>x</i> = −0.59",
+     "answer_label": "<i>x</i> =",
+     "working": "(5 ± √73) ÷ 6."
+    },
+    {
+     "text": [
+      "Write <i>x</i>² + 6<i>x</i> − 5 in the form (<i>x</i> + <i>a</i>)² + <i>b</i>."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "(<i>x</i> + 3)² − 14",
+     "answer_label": "Answer",
+     "working": "(<i>x</i> + 3)² = <i>x</i>² + 6<i>x</i> + 9, so subtract 14."
+    },
+    {
+     "text": [
+      "Hence solve <i>x</i>² + 6<i>x</i> − 5 = 0, giving your answers in surd form."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "<i>x</i> = −3 ± √14",
+     "answer_label": "<i>x</i> =",
+     "working": "(<i>x</i> + 3)² = 14."
+    },
+    {
+     "text": [
+      "A rectangle has length (<i>x</i> + 5) cm and width (<i>x</i> − 2) cm. Its area is 60 cm². Find <i>x</i>."
+     ],
+     "marks": 4,
+     "lines": 4,
+     "answer": "<i>x</i> = 7",
+     "answer_label": "<i>x</i> =",
+     "working": "<i>x</i>² + 3<i>x</i> − 70 = 0 → (<i>x</i> + 10)(<i>x</i> − 7) = 0. Reject −10: the width would be negative."
+    },
+    {
+     "text": [
+      "Leah solved <i>x</i>² − 3<i>x</i> − 10 = 0. Find her mistake and give the correct solutions."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "<i>x</i> = 5 or <i>x</i> = −2",
+     "answer_label": "<i>x</i> =",
+     "working": "Her factors are right but the signs of the solutions are flipped: <i>x</i> − 5 = 0 gives <i>x</i> = 5.",
+     "tampered": "(x − 5)(x + 2) = 0<br>x = −5 or x = 2"
+    }
+   ]
+  },
+  "m": {
+   "blurb": "No hints. Plan before you calculate.",
+   "questions": [
+    {
+     "text": [
+      "Solve 2/(<i>x</i> + 1) + 3/<i>x</i> = 2. Give your answers to 2 decimal places."
+     ],
+     "marks": 5,
+     "lines": 6,
+     "answer": "<i>x</i> = 2.19 or <i>x</i> = −0.69",
+     "answer_label": "<i>x</i> =",
+     "working": "2<i>x</i> + 3(<i>x</i> + 1) = 2<i>x</i>(<i>x</i> + 1) → 2<i>x</i>² − 3<i>x</i> − 3 = 0 → (3 ± √33) ÷ 4."
+    },
+    {
+     "text": [
+      "Show that <i>x</i>² − 4<i>x</i> + 7 = 0 has no real solutions."
+     ],
+     "marks": 2,
+     "lines": 3,
+     "answer": "<i>b</i>² − 4<i>ac</i> = 16 − 28 = −12 < 0, so no real solutions.",
+     "answer_label": false,
+     "working": "Or: (<i>x</i> − 2)² + 3 is always at least 3."
+    },
+    {
+     "text": [
+      "<i>x</i>² + <i>k</i><i>x</i> + 9 = 0 has exactly one solution. Find the possible values of <i>k</i>."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "<i>k</i> = 6 or <i>k</i> = −6",
+     "answer_label": "<i>k</i> =",
+     "working": "<i>k</i>² − 36 = 0."
+    },
+    {
+     "text": [
+      "Solve <i>x</i>⁴ − 13<i>x</i>² + 36 = 0."
+     ],
+     "marks": 4,
+     "lines": 5,
+     "answer": "<i>x</i> = ±2 or <i>x</i> = ±3",
+     "answer_label": "<i>x</i> =",
+     "working": "Let <i>y</i> = <i>x</i>²: <i>y</i>² − 13<i>y</i> + 36 = 0 → (<i>y</i> − 4)(<i>y</i> − 9) = 0.",
+     "tip": "A quadratic in disguise. Substitute <i>y</i> = <i>x</i>², solve, then take <b>both</b> square roots of each answer."
+    },
+    {
+     "text": [
+      "A drone's height in metres after <i>t</i> seconds is <i>h</i> = 20<i>t</i> − 5<i>t</i>². Find when it is 15 m above the ground."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "<i>t</i> = 1 s and <i>t</i> = 3 s",
+     "answer_label": "<i>t</i> =",
+     "working": "5<i>t</i>² − 20<i>t</i> + 15 = 0 → <i>t</i>² − 4<i>t</i> + 3 = 0."
+    }
+   ]
+  }
+ },
+ "closed_title": "Quadratic equations",
+ "closed_points": [
+  "Solve quadratics by factorising, including when <i>a</i> isn't 1.",
+  "Use the quadratic formula and round sensibly.",
+  "Complete the square and give answers in surd form.",
+  "Use the discriminant to count solutions.",
+  "Spot a quadratic in disguise and solve problems in context."
+ ],
+ "next": {
+  "title": "Practise every GCSE topic in the Lab",
+  "text": "New numbers every time, feedback that names the mistake behind each wrong answer, and handwritten working marked like an examiner. Start free.",
+  "url": "https://www.mathsforensics.com/the-lab"
+ }
+}

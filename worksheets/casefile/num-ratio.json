@@ -1,0 +1,231 @@
+{
+ "code": "MF-CF-NUM-RATIO",
+ "product_line": "Case file worksheet · GCSE",
+ "strand": "Number",
+ "title": "Ratio",
+ "level_line": "GCSE Higher",
+ "time": "About 50 minutes",
+ "cover_sub": "Parts, shares and differences. Secure the method, extend it to hidden totals and linked ratios, then master the changing-ratio problems that decide grade 8 and 9.",
+ "levels": {
+  "s": "grades 4–5",
+  "e": "grades 6–7",
+  "m": "grades 8–9"
+ },
+ "levels_long": {
+  "s": "Sharing an amount, simplifying, scaling.",
+  "e": "Differences, linked ratios, and one piece of tampered evidence.",
+  "m": "Ratios that change, and ratio with algebra."
+ },
+ "briefing": [
+  "A ratio compares quantities of the <b>same kind</b>, in the <b>same units</b>. 3 : 5 means for every 3 of the first there are 5 of the second: 8 <b>parts</b> altogether.",
+  "Almost every ratio question comes down to finding the value of <b>one part</b>. Work out how many parts you know about, and what they're worth."
+ ],
+ "method": [
+  "Add the numbers in the ratio to find the total number of parts.",
+  "Divide the amount you know by the number of parts it covers: that's one part.",
+  "Multiply one part by each number in the ratio.",
+  "Check: the shares add up to the total."
+ ],
+ "example": {
+  "question": "Two suspects split £27,000 in the ratio 4 : 5. How much does each receive?",
+  "steps": [
+   "4 + 5 = 9 parts altogether.",
+   "£27,000 ÷ 9 = £3,000 for one part.",
+   "Suspect 1: 4 × £3,000 = £12,000. Suspect 2: 5 × £3,000 = £15,000.",
+   "Check: £12,000 + £15,000 = £27,000 ✓"
+  ],
+  "answer": "£12,000 and £15,000"
+ },
+ "free": true,
+ "marked_url": "https://lab.mathsforensics.com/written/",
+ "marked_topic": "Sharing in a ratio",
+ "sections": {
+  "s": {
+   "blurb": "The method, step by step. Show every line.",
+   "questions": [
+    {
+     "text": [
+      "Share £84 in the ratio 3 : 4."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "£36 and £48",
+     "answer_label": "£ ____ and £",
+     "working": "7 parts, £12 a part."
+    },
+    {
+     "text": [
+      "Share 270 g in the ratio 2 : 3 : 4."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "60 g, 90 g and 120 g",
+     "answer_label": "Three amounts",
+     "working": "9 parts, 30 g a part."
+    },
+    {
+     "text": [
+      "Evidence bags are red or blue in the ratio 5 : 3. There are 40 red bags. How many blue bags are there?"
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "24",
+     "answer_label": "Answer",
+     "working": "5 parts = 40, so one part = 8; blue = 3 × 8."
+    },
+    {
+     "text": [
+      "Write 45 cm : 1.5 m as a ratio in its simplest form."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "3 : 10",
+     "answer_label": "Answer",
+     "working": "45 cm : 150 cm, then divide by 15.",
+     "tip": "Change to the <b>same units</b> before you simplify. 45 : 1.5 is a common wrong start."
+    },
+    {
+     "text": [
+      "A team of 36 is split into analysts and officers in the ratio 4 : 5. How many more officers are there than analysts?"
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "4",
+     "answer_label": "Answer",
+     "working": "9 parts, 4 a part: 16 analysts, 20 officers."
+    }
+   ]
+  },
+  "e": {
+   "blurb": "A step is hidden, or there's a context to unpick. One piece of tampered evidence.",
+   "questions": [
+    {
+     "text": [
+      "The ratio of boys to girls in a club is 3 : 5. There are 18 more girls than boys. How many members are there?"
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "72",
+     "answer_label": "Answer",
+     "working": "Difference 2 parts = 18, one part 9, total 8 parts = 72.",
+     "tip": "The <b>difference</b> between two shares is also a number of parts: here 5 − 3 = 2 parts."
+    },
+    {
+     "text": [
+      "<i>a</i> : <i>b</i> = 3 : 4 and <i>b</i> : <i>c</i> = 6 : 5.",
+      "Find <i>a</i> : <i>b</i> : <i>c</i> in its simplest form."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "9 : 12 : 10",
+     "answer_label": "<i>a</i> : <i>b</i> : <i>c</i> =",
+     "working": "Make <i>b</i> the same: 3 : 4 = 9 : 12 and 6 : 5 = 12 : 10."
+    },
+    {
+     "text": [
+      "A recipe for 4 people uses 300 g of flour and 2 eggs. How much of each is needed for 10 people?"
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "750 g flour and 5 eggs",
+     "answer_label": "Flour ____ g Eggs",
+     "working": "Scale by 10 ÷ 4 = 2.5."
+    },
+    {
+     "text": [
+      "Concrete is cement and sand in the ratio 2 : 7. What fraction of the concrete is sand?"
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "7/9",
+     "answer_label": "Answer",
+     "working": "9 parts altogether, 7 of them sand."
+    },
+    {
+     "text": [
+      "Jo was asked to share £60 in the ratio 2 : 3. Find her mistake and give the correct shares."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "£24 and £36",
+     "answer_label": "Correct shares",
+     "working": "She divided by each number in the ratio, not by 5 parts. One part is £12.",
+     "tampered": "£60 ÷ 2 = £30<br>£60 ÷ 3 = £20<br>Answer: £30 and £20"
+    }
+   ]
+  },
+  "m": {
+   "blurb": "No hints. Plan before you calculate.",
+   "questions": [
+    {
+     "text": [
+      "The ratio of Tom's money to Sam's money is 3 : 5.",
+      "Tom gives Sam £10. Now the ratio is 1 : 3.",
+      "How much money did Tom have at the start?"
+     ],
+     "marks": 4,
+     "lines": 6,
+     "answer": "£30",
+     "answer_label": "£",
+     "working": "Tom 3<i>x</i>, Sam 5<i>x</i>. 3(3<i>x</i> − 10) = 5<i>x</i> + 10, so <i>x</i> = 10.",
+     "tip": "Give each person an amount in terms of <i>x</i>, change both amounts, then write the new ratio as an equation."
+    },
+    {
+     "text": [
+      "Solve (<i>x</i> + 3) : (<i>x</i> − 1) = 7 : 3."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "<i>x</i> = 4",
+     "answer_label": "<i>x</i> =",
+     "working": "3(<i>x</i> + 3) = 7(<i>x</i> − 1), so 3<i>x</i> + 9 = 7<i>x</i> − 7."
+    },
+    {
+     "text": [
+      "A bag holds 40 counters. Red to green is 3 : 5.",
+      "How many green counters must be added so the ratio of red to green becomes 1 : 3?"
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "20",
+     "answer_label": "Answer",
+     "working": "15 red and 25 green. For 1 : 3, green must be 45."
+    },
+    {
+     "text": [
+      "Purple paint is red and blue mixed in the ratio 2 : 3.",
+      "Lara has 500 ml of red and 900 ml of blue. What is the most purple paint she can make?"
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "1250 ml",
+     "answer_label": "ml",
+     "working": "All the red (2 parts = 500 ml) needs 750 ml of blue, which she has. Using all the blue would need 600 ml of red."
+    },
+    {
+     "text": [
+      "The areas of two squares are in the ratio 4 : 9. Find the ratio of their perimeters. Explain your answer."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "2 : 3",
+     "answer_label": "Ratio",
+     "working": "Lengths are in the ratio √4 : √9 = 2 : 3, and perimeter is a length."
+    }
+   ]
+  }
+ },
+ "closed_title": "Ratio",
+ "closed_points": [
+  "Share an amount in a ratio, and find one part from any information you're given.",
+  "Use the difference between shares as a number of parts.",
+  "Link two ratios by making the shared term the same.",
+  "Turn a changing ratio into an equation and solve it.",
+  "Spot when a ratio has to be simplified, scaled or converted first."
+ ],
+ "next": {
+  "title": "Practise every GCSE topic in the Lab",
+  "text": "New numbers every time, feedback that names the mistake behind each wrong answer, and handwritten working marked like an examiner. Start free.",
+  "url": "https://www.mathsforensics.com/the-lab"
+ }
+}
