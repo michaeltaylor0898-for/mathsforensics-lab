@@ -1,5 +1,8 @@
 import json
 x,y,k,t,n,w='<i>x</i>','<i>y</i>','<i>k</i>','<i>t</i>','<i>n</i>','<i>w</i>'
+def F(nu,de): return f'<span class="frac"><span class="nu">{nu}</span><span class="de">{de}</span></span>'
+def R(v): return f'<span class="rad">√<span class="ov">{v}</span></span>'
+QF=F("−<i>b</i> ± "+R("<i>b</i>² − 4<i>ac</i>"),"2<i>a</i>")
 MU="https://lab.mathsforensics.com/written/"
 NEXT={"title":"Practise every GCSE topic in the Lab","text":"New numbers every time, feedback that names the mistake behind each wrong answer, and handwritten working marked like an examiner. Start free.","url":"https://www.mathsforensics.com/the-lab"}
 LV={"s":"grades 4–5","e":"grades 6–7","m":"grades 8–9"}
@@ -76,15 +79,15 @@ S["alg-forming-equations"]=sheet("MF-CF-ALG-FORMEQ","Algebra","Forming and solvi
  [Q(f"Solve 5{x} − 7 = 18.",2,f"{x} = 5",label=f"{x} ="),
   Q(f"Solve 3({x} + 4) = 27.",2,f"{x} = 5","3<i>x</i> + 12 = 27, or divide by 3 first.",label=f"{x} ="),
   Q(f"Solve 7{x} − 3 = 4{x} + 15.",2,f"{x} = 6","3<i>x</i> = 18.",label=f"{x} ="),
-  Q(f"Solve ({x} + 5) ÷ 3 = 4.",2,f"{x} = 7","<i>x</i> + 5 = 12.",label=f"{x} ="),
+  Q("Solve "+F(x+" + 5","3")+" = 4.",2,f"{x} = 7","<i>x</i> + 5 = 12.",label=f"{x} ="),
   Q("I think of a number, multiply it by 4 and subtract 9. The answer is 31. Form an equation and solve it to find my number.",3,"10","4<i>n</i> − 9 = 31.",label="Number",tip="The method mark is for the equation. Write it down before you solve it, even if you can do it in your head.")],
  [Q(f"A rectangle has length (2{x} + 3) cm and width ({x} − 1) cm. Its perimeter is 34 cm. Find its area.",4,"52 cm²","6<i>x</i> + 4 = 34, <i>x</i> = 5: 13 cm by 4 cm.",lines=4,label="cm²"),
   Q(f"Solve 4(2{x} − 1) = 3({x} + 7).",3,f"{x} = 5","8<i>x</i> − 4 = 3<i>x</i> + 21.",label=f"{x} ="),
   Q(f"The angles of a triangle are ({x} + 20)°, 2{x}° and (3{x} − 20)°. Find the largest angle.",3,"70°","6<i>x</i> = 180, <i>x</i> = 30: angles 50°, 60°, 70°.",label="°"),
-  Q(f"Solve (2{x} − 1)/3 − ({x} + 2)/4 = 1.",3,f"{x} = 4.4","× 12: 4(2<i>x</i> − 1) − 3(<i>x</i> + 2) = 12, so 5<i>x</i> − 10 = 12.",label=f"{x} =",tip="When you multiply through, the minus sign in front of the second fraction applies to <b>both</b> terms: −3(<i>x</i> + 2) = −3<i>x</i> − 6."),
+  Q("Solve "+F("2"+x+" − 1","3")+" − "+F(x+" + 2","4")+" = 1.",3,f"{x} = 4.4","× 12: 4(2<i>x</i> − 1) − 3(<i>x</i> + 2) = 12, so 5<i>x</i> − 10 = 12.",label=f"{x} =",tip="When you multiply through, the minus sign in front of the second fraction applies to <b>both</b> terms: −3(<i>x</i> + 2) = −3<i>x</i> − 6."),
   Q(f"Amir solved 3({x} − 2) = 2{x} + 5. Find his mistake and solve the equation correctly.",2,f"{x} = 11","He only multiplied the <i>x</i> by 3: 3(<i>x</i> − 2) = 3<i>x</i> − 6.",tampered="3x − 2 = 2x + 5<br>x = 7",label=f"{x} =")],
  [Q("A detective is three times as old as her trainee. In 8 years' time she will be twice as old as him. How old are they now?",4,"Trainee 8, detective 24","3<i>t</i> + 8 = 2(<i>t</i> + 8).",lines=5,label="Ages"),
-  Q(f"Solve 3/({x} − 1) = 5/({x} + 3).",3,f"{x} = 7","3(<i>x</i> + 3) = 5(<i>x</i> − 1).",label=f"{x} ="),
+  Q("Solve "+F("3",x+" − 1")+" = "+F("5",x+" + 3")+".",3,f"{x} = 7","3(<i>x</i> + 3) = 5(<i>x</i> − 1).",label=f"{x} ="),
   Q(f"An isosceles triangle has two equal sides of (2{x} + 3) cm and a base of ({x} + 5) cm. Its perimeter is 46 cm. Find the length of each side.",3,"17 cm, 17 cm and 12 cm","5<i>x</i> + 11 = 46, <i>x</i> = 7.",label="Sides"),
   Q("A rectangle's length is 4 cm more than its width. Its area is 96 cm². Find its perimeter.",4,"40 cm","<i>w</i>(<i>w</i> + 4) = 96 → <i>w</i>² + 4<i>w</i> − 96 = 0 → (<i>w</i> + 12)(<i>w</i> − 8) = 0, <i>w</i> = 8. Reject −12: a length can't be negative.",lines=5,label="cm"),
   Q("Prove that the sum of any three consecutive whole numbers is a multiple of 3.",2,"<i>n</i> + (<i>n</i> + 1) + (<i>n</i> + 2) = 3<i>n</i> + 3 = 3(<i>n</i> + 1), a multiple of 3.",lines=4,label=None)],
@@ -98,21 +101,22 @@ for d in S.values():
 S["alg-quadratic-equations"]=sheet("MF-CF-ALG-QUADEQ","Algebra","Quadratic equations","The quadratic formula",
  "Three ways to crack a quadratic. Secure factorising, extend to the formula and completing the square, then master disguised quadratics and the discriminant.",
  ["Solving by factorising, including a ≠ 1.","The formula, completing the square, forming a quadratic, and tampered evidence.","Disguised quadratics, the discriminant and context problems."],
- ["A quadratic equation has an <i>x</i>² term. Rearrange to <b>= 0</b> first. Then: <b>factorise</b> if it factorises, use the <b>formula</b> <i>x</i> = (−<i>b</i> ± √(<i>b</i>² − 4<i>ac</i>)) ÷ 2<i>a</i> when it doesn't, and <b>complete the square</b> when the question asks for surd form or a turning point.",
+ ["A quadratic equation has an <i>x</i>² term. Rearrange to <b>= 0</b> first. Then: <b>factorise</b> if it factorises, use the <b>formula</b> when it doesn't, and <b>complete the square</b> when the question asks for surd form or a turning point.",
+  f'<div class="display"><i>x</i> = {QF}</div>',
   "The <b>discriminant</b> <i>b</i>² − 4<i>ac</i> tells you how many solutions there are: positive, two; zero, one; negative, none."],
  ["Rearrange so one side is 0.","Choose: factorise, formula, or complete the square.","Solve each bracket, or substitute carefully into the formula, with brackets round negatives.","Give both solutions, rounded as asked, and reject any that don't fit a context."],
- {"question":"Solve 2<i>x</i>² − 3<i>x</i> − 7 = 0, giving your answers to 2 decimal places.","steps":["It doesn't factorise, so use the formula with <i>a</i> = 2, <i>b</i> = −3, <i>c</i> = −7.","<i>x</i> = (3 ± √((−3)² − 4 × 2 × (−7))) ÷ 4 = (3 ± √65) ÷ 4.","√65 = 8.0623, so <i>x</i> = 11.0623 ÷ 4 or −5.0623 ÷ 4.","Check by substituting one answer: 2(2.77)² − 3(2.77) − 7 ≈ 0 ✓"],"answer":"<i>x</i> = 2.77 or <i>x</i> = −1.27"},
+ {"question":"Solve 2<i>x</i>² − 3<i>x</i> − 7 = 0, giving your answers to 2 decimal places.","steps":["It doesn't factorise, so use the formula with <i>a</i> = 2, <i>b</i> = −3, <i>c</i> = −7.",f'<i>x</i> = {F("3 ± "+R("(−3)² − 4 × 2 × (−7)"),"2 × 2")} = {F("3 ± "+R("65"),"4")}',"√65 = 8.0623, so <i>x</i> = 11.0623 ÷ 4 or −5.0623 ÷ 4.","Check by substituting one answer: 2(2.77)² − 3(2.77) − 7 ≈ 0 ✓"],"answer":"<i>x</i> = 2.77 or <i>x</i> = −1.27"},
  [Q(f"Solve {x}² + 7{x} + 12 = 0.",3,f"{x} = −3 or {x} = −4","(<i>x</i> + 3)(<i>x</i> + 4) = 0.",label=f"{x} ="),
   Q(f"Solve {x}² − 5{x} = 0.",2,f"{x} = 0 or {x} = 5","<i>x</i>(<i>x</i> − 5) = 0.",label=f"{x} =",tip="Don't divide both sides by <i>x</i>: you lose the solution <i>x</i> = 0. Factorise instead."),
   Q(f"Solve {x}² − 49 = 0.",2,f"{x} = 7 or {x} = −7","Difference of two squares, or <i>x</i>² = 49.",label=f"{x} ="),
   Q(f"Solve {x}² − 2{x} − 15 = 0.",3,f"{x} = 5 or {x} = −3","(<i>x</i> − 5)(<i>x</i> + 3) = 0.",label=f"{x} ="),
   Q(f"Solve 2{x}² + 7{x} + 3 = 0.",3,f"{x} = −½ or {x} = −3","(2<i>x</i> + 1)(<i>x</i> + 3) = 0.",label=f"{x} =")],
- [Q(f"Solve 3{x}² − 5{x} − 4 = 0. Give your answers to 2 decimal places.",3,f"{x} = 2.26 or {x} = −0.59","(5 ± √73) ÷ 6.",label=f"{x} ="),
+ [Q(f"Solve 3{x}² − 5{x} − 4 = 0. Give your answers to 2 decimal places.",3,f"{x} = 2.26 or {x} = −0.59",f'<i>x</i> = {F("5 ± "+R("73"),"6")}',label=f"{x} ="),
   Q(f"Write {x}² + 6{x} − 5 in the form ({x} + <i>a</i>)² + <i>b</i>.",2,f"({x} + 3)² − 14","(<i>x</i> + 3)² = <i>x</i>² + 6<i>x</i> + 9, so subtract 14.",label="Answer"),
   Q(f"Hence solve {x}² + 6{x} − 5 = 0, giving your answers in surd form.",2,f"{x} = −3 ± √14","(<i>x</i> + 3)² = 14.",label=f"{x} ="),
   Q(f"A rectangle has length ({x} + 5) cm and width ({x} − 2) cm. Its area is 60 cm². Find {x}.",4,f"{x} = 7","<i>x</i>² + 3<i>x</i> − 70 = 0 → (<i>x</i> + 10)(<i>x</i> − 7) = 0. Reject −10: the width would be negative.",lines=4,label=f"{x} ="),
   Q(f"Leah solved {x}² − 3{x} − 10 = 0. Find her mistake and give the correct solutions.",2,f"{x} = 5 or {x} = −2","Her factors are right but the signs of the solutions are flipped: <i>x</i> − 5 = 0 gives <i>x</i> = 5.",tampered="(x − 5)(x + 2) = 0<br>x = −5 or x = 2",label=f"{x} =")],
- [Q(f"Solve 2/({x} + 1) + 3/{x} = 2. Give your answers to 2 decimal places.",5,f"{x} = 2.19 or {x} = −0.69","2<i>x</i> + 3(<i>x</i> + 1) = 2<i>x</i>(<i>x</i> + 1) → 2<i>x</i>² − 3<i>x</i> − 3 = 0 → (3 ± √33) ÷ 4.",lines=6,label=f"{x} ="),
+ [Q("Solve "+F("2",x+" + 1")+" + "+F("3",x)+" = 2. Give your answers to 2 decimal places.",5,f"{x} = 2.19 or {x} = −0.69","2<i>x</i> + 3(<i>x</i> + 1) = 2<i>x</i>(<i>x</i> + 1) → 2<i>x</i>² − 3<i>x</i> − 3 = 0 → <i>x</i> = "+F("3 ± "+R("33"),"4"),lines=6,label=f"{x} ="),
   Q(f"Show that {x}² − 4{x} + 7 = 0 has no real solutions.",2,"<i>b</i>² − 4<i>ac</i> = 16 − 28 = −12 < 0, so no real solutions.","Or: (<i>x</i> − 2)² + 3 is always at least 3.",lines=3,label=False),
   Q(f"{x}² + {k}{x} + 9 = 0 has exactly one solution. Find the possible values of {k}.",3,f"{k} = 6 or {k} = −6","<i>k</i>² − 36 = 0.",label=f"{k} ="),
   Q(f"Solve {x}⁴ − 13{x}² + 36 = 0.",4,f"{x} = ±2 or {x} = ±3","Let <i>y</i> = <i>x</i>²: <i>y</i>² − 13<i>y</i> + 36 = 0 → (<i>y</i> − 4)(<i>y</i> − 9) = 0.",lines=5,label=f"{x} =",tip="A quadratic in disguise. Substitute <i>y</i> = <i>x</i>², solve, then take <b>both</b> square roots of each answer."),

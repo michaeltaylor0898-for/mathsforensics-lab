@@ -74,7 +74,7 @@
     },
     {
      "text": [
-      "Solve (<i>x</i> + 5) ÷ 3 = 4."
+      "Solve <span class=\"frac\"><span class=\"nu\"><i>x</i> + 5</span><span class=\"de\">3</span></span> = 4."
      ],
      "marks": 2,
      "lines": 2,
@@ -130,7 +130,7 @@
     },
     {
      "text": [
-      "Solve (2<i>x</i> − 1)/3 − (<i>x</i> + 2)/4 = 1."
+      "Solve <span class=\"frac\"><span class=\"nu\">2<i>x</i> − 1</span><span class=\"de\">3</span></span> − <span class=\"frac\"><span class=\"nu\"><i>x</i> + 2</span><span class=\"de\">4</span></span> = 1."
      ],
      "marks": 3,
      "lines": 3,
@@ -167,7 +167,7 @@
     },
     {
      "text": [
-      "Solve 3/(<i>x</i> − 1) = 5/(<i>x</i> + 3)."
+      "Solve <span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\"><i>x</i> − 1</span></span> = <span class=\"frac\"><span class=\"nu\">5</span><span class=\"de\"><i>x</i> + 3</span></span>."
      ],
      "marks": 3,
      "lines": 3,
