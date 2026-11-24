@@ -5045,7 +5045,7 @@ function supabaseStore(cfg){
     async diagnostics(userId){const r=await sb.from('diagnostics').select('*').eq('user_id',userId).order('created_at',{ascending:false});return r.error?[]:r.data},
     async resetMyProgress(userId){must(await sb.from('attempts').delete().eq('user_id',userId))},
     async joinClass(userId,code){
-      const id=must(await sb.rpc('join_class',{p_code:String(code).trim().toUpperCase()}));
+      const id=must(await sb.rpc('join_class',{p_code:String(code).toUpperCase().replace(/[^A-Z0-9]/g,'')}));
       const r=await sb.from('classes').select('id,name,academy_on,lab_on').eq('id',id).single();
       return r.error?must(await sb.from('classes').select('id,name').eq('id',id).single()):r.data;
     },
@@ -5475,7 +5475,7 @@ function finishCheck(){
 function joinBoxHTML(){
   if(S.access.source==='school'||S.access.level==='full') return '';
   return `<div class="panel joinbox"><div><h2>Got a class code from your teacher?</h2><p>Enter it here to join your class. You'll see the work your teacher sets and get every topic unlocked.</p></div>
-    <form id="fJoinToday" class="joinform" novalidate><input class="inp codeinp" id="jt-code" placeholder="HX7K2Q" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Class code"><button class="btn" type="submit">Join my class</button><p class="formerr" hidden></p></form></div>`;
+    <form id="fJoinToday" class="joinform" novalidate><input class="inp codeinp" id="jt-code" placeholder="HX7K2Q" maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Class code"><button class="btn" type="submit">Join my class</button><p class="formerr" hidden></p></form></div>`;
 }
 function bindJoinBox(){
   const f=$('#fJoinToday'); if(!f) return;
@@ -5604,7 +5604,7 @@ function upgradeBannerHTML(){
       <div class="row"><button class="btn" type="button" data-upgrade="pass">Get the Exam Pass · ${priceTag(P.pass,P.passLater,P.launch)}</button><button class="link" type="button" data-view-go="account">Compare plans</button></div>
       ${P.launch?'<p class="hint">Launch price until 28 February. One payment, no subscription.</p>':'<p class="hint">One payment, no subscription.</p>'}</div>
     <div class="upcode"><h3>In a school class?</h3><p class="hint">Enter the code from your teacher and your school licence unlocks everything.</p>
-      <form id="fJoinToday" class="joinform" novalidate><input class="inp codeinp" id="jt-code" placeholder="HX7K2Q" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Class code"><button class="ghost" type="submit">Join my class</button><p class="formerr" hidden></p></form></div></div>`;
+      <form id="fJoinToday" class="joinform" novalidate><input class="inp codeinp" id="jt-code" placeholder="HX7K2Q" maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Class code"><button class="ghost" type="submit">Join my class</button><p class="formerr" hidden></p></form></div></div>`;
 }
 // Full plan cards for the Account page
 function planCardsHTML(){
@@ -6727,7 +6727,7 @@ async function renderAccount(){
       :`<div class="panel licence" id="plans"><span class="eyebrow">Your access</span><h2>Upgrade your plan</h2>${planCardsHTML()}
         ${api.mode==='demo'?'':'<div class="row"><button class="ghost" id="refresh">I\'ve paid: check again</button></div>'}</div>`;
     lic+=`<div class="panel"><h2>School classes</h2>${classes.length?classes.map(c=>`<div class="lr"><b>${esc(c.name)}</b><span class="hint">${esc(c.teacher||'')}</span></div>`).join(''):'<p class="hint">Not in a class yet. If your school has a licence, your teacher will give you a 6-character class code.</p>'}
-      <form id="fJoin" class="inline" novalidate><input class="inp" id="j-code" placeholder="Class code" maxlength="6" autocomplete="off" aria-label="Class code"><button class="btn" type="submit">Join class</button><p class="formerr" hidden></p></form></div>`;
+      <form id="fJoin" class="inline" novalidate><input class="inp" id="j-code" placeholder="Class code" maxlength="12" autocomplete="off" aria-label="Class code"><button class="btn" type="submit">Join class</button><p class="formerr" hidden></p></form></div>`;
   }
   view.innerHTML=`<div><span class="eyebrow">Account</span><h1 class="ph">${esc(u.name)}</h1><p class="hint">${esc(u.email)} · ${ROLE_LABEL[u.role]}</p></div>${lic}
   ${api.mode==='demo'?`<div class="panel"><h2>Demo data</h2><p class="hint">Everything in this prototype is stored in this browser only. Resetting restores the example school, classes and accounts.</p><div class="row"><button class="ghost" id="resetDemo">Reset demo data</button></div></div>`:''}`;

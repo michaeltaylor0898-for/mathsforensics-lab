@@ -1632,18 +1632,18 @@ let joinMsg = "";
 function classJoinPanel() {
   if (!(LIVE && ACC.on && ACC.me && ACC.me.role === "student" && ACC.access.level !== "full")) return joinMsg;
   return `${joinMsg}<section class="panel irjoin" style="margin-bottom:18px"><div><div class="h3" style="margin:0">Got a class code from your teacher?</div><span class="muted small">Enter it to join your class and unlock every topic. <a class="linkbtn" href="#add-child" style="font-size:inherit">Parent setting this up for a child?</a></span></div>
-    <form class="irjoinrow" id="acJoin" novalidate><input class="irjoincode" id="acCode" maxlength="6" placeholder="HX7K2Q" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Class code"><button class="btn" type="submit">Join</button></form>
+    <form class="irjoinrow" id="acJoin" novalidate><input class="irjoincode" id="acCode" maxlength="12" placeholder="HX7K2Q" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Class code"><button class="btn" type="submit">Join</button></form>
     <span class="muted small" id="acJoinErr" role="alert" style="flex-basis:100%;color:var(--red,#ff5a6e)"></span></section>`;
 }
 async function joinClassByCode(code) {
-  const id = await rpc("join_class", { p_code: String(code).trim().toUpperCase() });
+  const id = await rpc("join_class", { p_code: String(code).toUpperCase().replace(/[^A-Z0-9]/g, "") });
   const { data } = await ACC.sb.from("classes").select("name,academy_on,lab_on").eq("id", id).single();
   return data || { name: "your class", academy_on: true };
 }
 document.addEventListener("submit", async e => {
   if (!e.target || e.target.id !== "acJoin") return;
   e.preventDefault();
-  const err = $("#acJoinErr"), btn = e.target.querySelector("button"), code = $("#acCode").value.replace(/\s+/g, "");
+  const err = $("#acJoinErr"), btn = e.target.querySelector("button"), code = $("#acCode").value.toUpperCase().replace(/[^A-Z0-9]/g, "");
   if (code.length !== 6) { err.textContent = "Class codes have 6 letters and numbers."; return; }
   btn.disabled = true; err.textContent = "";
   try {
