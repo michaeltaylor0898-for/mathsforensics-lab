@@ -1,0 +1,227 @@
+{
+ "code": "MF-CF-GEO-SIMILAR",
+ "product_line": "Case file worksheet · GCSE",
+ "strand": "Shape",
+ "title": "Similar shapes",
+ "level_line": "GCSE Higher",
+ "time": "About 50 minutes",
+ "cover_sub": "Same shape, different size. Secure the scale factor for lengths, extend to triangles inside triangles and to area and volume, then master problems that switch between all three.",
+ "levels": {
+  "s": "grades 4–5",
+  "e": "grades 6–7",
+  "m": "grades 8–9"
+ },
+ "levels_long": {
+  "s": "Scale factors and missing lengths in similar shapes.",
+  "e": "Triangles inside triangles, area and volume scale factors, and tampered evidence.",
+  "m": "Switching between length, area and volume, maps, and proving similarity."
+ },
+ "briefing": [
+  "Similar shapes have equal angles and every length multiplied by the same <b>scale factor</b> <i>k</i>. Find <i>k</i> from a pair of <b>corresponding</b> sides: new ÷ old.",
+  "Areas scale by <i>k</i>², and volumes by <i>k</i>³. To go back from areas or volumes to lengths, take the square root or the cube root."
+ ],
+ "method": [
+  "Match up corresponding sides. Redraw the shapes the same way round if it helps.",
+  "Find the length scale factor k from one matching pair.",
+  "Multiply lengths by k, areas by k², volumes by k³.",
+  "Check: the bigger shape should have the bigger answers."
+ ],
+ "example": {
+  "question": "Two similar evidence boxes have heights 10 cm and 15 cm. The smaller box has a volume of 400 cm³. Find the volume of the larger box.",
+  "steps": [
+   "Length scale factor: k = 15 ÷ 10 = 1.5.",
+   "Volume scale factor: k³ = 1.5³ = 3.375.",
+   "Larger volume = 400 × 3.375.",
+   "= 1350 cm³. Check: bigger box, bigger volume ✓"
+  ],
+  "answer": "1350 cm³"
+ },
+ "free": true,
+ "marked_url": "https://lab.mathsforensics.com/written/",
+ "marked_topic": "Similar shapes: lengths",
+ "sections": {
+  "s": {
+   "blurb": "The method, step by step. Show every line.",
+   "questions": [
+    {
+     "text": [
+      "The two triangles are similar. Find the length x."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "15 cm",
+     "answer_label": "cm",
+     "working": "Scale factor 10 ÷ 4 = 2.5. 6 × 2.5.",
+     "svg": "<svg viewBox=\"0 0 96 44\" style=\"width:96mm;height:44mm;display:block;margin:2mm 0 1mm 4mm\" font-family=\"DejaVu Sans\" font-size=\"3.2\"><line x1=\"7.00\" y1=\"37.00\" x2=\"23.00\" y2=\"37.00\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"23.00\" y1=\"37.00\" x2=\"11.00\" y2=\"25.00\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"11.00\" y1=\"25.00\" x2=\"7.00\" y2=\"37.00\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"35.00\" y1=\"37.00\" x2=\"75.00\" y2=\"37.00\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"75.00\" y1=\"37.00\" x2=\"45.00\" y2=\"7.00\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"45.00\" y1=\"7.00\" x2=\"35.00\" y2=\"37.00\" stroke=\"#16203F\" stroke-width=\".5\"/><text x=\"4.26\" y=\"39.75\" text-anchor=\"middle\" font-weight=\"bold\">A</text><text x=\"25.94\" y=\"39.36\" text-anchor=\"middle\" font-weight=\"bold\">B</text><text x=\"9.99\" y=\"23.06\" text-anchor=\"middle\" font-weight=\"bold\">C</text><text x=\"32.26\" y=\"39.75\" text-anchor=\"middle\" font-weight=\"bold\">D</text><text x=\"77.94\" y=\"39.36\" text-anchor=\"middle\" font-weight=\"bold\">E</text><text x=\"43.99\" y=\"5.06\" text-anchor=\"middle\" font-weight=\"bold\">F</text><text x=\"15.00\" y=\"41.30\" text-anchor=\"middle\" fill=\"#1B36FF\">4 cm</text><text x=\"5.96\" y=\"31.09\" text-anchor=\"middle\" fill=\"#1B36FF\">6 cm</text><text x=\"55.00\" y=\"41.30\" text-anchor=\"middle\" fill=\"#1B36FF\">10 cm</text><text x=\"43.04\" y=\"24.11\" text-anchor=\"middle\" fill=\"#1B36FF\">x</text><text x=\"95.00\" y=\"43.00\" text-anchor=\"end\" font-size=\"2.4\" fill=\"#5B6585\">Not drawn accurately</text></svg>"
+    },
+    {
+     "text": [
+      "A rectangle measures 3 cm by 5 cm. A similar rectangle measures 9 cm by 15 cm. Write down the scale factor."
+     ],
+     "marks": 1,
+     "lines": 2,
+     "answer": "3",
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "Two shapes are similar. A side of 8 cm in the small shape matches a side of 12 cm in the large one. Another side of the small shape is 10 cm. Find the matching side in the large shape."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "15 cm",
+     "answer_label": "cm",
+     "working": "k = 1.5."
+    },
+    {
+     "text": [
+      "A photo 15 cm wide and 10 cm tall is enlarged to 24 cm wide. How tall is the enlargement?"
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "16 cm",
+     "answer_label": "cm",
+     "working": "k = 24 ÷ 15 = 1.6.",
+     "tip": "Work out the scale factor by <b>multiplying</b>, not adding. Adding 9 cm to the height would distort the photo."
+    },
+    {
+     "text": [
+      "Are triangles with sides 3, 4, 5 and 6, 8, 10 similar? Give a reason."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "Yes: every side is multiplied by 2.",
+     "answer_label": "Yes / No"
+    }
+   ]
+  },
+  "e": {
+   "blurb": "A step is hidden, or there's a context to unpick. One piece of tampered evidence.",
+   "questions": [
+    {
+     "text": [
+      "BC is parallel to DE. Find the length DE."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "12.5 cm",
+     "answer_label": "cm",
+     "working": "Triangles ABC and ADE are similar. AD = 10, so k = 10 ÷ 4 = 2.5. 5 × 2.5.",
+     "tip": "Use the <b>whole</b> side AD = 4 + 6 = 10, not BD = 6. The triangles share the corner A.",
+     "svg": "<svg viewBox=\"0 0 70 50\" style=\"width:70mm;height:50mm;display:block;margin:2mm 0 1mm 4mm\" font-family=\"DejaVu Sans\" font-size=\"3.2\"><line x1=\"25.00\" y1=\"7.00\" x2=\"17.80\" y2=\"21.40\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"17.80\" y1=\"21.40\" x2=\"7.00\" y2=\"43.00\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"25.00\" y1=\"7.00\" x2=\"37.00\" y2=\"21.40\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"37.00\" y1=\"21.40\" x2=\"55.00\" y2=\"43.00\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"7.00\" y1=\"43.00\" x2=\"55.00\" y2=\"43.00\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"17.80\" y1=\"21.40\" x2=\"37.00\" y2=\"21.40\" stroke=\"#16203F\" stroke-width=\".5\"/><text x=\"24.47\" y=\"4.94\" text-anchor=\"middle\" font-weight=\"bold\">A</text><text x=\"4.00\" y=\"45.20\" text-anchor=\"middle\" font-weight=\"bold\">D</text><text x=\"58.04\" y=\"45.10\" text-anchor=\"middle\" font-weight=\"bold\">E</text><text x=\"14.89\" y=\"21.16\" text-anchor=\"middle\" font-weight=\"bold\">B</text><text x=\"39.81\" y=\"20.97\" text-anchor=\"middle\" font-weight=\"bold\">C</text><text x=\"18.54\" y=\"13.87\" text-anchor=\"middle\" fill=\"#1B36FF\">4 cm</text><text x=\"9.54\" y=\"31.87\" text-anchor=\"middle\" fill=\"#1B36FF\">6 cm</text><text x=\"27.40\" y=\"19.30\" text-anchor=\"middle\" fill=\"#1B36FF\">5 cm</text><text x=\"69.00\" y=\"49.00\" text-anchor=\"end\" font-size=\"2.4\" fill=\"#5B6585\">Not drawn accurately</text></svg>"
+    },
+    {
+     "text": [
+      "Two similar shapes have lengths in the ratio 2 : 3. The smaller has an area of 20 cm². Find the area of the larger."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "45 cm²",
+     "answer_label": "cm²",
+     "working": "Area factor (3/2)² = 2.25."
+    },
+    {
+     "text": [
+      "Two similar cylinders have heights 6 cm and 9 cm. The smaller has a volume of 80 cm³. Find the volume of the larger."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "270 cm³",
+     "answer_label": "cm³",
+     "working": "(1.5)³ = 3.375."
+    },
+    {
+     "text": [
+      "Two similar cones have surface areas of 50 cm² and 200 cm². Find the ratio of their heights."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "1 : 2",
+     "answer_label": "Ratio",
+     "working": "Area factor 4, so length factor √4."
+    },
+    {
+     "text": [
+      "Ella enlarged a shape of area 12 cm² by scale factor 3. Find her mistake."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "108 cm²",
+     "answer_label": "cm²",
+     "working": "Areas scale by 3² = 9, not 3.",
+     "tampered": "Lengths × 3, so area × 3<br>12 × 3 = 36 cm²"
+    }
+   ]
+  },
+  "m": {
+   "blurb": "No hints. Plan before you calculate.",
+   "questions": [
+    {
+     "text": [
+      "Two similar bottles have volumes of 250 cm³ and 2000 cm³. The small bottle is 12 cm tall and has a surface area of 300 cm². Find the height and the surface area of the large bottle."
+     ],
+     "marks": 4,
+     "lines": 5,
+     "answer": "24 cm and 1200 cm²",
+     "answer_label": "____ cm ____ cm²",
+     "working": "Volume factor 8, so k = 2. Area factor 4."
+    },
+    {
+     "text": [
+      "Two similar solids have surface areas of 64 cm² and 100 cm². The smaller has a volume of 256 cm³. Find the volume of the larger."
+     ],
+     "marks": 4,
+     "lines": 5,
+     "answer": "500 cm³",
+     "answer_label": "cm³",
+     "working": "Length factor √(100/64) = 1.25. Volume factor 1.25³ = 1.953125.",
+     "tip": "Go back to the <b>length</b> scale factor first. You can't get from an area factor to a volume factor directly."
+    },
+    {
+     "text": [
+      "In triangle ABC, D is on AB and E is on AC, with angle ADE = angle ACB. AD = 4 cm, AE = 6 cm and AC = 8 cm. Find AB."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "12 cm",
+     "answer_label": "cm",
+     "working": "Triangles ADE and ACB are similar (angle A is shared). AD/AC = AE/AB."
+    },
+    {
+     "text": [
+      "A map has a scale of 1 : 25 000. A lake has an area of 6 cm² on the map. Find its real area in m²."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "375 000 m²",
+     "answer_label": "m²",
+     "working": "6 × 25 000² = 3 750 000 000 cm². ÷ 10 000."
+    },
+    {
+     "text": [
+      "AB is parallel to DE. Explain why triangles ABC and EDC are similar, then find x."
+     ],
+     "marks": 3,
+     "lines": 5,
+     "answer": "x = 9 cm",
+     "answer_label": "cm",
+     "working": "Vertically opposite angles at C are equal; alternate angles A and E are equal. k = 12 ÷ 8 = 1.5.",
+     "svg": "<svg viewBox=\"0 0 70 46\" style=\"width:70mm;height:46mm;display:block;margin:2mm 0 1mm 4mm\" font-family=\"DejaVu Sans\" font-size=\"3.2\"><line x1=\"15.00\" y1=\"7.00\" x2=\"47.00\" y2=\"7.00\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"7.00\" y1=\"39.00\" x2=\"55.00\" y2=\"39.00\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"15.00\" y1=\"7.00\" x2=\"31.00\" y2=\"19.80\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"31.00\" y1=\"19.80\" x2=\"55.00\" y2=\"39.00\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"47.00\" y1=\"7.00\" x2=\"31.00\" y2=\"19.80\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"31.00\" y1=\"19.80\" x2=\"7.00\" y2=\"39.00\" stroke=\"#16203F\" stroke-width=\".5\"/><text x=\"11.91\" y=\"7.28\" text-anchor=\"middle\" font-weight=\"bold\">A</text><text x=\"50.09\" y=\"7.28\" text-anchor=\"middle\" font-weight=\"bold\">B</text><text x=\"31.00\" y=\"17.70\" text-anchor=\"middle\" font-weight=\"bold\">C</text><text x=\"3.91\" y=\"40.92\" text-anchor=\"middle\" font-weight=\"bold\">D</text><text x=\"58.09\" y=\"40.92\" text-anchor=\"middle\" font-weight=\"bold\">E</text><text x=\"31.00\" y=\"4.90\" text-anchor=\"middle\" fill=\"#1B36FF\">8 cm</text><text x=\"31.00\" y=\"43.30\" text-anchor=\"middle\" fill=\"#1B36FF\">12 cm</text><text x=\"25.00\" y=\"12.00\" text-anchor=\"middle\" fill=\"#1B36FF\">6 cm</text><text x=\"45.00\" y=\"28.00\" text-anchor=\"middle\" fill=\"#1B36FF\">x</text><text x=\"69.00\" y=\"45.00\" text-anchor=\"end\" font-size=\"2.4\" fill=\"#5B6585\">Not drawn accurately</text></svg>"
+    }
+   ]
+  }
+ },
+ "closed_title": "Similar shapes",
+ "closed_points": [
+  "Find a scale factor from corresponding sides.",
+  "Find missing lengths, including triangles inside triangles.",
+  "Use k² for areas and k³ for volumes.",
+  "Work back from an area or volume factor to a length factor.",
+  "Give geometric reasons for similarity."
+ ],
+ "next": {
+  "title": "Practise every GCSE topic in the Lab",
+  "text": "New numbers every time, feedback that names the mistake behind each wrong answer, and handwritten working marked like an examiner. Start free.",
+  "url": "https://www.mathsforensics.com/the-lab"
+ }
+}

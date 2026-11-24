@@ -120,3 +120,60 @@ def tree(first,second,w=100,h=56):
             o.append(f'<text x="{xe+1:.2f}" y="{y2+1.1:.2f}">{l2}</text>')
             o.append(pl(xs,yy,xe,y2,p2,y2<yy))
     o.append('</svg>'); return "".join(o)
+
+def circ(pts,segs=(),center="O",angles=None,tangents=(),extra=None,w=50,h=44,note="Not drawn accurately"):
+    """pts: {name: degrees on circle (0 = right, anticlockwise)} or {name: (x,y)} for points off the circle (unit-circle coords).
+    segs: [(p,q)] chords/lines. angles: {(p,vertex,q): label}. tangents: [(point, extend_units)] draws tangent line through point."""
+    import math
+    R=min(w,h)*0.33; cx=w/2; cy=h/2+1
+    P={}
+    for n,v in pts.items():
+        if isinstance(v,tuple): P[n]=(cx+v[0]*R, cy-v[1]*R)
+        else: P[n]=(cx+R*math.cos(math.radians(v)), cy-R*math.sin(math.radians(v)))
+    if center: P[center]=(cx,cy)
+    o=[f'<svg viewBox="0 0 {w} {h}" style="width:{w}mm;height:{h}mm;display:block;margin:2mm 0 1mm 4mm" font-family="DejaVu Sans" font-size="3.2">',
+       f'<circle cx="{cx}" cy="{cy}" r="{R:.2f}" fill="#F7F9FD" stroke="#16203F" stroke-width=".5"/>']
+    for t,ext in tangents:
+        x,y=P[t]; dx,dy=x-cx,y-cy; L=math.hypot(dx,dy); ux,uy=-dy/L,dx/L
+        o.append(f'<line x1="{x-ux*ext*R:.2f}" y1="{y-uy*ext*R:.2f}" x2="{x+ux*ext*R:.2f}" y2="{y+uy*ext*R:.2f}" stroke="#16203F" stroke-width=".5"/>')
+    for p,q in segs: o.append(f'<line x1="{P[p][0]:.2f}" y1="{P[p][1]:.2f}" x2="{P[q][0]:.2f}" y2="{P[q][1]:.2f}" stroke="#16203F" stroke-width=".45"/>')
+    if center: o.append(f'<circle cx="{cx}" cy="{cy}" r=".7" fill="#16203F"/>')
+    for n,(x,y) in P.items():
+        dx,dy=x-cx,y-cy; L=math.hypot(dx,dy)
+        if L<0.1: lx,ly=x+2.2,y+3.6
+        else: lx,ly=x+dx/L*3.4,y+dy/L*3.4+1.1
+        o.append(f'<text x="{lx:.2f}" y="{ly:.2f}" text-anchor="middle" font-weight="bold">{n}</text>')
+    for (p,v,q),lab in (angles or {}).items():
+        vx,vy=P[v]; a1=(P[p][0]-vx,P[p][1]-vy); a2=(P[q][0]-vx,P[q][1]-vy)
+        l1=math.hypot(*a1); l2=math.hypot(*a2); bx=a1[0]/l1+a2[0]/l2; by=a1[1]/l1+a2[1]/l2; bl=math.hypot(bx,by) or 1
+        o.append(f'<text x="{vx+bx/bl*6.5:.2f}" y="{vy+by/bl*6.5+1.1:.2f}" text-anchor="middle" font-size="2.9" fill="#1B36FF">{lab}</text>')
+    if extra: o.append(extra(P,cx,cy,R))
+    if note: o.append(f'<text x="{w-1:.2f}" y="{h-1:.2f}" text-anchor="end" font-size="2.4" fill="#5B6585">{note}</text>')
+    o.append('</svg>'); return "".join(o)
+
+def poly(P,names=None,segs=None,sides=None,angles=None,w=80,h=42,note="Not drawn accurately",fill=True):
+    """Generic figure: P = {name:(x,y)} (y up). segs: [(p,q)] lines; sides {(p,q):label}; angles {(p,v,q):label}."""
+    import math
+    xs=[v[0] for v in P.values()]; ys=[v[1] for v in P.values()]; pad=7
+    sc=min((w-2*pad)/max(1e-9,max(xs)-min(xs)),(h-2*pad)/max(1e-9,max(ys)-min(ys)))
+    T={n:(pad+(x-min(xs))*sc, h-pad-(y-min(ys))*sc) for n,(x,y) in P.items()}
+    cx=sum(v[0] for v in T.values())/len(T); cy=sum(v[1] for v in T.values())/len(T)
+    o=[f'<svg viewBox="0 0 {w} {h}" style="width:{w}mm;height:{h}mm;display:block;margin:2mm 0 1mm 4mm" font-family="DejaVu Sans" font-size="3.2">']
+    for p,q in segs: o.append(f'<line x1="{T[p][0]:.2f}" y1="{T[p][1]:.2f}" x2="{T[q][0]:.2f}" y2="{T[q][1]:.2f}" stroke="#16203F" stroke-width=".5"/>')
+    for n,(x,y) in T.items():
+        nb=[T[q] if p==n else T[p] for p,q in segs if n in (p,q)]
+        if nb:
+            mx=sum(a for a,b in nb)/len(nb); my=sum(b for a,b in nb)/len(nb); dx,dy=x-mx,y-my
+        else: dx,dy=x-cx,y-cy
+        L=math.hypot(dx,dy) or 1
+        o.append(f'<text x="{x+dx/L*3.2:.2f}" y="{y+dy/L*3.2+1.1:.2f}" text-anchor="middle" font-weight="bold">{n}</text>')
+    for (p,q),lab in (sides or {}).items():
+        (a,b),(c,d)=T[p],T[q]; mx,my=(a+c)/2,(b+d)/2; nx,ny=-(d-b),(c-a); L=math.hypot(nx,ny) or 1
+        s=1 if (nx*(mx-cx)+ny*(my-cy))>=0 else -1
+        o.append(f'<text x="{mx+s*nx/L*3.2:.2f}" y="{my+s*ny/L*3.2+1.1:.2f}" text-anchor="middle" fill="#1B36FF">{lab}</text>')
+    for (p,v,q),lab in (angles or {}).items():
+        vx,vy=T[v]; a1=(T[p][0]-vx,T[p][1]-vy); a2=(T[q][0]-vx,T[q][1]-vy)
+        l1=math.hypot(*a1); l2=math.hypot(*a2); bx=a1[0]/l1+a2[0]/l2; by=a1[1]/l1+a2[1]/l2; bl=math.hypot(bx,by) or 1
+        o.append(f'<text x="{vx+bx/bl*6:.2f}" y="{vy+by/bl*6+1.1:.2f}" text-anchor="middle" font-size="2.9" fill="#1B36FF">{lab}</text>')
+    if note: o.append(f'<text x="{w-1:.2f}" y="{h-1:.2f}" text-anchor="end" font-size="2.4" fill="#5B6585">{note}</text>')
+    o.append('</svg>'); return "".join(o)
