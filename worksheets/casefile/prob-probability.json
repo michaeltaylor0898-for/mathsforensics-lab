@@ -1,0 +1,227 @@
+{
+ "code": "MF-CF-PROB-TREE",
+ "product_line": "Case file worksheet · GCSE",
+ "strand": "Data and probability",
+ "title": "Probability",
+ "level_line": "GCSE Higher",
+ "time": "About 50 minutes",
+ "cover_sub": "Every outcome, every branch. Secure single events and expected results, extend to tree diagrams, then master without-replacement problems and algebra.",
+ "levels": {
+  "s": "grades 4–5",
+  "e": "grades 6–7",
+  "m": "grades 8–9"
+ },
+ "levels_long": {
+  "s": "Single events, missing probabilities, relative frequency, listing outcomes.",
+  "e": "Tree diagrams with replacement, combined events, counting, and tampered evidence.",
+  "m": "Without replacement, 'at least one', conditional probability and algebra."
+ },
+ "briefing": [
+  "Probabilities add up to 1. P(not A) = 1 − P(A). For <b>independent</b> events, multiply: P(A and B) = P(A) × P(B). For outcomes that can't happen together, add: P(A or B) = P(A) + P(B).",
+  "On a <b>tree diagram</b>, multiply <b>along</b> the branches and add <b>between</b> the routes you want. <b>Without replacement</b>, the second set of branches changes: one fewer item, and one fewer of the colour you took."
+ ],
+ "method": [
+  "Write the probabilities on every branch. Each set of branches adds up to 1.",
+  "Multiply along each route you want.",
+  "Add the routes together.",
+  "For 'at least one', it's usually quicker to do 1 − P(none)."
+ ],
+ "example": {
+  "question": "A bag has 3 red and 5 blue counters. Two are taken without replacement. Find the probability that both are red.",
+  "steps": [
+   "First counter: P(red) = <span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">8</span></span>.",
+   "Without replacement there are now 2 red out of 7: P(red) = <span class=\"frac\"><span class=\"nu\">2</span><span class=\"de\">7</span></span>.",
+   "Multiply along the branch: <span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">8</span></span> × <span class=\"frac\"><span class=\"nu\">2</span><span class=\"de\">7</span></span> = <span class=\"frac\"><span class=\"nu\">6</span><span class=\"de\">56</span></span>.",
+   "Simplify: <span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">28</span></span>. Check: it's smaller than <span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">8</span></span> × <span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">8</span></span>, as it should be ✓"
+  ],
+  "answer": "<span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">28</span></span>"
+ },
+ "free": true,
+ "marked_url": "https://lab.mathsforensics.com/written/",
+ "marked_topic": "Tree diagrams",
+ "sections": {
+  "s": {
+   "blurb": "The method, step by step. Show every line.",
+   "questions": [
+    {
+     "text": [
+      "A bag has 5 red, 3 blue and 2 green counters. One is taken at random. Find P(blue)."
+     ],
+     "marks": 1,
+     "lines": 2,
+     "answer": "3/10",
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "Using the same bag, find P(red or green)."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "7/10",
+     "answer_label": "Answer",
+     "working": "5 + 2 = 7 out of 10."
+    },
+    {
+     "text": [
+      "A spinner lands on A, B, C or D with probabilities 0.2, 0.35, x and 0.15. Find x."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "0.3",
+     "answer_label": "x =",
+     "working": "1 − 0.7."
+    },
+    {
+     "text": [
+      "A dice is thrown 200 times and lands on six 48 times. Estimate how many sixes there would be in 500 throws."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "120",
+     "answer_label": "Answer",
+     "working": "Relative frequency 48/200 = 0.24. 0.24 × 500."
+    },
+    {
+     "text": [
+      "Two fair coins are flipped. List all the possible outcomes, and find P(two heads)."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "HH, HT, TH, TT; P(two heads) = 1/4",
+     "answer_label": "P(two heads)",
+     "tip": "HT and TH are <b>different</b> outcomes. Missing one is the most common slip."
+    }
+   ]
+  },
+  "e": {
+   "blurb": "A step is hidden, or there's a context to unpick. One piece of tampered evidence.",
+   "questions": [
+    {
+     "text": [
+      "A bag has 3 red and 2 blue counters. A counter is taken, its colour noted and it is put back. Then a second counter is taken.",
+      "Complete the tree diagram, then find P(both red)."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "9/25",
+     "answer_label": "P(both red)",
+     "working": "3/5 × 3/5.",
+     "svg": "<svg viewBox=\"0 0 100 56\" style=\"width:100mm;height:56mm;display:block;margin:2mm 0 1mm 4mm\" font-family=\"DejaVu Sans\" font-size=\"3.2\"><line x1=\"4\" y1=\"28.00\" x2=\"34\" y2=\"14.00\" stroke=\"#16203F\" stroke-width=\".45\"/><text x=\"35\" y=\"15.10\">Red</text><text x=\"19.00\" y=\"19.20\" text-anchor=\"middle\" fill=\"#1B36FF\">……</text><line x1=\"41.85\" y1=\"14.00\" x2=\"67.85\" y2=\"7.35\" stroke=\"#16203F\" stroke-width=\".45\"/><text x=\"68.85\" y=\"8.45\">Red</text><text x=\"54.85\" y=\"8.88\" text-anchor=\"middle\" fill=\"#1B36FF\">……</text><line x1=\"41.85\" y1=\"14.00\" x2=\"67.85\" y2=\"20.65\" stroke=\"#16203F\" stroke-width=\".45\"/><text x=\"68.85\" y=\"21.75\">Blue</text><text x=\"54.85\" y=\"21.52\" text-anchor=\"middle\" fill=\"#1B36FF\">……</text><line x1=\"4\" y1=\"28.00\" x2=\"34\" y2=\"42.00\" stroke=\"#16203F\" stroke-width=\".45\"/><text x=\"35\" y=\"43.10\">Blue</text><text x=\"19.00\" y=\"39.20\" text-anchor=\"middle\" fill=\"#1B36FF\">……</text><line x1=\"43.80\" y1=\"42.00\" x2=\"69.80\" y2=\"35.35\" stroke=\"#16203F\" stroke-width=\".45\"/><text x=\"70.80\" y=\"36.45\">Red</text><text x=\"56.80\" y=\"36.88\" text-anchor=\"middle\" fill=\"#1B36FF\">……</text><line x1=\"43.80\" y1=\"42.00\" x2=\"69.80\" y2=\"48.65\" stroke=\"#16203F\" stroke-width=\".45\"/><text x=\"70.80\" y=\"49.75\">Blue</text><text x=\"56.80\" y=\"49.53\" text-anchor=\"middle\" fill=\"#1B36FF\">……</text></svg>"
+    },
+    {
+     "text": [
+      "Using the same tree diagram, find the probability of getting one of each colour."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "12/25",
+     "answer_label": "Answer",
+     "working": "RB + BR = 6/25 + 6/25."
+    },
+    {
+     "text": [
+      "The probability it rains on a school day is 0.3. Complete the tree diagram, then find the probability a detective trainee is late."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "0.19",
+     "answer_label": "Answer",
+     "working": "0.3 × 0.4 + 0.7 × 0.1.",
+     "svg": "<svg viewBox=\"0 0 100 56\" style=\"width:100mm;height:56mm;display:block;margin:2mm 0 1mm 4mm\" font-family=\"DejaVu Sans\" font-size=\"3.2\"><line x1=\"4\" y1=\"28.00\" x2=\"34\" y2=\"14.00\" stroke=\"#16203F\" stroke-width=\".45\"/><text x=\"35\" y=\"15.10\">Rain</text><text x=\"19.00\" y=\"19.20\" text-anchor=\"middle\" fill=\"#1B36FF\">0.3</text><line x1=\"43.80\" y1=\"14.00\" x2=\"69.80\" y2=\"7.35\" stroke=\"#16203F\" stroke-width=\".45\"/><text x=\"70.80\" y=\"8.45\">Late</text><text x=\"56.80\" y=\"8.88\" text-anchor=\"middle\" fill=\"#1B36FF\">0.4</text><line x1=\"43.80\" y1=\"14.00\" x2=\"69.80\" y2=\"20.65\" stroke=\"#16203F\" stroke-width=\".45\"/><text x=\"70.80\" y=\"21.75\">On time</text><text x=\"56.80\" y=\"21.52\" text-anchor=\"middle\" fill=\"#1B36FF\">……</text><line x1=\"4\" y1=\"28.00\" x2=\"34\" y2=\"42.00\" stroke=\"#16203F\" stroke-width=\".45\"/><text x=\"35\" y=\"43.10\">No rain</text><text x=\"19.00\" y=\"39.20\" text-anchor=\"middle\" fill=\"#1B36FF\">0.7</text><line x1=\"49.65\" y1=\"42.00\" x2=\"75.65\" y2=\"35.35\" stroke=\"#16203F\" stroke-width=\".45\"/><text x=\"76.65\" y=\"36.45\">Late</text><text x=\"62.65\" y=\"36.88\" text-anchor=\"middle\" fill=\"#1B36FF\">0.1</text><line x1=\"49.65\" y1=\"42.00\" x2=\"75.65\" y2=\"48.65\" stroke=\"#16203F\" stroke-width=\".45\"/><text x=\"76.65\" y=\"49.75\">On time</text><text x=\"62.65\" y=\"49.53\" text-anchor=\"middle\" fill=\"#1B36FF\">……</text></svg>"
+    },
+    {
+     "text": [
+      "A case code is 3 letters (A to Z) followed by 2 digits (0 to 9). How many different codes are possible?"
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "1 757 600",
+     "answer_label": "Answer",
+     "working": "26 × 26 × 26 × 10 × 10."
+    },
+    {
+     "text": [
+      "Zak found the probability of rolling two sixes with two dice. Find his mistake."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "1/36",
+     "answer_label": "Answer",
+     "working": "Both sixes means AND: multiply, 1/6 × 1/6.",
+     "tampered": "P(6 and 6) = 1/6 + 1/6 = 1/3"
+    }
+   ]
+  },
+  "m": {
+   "blurb": "No hints. Plan before you calculate.",
+   "questions": [
+    {
+     "text": [
+      "A bag has 4 red and 6 blue sweets. Two are taken without replacement. Find the probability they are the same colour."
+     ],
+     "marks": 4,
+     "lines": 5,
+     "answer": "7/15",
+     "answer_label": "Answer",
+     "working": "4/10 × 3/9 + 6/10 × 5/9 = 12/90 + 30/90 = 42/90."
+    },
+    {
+     "text": [
+      "Using the same bag, find the probability that at least one sweet is red."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "2/3",
+     "answer_label": "Answer",
+     "working": "1 − P(both blue) = 1 − 30/90.",
+     "tip": "'At least one' covers lots of routes. Find P(none) instead and take it away from 1."
+    },
+    {
+     "text": [
+      "A bag has n sweets, 6 of them orange. Two are taken without replacement. P(both orange) = 1/3.",
+      "Show that n² − n − 90 = 0, and find n."
+     ],
+     "marks": 4,
+     "lines": 6,
+     "answer": "n = 10",
+     "answer_label": "n =",
+     "working": "6/n × 5/(n − 1) = 1/3 → 90 = n(n − 1) → (n − 10)(n + 9) = 0."
+    },
+    {
+     "text": [
+      "60% of a class study French. Of these, 30% also study Spanish. Of the others, 50% study Spanish. A student who studies Spanish is chosen at random. Find the probability they also study French."
+     ],
+     "marks": 4,
+     "lines": 6,
+     "answer": "9/19",
+     "answer_label": "Answer",
+     "working": "P(F and S) = 0.18, P(not F and S) = 0.2. 0.18 ÷ 0.38."
+    },
+    {
+     "text": [
+      "A fair dice is thrown three times. Find the probability of at least one six."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "91/216",
+     "answer_label": "Answer",
+     "working": "1 − (5/6)³."
+    }
+   ]
+  }
+ },
+ "closed_title": "Probability",
+ "closed_points": [
+  "Use the fact that probabilities add up to 1.",
+  "Estimate with relative frequency and expected outcomes.",
+  "Draw and use tree diagrams: multiply along, add between.",
+  "Handle without-replacement problems by changing the second branches.",
+  "Use 1 − P(none), conditional probability and algebra."
+ ],
+ "next": {
+  "title": "Practise every GCSE topic in the Lab",
+  "text": "New numbers every time, feedback that names the mistake behind each wrong answer, and handwritten working marked like an examiner. Start free.",
+  "url": "https://www.mathsforensics.com/the-lab"
+ }
+}

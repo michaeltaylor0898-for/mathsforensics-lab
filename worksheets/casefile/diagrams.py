@@ -89,3 +89,34 @@ def cuboid(L,W,H,labels=("ABCD","EFGH"),dims=None,diag=None,w=70,h=48):
         (x1,y1),(x2,y2)=V[n[1]],V[n[2]]; o.append(f'<text x="{(x1+x2)/2+3:.2f}" y="{(y1+y2)/2+2.5:.2f}" fill="#1B36FF">{b}</text>')
         (x1,y1),(x2,y2)=V[n[2]],V[n[6]]; o.append(f'<text x="{x1+1.5:.2f}" y="{(y1+y2)/2:.2f}" fill="#1B36FF">{c}</text>')
     o.append('</svg>'); return "".join(o)
+
+def venn(a="A",b="B",only_a="",both="",only_b="",out="",w=80,h=46,title="ξ"):
+    o=[f'<svg viewBox="0 0 {w} {h}" style="width:{w}mm;height:{h}mm;display:block;margin:2mm 0 1mm 4mm" font-family="DejaVu Sans" font-size="3.4">',
+       f'<rect x="1" y="1" width="{w-2}" height="{h-2}" rx="1.5" fill="none" stroke="#16203F" stroke-width=".5"/>',
+       f'<text x="3" y="5.5" font-family="DejaVu Serif" font-style="italic">{title}</text>']
+    r=h*0.34; cy=h/2+1; c1=w/2-r*0.55; c2=w/2+r*0.55
+    o.append(f'<circle cx="{c1:.2f}" cy="{cy:.2f}" r="{r:.2f}" fill="rgba(0,169,159,.08)" stroke="#00A99F" stroke-width=".6"/>')
+    o.append(f'<circle cx="{c2:.2f}" cy="{cy:.2f}" r="{r:.2f}" fill="rgba(27,54,255,.06)" stroke="#1B36FF" stroke-width=".6"/>')
+    o.append(f'<text x="{c1-r*0.75:.2f}" y="{cy-r*0.82:.2f}" font-weight="bold" fill="#00A99F">{a}</text><text x="{c2+r*0.6:.2f}" y="{cy-r*0.82:.2f}" font-weight="bold" fill="#1B36FF">{b}</text>')
+    for xx,v in ((c1-r*0.5,only_a),(w/2,both),(c2+r*0.5,only_b)): o.append(f'<text x="{xx:.2f}" y="{cy+1.2:.2f}" text-anchor="middle">{v}</text>')
+    o.append(f'<text x="{w-5:.2f}" y="{h-4:.2f}" text-anchor="end">{out}</text></svg>'); return "".join(o)
+
+def tree(first,second,w=100,h=56):
+    """first: [(label, prob)], second: [[(label, prob)] per first branch]. Probabilities may be '' for students to fill."""
+    o=[f'<svg viewBox="0 0 {w} {h}" style="width:{w}mm;height:{h}mm;display:block;margin:2mm 0 1mm 4mm" font-family="DejaVu Sans" font-size="3.2">']
+    x0,x1=4,34; n1=len(first); ys1=[h*(i+0.5)/n1 for i in range(n1)]
+    def pl(xa,ya,xb,yb,txt,up):
+        mx,my=(xa+xb)/2,(ya+yb)/2
+        return f'<text x="{mx:.2f}" y="{my+(-1.8 if up else 4.2):.2f}" text-anchor="middle" fill="#1B36FF">{txt or "……"}</text>'
+    for i,((lab,p),yy) in enumerate(zip(first,ys1)):
+        o.append(f'<line x1="{x0}" y1="{h/2:.2f}" x2="{x1}" y2="{yy:.2f}" stroke="#16203F" stroke-width=".45"/>')
+        o.append(f'<text x="{x1+1}" y="{yy+1.1:.2f}">{lab}</text>')
+        o.append(pl(x0,h/2,x1,yy,p,yy<h/2))
+        xs=x1+2+len(lab)*1.95; xe=xs+26
+        sub=second[i]; m=len(sub)
+        for j,(l2,p2) in enumerate(sub):
+            y2=yy+(j-(m-1)/2)*(h/n1/m)*0.95
+            o.append(f'<line x1="{xs:.2f}" y1="{yy:.2f}" x2="{xe:.2f}" y2="{y2:.2f}" stroke="#16203F" stroke-width=".45"/>')
+            o.append(f'<text x="{xe+1:.2f}" y="{y2+1.1:.2f}">{l2}</text>')
+            o.append(pl(xs,yy,xe,y2,p2,y2<yy))
+    o.append('</svg>'); return "".join(o)
