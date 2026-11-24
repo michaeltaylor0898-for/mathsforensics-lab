@@ -76,7 +76,7 @@ h2.st:after{content:"";flex:1;height:1.2pt;background:var(--cyan)}
 .ans{display:flex;justify-content:flex-end;gap:2mm;align-items:flex-end;font-size:8.6pt;color:var(--muted);margin-top:1mm}
 .ans span{display:inline-block;min-width:38mm;border-bottom:1px solid var(--ink);height:5mm}
 .tip{margin:2mm 0 1mm;padding:2.3mm 3.5mm;border-radius:2mm;background:var(--cy-bg);border:1px dashed var(--cy-bd);font-size:8.9pt}
-.tip b{font-size:7pt;color:#007F78;margin-right:2mm}
+.tip b.mono{font-size:7pt;color:#007F78;margin-right:2mm}
 .tampered{border:1.5px dashed var(--blue);border-radius:2mm;padding:2mm 3mm;margin:1.5mm 0;font-family:"DejaVu Serif",serif;font-size:10pt;background:#FAFBFF}
 .tampered small{display:block;font-family:"DejaVu Sans Mono",monospace;font-size:6.8pt;letter-spacing:.16em;color:var(--blue);margin-bottom:1mm}
 .marked{display:grid;grid-template-columns:1fr 22mm;gap:4mm;align-items:center;margin-top:3mm;padding:3mm 4mm;border-radius:2mm;background:var(--navy);color:#EAF0FF;font-size:9pt;break-inside:avoid}
@@ -111,6 +111,7 @@ h2.st:after{content:"";flex:1;height:1.2pt;background:var(--cyan)}
 def question(i, q):
     b = "".join(f"<p>{p}</p>" for p in q["text"])
     if q.get("eqs"): b += "".join(f'<span class="eq">{e}</span>' for e in q["eqs"])
+    if q.get("svg"): b += q["svg"]
     if q.get("tampered"): b += f'<div class="tampered"><small>TAMPERED EVIDENCE · FIND THE MISTAKE</small>{q["tampered"]}</div>'
     b += f'<div class="space" style="height:{q.get("lines",3)*7}mm"></div>'
     if q.get("answer_label") is not False: b += f'<div class="ans">{q.get("answer_label","Answer")}<span></span></div>'

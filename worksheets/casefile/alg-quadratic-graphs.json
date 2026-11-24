@@ -1,0 +1,223 @@
+{
+ "code": "MF-CF-ALG-QUADGRAPH",
+ "product_line": "Case file worksheet · GCSE",
+ "strand": "Graphs",
+ "title": "Quadratic graphs",
+ "level_line": "GCSE Higher",
+ "time": "About 50 minutes",
+ "cover_sub": "Every quadratic graph is a parabola with roots, an intercept and a turning point. Secure reading them, extend to finding them algebraically, then master building and using the equation.",
+ "levels": {
+  "s": "grades 4–5",
+  "e": "grades 6–7",
+  "m": "grades 8–9"
+ },
+ "levels_long": {
+  "s": "Tables of values, roots, intercept and turning point from a graph.",
+  "e": "Roots and turning points by algebra, sketching, symmetry, and tampered evidence.",
+  "m": "Finding the equation, solving with a line, and the discriminant."
+ },
+ "briefing": [
+  "The graph of <i>y</i> = <i>a</i><i>x</i>² + <i>b</i><i>x</i> + <i>c</i> is a U shape (a ∩ if <i>a</i> is negative). The <b>roots</b> are where it crosses the <i>x</i>-axis: solve <i>y</i> = 0. The <b>y-intercept</b> is (0, <i>c</i>).",
+  "The <b>turning point</b> sits on the line of symmetry, halfway between the roots. Completing the square gives it directly: <i>y</i> = (<i>x</i> − <i>p</i>)² + <i>q</i> has turning point (<i>p</i>, <i>q</i>)."
+ ],
+ "method": [
+  "Roots: factorise and solve = 0 (or read where the curve crosses the x-axis).",
+  "y-intercept: put x = 0.",
+  "Turning point: halfway between the roots, or complete the square.",
+  "To solve an equation with a graph, rearrange it so one side is the curve, and draw the other side as a line."
+ ],
+ "example": {
+  "question": "Find the roots, the y-intercept and the turning point of <i>y</i> = <i>x</i>² − 6<i>x</i> + 5.",
+  "steps": [
+   "Roots: (<i>x</i> − 1)(<i>x</i> − 5) = 0, so <i>x</i> = 1 and <i>x</i> = 5.",
+   "y-intercept: when <i>x</i> = 0, <i>y</i> = 5, so (0, 5).",
+   "Line of symmetry halfway between the roots: <i>x</i> = 3.",
+   "Turning point: <i>y</i> = 9 − 18 + 5 = −4, so (3, −4). Check: (<i>x</i> − 3)² − 4 = <i>x</i>² − 6<i>x</i> + 5 ✓"
+  ],
+  "answer": "Roots 1 and 5, y-intercept (0, 5), turning point (3, −4)"
+ },
+ "free": true,
+ "marked_url": "https://lab.mathsforensics.com/written/",
+ "marked_topic": "Quadratic graphs: roots and turning points",
+ "sections": {
+  "s": {
+   "blurb": "The method, step by step. Show every line.",
+   "questions": [
+    {
+     "text": [
+      "Complete the values of <i>y</i> = <i>x</i>² − 2<i>x</i> − 3 for <i>x</i> = −2, −1, 0, 1, 2, 3, 4."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "5, 0, −3, −4, −3, 0, 5",
+     "answer_label": "y values",
+     "working": "Watch (−2)² = 4, not −4.",
+     "tip": "Put negative numbers in brackets when you square them: (−2)² = 4."
+    },
+    {
+     "text": [
+      "The graph of <i>y</i> = <i>x</i>² − 2<i>x</i> − 3 is drawn below. Write down its roots."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "<i>x</i> = −1 and <i>x</i> = 3",
+     "answer_label": "Roots",
+     "working": "Where the curve crosses the x-axis.",
+     "svg": "<svg viewBox=\"0 0 80 80\" style=\"width:80mm;height:80mm;display:block;margin:2mm 0 1mm 4mm\" font-family=\"DejaVu Sans\" font-size=\"3\"><line x1=\"10.00\" y1=\"70.00\" x2=\"10.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"20.00\" y1=\"70.00\" x2=\"20.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"30.00\" y1=\"70.00\" x2=\"30.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"40.00\" y1=\"70.00\" x2=\"40.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"50.00\" y1=\"70.00\" x2=\"50.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"60.00\" y1=\"70.00\" x2=\"60.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"70.00\" y1=\"70.00\" x2=\"70.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"70.00\" x2=\"70.00\" y2=\"70.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"64.55\" x2=\"70.00\" y2=\"64.55\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"59.09\" x2=\"70.00\" y2=\"59.09\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"53.64\" x2=\"70.00\" y2=\"53.64\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"48.18\" x2=\"70.00\" y2=\"48.18\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"42.73\" x2=\"70.00\" y2=\"42.73\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"37.27\" x2=\"70.00\" y2=\"37.27\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"31.82\" x2=\"70.00\" y2=\"31.82\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"26.36\" x2=\"70.00\" y2=\"26.36\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"20.91\" x2=\"70.00\" y2=\"20.91\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"15.45\" x2=\"70.00\" y2=\"15.45\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"10.00\" x2=\"70.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"42.73\" x2=\"73.00\" y2=\"42.73\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"30.00\" y1=\"70.00\" x2=\"30.00\" y2=\"7.00\" stroke=\"#16203F\" stroke-width=\".5\"/><text x=\"73.50\" y=\"43.73\" font-style=\"italic\" font-family=\"DejaVu Serif\" font-size=\"3.6\">x</text><text x=\"31.20\" y=\"6.50\" font-style=\"italic\" font-family=\"DejaVu Serif\" font-size=\"3.6\">y</text><text x=\"10.00\" y=\"46.53\" text-anchor=\"middle\">−2</text><text x=\"20.00\" y=\"46.53\" text-anchor=\"middle\">−1</text><text x=\"40.00\" y=\"46.53\" text-anchor=\"middle\">1</text><text x=\"50.00\" y=\"46.53\" text-anchor=\"middle\">2</text><text x=\"60.00\" y=\"46.53\" text-anchor=\"middle\">3</text><text x=\"70.00\" y=\"46.53\" text-anchor=\"middle\">4</text><text x=\"28.80\" y=\"71.00\" text-anchor=\"end\">−5</text><text x=\"28.80\" y=\"65.55\" text-anchor=\"end\">−4</text><text x=\"28.80\" y=\"60.09\" text-anchor=\"end\">−3</text><text x=\"28.80\" y=\"54.64\" text-anchor=\"end\">−2</text><text x=\"28.80\" y=\"49.18\" text-anchor=\"end\">−1</text><text x=\"28.80\" y=\"38.27\" text-anchor=\"end\">1</text><text x=\"28.80\" y=\"32.82\" text-anchor=\"end\">2</text><text x=\"28.80\" y=\"27.36\" text-anchor=\"end\">3</text><text x=\"28.80\" y=\"21.91\" text-anchor=\"end\">4</text><text x=\"28.80\" y=\"16.45\" text-anchor=\"end\">5</text><text x=\"28.80\" y=\"11.00\" text-anchor=\"end\">6</text><polyline points=\"10.00,15.45 10.30,16.43 10.60,17.40 10.90,18.36 11.20,19.30 11.50,20.24 11.80,21.17 12.10,22.09 12.40,22.99 12.70,23.89 13.00,24.78 13.30,25.66 13.60,26.53 13.90,27.39 14.20,28.24 14.50,29.08 14.80,29.91 15.10,30.73 15.40,31.54 15.70,32.34 16.00,33.13 16.30,33.91 16.60,34.68 16.90,35.44 17.20,36.19 17.50,36.93 17.80,37.66 18.10,38.38 18.40,39.10 18.70,39.80 19.00,40.49 19.30,41.17 19.60,41.85 19.90,42.51 20.20,43.16 20.50,43.80 20.80,44.44 21.10,45.06 21.40,45.67 21.70,46.28 22.00,46.87 22.30,47.46 22.60,48.03 22.90,48.60 23.20,49.15 23.50,49.70 23.80,50.23 24.10,50.76 24.40,51.27 24.70,51.78 25.00,52.27 25.30,52.76 25.60,53.23 25.90,53.70 26.20,54.16 26.50,54.60 26.80,55.04 27.10,55.47 27.40,55.89 27.70,56.29 28.00,56.69 28.30,57.08 28.60,57.46 28.90,57.82 29.20,58.18 29.50,58.53 29.80,58.87 30.10,59.20 30.40,59.52 30.70,59.83 31.00,60.13 31.30,60.42 31.60,60.70 31.90,60.97 32.20,61.23 32.50,61.48 32.80,61.72 33.10,61.95 33.40,62.17 33.70,62.38 34.00,62.58 34.30,62.77 34.60,62.95 34.90,63.13 35.20,63.29 35.50,63.44 35.80,63.58 36.10,63.72 36.40,63.84 36.70,63.95 37.00,64.05 37.30,64.15 37.60,64.23 37.90,64.30 38.20,64.37 38.50,64.42 38.80,64.47 39.10,64.50 39.40,64.53 39.70,64.54 40.00,64.55 40.30,64.54 40.60,64.53 40.90,64.50 41.20,64.47 41.50,64.42 41.80,64.37 42.10,64.30 42.40,64.23 42.70,64.15 43.00,64.05 43.30,63.95 43.60,63.84 43.90,63.72 44.20,63.58 44.50,63.44 44.80,63.29 45.10,63.13 45.40,62.95 45.70,62.77 46.00,62.58 46.30,62.38 46.60,62.17 46.90,61.95 47.20,61.72 47.50,61.48 47.80,61.23 48.10,60.97 48.40,60.70 48.70,60.42 49.00,60.13 49.30,59.83 49.60,59.52 49.90,59.20 50.20,58.87 50.50,58.53 50.80,58.18 51.10,57.82 51.40,57.46 51.70,57.08 52.00,56.69 52.30,56.29 52.60,55.89 52.90,55.47 53.20,55.04 53.50,54.60 53.80,54.16 54.10,53.70 54.40,53.23 54.70,52.76 55.00,52.27 55.30,51.78 55.60,51.27 55.90,50.76 56.20,50.23 56.50,49.70 56.80,49.15 57.10,48.60 57.40,48.03 57.70,47.46 58.00,46.87 58.30,46.28 58.60,45.67 58.90,45.06 59.20,44.44 59.50,43.80 59.80,43.16 60.10,42.51 60.40,41.85 60.70,41.17 61.00,40.49 61.30,39.80 61.60,39.10 61.90,38.38 62.20,37.66 62.50,36.93 62.80,36.19 63.10,35.44 63.40,34.68 63.70,33.91 64.00,33.13 64.30,32.34 64.60,31.54 64.90,30.73 65.20,29.91 65.50,29.08 65.80,28.24 66.10,27.39 66.40,26.53 66.70,25.66 67.00,24.78 67.30,23.89 67.60,22.99 67.90,22.09 68.20,21.17 68.50,20.24 68.80,19.30 69.10,18.36 69.40,17.40 69.70,16.43 70.00,15.45\" fill=\"none\" stroke=\"#1B36FF\" stroke-width=\".7\"/></svg>"
+    },
+    {
+     "text": [
+      "Use the graph to write down the coordinates of the turning point."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "(1, −4)",
+     "answer_label": "( ____ , ____ )"
+    },
+    {
+     "text": [
+      "Write down where the graph of <i>y</i> = <i>x</i>² + 5<i>x</i> + 6 crosses the <i>y</i>-axis."
+     ],
+     "marks": 1,
+     "lines": 2,
+     "answer": "(0, 6)",
+     "answer_label": "( ____ , ____ )"
+    },
+    {
+     "text": [
+      "Use the graph to solve <i>x</i>² − 2<i>x</i> − 3 = 5."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "<i>x</i> = −2 and <i>x</i> = 4",
+     "answer_label": "<i>x</i> =",
+     "working": "Read where the curve is at height 5."
+    }
+   ]
+  },
+  "e": {
+   "blurb": "A step is hidden, or there's a context to unpick. One piece of tampered evidence.",
+   "questions": [
+    {
+     "text": [
+      "Find the roots of <i>y</i> = <i>x</i>² − 6<i>x</i> + 8 by factorising."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "<i>x</i> = 2 and <i>x</i> = 4",
+     "answer_label": "Roots",
+     "working": "(x − 2)(x − 4) = 0."
+    },
+    {
+     "text": [
+      "By completing the square, find the turning point of <i>y</i> = <i>x</i>² − 6<i>x</i> + 8."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "(3, −1)",
+     "answer_label": "( ____ , ____ )",
+     "working": "(x − 3)² − 9 + 8 = (x − 3)² − 1."
+    },
+    {
+     "text": [
+      "Write down the equation of the line of symmetry of <i>y</i> = <i>x</i>² − 6<i>x</i> + 8."
+     ],
+     "marks": 1,
+     "lines": 2,
+     "answer": "<i>x</i> = 3",
+     "answer_label": "Equation"
+    },
+    {
+     "text": [
+      "Sketch <i>y</i> = <i>x</i>² + 2<i>x</i> − 8. Label the roots, the y-intercept and the turning point with their coordinates."
+     ],
+     "marks": 4,
+     "lines": 6,
+     "answer": "Roots (−4, 0) and (2, 0); y-intercept (0, −8); turning point (−1, −9)",
+     "answer_label": false,
+     "working": "(x + 4)(x − 2); (x + 1)² − 9."
+    },
+    {
+     "text": [
+      "Maya said where <i>y</i> = (<i>x</i> + 2)(<i>x</i> − 5) crosses the <i>x</i>-axis. Find her mistake and give the correct values."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "<i>x</i> = −2 and <i>x</i> = 5",
+     "answer_label": "<i>x</i> =",
+     "working": "Each bracket = 0: x + 2 = 0 gives x = −2.",
+     "tampered": "It crosses at x = 2 and x = −5"
+    }
+   ]
+  },
+  "m": {
+   "blurb": "No hints. Plan before you calculate.",
+   "questions": [
+    {
+     "text": [
+      "The graph of <i>y</i> = <i>x</i>² + <i>b</i><i>x</i> + <i>c</i> has its turning point at (2, −9). Find <i>b</i> and <i>c</i>, and the roots."
+     ],
+     "marks": 4,
+     "lines": 5,
+     "answer": "<i>b</i> = −4, <i>c</i> = −5; roots −1 and 5",
+     "answer_label": "<i>b</i> = ____ <i>c</i> =",
+     "working": "(x − 2)² − 9 = x² − 4x − 5 = (x + 1)(x − 5)."
+    },
+    {
+     "text": [
+      "A quadratic graph crosses the <i>x</i>-axis at 2 and 3, and the <i>y</i>-axis at (0, 6). Find its equation."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "<i>y</i> = <i>x</i>² − 5<i>x</i> + 6",
+     "answer_label": "<i>y</i> =",
+     "working": "y = a(x − 2)(x − 3); at x = 0, 6a = 6, so a = 1."
+    },
+    {
+     "text": [
+      "Use the graph of <i>y</i> = <i>x</i>² − 2<i>x</i> − 3 and a straight line to solve <i>x</i>² − 3<i>x</i> − 1 = 0. Write down the equation of your line, then the solutions to 1 decimal place."
+     ],
+     "marks": 3,
+     "lines": 4,
+     "answer": "Line <i>y</i> = <i>x</i> − 2; <i>x</i> ≈ 3.3 and <i>x</i> ≈ −0.3",
+     "answer_label": "Line ____ Solutions",
+     "working": "<i>x</i>² − 2<i>x</i> − 3 = <i>x</i> − 2 rearranges to <i>x</i>² − 3<i>x</i> − 1 = 0.",
+     "tip": "Make the left side match the graph you have: add and subtract until it says <i>x</i>² − 2<i>x</i> − 3. What's left is your line."
+    },
+    {
+     "text": [
+      "For which values of <i>k</i> does the graph of <i>y</i> = <i>x</i>² − 4<i>x</i> + <i>k</i> not cross the <i>x</i>-axis?"
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "<i>k</i> > 4",
+     "answer_label": "<i>k</i>",
+     "working": "No roots: 16 − 4k < 0."
+    },
+    {
+     "text": [
+      "The path of a ball is <i>y</i> = −0.2<i>x</i>² + 2<i>x</i> + 1.5, where <i>y</i> is its height in metres. Find its greatest height."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "6.5 m",
+     "answer_label": "m",
+     "working": "−0.2(x − 5)² + 5 + 1.5, so the maximum is at x = 5."
+    }
+   ]
+  }
+ },
+ "closed_title": "Quadratic graphs",
+ "closed_points": [
+  "Draw and read quadratic graphs from a table of values.",
+  "Find roots by factorising and the y-intercept from c.",
+  "Find the turning point from symmetry or by completing the square.",
+  "Solve equations using the graph and a straight line.",
+  "Build the equation of a quadratic from its features."
+ ],
+ "next": {
+  "title": "Practise every GCSE topic in the Lab",
+  "text": "New numbers every time, feedback that names the mistake behind each wrong answer, and handwritten working marked like an examiner. Start free.",
+  "url": "https://www.mathsforensics.com/the-lab"
+ }
+}
