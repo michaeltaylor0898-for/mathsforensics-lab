@@ -184,7 +184,6 @@
   },
   "m": {
    "blurb": "Quadratics, unknown constants and proof. Plan before you calculate.",
-   
    "questions": [
     {
      "text": [
@@ -259,5 +258,6 @@
   "title": "Practise every GCSE topic in the Lab",
   "text": "New numbers every time, feedback that names the mistake behind each wrong answer, and handwritten working marked like an examiner. Start free.",
   "url": "https://www.mathsforensics.com/the-lab"
- }
+ },
+ "free": true
 }

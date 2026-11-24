@@ -141,12 +141,17 @@ def build(s):
     for k in "sem":
         for q in s["sections"][k]["questions"]:
             n += 1
+            if k == "m" and s.get("free"): continue
             sols.append(f'<div class="sol"><div class="yellow"><div class="h"><b>Q{n}</b><span class="lvl mono" style="background:{lvc[k]}">{LV[k]}</span></div>'
                         f'{f"<div class=w>{q["working"]}</div>" if q.get("working") else ""}<div class="a">✓ {q["answer"]}</div></div></div>')
+    lock = ""
+    if s.get("free"):
+        lu = s["marked_url"]
+        lock = f'<div class="marked" style="margin:1mm 0 3mm"><div><b>Mastery solutions are in the Lab.</b> Grades 8 and 9 are won on method, so a bare answer won\'t tell you much. Photograph or write your Mastery working in <b>Forensic Marking</b> and get it marked mark by mark, with the full solution and the mistake behind every lost mark. Your first marked question is free.<br><span style="color:#9AA6CC;font-size:8pt">{E(lu)}</span></div><img src="{qr(lu)}" alt="QR code"></div>'
     marks = {k: sum(q["marks"] for q in s["sections"][k]["questions"]) for k in "sem"}
     nx = s["next"]
     end = f"""<h2 class="st pb">Knowledge check: solutions</h2><p style="margin:0 0 3mm;font-size:9.2pt;color:var(--muted)">Check your method as well as your answer. In the exam, an answer with no working usually earns the final mark at most.</p>
-      <div class="sols">{"".join(sols)}</div>
+      <div class="sols">{"".join(sols)}</div>{lock}
       <div class="track"><b style="font-size:10pt">Mark your evidence</b><table><tr><th>Level</th><th>Marks</th><th>My score</th><th>Secured? (every mark)</th></tr>
       {"".join(f"<tr><td>{LV[k]}</td><td>{marks[k]}</td><td></td><td>☐</td></tr>" for k in "sem")}</table>
       <div class="rma"><div><b>R · Reading</b>Misread or missed part of the question</div><div><b>M · Method</b>Didn't know how to do it</div><div><b>A · Accuracy</b>Knew how, slipped in the working</div></div>
