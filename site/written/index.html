@@ -336,6 +336,8 @@ async function who(){
 async function loadQuestions(){
   try{const r=await fetch(FN);if(r.ok){const j=await r.json();if(j.questions?.length)S.questions=j.questions.filter(q=>!q.draft)}}catch(e){}
   prepare();renderChooser();
+  if(SHEET){const qs=S.questions.filter(q=>q.source?.paper===SHEET).sort((a,b)=>qnum(a)-qnum(b));
+    if(qs.length){show(qs[0],null,'');renderChooser()}else{V.way='topic';V.paper=null;renderChooser()}}
 }
 
 /* ---------- topics, papers and difficulty ---------- */
@@ -375,7 +377,7 @@ const STRANDS=[
   ['cond','Probability without replacement',7]]],
 ];
 const TOP={};STRANDS.forEach(([s,ts])=>ts.forEach(([id,name,grade])=>{TOP[id]={id,name,grade,strand:s}}));
-const PAPERS={'CC-Z/H':'Cold Case Zero','CC-MW/1':'Most Wanted · Paper 1','CC-MW/2':'Most Wanted · Paper 2'};
+const PAPERS={'CC-Z/H':'Cold Case Zero','CC-MW/1':'Most Wanted · Paper 1','CC-MW/2':'Most Wanted · Paper 2','CF-ALG-FORMEQ': 'Case file · Forming and solving equations · Mastery', 'CF-ALG-QUADEQ': 'Case file · Quadratic equations · Mastery', 'CF-ALG-QUADGRAPH': 'Case file · Quadratic graphs · Mastery', 'CF-ALG-SIMEQ': 'Case file · Simultaneous equations · Mastery', 'CF-ALG-SLINE': 'Case file · Straight-line graphs · Mastery', 'CF-GEO-CIRCLES': 'Case file · Circle theorems · Mastery', 'CF-GEO-CONGRUENCE': 'Case file · Congruence · Mastery', 'CF-GEO-EXACTTRIG': 'Case file · Exact trig values · Mastery', 'CF-GEO-PYTHTRIG': 'Case file · Pythagoras and trigonometry in 2D and 3D · Mastery', 'CF-GEO-SIMILAR': 'Case file · Similar shapes · Mastery', 'CF-GEO-SINECOS': 'Case file · Sine and cosine rule · Mastery', 'CF-GEO-TRIGGRAPHS': 'Case file · Trig graphs · Mastery', 'CF-NUM-INDICES': 'Case file · Indices · Mastery', 'CF-NUM-PCT': 'Case file · Percentages · Mastery', 'CF-NUM-RATIO': 'Case file · Ratio · Mastery', 'CF-NUM-SPEED': 'Case file · Speed and distance-time graphs · Mastery', 'CF-NUM-SURDS': 'Case file · Surds · Mastery', 'CF-PROB-TREE': 'Case file · Probability · Mastery', 'CF-PROB-VENN': 'Case file · Venn diagrams · Mastery'};
 const paperName=c=>PAPERS[c]||c.replace(/^CC-([A-Z])\/(\d)H?$/,(m,x,n)=>`Cold Case ${x} · Paper ${n}`);
 const LEVELS={e:['Easy','Early questions on the paper'],m:['Medium','Middle of the paper'],h:['Hard','Final questions and grade 8–9']};
 const qnum=q=>parseInt(q.source?.q,10)||0;
@@ -387,11 +389,12 @@ function prepare(){
   const last={};S.questions.forEach(q=>{const p=q.source?.paper;if(p)last[p]=Math.max(last[p]||0,qnum(q))});
   S.questions.forEach(q=>{const p=q.source?.paper;
     if(!p){q.level='m';return}
-    if(/^CC-MW/.test(p)){q.level='h';return}
+    if(/^CC-MW|^CF-/.test(p)){q.level='h';return}
     const f=qnum(q)/(last[p]||1);q.level=f<=.34?'e':f<=.67?'m':'h'});
-  S.papers=[...new Set(S.questions.map(q=>q.source?.paper).filter(Boolean))].sort((a,b)=>paperName(a).localeCompare(paperName(b)));
+  S.papers=[...new Set(S.questions.map(q=>q.source?.paper).filter(p=>p&&!/^CF-/.test(p)))].sort((a,b)=>paperName(a).localeCompare(paperName(b)));
 }
 const V={way:(()=>{const w=new URLSearchParams(location.search).get('way');return ['topic','surprise','paper','mine'].includes(w)?w:'topic'})(),topic:null,paper:null,pool:null,poolName:''};
+const SHEET=(()=>{const c=(new URLSearchParams(location.search).get('sheet')||'').toUpperCase();return /^CF-[A-Z-]+$/.test(c)?c:null})();if(SHEET){V.way='paper';V.paper=SHEET}
 function pick(pool){const fresh=pool.filter(q=>!seen.has(q.id)&&q!==S.q);const from=fresh.length?fresh:pool.filter(q=>q!==S.q);const list=from.length?from:pool;return list[Math.floor(Math.random()*list.length)]}
 function levelButtons(pool,attr){
   return `<div class="levels">${['e','m','h'].map(l=>{const n=pool.filter(q=>q.level===l).length;
@@ -422,7 +425,7 @@ function renderChooser(){
       return `<button class="paper" data-paper="${esc(p)}"><b>${esc(paperName(p))}</b><span>${calc?'Calculator':'Non-calculator'} · ${qs.reduce((a,q)=>a+q.marks,0)} marks · ${qs.filter(q=>seen.has(q.id)).length}/${qs.length} parts tried</span></button>`}).join('')}</div>`;
   }else{
     const mx=S.questions.filter(q=>q.source?.paper===V.paper).reduce((a,q)=>a+q.marks,0);
-    body=`<button class="back" data-back="paper">← All papers</button>${paperNav()}
+    body=/^CF-/.test(V.paper)?`<button class="back" data-back="topic">← All topics</button>${paperNav()}<p class="hint">The Mastery questions from your free worksheet. Write or photograph your working for each one and get it marked, mark by mark.</p>`:`<button class="back" data-back="paper">← All papers</button>${paperNav()}
       <div class="whole"><p><b>Done the whole paper on paper?</b> Photograph every page and we'll find and mark all ${mx} marks at once.</p>
       <button class="btn" data-wholepaper="1">Mark my whole paper</button></div>`;
   }
@@ -444,7 +447,7 @@ function renderQ(){
   const q=S.q,lv=q.level||'m';
   $('#casebar').innerHTML=`<div class="what"><b>${esc(TOP[q.topic]?.name||q.topic||'Question')}</b><span>${esc(label(q))}</span></div>
     ${V.way!=='paper'&&V.pool&&V.pool.length>1?`<button class="btn ghost" id="another">Another ${esc(V.poolName)} question</button>`:''}
-    <button class="btn ghost" id="change">${V.way==='paper'?'Choose another paper':'Change topic'}</button>`;
+    <button class="btn ghost" id="change">${V.way==='paper'?(/^CF-/.test(V.paper||'')?'Choose a topic':'Choose another paper'):'Change topic'}</button>`;
   // Later parts often lean on earlier ones ("Hence…", "Use your graph…"), so show the earlier parts of the same question
   const earlier=q.source?.part?S.questions.filter(x=>x.source?.paper===q.source.paper&&x.source.q===q.source.q&&(x.source.part||'')<q.source.part)
     .sort((a,b)=>a.source.part.localeCompare(b.source.part)):[];

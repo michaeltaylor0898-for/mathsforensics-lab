@@ -8,7 +8,7 @@ import { type AiLight, type AiMarking, applyCheck, applyMonitor, applyRules, mon
 const LAB_TOPICS = ("place negnum powroot fdp round frac fracmul hcf pfd ind errint sf surd fracind recur bounds ratio pct bestbuy sdp rev cint " +
   "dirprop growth invprop simp subst brackets lin formeq rearr exp factq simlin linineq triple factq2 qform aproof csq qineq simquad algfrac " +
   "nthlin geoseq nthquad graphshape sline quadgraph perp gradarea graphtrans circleeq tangent funcmach comp inv iter anglefacts parallel " +
-  "polygon transform loci bearing circthm congproof vecproof area circum units scale circ volprism surface simlen arcs similar volcone trig " +
+  "polygon transform loci bearing circthm congproof vecproof area circum units scale circ volprism surface simlen arcs similar volcone pyth trig " +
   "exacttrig siner cosr areasin trig3d mean twoway pie stem scatter freqtab compare gmean sampling cumfreq hist prob freqtree relfreq " +
   "counting venn tree cond").split(" ");
 
