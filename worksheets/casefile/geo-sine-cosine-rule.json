@@ -1,0 +1,226 @@
+{
+ "code": "MF-CF-GEO-SINECOS",
+ "product_line": "Case file worksheet · GCSE",
+ "strand": "Shape",
+ "title": "Sine and cosine rule",
+ "level_line": "GCSE Higher",
+ "time": "About 50 minutes",
+ "cover_sub": "Trigonometry for triangles without a right angle. Secure choosing the right rule, extend to areas and contexts, then master the ambiguous case and algebra.",
+ "levels": {
+  "s": "grades 4–5",
+  "e": "grades 6–7",
+  "m": "grades 8–9"
+ },
+ "levels_long": {
+  "s": "Sine rule, cosine rule and ½ab sin C, one step each.",
+  "e": "Angles, quadrilaterals, contexts, and tampered evidence.",
+  "m": "Two possible triangles, bearings, and forming equations."
+ },
+ "briefing": [
+  "Label the sides with lower-case letters opposite their angles: side <i>a</i> is opposite angle A.",
+  "<b>Sine rule</b> (a pair of opposite side and angle, plus one more): <span class=\"frac\"><span class=\"nu\"><i>a</i></span><span class=\"de\">sin A</span></span> = <span class=\"frac\"><span class=\"nu\"><i>b</i></span><span class=\"de\">sin B</span></span> = <span class=\"frac\"><span class=\"nu\"><i>c</i></span><span class=\"de\">sin C</span></span>. <b>Cosine rule</b> (two sides and the angle between, or all three sides): <i>a</i>² = <i>b</i>² + <i>c</i>² − 2<i>bc</i> cos A. <b>Area</b> = ½<i>ab</i> sin C."
+ ],
+ "method": [
+  "Label the triangle: angles A, B, C; sides a, b, c opposite them.",
+  "Have you got a side and its opposite angle? Sine rule. Otherwise, cosine rule.",
+  "Substitute, then rearrange before you press any buttons.",
+  "Round only at the end, and check the biggest side is opposite the biggest angle."
+ ],
+ "example": {
+  "question": "In triangle PQR, PQ = 9 cm, PR = 7 cm and angle P = 50°. Find QR.",
+  "steps": [
+   "Two sides and the angle between them, with no opposite pair: cosine rule.",
+   "QR² = 9² + 7² − 2 × 9 × 7 × cos 50°.",
+   "= 81 + 49 − 126 × 0.6428 = 49.01.",
+   "QR = √49.01 = 7.00 cm. Check: it's opposite 50°, between the other two sides ✓"
+  ],
+  "answer": "QR = 7.00 cm (3 s.f.)"
+ },
+ "free": true,
+ "marked_url": "https://lab.mathsforensics.com/written/",
+ "marked_topic": "Sine rule",
+ "sections": {
+  "s": {
+   "blurb": "The method, step by step. Show every line.",
+   "questions": [
+    {
+     "text": [
+      "Find the length <i>b</i>. Give your answer to 3 significant figures."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "11.3 cm",
+     "answer_label": "cm",
+     "working": "b = 8 sin 65° ÷ sin 40°.",
+     "svg": "<svg viewBox=\"0 0 60 40\" style=\"width:60mm;height:40mm;display:block;margin:2mm 0 1mm 4mm\" font-family=\"DejaVu Sans\" font-size=\"3.2\"><polygon points=\"8.00,32.00 52.00,32.00 24.28,9.12\" fill=\"#F3F6FC\" stroke=\"#16203F\" stroke-width=\".5\" stroke-linejoin=\"round\"/><text x=\"5.01\" y=\"34.24\" text-anchor=\"middle\" font-weight=\"bold\">A</text><text x=\"55.05\" y=\"34.07\" text-anchor=\"middle\" font-weight=\"bold\">B</text><text x=\"23.50\" y=\"7.12\" text-anchor=\"middle\" font-weight=\"bold\">C</text><text x=\"41.32\" y=\"20.45\" text-anchor=\"middle\" fill=\"#1B36FF\">8 cm</text><text x=\"12.90\" y=\"20.63\" text-anchor=\"middle\" fill=\"#1B36FF\">b</text><text x=\"14.54\" y=\"30.62\" text-anchor=\"middle\" font-size=\"2.9\">40°</text><text x=\"45.33\" y=\"30.97\" text-anchor=\"middle\" font-size=\"2.9\">65°</text><text x=\"59.00\" y=\"39.00\" text-anchor=\"end\" font-size=\"2.4\" fill=\"#5B6585\">Not drawn accurately</text></svg>"
+    },
+    {
+     "text": [
+      "In triangle ABC, b = 7 cm, c = 9 cm and angle A = 50°. Find a."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "7.00 cm",
+     "answer_label": "cm",
+     "working": "a² = 49 + 81 − 126 cos 50°."
+    },
+    {
+     "text": [
+      "Find the area of a triangle with sides 6 cm and 9 cm and an angle of 40° between them."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "17.4 cm²",
+     "answer_label": "cm²",
+     "working": "½ × 6 × 9 × sin 40°."
+    },
+    {
+     "text": [
+      "A triangle has sides 7 cm, 8 cm and 9 cm. Find the largest angle."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "73.4°",
+     "answer_label": "°",
+     "working": "cos C = (49 + 64 − 81) ÷ 112.",
+     "tip": "The largest angle is opposite the longest side. Rearrange first: cos C = (a² + b² − c²) ÷ 2ab."
+    },
+    {
+     "text": [
+      "In triangle ABC, a = 10 cm, angle A = 70° and b = 8 cm. Find angle B."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "48.7°",
+     "answer_label": "°",
+     "working": "sin B = 8 sin 70° ÷ 10."
+    }
+   ]
+  },
+  "e": {
+   "blurb": "A step is hidden, or there's a context to unpick. One piece of tampered evidence.",
+   "questions": [
+    {
+     "text": [
+      "Two observers are 200 m apart on a straight road. They see a suspect's drone at angles of 50° and 60° from the road. How far is the drone from the first observer?"
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "184 m",
+     "answer_label": "m",
+     "working": "The third angle is 70°. 200 sin 60° ÷ sin 70°.",
+     "tip": "Sketch it first. The side you want is opposite the angle at the <b>second</b> observer."
+    },
+    {
+     "text": [
+      "A triangle has sides 5 cm, 6 cm and 7 cm. Find its area."
+     ],
+     "marks": 4,
+     "lines": 5,
+     "answer": "14.7 cm²",
+     "answer_label": "cm²",
+     "working": "Find one angle by the cosine rule (e.g. 78.5° between 5 and 6), then ½ × 5 × 6 × sin 78.5°."
+    },
+    {
+     "text": [
+      "A parallelogram has sides of 8 cm and 5 cm, with angles of 60° and 120°. Find the length of its longer diagonal."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "11.4 cm",
+     "answer_label": "cm",
+     "working": "d² = 64 + 25 − 80 cos 120°."
+    },
+    {
+     "text": [
+      "In triangle XYZ, XY = 12 cm, angle X = 35° and angle Y = 80°. Find XZ."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "13.0 cm",
+     "answer_label": "cm",
+     "working": "Angle Z = 65°. 12 sin 80° ÷ sin 65°."
+    },
+    {
+     "text": [
+      "Jas used the cosine rule with b = 7, c = 9 and A = 50°. Find her mistake."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "a = 7.00 cm",
+     "answer_label": "Correct a",
+     "working": "She multiplied the whole of b² + c² − 2bc by cos A. Only 2bc is multiplied by cos A.",
+     "tampered": "a² = (49 + 81 − 126) cos 50° = 2.57<br>a = 1.60 cm"
+    }
+   ]
+  },
+  "m": {
+   "blurb": "No hints. Plan before you calculate.",
+   "questions": [
+    {
+     "text": [
+      "In triangle ABC, a = 7 cm, b = 9 cm and angle A = 40°. Find the two possible sizes of angle B."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "55.7° or 124.3°",
+     "answer_label": "°",
+     "working": "sin B = 9 sin 40° ÷ 7 = 0.826. The second angle is 180° − 55.7°.",
+     "tip": "When the side opposite the known angle is the <b>shorter</b> one, two triangles can fit. Check whether 180° minus your angle also works."
+    },
+    {
+     "text": [
+      "A triangle has an area of 30 cm². Two of its sides are 8 cm and 10 cm. Find the acute angle between them."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "48.6°",
+     "answer_label": "°",
+     "working": "½ × 8 × 10 × sin C = 30, so sin C = 0.75."
+    },
+    {
+     "text": [
+      "A patrol boat sails 12 km on a bearing of 060°, then 8 km on a bearing of 130°. How far is it from its start?"
+     ],
+     "marks": 4,
+     "lines": 6,
+     "answer": "16.5 km",
+     "answer_label": "km",
+     "working": "The angle at the turn is 180° − 70° = 110°. d² = 144 + 64 − 192 cos 110°."
+    },
+    {
+     "text": [
+      "A triangle has sides x cm, (x + 1) cm and (x + 2) cm. The largest angle is 120°. Find x."
+     ],
+     "marks": 4,
+     "lines": 6,
+     "answer": "x = 1.5",
+     "answer_label": "x =",
+     "working": "(x + 2)² = x² + (x + 1)² − 2x(x + 1) cos 120° → 2x² − x − 3 = 0 → (2x − 3)(x + 1) = 0."
+    },
+    {
+     "text": [
+      "Show that the area of an equilateral triangle with side s is (√3/4)s²."
+     ],
+     "marks": 2,
+     "lines": 3,
+     "answer": "½ × s × s × sin 60° = ½ s² × √3/2 = (√3/4)s²",
+     "answer_label": false
+    }
+   ]
+  }
+ },
+ "closed_title": "Sine and cosine rule",
+ "closed_points": [
+  "Label any triangle and choose between the sine and cosine rules.",
+  "Find missing sides and angles in triangles without a right angle.",
+  "Find the area of any triangle with ½ab sin C.",
+  "Spot the ambiguous case and give both angles.",
+  "Use the rules with bearings and with algebra."
+ ],
+ "next": {
+  "title": "Practise every GCSE topic in the Lab",
+  "text": "New numbers every time, feedback that names the mistake behind each wrong answer, and handwritten working marked like an examiner. Start free.",
+  "url": "https://www.mathsforensics.com/the-lab"
+ }
+}

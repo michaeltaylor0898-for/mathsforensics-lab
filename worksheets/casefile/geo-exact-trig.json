@@ -1,0 +1,222 @@
+{
+ "code": "MF-CF-GEO-EXACTTRIG",
+ "product_line": "Case file worksheet · GCSE",
+ "strand": "Shape",
+ "title": "Exact trig values",
+ "level_line": "GCSE Higher",
+ "time": "About 50 minutes",
+ "cover_sub": "No calculator, no rounding. Secure the values for 0°, 30°, 45°, 60° and 90°, extend to finding sides and angles exactly, then master surd answers in real shapes.",
+ "levels": {
+  "s": "grades 4–5",
+  "e": "grades 6–7",
+  "m": "grades 8–9"
+ },
+ "levels_long": {
+  "s": "Recall the exact values and combine them.",
+  "e": "Exact sides and angles in right-angled triangles, and tampered evidence.",
+  "m": "Surd answers in shapes, and simple trig equations."
+ },
+ "briefing": [
+  "On the non-calculator paper you must know these values by heart. They come from two triangles: half an equilateral triangle (30° and 60°) and half a square (45°).",
+  "<table style=\"border-collapse:collapse;margin:2mm auto 0;font-family:DejaVu Serif;font-size:10pt;text-align:center\"><tr><td style=\"border:1px solid #9FD9D4;padding:1mm 3mm;background:#fff\"><b></b></td><td style=\"border:1px solid #9FD9D4;padding:1mm 3mm;background:#fff\"><b>0°</b></td><td style=\"border:1px solid #9FD9D4;padding:1mm 3mm;background:#fff\"><b>30°</b></td><td style=\"border:1px solid #9FD9D4;padding:1mm 3mm;background:#fff\"><b>45°</b></td><td style=\"border:1px solid #9FD9D4;padding:1mm 3mm;background:#fff\"><b>60°</b></td><td style=\"border:1px solid #9FD9D4;padding:1mm 3mm;background:#fff\"><b>90°</b></td></tr><tr><td style=\"border:1px solid #9FD9D4;padding:1mm 3mm;background:#fff\"><b>sin</b></td><td style=\"border:1px solid #9FD9D4;padding:1mm 3mm;background:#fff\">0</td><td style=\"border:1px solid #9FD9D4;padding:1mm 3mm;background:#fff\"><span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">2</span></span></td><td style=\"border:1px solid #9FD9D4;padding:1mm 3mm;background:#fff\"><span class=\"frac\"><span class=\"nu\"><span class=\"rad\">√<span class=\"ov\">2</span></span></span><span class=\"de\">2</span></span></td><td style=\"border:1px solid #9FD9D4;padding:1mm 3mm;background:#fff\"><span class=\"frac\"><span class=\"nu\"><span class=\"rad\">√<span class=\"ov\">3</span></span></span><span class=\"de\">2</span></span></td><td style=\"border:1px solid #9FD9D4;padding:1mm 3mm;background:#fff\">1</td></tr><tr><td style=\"border:1px solid #9FD9D4;padding:1mm 3mm;background:#fff\"><b>cos</b></td><td style=\"border:1px solid #9FD9D4;padding:1mm 3mm;background:#fff\">1</td><td style=\"border:1px solid #9FD9D4;padding:1mm 3mm;background:#fff\"><span class=\"frac\"><span class=\"nu\"><span class=\"rad\">√<span class=\"ov\">3</span></span></span><span class=\"de\">2</span></span></td><td style=\"border:1px solid #9FD9D4;padding:1mm 3mm;background:#fff\"><span class=\"frac\"><span class=\"nu\"><span class=\"rad\">√<span class=\"ov\">2</span></span></span><span class=\"de\">2</span></span></td><td style=\"border:1px solid #9FD9D4;padding:1mm 3mm;background:#fff\"><span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">2</span></span></td><td style=\"border:1px solid #9FD9D4;padding:1mm 3mm;background:#fff\">0</td></tr><tr><td style=\"border:1px solid #9FD9D4;padding:1mm 3mm;background:#fff\"><b>tan</b></td><td style=\"border:1px solid #9FD9D4;padding:1mm 3mm;background:#fff\">0</td><td style=\"border:1px solid #9FD9D4;padding:1mm 3mm;background:#fff\"><span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\"><span class=\"rad\">√<span class=\"ov\">3</span></span></span></span></td><td style=\"border:1px solid #9FD9D4;padding:1mm 3mm;background:#fff\">1</td><td style=\"border:1px solid #9FD9D4;padding:1mm 3mm;background:#fff\"><span class=\"rad\">√<span class=\"ov\">3</span></span></td><td style=\"border:1px solid #9FD9D4;padding:1mm 3mm;background:#fff\">–</td></tr></table>"
+ ],
+ "method": [
+  "Learn the table, or rebuild it from the two triangles.",
+  "Label the sides of the right-angled triangle: hypotenuse, opposite, adjacent.",
+  "Pick sin, cos or tan with SOH CAH TOA, and substitute the exact value.",
+  "Keep surds exact: rationalise a denominator if you're asked to simplify."
+ ],
+ "example": {
+  "question": "A ramp makes an angle of 30° with the ground and is 8 m long. How high does it rise? Give an exact answer.",
+  "steps": [
+   "The ramp is the hypotenuse; the height is opposite the 30° angle. So use sin.",
+   "sin 30° = <span class=\"frac\"><span class=\"nu\">height</span><span class=\"de\">8</span></span>.",
+   "sin 30° = ½, so height = 8 × ½.",
+   "Height = 4 m. Check: 4 is half of 8, as the 30° triangle always gives ✓"
+  ],
+  "answer": "4 m"
+ },
+ "free": true,
+ "marked_url": "https://lab.mathsforensics.com/written/",
+ "marked_topic": "Exact trig values",
+ "sections": {
+  "s": {
+   "blurb": "The method, step by step. Show every line.",
+   "questions": [
+    {
+     "text": [
+      "Write down the exact value of sin 30°."
+     ],
+     "marks": 1,
+     "lines": 2,
+     "answer": "½",
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "Work out cos 60° + sin 30°."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "1",
+     "answer_label": "Answer",
+     "working": "½ + ½."
+    },
+    {
+     "text": [
+      "Work out tan 45° × cos 0°."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "1",
+     "answer_label": "Answer",
+     "working": "1 × 1."
+    },
+    {
+     "text": [
+      "Find the exact length of BC."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "5 cm",
+     "answer_label": "cm",
+     "working": "sin 30° × 10.",
+     "svg": "<svg viewBox=\"0 0 60 40\" style=\"width:60mm;height:40mm;display:block;margin:2mm 0 1mm 4mm\" font-family=\"DejaVu Sans\" font-size=\"3.2\"><polygon points=\"8.00,32.00 49.57,32.00 49.57,8.00\" fill=\"#F3F6FC\" stroke=\"#16203F\" stroke-width=\".5\" stroke-linejoin=\"round\"/><text x=\"4.93\" y=\"33.99\" text-anchor=\"middle\" font-weight=\"bold\">A</text><text x=\"52.34\" y=\"34.70\" text-anchor=\"middle\" font-weight=\"bold\">B</text><text x=\"51.66\" y=\"6.68\" text-anchor=\"middle\" font-weight=\"bold\">C</text><text x=\"25.84\" y=\"19.40\" text-anchor=\"middle\" fill=\"#1B36FF\">10 cm</text><text x=\"14.73\" y=\"31.16\" text-anchor=\"middle\" font-size=\"2.9\">30°</text><polyline points=\"49.57,29.40 46.97,29.40 46.97,32.00\" fill=\"none\" stroke=\"#16203F\" stroke-width=\".35\"/><text x=\"59.00\" y=\"39.00\" text-anchor=\"end\" font-size=\"2.4\" fill=\"#5B6585\">Not drawn accurately</text></svg>"
+    },
+    {
+     "text": [
+      "Write down the exact value of tan 60°."
+     ],
+     "marks": 1,
+     "lines": 2,
+     "answer": "√3",
+     "answer_label": "Answer"
+    }
+   ]
+  },
+  "e": {
+   "blurb": "A step is hidden, or there's a context to unpick. One piece of tampered evidence.",
+   "questions": [
+    {
+     "text": [
+      "Find the exact length of the hypotenuse AC."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "12 cm",
+     "answer_label": "cm",
+     "working": "cos 60° = 6 ÷ AC, so AC = 6 ÷ ½.",
+     "svg": "<svg viewBox=\"0 0 60 40\" style=\"width:60mm;height:40mm;display:block;margin:2mm 0 1mm 4mm\" font-family=\"DejaVu Sans\" font-size=\"3.2\"><polygon points=\"8.00,32.00 21.86,32.00 21.86,8.00\" fill=\"#F3F6FC\" stroke=\"#16203F\" stroke-width=\".5\" stroke-linejoin=\"round\"/><text x=\"5.58\" y=\"35.19\" text-anchor=\"middle\" font-weight=\"bold\">A</text><text x=\"23.46\" y=\"35.87\" text-anchor=\"middle\" font-weight=\"bold\">B</text><text x=\"22.75\" y=\"6.03\" text-anchor=\"middle\" font-weight=\"bold\">C</text><text x=\"13.99\" y=\"36.37\" text-anchor=\"middle\" fill=\"#1B36FF\">6 cm</text><text x=\"13.29\" y=\"28.52\" text-anchor=\"middle\" font-size=\"2.9\">60°</text><polyline points=\"21.86,29.40 19.26,29.40 19.26,32.00\" fill=\"none\" stroke=\"#16203F\" stroke-width=\".35\"/><text x=\"59.00\" y=\"39.00\" text-anchor=\"end\" font-size=\"2.4\" fill=\"#5B6585\">Not drawn accurately</text></svg>"
+    },
+    {
+     "text": [
+      "Work out the exact value of sin 60° × tan 30°."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "½",
+     "answer_label": "Answer",
+     "working": "<span class=\"frac\"><span class=\"nu\"><span class=\"rad\">√<span class=\"ov\">3</span></span></span><span class=\"de\">2</span></span> × <span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\"><span class=\"rad\">√<span class=\"ov\">3</span></span></span></span> = ½."
+    },
+    {
+     "text": [
+      "A right-angled triangle has an opposite side of 4 cm and a hypotenuse of 8 cm. Find the angle without a calculator."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "30°",
+     "answer_label": "°",
+     "working": "sin θ = ½."
+    },
+    {
+     "text": [
+      "Show that sin² 45° + cos² 45° = 1."
+     ],
+     "marks": 2,
+     "lines": 3,
+     "answer": "(√2/2)² + (√2/2)² = ½ + ½ = 1",
+     "answer_label": false
+    },
+    {
+     "text": [
+      "Ola wrote this. Find her mistake."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "sin 30° + sin 30° = ½ + ½ = 1, but sin 60° = √3/2. You can't add the angles.",
+     "answer_label": "Correct value",
+     "tampered": "sin 30° + sin 30° = sin 60°"
+    }
+   ]
+  },
+  "m": {
+   "blurb": "No hints. Plan before you calculate.",
+   "questions": [
+    {
+     "text": [
+      "An equilateral triangle has sides of 6 cm. Find its exact area."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "9√3 cm²",
+     "answer_label": "cm²",
+     "working": "Height 6 sin 60° = 3√3. Area ½ × 6 × 3√3.",
+     "tip": "Split it into two right-angled triangles with angles 30°, 60°, 90°. The height is the side opposite 60°."
+    },
+    {
+     "text": [
+      "Find the exact length of BC. Give your answer in its simplest form."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "2√3 cm",
+     "answer_label": "cm",
+     "working": "tan 30° × 6 = 6 ÷ √3 = 2√3.",
+     "svg": "<svg viewBox=\"0 0 60 40\" style=\"width:60mm;height:40mm;display:block;margin:2mm 0 1mm 4mm\" font-family=\"DejaVu Sans\" font-size=\"3.2\"><polygon points=\"8.00,32.00 49.62,32.00 49.62,8.00\" fill=\"#F3F6FC\" stroke=\"#16203F\" stroke-width=\".5\" stroke-linejoin=\"round\"/><text x=\"4.93\" y=\"33.99\" text-anchor=\"middle\" font-weight=\"bold\">A</text><text x=\"52.39\" y=\"34.70\" text-anchor=\"middle\" font-weight=\"bold\">B</text><text x=\"51.71\" y=\"6.68\" text-anchor=\"middle\" font-weight=\"bold\">C</text><text x=\"26.58\" y=\"35.67\" text-anchor=\"middle\" fill=\"#1B36FF\">6 cm</text><text x=\"14.73\" y=\"31.16\" text-anchor=\"middle\" font-size=\"2.9\">30°</text><polyline points=\"49.62,29.40 47.02,29.40 47.02,32.00\" fill=\"none\" stroke=\"#16203F\" stroke-width=\".35\"/><text x=\"59.00\" y=\"39.00\" text-anchor=\"end\" font-size=\"2.4\" fill=\"#5B6585\">Not drawn accurately</text></svg>"
+    },
+    {
+     "text": [
+      "Solve 2 sin <i>x</i> = 1 for 0° ≤ <i>x</i> ≤ 90°."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "<i>x</i> = 30°",
+     "answer_label": "<i>x</i> =",
+     "working": "sin x = ½."
+    },
+    {
+     "text": [
+      "Show that cos 30° × tan 60° = 3/2."
+     ],
+     "marks": 2,
+     "lines": 3,
+     "answer": "√3/2 × √3 = 3/2",
+     "answer_label": false
+    },
+    {
+     "text": [
+      "Triangle ABC has a right angle at C. AB = 8 cm and angle A = 45°. Find the exact length of AC."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "4√2 cm",
+     "answer_label": "cm",
+     "working": "8 cos 45° = 8 × √2/2."
+    }
+   ]
+  }
+ },
+ "closed_title": "Exact trig values",
+ "closed_points": [
+  "Recall sin, cos and tan of 0°, 30°, 45°, 60° and 90°.",
+  "Rebuild the values from half an equilateral triangle and half a square.",
+  "Find sides and angles exactly in right-angled triangles.",
+  "Give answers in simplest surd form.",
+  "Solve simple trig equations without a calculator."
+ ],
+ "next": {
+  "title": "Practise every GCSE topic in the Lab",
+  "text": "New numbers every time, feedback that names the mistake behind each wrong answer, and handwritten working marked like an examiner. Start free.",
+  "url": "https://www.mathsforensics.com/the-lab"
+ }
+}

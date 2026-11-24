@@ -1,0 +1,227 @@
+{
+ "code": "MF-CF-GEO-PYTHTRIG",
+ "product_line": "Case file worksheet · GCSE",
+ "strand": "Shape",
+ "title": "Pythagoras and trigonometry in 2D and 3D",
+ "level_line": "GCSE Higher",
+ "time": "About 50 minutes",
+ "cover_sub": "Right-angled triangles are everywhere, even inside boxes. Secure Pythagoras and SOH CAH TOA, extend to elevation and bearings, then master lengths and angles in 3D.",
+ "levels": {
+  "s": "grades 4–5",
+  "e": "grades 6–7",
+  "m": "grades 8–9"
+ },
+ "levels_long": {
+  "s": "Pythagoras and SOH CAH TOA in one triangle.",
+  "e": "Two-step problems, elevation, bearings, and tampered evidence.",
+  "m": "Lengths and angles inside cuboids and pyramids."
+ },
+ "briefing": [
+  "<b>Pythagoras</b>: in a right-angled triangle, <i>a</i>² + <i>b</i>² = <i>c</i>², where <i>c</i> is the hypotenuse (opposite the right angle). Add to find the hypotenuse; subtract to find a shorter side.",
+  "<b>SOH CAH TOA</b>: sin = <span class=\"frac\"><span class=\"nu\">opp</span><span class=\"de\">hyp</span></span>, cos = <span class=\"frac\"><span class=\"nu\">adj</span><span class=\"de\">hyp</span></span>, tan = <span class=\"frac\"><span class=\"nu\">opp</span><span class=\"de\">adj</span></span>. In <b>3D</b>, find a right-angled triangle inside the shape, often using a diagonal of the base first."
+ ],
+ "method": [
+  "Find a right-angled triangle and sketch it flat.",
+  "Label hyp, opp and adj from the angle you're using.",
+  "Two sides, no angle: Pythagoras. An angle involved: SOH CAH TOA.",
+  "In 3D, work out the base diagonal first, then use it in a vertical triangle."
+ ],
+ "example": {
+  "question": "A cuboid measures 3 cm by 4 cm by 12 cm. Find the length of the longest diagonal.",
+  "steps": [
+   "The base is 3 cm by 4 cm. Its diagonal: √(3² + 4²) = √25 = 5 cm.",
+   "The longest diagonal makes a right-angled triangle with the base diagonal (5 cm) and the height (12 cm).",
+   "Diagonal = √(5² + 12²) = √169.",
+   "= 13 cm. In one step: √(3² + 4² + 12²) = 13 ✓"
+  ],
+  "answer": "13 cm"
+ },
+ "free": true,
+ "marked_url": "https://lab.mathsforensics.com/written/",
+ "marked_topic": "3D trigonometry and Pythagoras",
+ "sections": {
+  "s": {
+   "blurb": "The method, step by step. Show every line.",
+   "questions": [
+    {
+     "text": [
+      "A right-angled triangle has shorter sides of 9 cm and 12 cm. Find the hypotenuse."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "15 cm",
+     "answer_label": "cm",
+     "working": "√(81 + 144)."
+    },
+    {
+     "text": [
+      "A right-angled triangle has a hypotenuse of 13 cm and one side of 5 cm. Find the other side."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "12 cm",
+     "answer_label": "cm",
+     "working": "√(169 − 25).",
+     "tip": "Finding a shorter side means <b>subtract</b>. If your answer is longer than the hypotenuse, you added."
+    },
+    {
+     "text": [
+      "Find the length x. Give your answer to 3 significant figures."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "5.74 cm",
+     "answer_label": "cm",
+     "working": "x = 10 sin 35°.",
+     "svg": "<svg viewBox=\"0 0 60 40\" style=\"width:60mm;height:40mm;display:block;margin:2mm 0 1mm 4mm\" font-family=\"DejaVu Sans\" font-size=\"3.2\"><polygon points=\"8.00,32.00 42.24,32.00 42.24,8.00\" fill=\"#F3F6FC\" stroke=\"#16203F\" stroke-width=\".5\" stroke-linejoin=\"round\"/><text x=\"4.98\" y=\"34.16\" text-anchor=\"middle\" font-weight=\"bold\">A</text><text x=\"44.86\" y=\"34.94\" text-anchor=\"middle\" font-weight=\"bold\">B</text><text x=\"44.10\" y=\"6.49\" text-anchor=\"middle\" font-weight=\"bold\">C</text><text x=\"22.34\" y=\"19.15\" text-anchor=\"middle\" fill=\"#1B36FF\">10 cm</text><text x=\"45.45\" y=\"19.98\" text-anchor=\"middle\" fill=\"#1B36FF\">x</text><text x=\"14.61\" y=\"30.79\" text-anchor=\"middle\" font-size=\"2.9\">35°</text><polyline points=\"42.24,29.40 39.64,29.40 39.64,32.00\" fill=\"none\" stroke=\"#16203F\" stroke-width=\".35\"/><text x=\"59.00\" y=\"39.00\" text-anchor=\"end\" font-size=\"2.4\" fill=\"#5B6585\">Not drawn accurately</text></svg>"
+    },
+    {
+     "text": [
+      "A right-angled triangle has an opposite side of 7 cm and an adjacent side of 10 cm. Find the angle."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "35.0°",
+     "answer_label": "°",
+     "working": "tan⁻¹(0.7)."
+    },
+    {
+     "text": [
+      "A 5 m ladder leans against a wall with its foot 1.4 m from the wall. How high up the wall does it reach?"
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "4.8 m",
+     "answer_label": "m",
+     "working": "√(25 − 1.96)."
+    }
+   ]
+  },
+  "e": {
+   "blurb": "A step is hidden, or there's a context to unpick. One piece of tampered evidence.",
+   "questions": [
+    {
+     "text": [
+      "An isosceles triangle has sides 10 cm, 10 cm and 12 cm. Find its area."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "48 cm²",
+     "answer_label": "cm²",
+     "working": "Height √(100 − 36) = 8. ½ × 12 × 8."
+    },
+    {
+     "text": [
+      "A drone hovers 40 m above the ground. An officer stands 65 m from the point directly below it. Find the angle of elevation of the drone."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "31.6°",
+     "answer_label": "°",
+     "working": "tan⁻¹(40 ÷ 65)."
+    },
+    {
+     "text": [
+      "A rectangle measures 8 cm by 5 cm. Find the angle between a diagonal and a longer side."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "32.0°",
+     "answer_label": "°",
+     "working": "tan⁻¹(5 ÷ 8)."
+    },
+    {
+     "text": [
+      "A suspect walks 6 km north, then 8 km east. Find how far she is from her start, and the bearing she would need to walk back on."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "10 km on a bearing of 233°",
+     "answer_label": "____ km, bearing",
+     "working": "The start-to-finish bearing is tan⁻¹(8/6) = 053°; the way back is 053° + 180°."
+    },
+    {
+     "text": [
+      "Rui found the missing side of a right-angled triangle with hypotenuse 10 cm and one side 6 cm. Find his mistake."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "8 cm",
+     "answer_label": "cm",
+     "working": "He added instead of subtracting: √(100 − 36) = 8.",
+     "tampered": "√(10² + 6²) = √136 = 11.7 cm"
+    }
+   ]
+  },
+  "m": {
+   "blurb": "No hints. Plan before you calculate.",
+   "questions": [
+    {
+     "text": [
+      "The cuboid ABCDEFGH measures 3 cm by 4 cm by 12 cm. Find the length AG."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "13 cm",
+     "answer_label": "cm",
+     "working": "√(3² + 4² + 12²).",
+     "svg": "<svg viewBox=\"0 0 70 48\" style=\"width:70mm;height:48mm;display:block;margin:2mm 0 1mm 4mm\" font-family=\"DejaVu Sans\" font-size=\"3.2\"><line x1=\"6.00\" y1=\"42.00\" x2=\"24.37\" y2=\"42.00\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"24.37\" y1=\"42.00\" x2=\"34.29\" y2=\"35.39\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"6.00\" y1=\"42.00\" x2=\"6.00\" y2=\"12.61\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"24.37\" y1=\"42.00\" x2=\"24.37\" y2=\"12.61\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"34.29\" y1=\"35.39\" x2=\"34.29\" y2=\"6.00\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"6.00\" y1=\"12.61\" x2=\"24.37\" y2=\"12.61\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"24.37\" y1=\"12.61\" x2=\"34.29\" y2=\"6.00\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"34.29\" y1=\"6.00\" x2=\"15.92\" y2=\"6.00\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"15.92\" y1=\"6.00\" x2=\"6.00\" y2=\"12.61\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"34.29\" y1=\"35.39\" x2=\"15.92\" y2=\"35.39\" stroke=\"#16203F\" stroke-width=\".35\" stroke-dasharray=\"1,1\"/><line x1=\"15.92\" y1=\"35.39\" x2=\"6.00\" y2=\"42.00\" stroke=\"#16203F\" stroke-width=\".35\" stroke-dasharray=\"1,1\"/><line x1=\"15.92\" y1=\"35.39\" x2=\"15.92\" y2=\"6.00\" stroke=\"#16203F\" stroke-width=\".35\" stroke-dasharray=\"1,1\"/><line x1=\"6.00\" y1=\"42.00\" x2=\"34.29\" y2=\"6.00\" stroke=\"#1B36FF\" stroke-width=\".5\" stroke-dasharray=\"1.6,.8\"/><line x1=\"6.00\" y1=\"42.00\" x2=\"34.29\" y2=\"35.39\" stroke=\"#1B36FF\" stroke-width=\".5\" stroke-dasharray=\"1.6,.8\"/><text x=\"3.50\" y=\"45.00\" text-anchor=\"middle\" font-weight=\"bold\">A</text><text x=\"26.37\" y=\"45.00\" text-anchor=\"middle\" font-weight=\"bold\">B</text><text x=\"36.79\" y=\"36.39\" text-anchor=\"middle\" font-weight=\"bold\">C</text><text x=\"13.42\" y=\"34.39\" text-anchor=\"middle\" font-weight=\"bold\">D</text><text x=\"3.50\" y=\"11.61\" text-anchor=\"middle\" font-weight=\"bold\">E</text><text x=\"25.87\" y=\"11.11\" text-anchor=\"middle\" font-weight=\"bold\">F</text><text x=\"36.79\" y=\"5.00\" text-anchor=\"middle\" font-weight=\"bold\">G</text><text x=\"13.42\" y=\"4.50\" text-anchor=\"middle\" font-weight=\"bold\">H</text><text x=\"15.18\" y=\"46.00\" text-anchor=\"middle\" fill=\"#1B36FF\">3 cm</text><text x=\"32.33\" y=\"41.19\" fill=\"#1B36FF\">4 cm</text><text x=\"35.79\" y=\"20.69\" fill=\"#1B36FF\">12 cm</text></svg>"
+    },
+    {
+     "text": [
+      "For the same cuboid, find the angle between AG and the base ABCD."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "67.4°",
+     "answer_label": "°",
+     "working": "AC = 5 cm, CG = 12 cm. tan⁻¹(12 ÷ 5).",
+     "tip": "The angle with the base is in triangle ACG: AC on the base, CG straight up. Sketch that triangle flat."
+    },
+    {
+     "text": [
+      "A square-based pyramid has a base of side 6 cm. The apex is directly above the centre of the base, and each sloping edge is 7 cm. Find the height of the pyramid."
+     ],
+     "marks": 4,
+     "lines": 6,
+     "answer": "5.57 cm",
+     "answer_label": "cm",
+     "working": "Half the base diagonal is √18 = 4.24. Height √(49 − 18) = √31."
+    },
+    {
+     "text": [
+      "For the same pyramid, find the angle between a sloping edge and the base."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "52.7°",
+     "answer_label": "°",
+     "working": "cos⁻¹(√18 ÷ 7)."
+    },
+    {
+     "text": [
+      "A right-angled triangle has shorter sides x cm and (x + 7) cm, and a hypotenuse of 13 cm. Find x."
+     ],
+     "marks": 4,
+     "lines": 5,
+     "answer": "x = 5",
+     "answer_label": "x =",
+     "working": "x² + (x + 7)² = 169 → x² + 7x − 60 = 0 → (x + 12)(x − 5) = 0."
+    }
+   ]
+  }
+ },
+ "closed_title": "Pythagoras and trigonometry in 2D and 3D",
+ "closed_points": [
+  "Use Pythagoras to find any side of a right-angled triangle.",
+  "Choose sin, cos or tan and find sides and angles.",
+  "Solve problems with elevation, bearings and two steps.",
+  "Find lengths and angles inside cuboids and pyramids.",
+  "Form and solve an equation from Pythagoras."
+ ],
+ "next": {
+  "title": "Practise every GCSE topic in the Lab",
+  "text": "New numbers every time, feedback that names the mistake behind each wrong answer, and handwritten working marked like an examiner. Start free.",
+  "url": "https://www.mathsforensics.com/the-lab"
+ }
+}

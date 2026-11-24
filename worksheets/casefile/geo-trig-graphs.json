@@ -1,0 +1,221 @@
+{
+ "code": "MF-CF-GEO-TRIGGRAPHS",
+ "product_line": "Case file worksheet · GCSE",
+ "strand": "Graphs",
+ "title": "Trig graphs",
+ "level_line": "GCSE Higher",
+ "time": "About 50 minutes",
+ "cover_sub": "Sine, cosine and tangent repeat for ever. Secure their shapes, extend to finding every angle in a range, then master transformations and trig equations.",
+ "levels": {
+  "s": "grades 4–5",
+  "e": "grades 6–7",
+  "m": "grades 8–9"
+ },
+ "levels_long": {
+  "s": "The shapes of y = sin x, cos x and tan x, and reading values.",
+  "e": "Using symmetry to find a second angle, simple transformations, and tampered evidence.",
+  "m": "Trig equations with two solutions, and stretched or shifted graphs."
+ },
+ "briefing": [
+  "<b>y = sin x</b> and <b>y = cos x</b> are waves between −1 and 1 that repeat every 360°. <b>y = tan x</b> repeats every 180° and has asymptotes at 90°, 270°…",
+  "Your calculator gives <b>one</b> angle. The graph's symmetry gives the others: for sin, the second angle is 180° − <i>x</i>; for cos, it's 360° − <i>x</i>; for tan, add 180°."
+ ],
+ "method": [
+  "Sketch the graph for the range you're given.",
+  "Use your calculator (or exact values) for the first angle.",
+  "Use the symmetry of the graph to find every other angle in the range.",
+  "Check each answer by substituting it back."
+ ],
+ "example": {
+  "question": "Solve sin <i>x</i> = −0.5 for 0° ≤ <i>x</i> ≤ 360°.",
+  "steps": [
+   "sin⁻¹(−0.5) = −30°, which is outside the range.",
+   "sin 30° = 0.5, and the sine graph is negative between 180° and 360°.",
+   "By symmetry the angles are 180° + 30° and 360° − 30°.",
+   "Check: sin 210° = −0.5 ✓ and sin 330° = −0.5 ✓"
+  ],
+  "answer": "<i>x</i> = 210° or 330°"
+ },
+ "free": true,
+ "marked_url": "https://lab.mathsforensics.com/written/",
+ "marked_topic": "Exact trig values",
+ "sections": {
+  "s": {
+   "blurb": "The method, step by step. Show every line.",
+   "questions": [
+    {
+     "text": [
+      "The graph of y = sin <i>x</i> is shown. Write down the value of sin 90°."
+     ],
+     "marks": 1,
+     "lines": 2,
+     "answer": "1",
+     "answer_label": "Answer",
+     "svg": "<svg viewBox=\"0 0 110 50\" style=\"width:110mm;height:50mm;display:block;margin:2mm 0 1mm 4mm\" font-family=\"DejaVu Sans\" font-size=\"3\"><line x1=\"10.00\" y1=\"40.00\" x2=\"10.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"17.50\" y1=\"40.00\" x2=\"17.50\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"25.00\" y1=\"40.00\" x2=\"25.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"32.50\" y1=\"40.00\" x2=\"32.50\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"40.00\" y1=\"40.00\" x2=\"40.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"47.50\" y1=\"40.00\" x2=\"47.50\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"55.00\" y1=\"40.00\" x2=\"55.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"62.50\" y1=\"40.00\" x2=\"62.50\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"70.00\" y1=\"40.00\" x2=\"70.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"77.50\" y1=\"40.00\" x2=\"77.50\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"85.00\" y1=\"40.00\" x2=\"85.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"92.50\" y1=\"40.00\" x2=\"92.50\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"100.00\" y1=\"40.00\" x2=\"100.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"40.00\" x2=\"100.00\" y2=\"40.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"32.50\" x2=\"100.00\" y2=\"32.50\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"25.00\" x2=\"100.00\" y2=\"25.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"17.50\" x2=\"100.00\" y2=\"17.50\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"10.00\" x2=\"100.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"25.00\" x2=\"103.00\" y2=\"25.00\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"10.00\" y1=\"40.00\" x2=\"10.00\" y2=\"7.00\" stroke=\"#16203F\" stroke-width=\".5\"/><text x=\"103.50\" y=\"26.00\" font-style=\"italic\" font-family=\"DejaVu Serif\" font-size=\"3.6\">x</text><text x=\"11.20\" y=\"6.50\" font-style=\"italic\" font-family=\"DejaVu Serif\" font-size=\"3.6\">y</text><text x=\"10.00\" y=\"28.80\" text-anchor=\"middle\">0</text><text x=\"32.50\" y=\"28.80\" text-anchor=\"middle\">90</text><text x=\"55.00\" y=\"28.80\" text-anchor=\"middle\">180</text><text x=\"77.50\" y=\"28.80\" text-anchor=\"middle\">270</text><text x=\"100.00\" y=\"28.80\" text-anchor=\"middle\">360</text><text x=\"8.80\" y=\"41.00\" text-anchor=\"end\">−1</text><text x=\"8.80\" y=\"33.50\" text-anchor=\"end\">−0.5</text><text x=\"8.80\" y=\"18.50\" text-anchor=\"end\">0.5</text><text x=\"8.80\" y=\"11.00\" text-anchor=\"end\">1</text><polyline points=\"10.00,25.00 10.45,24.53 10.90,24.06 11.35,23.59 11.80,23.12 12.25,22.65 12.70,22.19 13.15,21.73 13.60,21.27 14.05,20.82 14.50,20.36 14.95,19.92 15.40,19.48 15.85,19.04 16.30,18.61 16.75,18.19 17.20,17.77 17.65,17.36 18.10,16.96 18.55,16.57 19.00,16.18 19.45,15.81 19.90,15.44 20.35,15.08 20.80,14.73 21.25,14.39 21.70,14.07 22.15,13.75 22.60,13.44 23.05,13.15 23.50,12.86 23.95,12.59 24.40,12.34 24.85,12.09 25.30,11.86 25.75,11.63 26.20,11.43 26.65,11.23 27.10,11.05 27.55,10.89 28.00,10.73 28.45,10.60 28.90,10.47 29.35,10.36 29.80,10.27 30.25,10.18 30.70,10.12 31.15,10.07 31.60,10.03 32.05,10.01 32.50,10.00 32.95,10.01 33.40,10.03 33.85,10.07 34.30,10.12 34.75,10.18 35.20,10.27 35.65,10.36 36.10,10.47 36.55,10.60 37.00,10.73 37.45,10.89 37.90,11.05 38.35,11.23 38.80,11.43 39.25,11.63 39.70,11.86 40.15,12.09 40.60,12.34 41.05,12.59 41.50,12.86 41.95,13.15 42.40,13.44 42.85,13.75 43.30,14.07 43.75,14.39 44.20,14.73 44.65,15.08 45.10,15.44 45.55,15.81 46.00,16.18 46.45,16.57 46.90,16.96 47.35,17.36 47.80,17.77 48.25,18.19 48.70,18.61 49.15,19.04 49.60,19.48 50.05,19.92 50.50,20.36 50.95,20.82 51.40,21.27 51.85,21.73 52.30,22.19 52.75,22.65 53.20,23.12 53.65,23.59 54.10,24.06 54.55,24.53 55.00,25.00 55.45,25.47 55.90,25.94 56.35,26.41 56.80,26.88 57.25,27.35 57.70,27.81 58.15,28.27 58.60,28.73 59.05,29.18 59.50,29.64 59.95,30.08 60.40,30.52 60.85,30.96 61.30,31.39 61.75,31.81 62.20,32.23 62.65,32.64 63.10,33.04 63.55,33.43 64.00,33.82 64.45,34.19 64.90,34.56 65.35,34.92 65.80,35.27 66.25,35.61 66.70,35.93 67.15,36.25 67.60,36.56 68.05,36.85 68.50,37.14 68.95,37.41 69.40,37.66 69.85,37.91 70.30,38.14 70.75,38.37 71.20,38.57 71.65,38.77 72.10,38.95 72.55,39.11 73.00,39.27 73.45,39.40 73.90,39.53 74.35,39.64 74.80,39.73 75.25,39.82 75.70,39.88 76.15,39.93 76.60,39.97 77.05,39.99 77.50,40.00 77.95,39.99 78.40,39.97 78.85,39.93 79.30,39.88 79.75,39.82 80.20,39.73 80.65,39.64 81.10,39.53 81.55,39.40 82.00,39.27 82.45,39.11 82.90,38.95 83.35,38.77 83.80,38.57 84.25,38.37 84.70,38.14 85.15,37.91 85.60,37.66 86.05,37.41 86.50,37.14 86.95,36.85 87.40,36.56 87.85,36.25 88.30,35.93 88.75,35.61 89.20,35.27 89.65,34.92 90.10,34.56 90.55,34.19 91.00,33.82 91.45,33.43 91.90,33.04 92.35,32.64 92.80,32.23 93.25,31.81 93.70,31.39 94.15,30.96 94.60,30.52 95.05,30.08 95.50,29.64 95.95,29.18 96.40,28.73 96.85,28.27 97.30,27.81 97.75,27.35 98.20,26.88 98.65,26.41 99.10,25.94 99.55,25.47 100.00,25.00\" fill=\"none\" stroke=\"#1B36FF\" stroke-width=\".7\"/></svg>"
+    },
+    {
+     "text": [
+      "Use the graph to solve sin <i>x</i> = 0.5 for 0° ≤ <i>x</i> ≤ 360°."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "<i>x</i> = 30° and 150°",
+     "answer_label": "<i>x</i> =",
+     "working": "Draw across at 0.5."
+    },
+    {
+     "text": [
+      "The graph of y = cos <i>x</i> is shown. Where does it cross the <i>x</i>-axis between 0° and 360°?"
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "90° and 270°",
+     "answer_label": "<i>x</i> =",
+     "svg": "<svg viewBox=\"0 0 110 50\" style=\"width:110mm;height:50mm;display:block;margin:2mm 0 1mm 4mm\" font-family=\"DejaVu Sans\" font-size=\"3\"><line x1=\"10.00\" y1=\"40.00\" x2=\"10.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"17.50\" y1=\"40.00\" x2=\"17.50\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"25.00\" y1=\"40.00\" x2=\"25.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"32.50\" y1=\"40.00\" x2=\"32.50\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"40.00\" y1=\"40.00\" x2=\"40.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"47.50\" y1=\"40.00\" x2=\"47.50\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"55.00\" y1=\"40.00\" x2=\"55.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"62.50\" y1=\"40.00\" x2=\"62.50\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"70.00\" y1=\"40.00\" x2=\"70.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"77.50\" y1=\"40.00\" x2=\"77.50\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"85.00\" y1=\"40.00\" x2=\"85.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"92.50\" y1=\"40.00\" x2=\"92.50\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"100.00\" y1=\"40.00\" x2=\"100.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"40.00\" x2=\"100.00\" y2=\"40.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"32.50\" x2=\"100.00\" y2=\"32.50\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"25.00\" x2=\"100.00\" y2=\"25.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"17.50\" x2=\"100.00\" y2=\"17.50\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"10.00\" x2=\"100.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"25.00\" x2=\"103.00\" y2=\"25.00\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"10.00\" y1=\"40.00\" x2=\"10.00\" y2=\"7.00\" stroke=\"#16203F\" stroke-width=\".5\"/><text x=\"103.50\" y=\"26.00\" font-style=\"italic\" font-family=\"DejaVu Serif\" font-size=\"3.6\">x</text><text x=\"11.20\" y=\"6.50\" font-style=\"italic\" font-family=\"DejaVu Serif\" font-size=\"3.6\">y</text><text x=\"10.00\" y=\"28.80\" text-anchor=\"middle\">0</text><text x=\"32.50\" y=\"28.80\" text-anchor=\"middle\">90</text><text x=\"55.00\" y=\"28.80\" text-anchor=\"middle\">180</text><text x=\"77.50\" y=\"28.80\" text-anchor=\"middle\">270</text><text x=\"100.00\" y=\"28.80\" text-anchor=\"middle\">360</text><text x=\"8.80\" y=\"41.00\" text-anchor=\"end\">−1</text><text x=\"8.80\" y=\"33.50\" text-anchor=\"end\">−0.5</text><text x=\"8.80\" y=\"18.50\" text-anchor=\"end\">0.5</text><text x=\"8.80\" y=\"11.00\" text-anchor=\"end\">1</text><polyline points=\"10.00,10.00 10.45,10.01 10.90,10.03 11.35,10.07 11.80,10.12 12.25,10.18 12.70,10.27 13.15,10.36 13.60,10.47 14.05,10.60 14.50,10.73 14.95,10.89 15.40,11.05 15.85,11.23 16.30,11.43 16.75,11.63 17.20,11.86 17.65,12.09 18.10,12.34 18.55,12.59 19.00,12.86 19.45,13.15 19.90,13.44 20.35,13.75 20.80,14.07 21.25,14.39 21.70,14.73 22.15,15.08 22.60,15.44 23.05,15.81 23.50,16.18 23.95,16.57 24.40,16.96 24.85,17.36 25.30,17.77 25.75,18.19 26.20,18.61 26.65,19.04 27.10,19.48 27.55,19.92 28.00,20.36 28.45,20.82 28.90,21.27 29.35,21.73 29.80,22.19 30.25,22.65 30.70,23.12 31.15,23.59 31.60,24.06 32.05,24.53 32.50,25.00 32.95,25.47 33.40,25.94 33.85,26.41 34.30,26.88 34.75,27.35 35.20,27.81 35.65,28.27 36.10,28.73 36.55,29.18 37.00,29.64 37.45,30.08 37.90,30.52 38.35,30.96 38.80,31.39 39.25,31.81 39.70,32.23 40.15,32.64 40.60,33.04 41.05,33.43 41.50,33.82 41.95,34.19 42.40,34.56 42.85,34.92 43.30,35.27 43.75,35.61 44.20,35.93 44.65,36.25 45.10,36.56 45.55,36.85 46.00,37.14 46.45,37.41 46.90,37.66 47.35,37.91 47.80,38.14 48.25,38.37 48.70,38.57 49.15,38.77 49.60,38.95 50.05,39.11 50.50,39.27 50.95,39.40 51.40,39.53 51.85,39.64 52.30,39.73 52.75,39.82 53.20,39.88 53.65,39.93 54.10,39.97 54.55,39.99 55.00,40.00 55.45,39.99 55.90,39.97 56.35,39.93 56.80,39.88 57.25,39.82 57.70,39.73 58.15,39.64 58.60,39.53 59.05,39.40 59.50,39.27 59.95,39.11 60.40,38.95 60.85,38.77 61.30,38.57 61.75,38.37 62.20,38.14 62.65,37.91 63.10,37.66 63.55,37.41 64.00,37.14 64.45,36.85 64.90,36.56 65.35,36.25 65.80,35.93 66.25,35.61 66.70,35.27 67.15,34.92 67.60,34.56 68.05,34.19 68.50,33.82 68.95,33.43 69.40,33.04 69.85,32.64 70.30,32.23 70.75,31.81 71.20,31.39 71.65,30.96 72.10,30.52 72.55,30.08 73.00,29.64 73.45,29.18 73.90,28.73 74.35,28.27 74.80,27.81 75.25,27.35 75.70,26.88 76.15,26.41 76.60,25.94 77.05,25.47 77.50,25.00 77.95,24.53 78.40,24.06 78.85,23.59 79.30,23.12 79.75,22.65 80.20,22.19 80.65,21.73 81.10,21.27 81.55,20.82 82.00,20.36 82.45,19.92 82.90,19.48 83.35,19.04 83.80,18.61 84.25,18.19 84.70,17.77 85.15,17.36 85.60,16.96 86.05,16.57 86.50,16.18 86.95,15.81 87.40,15.44 87.85,15.08 88.30,14.73 88.75,14.39 89.20,14.07 89.65,13.75 90.10,13.44 90.55,13.15 91.00,12.86 91.45,12.59 91.90,12.34 92.35,12.09 92.80,11.86 93.25,11.63 93.70,11.43 94.15,11.23 94.60,11.05 95.05,10.89 95.50,10.73 95.95,10.60 96.40,10.47 96.85,10.36 97.30,10.27 97.75,10.18 98.20,10.12 98.65,10.07 99.10,10.03 99.55,10.01 100.00,10.00\" fill=\"none\" stroke=\"#1B36FF\" stroke-width=\".7\"/></svg>"
+    },
+    {
+     "text": [
+      "Write down the maximum value of y = cos <i>x</i>, and the values of <i>x</i> between 0° and 360° where it happens."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "1, at 0° and 360°",
+     "answer_label": "Max ____ at"
+    },
+    {
+     "text": [
+      "How often does the graph of y = tan <i>x</i> repeat?"
+     ],
+     "marks": 1,
+     "lines": 2,
+     "answer": "Every 180°",
+     "answer_label": "°"
+    }
+   ]
+  },
+  "e": {
+   "blurb": "A step is hidden, or there's a context to unpick. One piece of tampered evidence.",
+   "questions": [
+    {
+     "text": [
+      "sin 40° ≈ 0.643. Find another angle between 0° and 360° with the same sine."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "140°",
+     "answer_label": "°",
+     "working": "180° − 40°."
+    },
+    {
+     "text": [
+      "cos 70° ≈ 0.342. Find the two angles between 0° and 360° for which cos <i>x</i> = −0.342."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "110° and 250°",
+     "answer_label": "<i>x</i> =",
+     "working": "180° − 70° and 180° + 70°."
+    },
+    {
+     "text": [
+      "Describe how the graph of y = sin <i>x</i> + 2 is related to the graph of y = sin <i>x</i>."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "A translation 2 units up",
+     "answer_label": false,
+     "working": "Every point moves up 2."
+    },
+    {
+     "text": [
+      "Write down the maximum and minimum values of y = 3 cos <i>x</i>."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "Max 3, min −3",
+     "answer_label": "Max ____ Min"
+    },
+    {
+     "text": [
+      "Tom solved cos <i>x</i> = 0.5 for 0° ≤ <i>x</i> ≤ 360°. Find his mistake."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "x = 60° and x = 300°",
+     "answer_label": "<i>x</i> =",
+     "working": "The cos graph is at 0.5 twice in the range. He found only one.",
+     "tip": "Always sketch the graph across the whole range. Count how many times it crosses your line, then find that many answers.",
+     "tampered": "cos⁻¹(0.5) = 60°, so x = 60°"
+    }
+   ]
+  },
+  "m": {
+   "blurb": "No hints. Plan before you calculate.",
+   "questions": [
+    {
+     "text": [
+      "Solve 2 sin <i>x</i> + 1 = 0 for 0° ≤ <i>x</i> ≤ 360°."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "210° and 330°",
+     "answer_label": "<i>x</i> =",
+     "working": "sin x = −½."
+    },
+    {
+     "text": [
+      "The graph of y = sin(<i>x</i> + 90°) is the same as the graph of another trig function. Which one? Explain."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "y = cos x",
+     "answer_label": "y =",
+     "working": "Shifting sin 90° left lines its peak up with cos at 0°."
+    },
+    {
+     "text": [
+      "The graph of y = <i>a</i> sin(<i>b</i><i>x</i>) has a maximum value of 4 and repeats every 180°. Find <i>a</i> and <i>b</i>."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "<i>a</i> = 4, <i>b</i> = 2",
+     "answer_label": "<i>a</i> = ____ <i>b</i> =",
+     "working": "The period of sin bx is 360° ÷ b."
+    },
+    {
+     "text": [
+      "Solve tan <i>x</i> = √3 for 0° ≤ <i>x</i> ≤ 360°."
+     ],
+     "marks": 2,
+     "lines": 2,
+     "answer": "60° and 240°",
+     "answer_label": "<i>x</i> =",
+     "working": "tan repeats every 180°."
+    },
+    {
+     "text": [
+      "Find the coordinates of the maximum point of y = 1 − 2 cos <i>x</i> for 0° < <i>x</i> < 360°."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer": "(180°, 3)",
+     "answer_label": "( ____ , ____ )",
+     "working": "Greatest when cos x = −1."
+    }
+   ]
+  }
+ },
+ "closed_title": "Trig graphs",
+ "closed_points": [
+  "Sketch y = sin x, y = cos x and y = tan x, with their key points.",
+  "Use symmetry to find every solution in a range.",
+  "Describe translations and stretches of trig graphs.",
+  "Solve trig equations after rearranging.",
+  "Find a and b from a graph's height and period."
+ ],
+ "next": {
+  "title": "Practise every GCSE topic in the Lab",
+  "text": "New numbers every time, feedback that names the mistake behind each wrong answer, and handwritten working marked like an examiner. Start free.",
+  "url": "https://www.mathsforensics.com/the-lab"
+ }
+}
