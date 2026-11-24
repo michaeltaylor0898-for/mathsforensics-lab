@@ -1,0 +1,263 @@
+{
+ "code": "MF-CF-ALG-SIMEQ",
+ "product_line": "Case file worksheet · GCSE",
+ "strand": "Algebra",
+ "title": "Simultaneous equations",
+ "level_line": "GCSE Higher",
+ "time": "About 50 minutes",
+ "cover_sub": "Two equations, two unknowns, one answer that fits both. Secure the method, extend it to tougher pairs, then master the quadratic cases that decide grade 8 and 9.",
+ "levels": {
+  "s": "grades 4–5",
+  "e": "grades 6–7",
+  "m": "grades 8–9"
+ },
+ "levels_long": {
+  "s": "Linear pairs: the method, step by step.",
+  "e": "Scale both equations, contexts, and one piece of tampered evidence.",
+  "m": "Quadratic pairs, unknown constants and proof."
+ },
+ "briefing": [
+  "Simultaneous equations are two equations that are both true at the same time. The solution is the pair of values, <i>x</i> and <i>y</i>, that fits <b>both</b>. On a graph, it's where the two lines (or the line and the curve) cross.",
+  "<b>Elimination</b> works for two linear equations. <b>Substitution</b> works when one equation already says <i>y</i> = …, and always when one equation is a quadratic."
+ ],
+ "method": [
+  "Make the coefficients of one letter the same size. Multiply <b>every</b> term, including the right-hand side.",
+  "<b>Same signs, subtract. Different signs, add.</b> One letter disappears.",
+  "Solve for the letter that's left, then substitute back to find the other.",
+  "Check both values in the equation you <b>didn't</b> use. If it works, the case is closed."
+ ],
+ "example": {
+  "question": "A forensic unit orders kit. 3 cameras and 2 lamps cost £430. 1 camera and 2 lamps cost £210. Find the price of a camera and of a lamp.",
+  "steps": [
+   "Let <i>c</i> = price of a camera, <i>l</i> = price of a lamp: <span class=eq>3<i>c</i> + 2<i>l</i> = 430</span> and <span class=eq><i>c</i> + 2<i>l</i> = 210</span>",
+   "The <i>l</i> terms match (2<i>l</i>) with the same signs, so subtract: 2<i>c</i> = 220, so <i>c</i> = 110.",
+   "Substitute into the second equation: 110 + 2<i>l</i> = 210, so 2<i>l</i> = 100 and <i>l</i> = 50.",
+   "Check in the first: 3(110) + 2(50) = 330 + 100 = 430 ✓"
+  ],
+  "answer": "A camera costs £110 and a lamp costs £50."
+ },
+ "marked_url": "https://lab.mathsforensics.com/written/",
+ "marked_topic": "Simultaneous equations",
+ "sections": {
+  "s": {
+   "blurb": "Linear pairs. Show your elimination or substitution step.",
+   "questions": [
+    {
+     "text": [
+      "Solve the simultaneous equations"
+     ],
+     "eqs": [
+      "<i>x</i> + <i>y</i> = 10",
+      "<i>x</i> − <i>y</i> = 4"
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer_label": "<i>x</i> = ____ <i>y</i> =",
+     "answer": "<i>x</i> = 7, <i>y</i> = 3",
+     "working": "Different signs, add: 2<i>x</i> = 14."
+    },
+    {
+     "text": [
+      "Solve the simultaneous equations"
+     ],
+     "eqs": [
+      "2<i>x</i> + <i>y</i> = 11",
+      "<i>x</i> + <i>y</i> = 7"
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer_label": "<i>x</i> = ____ <i>y</i> =",
+     "answer": "<i>x</i> = 4, <i>y</i> = 3",
+     "working": "Same signs, subtract: <i>x</i> = 4."
+    },
+    {
+     "text": [
+      "Solve the simultaneous equations"
+     ],
+     "eqs": [
+      "3<i>x</i> + 2<i>y</i> = 16",
+      "<i>x</i> − 2<i>y</i> = 0"
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer_label": "<i>x</i> = ____ <i>y</i> =",
+     "answer": "<i>x</i> = 4, <i>y</i> = 2",
+     "working": "Different signs, add: 4<i>x</i> = 16."
+    },
+    {
+     "text": [
+      "Solve the simultaneous equations"
+     ],
+     "eqs": [
+      "5<i>x</i> + 3<i>y</i> = 21",
+      "2<i>x</i> + 3<i>y</i> = 12"
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer_label": "<i>x</i> = ____ <i>y</i> =",
+     "answer": "<i>x</i> = 3, <i>y</i> = 2",
+     "working": "Same signs, subtract: 3<i>x</i> = 9."
+    },
+    {
+     "text": [
+      "Two fingerprint kits and one swab pack cost £31. One fingerprint kit and one swab pack cost £19.",
+      "Work out the cost of a fingerprint kit and the cost of a swab pack."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer_label": "Kit £ ____ Swabs £",
+     "answer": "Kit £12, swab pack £7",
+     "working": "2<i>k</i> + <i>s</i> = 31, <i>k</i> + <i>s</i> = 19. Subtract: <i>k</i> = 12.",
+     "tip": "Write your two equations first, with letters you define (<i>k</i> = cost of a kit). In the exam, the first method mark is for the equations."
+    }
+   ]
+  },
+  "e": {
+   "blurb": "Scale one or both equations first. Watch every sign.",
+   "questions": [
+    {
+     "text": [
+      "Solve the simultaneous equations"
+     ],
+     "eqs": [
+      "3<i>x</i> + 4<i>y</i> = 5",
+      "2<i>x</i> − 3<i>y</i> = 9"
+     ],
+     "marks": 4,
+     "lines": 4,
+     "answer_label": "<i>x</i> = ____ <i>y</i> =",
+     "answer": "<i>x</i> = 3, <i>y</i> = −1",
+     "working": "×3 and ×4: 9<i>x</i> + 12<i>y</i> = 15, 8<i>x</i> − 12<i>y</i> = 36. Add: 17<i>x</i> = 51."
+    },
+    {
+     "text": [
+      "Solve the simultaneous equations"
+     ],
+     "eqs": [
+      "4<i>x</i> − 5<i>y</i> = 7",
+      "3<i>x</i> + 2<i>y</i> = 11"
+     ],
+     "marks": 4,
+     "lines": 4,
+     "answer_label": "<i>x</i> = ____ <i>y</i> =",
+     "answer": "<i>x</i> = 3, <i>y</i> = 1",
+     "working": "×2 and ×5: 8<i>x</i> − 10<i>y</i> = 14, 15<i>x</i> + 10<i>y</i> = 55. Add: 23<i>x</i> = 69."
+    },
+    {
+     "text": [
+      "Passes for a crime-lab conference: 3 analyst passes and 5 visitor passes cost £61.",
+      "2 analyst passes and 3 visitor passes cost £39.50. Work out the cost of each pass."
+     ],
+     "marks": 4,
+     "lines": 4,
+     "answer_label": "Analyst £ ____ Visitor £",
+     "answer": "Analyst £14.50, visitor £3.50",
+     "working": "×2 and ×3: 6<i>a</i> + 10<i>v</i> = 122, 6<i>a</i> + 9<i>v</i> = 118.50. Subtract: <i>v</i> = 3.50."
+    },
+    {
+     "text": [
+      "A suspect's route follows the line <i>y</i> = 2<i>x</i> − 3. A patrol car follows 3<i>x</i> + 2<i>y</i> = 15. Find the coordinates of the point where their paths cross."
+     ],
+     "marks": 3,
+     "lines": 3,
+     "answer_label": "( ____ , ____ )",
+     "answer": "(3, 3)",
+     "working": "3<i>x</i> + 2(2<i>x</i> − 3) = 15, so 7<i>x</i> = 21."
+    },
+    {
+     "text": [
+      "Priya solved these equations. Find her mistake, then solve them correctly."
+     ],
+     "eqs": [
+      "2<i>x</i> + 3<i>y</i> = 12",
+      "2<i>x</i> − <i>y</i> = 4"
+     ],
+     "tampered": "Subtract: 2<i>y</i> = 8, so <i>y</i> = 4<br>2<i>x</i> + 12 = 12, so <i>x</i> = 0",
+     "marks": 3,
+     "lines": 3,
+     "answer_label": "<i>x</i> = ____ <i>y</i> =",
+     "answer": "<i>x</i> = 3, <i>y</i> = 2",
+     "working": "3<i>y</i> − (−<i>y</i>) = 4<i>y</i>, not 2<i>y</i>. So 4<i>y</i> = 8, <i>y</i> = 2, then 2<i>x</i> + 6 = 12.",
+     "tip": "Subtracting a negative is the most common slip in elimination. Write the subtraction in a column, term by term."
+    }
+   ]
+  },
+  "m": {
+   "blurb": "Quadratics, unknown constants and proof. Plan before you calculate.",
+   
+   "questions": [
+    {
+     "text": [
+      "A surveillance zone is the circle <i>x</i>² + <i>y</i>² = 25. A drone flies along the line <i>y</i> = <i>x</i> + 1.",
+      "Find the two points where the drone crosses the edge of the zone."
+     ],
+     "marks": 5,
+     "lines": 6,
+     "answer_label": "Points",
+     "answer": "(3, 4) and (−4, −3)",
+     "working": "<i>x</i>² + (<i>x</i> + 1)² = 25 → 2<i>x</i>² + 2<i>x</i> − 24 = 0 → (<i>x</i> + 4)(<i>x</i> − 3) = 0.",
+     "tip": "Expand (<i>x</i> + 1)² as <i>x</i>² + 2<i>x</i> + 1, not <i>x</i>² + 1. Then give <b>both</b> points, each <i>x</i> matched with its own <i>y</i>."
+    },
+    {
+     "text": [
+      "Find the coordinates of the points where the curve <i>y</i> = <i>x</i>² − 3<i>x</i> + 2 meets the line <i>y</i> = 2<i>x</i> − 4."
+     ],
+     "marks": 4,
+     "lines": 5,
+     "answer_label": "Points",
+     "answer": "(2, 0) and (3, 2)",
+     "working": "<i>x</i>² − 5<i>x</i> + 6 = 0 → (<i>x</i> − 2)(<i>x</i> − 3) = 0."
+    },
+    {
+     "text": [
+      "The line <i>y</i> = <i>x</i> + <i>k</i> touches the curve <i>y</i> = <i>x</i>² − 3<i>x</i> + 6 at exactly one point.",
+      "Find the value of <i>k</i>."
+     ],
+     "marks": 4,
+     "lines": 5,
+     "answer_label": "<i>k</i> =",
+     "answer": "<i>k</i> = 2",
+     "working": "<i>x</i>² − 4<i>x</i> + 6 − <i>k</i> = 0 has one root, so 16 − 4(6 − <i>k</i>) = 0. The line touches at (2, 4)."
+    },
+    {
+     "text": [
+      "Two codes add up to 4. The sum of their squares is 58.",
+      "Find the two codes."
+     ],
+     "marks": 4,
+     "lines": 5,
+     "answer_label": "The codes are",
+     "answer": "7 and −3",
+     "working": "<i>x</i> + <i>y</i> = 4, <i>x</i>² + <i>y</i>² = 58. Substitute <i>y</i> = 4 − <i>x</i>: <i>x</i>² − 4<i>x</i> − 21 = 0."
+    },
+    {
+     "text": [
+      "Show that these simultaneous equations have no solution. Explain what this means for their graphs."
+     ],
+     "eqs": [
+      "2<i>x</i> + 3<i>y</i> = 6",
+      "4<i>x</i> + 6<i>y</i> = 15"
+     ],
+     "marks": 2,
+     "lines": 4,
+     "answer_label": false,
+     "answer": "Doubling the first gives 4<i>x</i> + 6<i>y</i> = 12, which can't also equal 15.",
+     "working": "Same gradient (−⅔), different intercepts: the lines are parallel and never meet."
+    }
+   ]
+  }
+ },
+ "closed_title": "Simultaneous equations",
+ "closed_points": [
+  "Solve linear pairs by elimination, scaling one or both equations first.",
+  "Use substitution when one equation is a quadratic, and give every pair of answers.",
+  "Turn a word problem into two equations with letters you define.",
+  "Spot the sign slip in someone else's working before it costs you marks.",
+  "Use the discriminant to decide when a line only touches a curve."
+ ],
+ "next": {
+  "title": "Practise every GCSE topic in the Lab",
+  "text": "New numbers every time, feedback that names the mistake behind each wrong answer, and handwritten working marked like an examiner. Start free.",
+  "url": "https://www.mathsforensics.com/the-lab"
+ }
+}
