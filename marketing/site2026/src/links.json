@@ -38,5 +38,7 @@
   "CC_MW_CHECKOUT": "https://www.mathsforensics.com/cold-case-mw-order",
   "JUMPSTART_CHECKOUT": "https://www.mathsforensics.com/a-level-checkout",
   "ALEVEL_CHECK": "https://www.mathsforensics.com/a-level-readiness-check",
-  "WORKSHEETS": "https://lab.mathsforensics.com/sheets/"
+  "WORKSHEETS": "https://lab.mathsforensics.com/sheets/",
+  "GUIDE_CHECKOUT": "https://www.mathsforensics.com/exam-execution-guide-checkout",
+  "MRS_WAITLIST": "https://www.mathsforensics.com/mark-recovery-waitlist"
 }

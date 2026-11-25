@@ -269,13 +269,23 @@
 .mf details.menu .drop a{font-weight:700;font-size:18px;color:var(--text);text-decoration:none;padding:12px 4px;border-bottom:1px solid rgba(38,51,106,.6)}
 .mf details.menu .drop a.btn{margin-top:12px;border-bottom:0;color:var(--ink)}
 .mf .sitehd{position:relative}
+.mf .nav .dd{position:relative}
+.mf .nav .dd .car{font-size:11px;opacity:.7;margin-left:2px}
+.mf .nav .ddm{display:none;position:absolute;left:0;top:100%;z-index:30;min-width:330px;background:#0B122C;border:1px solid var(--line2);border-radius:14px;padding:8px;box-shadow:0 18px 40px rgba(0,0,0,.45)}
+.mf .nav .dd:hover .ddm,.mf .nav .dd:focus-within .ddm{display:grid;gap:2px}
+.mf .nav .ddm a{display:block;white-space:normal;padding:10px 12px;border-radius:10px}
+.mf .nav .ddm a b{display:block;color:var(--text);font-size:16px}
+.mf .nav .ddm a small{display:block;color:var(--soft);font-weight:400;font-size:13.5px;margin-top:2px}
+.mf .nav .ddm a:hover{background:rgba(0,252,241,.07)}.mf .nav .ddm a:hover b{color:var(--cyan)}
+.mf details.menu .drop .grp{font-family:var(--fm);font-size:12px;letter-spacing:.14em;color:var(--cyan);padding:14px 4px 2px}
+.mf details.menu .drop a.sub{padding-left:18px;font-size:17px;font-weight:600}
 .mf .sitefoot{background:#070C20;border-top:1px solid var(--line);padding:44px 0 36px}
 .mf .sitefoot .cols{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:28px}
 .mf .sitefoot h5{margin:0 0 12px;font-family:var(--fm);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan)}
 .mf .sitefoot a{display:block;color:var(--soft);text-decoration:none;font-size:15.5px;padding:4px 0}
 .mf .sitefoot a:hover{color:var(--text)}
 .mf .sitefoot .legal{margin-top:30px;padding-top:20px;border-top:1px solid var(--line);font-size:13.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between}
-@container (max-width:1180px){.mf .nav{display:none}.mf details.menu{display:block}}
+@container (max-width:1080px){.mf .nav{display:none}.mf details.menu{display:block}}
 @container (max-width:980px){.mf .sitefoot .cols{grid-template-columns:1fr 1fr}}
 @container (max-width:720px){.mf .sitehd .w{min-height:66px}.mf details.menu .drop{top:66px}.mf a.brand .wm{font-size:14px}.mf a.brand svg{width:30px;height:35px}}
 .mf .sitefoot a.brand{display:flex;padding:0}

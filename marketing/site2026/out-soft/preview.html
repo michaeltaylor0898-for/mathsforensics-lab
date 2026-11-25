@@ -282,13 +282,23 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .mf details.menu .drop a{font-weight:700;font-size:18px;color:var(--text);text-decoration:none;padding:12px 4px;border-bottom:1px solid rgba(38,51,106,.6)}
 .mf details.menu .drop a.btn{margin-top:12px;border-bottom:0;color:var(--ink)}
 .mf .sitehd{position:relative}
+.mf .nav .dd{position:relative}
+.mf .nav .dd .car{font-size:11px;opacity:.7;margin-left:2px}
+.mf .nav .ddm{display:none;position:absolute;left:0;top:100%;z-index:30;min-width:330px;background:#0B122C;border:1px solid var(--line2);border-radius:14px;padding:8px;box-shadow:0 18px 40px rgba(0,0,0,.45)}
+.mf .nav .dd:hover .ddm,.mf .nav .dd:focus-within .ddm{display:grid;gap:2px}
+.mf .nav .ddm a{display:block;white-space:normal;padding:10px 12px;border-radius:10px}
+.mf .nav .ddm a b{display:block;color:var(--text);font-size:16px}
+.mf .nav .ddm a small{display:block;color:var(--soft);font-weight:400;font-size:13.5px;margin-top:2px}
+.mf .nav .ddm a:hover{background:rgba(0,252,241,.07)}.mf .nav .ddm a:hover b{color:var(--cyan)}
+.mf details.menu .drop .grp{font-family:var(--fm);font-size:12px;letter-spacing:.14em;color:var(--cyan);padding:14px 4px 2px}
+.mf details.menu .drop a.sub{padding-left:18px;font-size:17px;font-weight:600}
 .mf .sitefoot{background:#070C20;border-top:1px solid var(--line);padding:44px 0 36px}
 .mf .sitefoot .cols{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:28px}
 .mf .sitefoot h5{margin:0 0 12px;font-family:var(--fm);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan)}
 .mf .sitefoot a{display:block;color:var(--soft);text-decoration:none;font-size:15.5px;padding:4px 0}
 .mf .sitefoot a:hover{color:var(--text)}
 .mf .sitefoot .legal{margin-top:30px;padding-top:20px;border-top:1px solid var(--line);font-size:13.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between}
-@container (max-width:1180px){.mf .nav{display:none}.mf details.menu{display:block}}
+@container (max-width:1080px){.mf .nav{display:none}.mf details.menu{display:block}}
 @container (max-width:980px){.mf .sitefoot .cols{grid-template-columns:1fr 1fr}}
 @container (max-width:720px){.mf .sitehd .w{min-height:66px}.mf details.menu .drop{top:66px}.mf a.brand .wm{font-size:14px}.mf a.brand svg{width:30px;height:35px}}
 .mf .sitefoot a.brand{display:flex;padding:0}
@@ -303,16 +313,27 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 @container (max-width:720px){.mf a.brand img.logoimg{height:50px}.mf .sitehd a.brand .wm{font-size:16px}.mf .sitehd a.brand .wm small{font-size:9px}}
 
 </style>
-<nav class="pnav" aria-label="Pages"><a href="#home" data-p="home">Homepage</a><a href="#academy" data-p="academy">Academy</a><a href="#gcse" data-p="gcse">GCSE (the Lab)</a><a href="#schools" data-p="schools">Schools</a><a href="#about" data-p="about">About</a><a href="#coldcase" data-p="coldcase">Cold Case</a><a href="#jumpstart" data-p="jumpstart">A-Level Jumpstart Lab</a></nav>
+<nav class="pnav" aria-label="Pages"><a href="#home" data-p="home">Homepage</a><a href="#academy" data-p="academy">Academy</a><a href="#gcse" data-p="gcse">GCSE (the Lab)</a><a href="#schools" data-p="schools">Schools</a><a href="#about" data-p="about">About</a><a href="#coldcase" data-p="coldcase">Cold Case</a><a href="#jumpstart" data-p="jumpstart">A-Level Jumpstart Lab</a><a href="#guide" data-p="guide">Exam Execution Guide</a><a href="#recovery" data-p="recovery">Mark Recovery System</a></nav>
 <main class="pg" id="pg-home" hidden>
 <div class="mf">
 <header class="sitehd"><div class="w">
   <a class="brand" target="_top" href="#home" aria-label="Maths Forensics home"><img class="logoimg" src="media/logo.png" alt="Maths Forensics" onerror="this.remove()"><span class="fb"><svg viewBox="0 0 40 46" aria-hidden="true"><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z" fill="#0B122C" stroke="#00FCF1" stroke-width="2.4" stroke-linejoin="round"/><circle cx="19" cy="21" r="6.2" fill="#0B122C" stroke="#00FCF1" stroke-width="2.8"/><circle cx="19" cy="21" r="1.7" fill="#00FCF1"/><path d="M23.4 25.4 28.8 30.8" stroke="#1B36FF" stroke-width="3.8" stroke-linecap="round"/></svg><span class="wm">MATHS<br><span class="c">FORENSICS</span><small>NUMBERS DON'T LIE</small></span></span></a>
   <nav class="nav" aria-label="Main">
-    <a target="_top" href="#home" aria-current="page">Home</a><a target="_top" href="#gcse">GCSE</a><a target="_top" href="#coldcase">Past papers</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Worksheets</a><a target="_top" href="#academy">Years 7–9</a><a target="_top" href="#jumpstart">A-Level</a><a target="_top" href="#schools">Schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
+    <a target="_top" href="#home" aria-current="page">Home</a>
+    <div class="dd"><a target="_top" href="#gcse">GCSE <span class="car">▾</span></a><div class="ddm">
+      <a target="_top" href="#gcse"><b>The Lab and plans</b><small>Every topic to grade 9, Forensic Marking, games</small></a>
+      <a target="_top" href="#guide"><b>Exam Execution Guide</b><small>The exam technique course · £47.99</small></a>
+      <a target="_top" href="#recovery"><b>Mark Recovery System</b><small>Guide + Casefiles for every topic · £97.99 · opens 6 January</small></a>
+      <a target="_top" href="#coldcase"><b>Cold Case past papers</b><small>Original Higher papers nobody has seen</small></a>
+      <a target="_top" href="https://lab.mathsforensics.com/sheets/"><b>Free worksheets</b><small>Securing, Extending and Mastery, to grade 9</small></a>
+    </div></div>
+    <a target="_top" href="#academy">Years 7–9</a><a target="_top" href="#jumpstart">A-Level</a><a target="_top" href="#schools">Schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
   </nav>
   <details class="menu"><summary>MENU</summary><div class="drop">
-    <a target="_top" href="#home">Home</a><a target="_top" href="#gcse">GCSE: the Lab and plans</a><a target="_top" href="#coldcase">GCSE past papers: Cold Case</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Free GCSE worksheets</a><a target="_top" href="#academy">Years 7–9: the Academy</a><a target="_top" href="#jumpstart">A-Level Jumpstart</a><a target="_top" href="#schools">For schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
+    <a target="_top" href="#home">Home</a>
+    <span class="grp">GCSE</span>
+    <a class="sub" target="_top" href="#gcse">The Lab and plans</a><a class="sub" target="_top" href="#guide">Exam Execution Guide</a><a class="sub" target="_top" href="#recovery">Mark Recovery System</a><a class="sub" target="_top" href="#coldcase">Cold Case past papers</a><a class="sub" target="_top" href="https://lab.mathsforensics.com/sheets/">Free worksheets</a>
+    <a target="_top" href="#academy">Years 7–9: the Academy</a><a target="_top" href="#jumpstart">A-Level Jumpstart</a><a target="_top" href="#schools">For schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
   </div></details>
 </div></header>
 </div>
@@ -479,7 +500,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
       <ul class="tick"><li>Everything in the Kit</li><li>The Exam Execution Guide and Mark Recovery System (£97.99 on their own)</li><li>40 marked questions and 2 whole papers marked a week</li><li>A monthly summary for parents</li><li>Less than the Kit and both courses bought separately (£166.99), with the extra marking on top</li></ul>
       <a class="btn ghost small" target="_top" href="https://www.mathsforensics.com/full-investigation-waitlist">Join the list</a></div>
   </div>
-  <p class="also">Just want one thing? <a target="_top" href="https://www.mathsforensics.com/exam-execution-guide">Exam Execution Guide £47.99</a> · <a target="_top" href="https://www.mathsforensics.com/mark-recovery-system">Exam Execution Guide + Mark Recovery System £97.99</a> · <a target="_top" href="#coldcase">Cold Case papers from £12.99</a></p>
+  <p class="also">Just want one thing? <a target="_top" href="#guide">Exam Execution Guide £47.99</a> · <a target="_top" href="#recovery">Mark Recovery System £97.99 (includes the Guide)</a> · <a target="_top" href="#coldcase">Cold Case papers from £12.99</a></p>
 </div></section>
 </div>
 <div class="mf">
@@ -533,7 +554,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   <div class="cols">
     <div><a class="brand" target="_top" href="#home" aria-label="Maths Forensics home" style="padding:0"><img class="logoimg" src="media/logo.png" alt="Maths Forensics" onerror="this.remove()"><span class="fb"><svg viewBox="0 0 40 46" aria-hidden="true"><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z" fill="#0B122C" stroke="#00FCF1" stroke-width="2.4" stroke-linejoin="round"/><circle cx="19" cy="21" r="6.2" fill="#0B122C" stroke="#00FCF1" stroke-width="2.8"/><circle cx="19" cy="21" r="1.7" fill="#00FCF1"/><path d="M23.4 25.4 28.8 30.8" stroke="#1B36FF" stroke-width="3.8" stroke-linecap="round"/></svg><span class="wm">MATHS<br><span class="c">FORENSICS</span><small>NUMBERS DON'T LIE</small></span></span></a>
       <p style="font-size:15px;margin-top:14px">Every lost mark is evidence. Maths Forensics HQ finds it, from Year 7 to the GCSE exam.</p></div>
-    <div><h5>GCSE</h5><a target="_top" href="#gcse">The Lab and plans</a><a target="_top" href="#coldcase">Cold Case papers</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Free worksheets</a><a target="_top" href="https://www.mathsforensics.com/exam-execution-guide">Exam Execution Guide</a><a target="_top" href="https://www.mathsforensics.com/mark-recovery-system">Mark Recovery System</a><a target="_top" href="https://lab.mathsforensics.com/incident-room/?play=pursuit">Play Hot Pursuit free</a></div>
+    <div><h5>GCSE</h5><a target="_top" href="#gcse">The Lab and plans</a><a target="_top" href="#coldcase">Cold Case papers</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Free worksheets</a><a target="_top" href="#guide">Exam Execution Guide</a><a target="_top" href="#recovery">Mark Recovery System</a><a target="_top" href="https://lab.mathsforensics.com/incident-room/?play=pursuit">Play Hot Pursuit free</a></div>
     <div><h5>More</h5><a target="_top" href="#academy">The Academy (Years 7–9)</a><a target="_top" href="#jumpstart">A-Level Jumpstart</a><a target="_top" href="#schools">For schools</a><a target="_top" href="#about">About Mike</a><a target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a></div>
     <div><h5>Policies</h5><a target="_top" href="https://lab.mathsforensics.com/privacy.html">Privacy</a><a target="_top" href="https://lab.mathsforensics.com/student-privacy.html">Student privacy</a><a target="_top" href="https://lab.mathsforensics.com/safeguarding.html">Safeguarding</a><a target="_top" href="https://lab.mathsforensics.com/ai-marking.html">How AI marking works</a><a target="_top" href="https://lab.mathsforensics.com/terms.html">Terms</a></div>
   </div>
@@ -546,10 +567,21 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 <header class="sitehd"><div class="w">
   <a class="brand" target="_top" href="#home" aria-label="Maths Forensics home"><img class="logoimg" src="media/logo.png" alt="Maths Forensics" onerror="this.remove()"><span class="fb"><svg viewBox="0 0 40 46" aria-hidden="true"><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z" fill="#0B122C" stroke="#00FCF1" stroke-width="2.4" stroke-linejoin="round"/><circle cx="19" cy="21" r="6.2" fill="#0B122C" stroke="#00FCF1" stroke-width="2.8"/><circle cx="19" cy="21" r="1.7" fill="#00FCF1"/><path d="M23.4 25.4 28.8 30.8" stroke="#1B36FF" stroke-width="3.8" stroke-linecap="round"/></svg><span class="wm">MATHS<br><span class="c">FORENSICS</span><small>NUMBERS DON'T LIE</small></span></span></a>
   <nav class="nav" aria-label="Main">
-    <a target="_top" href="#home">Home</a><a target="_top" href="#gcse">GCSE</a><a target="_top" href="#coldcase">Past papers</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Worksheets</a><a target="_top" href="#academy" aria-current="page">Years 7–9</a><a target="_top" href="#jumpstart">A-Level</a><a target="_top" href="#schools">Schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
+    <a target="_top" href="#home">Home</a>
+    <div class="dd"><a target="_top" href="#gcse">GCSE <span class="car">▾</span></a><div class="ddm">
+      <a target="_top" href="#gcse"><b>The Lab and plans</b><small>Every topic to grade 9, Forensic Marking, games</small></a>
+      <a target="_top" href="#guide"><b>Exam Execution Guide</b><small>The exam technique course · £47.99</small></a>
+      <a target="_top" href="#recovery"><b>Mark Recovery System</b><small>Guide + Casefiles for every topic · £97.99 · opens 6 January</small></a>
+      <a target="_top" href="#coldcase"><b>Cold Case past papers</b><small>Original Higher papers nobody has seen</small></a>
+      <a target="_top" href="https://lab.mathsforensics.com/sheets/"><b>Free worksheets</b><small>Securing, Extending and Mastery, to grade 9</small></a>
+    </div></div>
+    <a target="_top" href="#academy" aria-current="page">Years 7–9</a><a target="_top" href="#jumpstart">A-Level</a><a target="_top" href="#schools">Schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
   </nav>
   <details class="menu"><summary>MENU</summary><div class="drop">
-    <a target="_top" href="#home">Home</a><a target="_top" href="#gcse">GCSE: the Lab and plans</a><a target="_top" href="#coldcase">GCSE past papers: Cold Case</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Free GCSE worksheets</a><a target="_top" href="#academy">Years 7–9: the Academy</a><a target="_top" href="#jumpstart">A-Level Jumpstart</a><a target="_top" href="#schools">For schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
+    <a target="_top" href="#home">Home</a>
+    <span class="grp">GCSE</span>
+    <a class="sub" target="_top" href="#gcse">The Lab and plans</a><a class="sub" target="_top" href="#guide">Exam Execution Guide</a><a class="sub" target="_top" href="#recovery">Mark Recovery System</a><a class="sub" target="_top" href="#coldcase">Cold Case past papers</a><a class="sub" target="_top" href="https://lab.mathsforensics.com/sheets/">Free worksheets</a>
+    <a target="_top" href="#academy">Years 7–9: the Academy</a><a target="_top" href="#jumpstart">A-Level Jumpstart</a><a target="_top" href="#schools">For schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
   </div></details>
 </div></header>
 </div>
@@ -648,7 +680,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   <div class="cols">
     <div><a class="brand" target="_top" href="#home" aria-label="Maths Forensics home" style="padding:0"><img class="logoimg" src="media/logo.png" alt="Maths Forensics" onerror="this.remove()"><span class="fb"><svg viewBox="0 0 40 46" aria-hidden="true"><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z" fill="#0B122C" stroke="#00FCF1" stroke-width="2.4" stroke-linejoin="round"/><circle cx="19" cy="21" r="6.2" fill="#0B122C" stroke="#00FCF1" stroke-width="2.8"/><circle cx="19" cy="21" r="1.7" fill="#00FCF1"/><path d="M23.4 25.4 28.8 30.8" stroke="#1B36FF" stroke-width="3.8" stroke-linecap="round"/></svg><span class="wm">MATHS<br><span class="c">FORENSICS</span><small>NUMBERS DON'T LIE</small></span></span></a>
       <p style="font-size:15px;margin-top:14px">Every lost mark is evidence. Maths Forensics HQ finds it, from Year 7 to the GCSE exam.</p></div>
-    <div><h5>GCSE</h5><a target="_top" href="#gcse">The Lab and plans</a><a target="_top" href="#coldcase">Cold Case papers</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Free worksheets</a><a target="_top" href="https://www.mathsforensics.com/exam-execution-guide">Exam Execution Guide</a><a target="_top" href="https://www.mathsforensics.com/mark-recovery-system">Mark Recovery System</a><a target="_top" href="https://lab.mathsforensics.com/incident-room/?play=pursuit">Play Hot Pursuit free</a></div>
+    <div><h5>GCSE</h5><a target="_top" href="#gcse">The Lab and plans</a><a target="_top" href="#coldcase">Cold Case papers</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Free worksheets</a><a target="_top" href="#guide">Exam Execution Guide</a><a target="_top" href="#recovery">Mark Recovery System</a><a target="_top" href="https://lab.mathsforensics.com/incident-room/?play=pursuit">Play Hot Pursuit free</a></div>
     <div><h5>More</h5><a target="_top" href="#academy">The Academy (Years 7–9)</a><a target="_top" href="#jumpstart">A-Level Jumpstart</a><a target="_top" href="#schools">For schools</a><a target="_top" href="#about">About Mike</a><a target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a></div>
     <div><h5>Policies</h5><a target="_top" href="https://lab.mathsforensics.com/privacy.html">Privacy</a><a target="_top" href="https://lab.mathsforensics.com/student-privacy.html">Student privacy</a><a target="_top" href="https://lab.mathsforensics.com/safeguarding.html">Safeguarding</a><a target="_top" href="https://lab.mathsforensics.com/ai-marking.html">How AI marking works</a><a target="_top" href="https://lab.mathsforensics.com/terms.html">Terms</a></div>
   </div>
@@ -661,10 +693,21 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 <header class="sitehd"><div class="w">
   <a class="brand" target="_top" href="#home" aria-label="Maths Forensics home"><img class="logoimg" src="media/logo.png" alt="Maths Forensics" onerror="this.remove()"><span class="fb"><svg viewBox="0 0 40 46" aria-hidden="true"><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z" fill="#0B122C" stroke="#00FCF1" stroke-width="2.4" stroke-linejoin="round"/><circle cx="19" cy="21" r="6.2" fill="#0B122C" stroke="#00FCF1" stroke-width="2.8"/><circle cx="19" cy="21" r="1.7" fill="#00FCF1"/><path d="M23.4 25.4 28.8 30.8" stroke="#1B36FF" stroke-width="3.8" stroke-linecap="round"/></svg><span class="wm">MATHS<br><span class="c">FORENSICS</span><small>NUMBERS DON'T LIE</small></span></span></a>
   <nav class="nav" aria-label="Main">
-    <a target="_top" href="#home">Home</a><a target="_top" href="#gcse" aria-current="page">GCSE</a><a target="_top" href="#coldcase">Past papers</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Worksheets</a><a target="_top" href="#academy">Years 7–9</a><a target="_top" href="#jumpstart">A-Level</a><a target="_top" href="#schools">Schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
+    <a target="_top" href="#home">Home</a>
+    <div class="dd"><a target="_top" href="#gcse" aria-current="page">GCSE <span class="car">▾</span></a><div class="ddm">
+      <a target="_top" href="#gcse"><b>The Lab and plans</b><small>Every topic to grade 9, Forensic Marking, games</small></a>
+      <a target="_top" href="#guide"><b>Exam Execution Guide</b><small>The exam technique course · £47.99</small></a>
+      <a target="_top" href="#recovery"><b>Mark Recovery System</b><small>Guide + Casefiles for every topic · £97.99 · opens 6 January</small></a>
+      <a target="_top" href="#coldcase"><b>Cold Case past papers</b><small>Original Higher papers nobody has seen</small></a>
+      <a target="_top" href="https://lab.mathsforensics.com/sheets/"><b>Free worksheets</b><small>Securing, Extending and Mastery, to grade 9</small></a>
+    </div></div>
+    <a target="_top" href="#academy">Years 7–9</a><a target="_top" href="#jumpstart">A-Level</a><a target="_top" href="#schools">Schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
   </nav>
   <details class="menu"><summary>MENU</summary><div class="drop">
-    <a target="_top" href="#home">Home</a><a target="_top" href="#gcse">GCSE: the Lab and plans</a><a target="_top" href="#coldcase">GCSE past papers: Cold Case</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Free GCSE worksheets</a><a target="_top" href="#academy">Years 7–9: the Academy</a><a target="_top" href="#jumpstart">A-Level Jumpstart</a><a target="_top" href="#schools">For schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
+    <a target="_top" href="#home">Home</a>
+    <span class="grp">GCSE</span>
+    <a class="sub" target="_top" href="#gcse">The Lab and plans</a><a class="sub" target="_top" href="#guide">Exam Execution Guide</a><a class="sub" target="_top" href="#recovery">Mark Recovery System</a><a class="sub" target="_top" href="#coldcase">Cold Case past papers</a><a class="sub" target="_top" href="https://lab.mathsforensics.com/sheets/">Free worksheets</a>
+    <a target="_top" href="#academy">Years 7–9: the Academy</a><a target="_top" href="#jumpstart">A-Level Jumpstart</a><a target="_top" href="#schools">For schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
   </div></details>
 </div></header>
 </div>
@@ -793,11 +836,11 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   <div class="head c"><span class="eb">The courses · Show it</span><h2>Learn how to sit the paper.</h2><p>Most lost marks aren't about the maths. The courses teach the exam technique that keeps them: reading the question, showing method, timing and checking.</p></div>
   <div class="plans" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
     <div class="plan"><div><h4>Exam Execution Guide</h4><div class="sub">The exam technique course</div></div><div class="pr">£47.99</div>
-      <ul class="tick"><li>Seven lessons and a wrap-up</li><li>Reading the question, method marks, timing and triage, protecting the easy marks</li><li>A full exam walkthrough with real past-paper questions</li><li>The Exam Execution Checklist, Exam Reflection Sheet and Three-Pass Strategy Card</li></ul>
-      <a class="btn ghost small" target="_top" href="https://www.mathsforensics.com/exam-execution-guide">See the Guide</a></div>
-    <div class="plan pick"><span class="badge">BUNDLE</span><div><h4>Guide + Mark Recovery System</h4><div class="sub">Technique, then fix the topics</div></div><div class="pr">£97.99</div>
-      <ul class="tick"><li>Everything in the Exam Execution Guide</li><li>The Mark Recovery System: Casefiles on the topics where marks go, with worked solutions and knowledge checks</li><li>The Mark Recovery Tracker to log and fix every lost mark</li></ul>
-      <a class="btn small" target="_top" href="https://www.mathsforensics.com/mark-recovery-system">Get the bundle</a></div>
+      <ul class="tick"><li>Seven lessons and a wrap-up</li><li>Reading the question, method marks, timing and triage, protecting the easy marks</li><li>A full exam walkthrough with real past-paper questions</li><li>The Exam Execution Checklist, Exam Reflection Sheet and Three-Pass Strategy Card</li><li>Case file worksheets for practice</li></ul>
+      <a class="btn ghost small" target="_top" href="#guide">See the Guide</a></div>
+    <div class="plan pick"><span class="badge jan">OPENS 6 JANUARY</span><div><h4>Mark Recovery System</h4><div class="sub">Includes the Guide · technique, then every topic</div></div><div class="pr">£97.99</div>
+      <ul class="tick"><li>Everything in the Exam Execution Guide</li><li>Forensic Casefiles on the topics where marks go, with worked solutions and knowledge checks</li><li>The Mark Recovery Tracker to log and fix every lost mark</li><li>Case file worksheets for every topic</li></ul>
+      <a class="btn small" target="_top" href="#recovery">See the Mark Recovery System</a></div>
   </div>
   <p class="also">Both courses come with The Full Investigation. Already have the Exam Pass or the Kit? The courses sit alongside it.</p>
 </div></section>
@@ -826,7 +869,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   <div class="cols">
     <div><a class="brand" target="_top" href="#home" aria-label="Maths Forensics home" style="padding:0"><img class="logoimg" src="media/logo.png" alt="Maths Forensics" onerror="this.remove()"><span class="fb"><svg viewBox="0 0 40 46" aria-hidden="true"><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z" fill="#0B122C" stroke="#00FCF1" stroke-width="2.4" stroke-linejoin="round"/><circle cx="19" cy="21" r="6.2" fill="#0B122C" stroke="#00FCF1" stroke-width="2.8"/><circle cx="19" cy="21" r="1.7" fill="#00FCF1"/><path d="M23.4 25.4 28.8 30.8" stroke="#1B36FF" stroke-width="3.8" stroke-linecap="round"/></svg><span class="wm">MATHS<br><span class="c">FORENSICS</span><small>NUMBERS DON'T LIE</small></span></span></a>
       <p style="font-size:15px;margin-top:14px">Every lost mark is evidence. Maths Forensics HQ finds it, from Year 7 to the GCSE exam.</p></div>
-    <div><h5>GCSE</h5><a target="_top" href="#gcse">The Lab and plans</a><a target="_top" href="#coldcase">Cold Case papers</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Free worksheets</a><a target="_top" href="https://www.mathsforensics.com/exam-execution-guide">Exam Execution Guide</a><a target="_top" href="https://www.mathsforensics.com/mark-recovery-system">Mark Recovery System</a><a target="_top" href="https://lab.mathsforensics.com/incident-room/?play=pursuit">Play Hot Pursuit free</a></div>
+    <div><h5>GCSE</h5><a target="_top" href="#gcse">The Lab and plans</a><a target="_top" href="#coldcase">Cold Case papers</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Free worksheets</a><a target="_top" href="#guide">Exam Execution Guide</a><a target="_top" href="#recovery">Mark Recovery System</a><a target="_top" href="https://lab.mathsforensics.com/incident-room/?play=pursuit">Play Hot Pursuit free</a></div>
     <div><h5>More</h5><a target="_top" href="#academy">The Academy (Years 7–9)</a><a target="_top" href="#jumpstart">A-Level Jumpstart</a><a target="_top" href="#schools">For schools</a><a target="_top" href="#about">About Mike</a><a target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a></div>
     <div><h5>Policies</h5><a target="_top" href="https://lab.mathsforensics.com/privacy.html">Privacy</a><a target="_top" href="https://lab.mathsforensics.com/student-privacy.html">Student privacy</a><a target="_top" href="https://lab.mathsforensics.com/safeguarding.html">Safeguarding</a><a target="_top" href="https://lab.mathsforensics.com/ai-marking.html">How AI marking works</a><a target="_top" href="https://lab.mathsforensics.com/terms.html">Terms</a></div>
   </div>
@@ -839,10 +882,21 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 <header class="sitehd"><div class="w">
   <a class="brand" target="_top" href="#home" aria-label="Maths Forensics home"><img class="logoimg" src="media/logo.png" alt="Maths Forensics" onerror="this.remove()"><span class="fb"><svg viewBox="0 0 40 46" aria-hidden="true"><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z" fill="#0B122C" stroke="#00FCF1" stroke-width="2.4" stroke-linejoin="round"/><circle cx="19" cy="21" r="6.2" fill="#0B122C" stroke="#00FCF1" stroke-width="2.8"/><circle cx="19" cy="21" r="1.7" fill="#00FCF1"/><path d="M23.4 25.4 28.8 30.8" stroke="#1B36FF" stroke-width="3.8" stroke-linecap="round"/></svg><span class="wm">MATHS<br><span class="c">FORENSICS</span><small>NUMBERS DON'T LIE</small></span></span></a>
   <nav class="nav" aria-label="Main">
-    <a target="_top" href="#home">Home</a><a target="_top" href="#gcse">GCSE</a><a target="_top" href="#coldcase">Past papers</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Worksheets</a><a target="_top" href="#academy">Years 7–9</a><a target="_top" href="#jumpstart">A-Level</a><a target="_top" href="#schools" aria-current="page">Schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
+    <a target="_top" href="#home">Home</a>
+    <div class="dd"><a target="_top" href="#gcse">GCSE <span class="car">▾</span></a><div class="ddm">
+      <a target="_top" href="#gcse"><b>The Lab and plans</b><small>Every topic to grade 9, Forensic Marking, games</small></a>
+      <a target="_top" href="#guide"><b>Exam Execution Guide</b><small>The exam technique course · £47.99</small></a>
+      <a target="_top" href="#recovery"><b>Mark Recovery System</b><small>Guide + Casefiles for every topic · £97.99 · opens 6 January</small></a>
+      <a target="_top" href="#coldcase"><b>Cold Case past papers</b><small>Original Higher papers nobody has seen</small></a>
+      <a target="_top" href="https://lab.mathsforensics.com/sheets/"><b>Free worksheets</b><small>Securing, Extending and Mastery, to grade 9</small></a>
+    </div></div>
+    <a target="_top" href="#academy">Years 7–9</a><a target="_top" href="#jumpstart">A-Level</a><a target="_top" href="#schools" aria-current="page">Schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
   </nav>
   <details class="menu"><summary>MENU</summary><div class="drop">
-    <a target="_top" href="#home">Home</a><a target="_top" href="#gcse">GCSE: the Lab and plans</a><a target="_top" href="#coldcase">GCSE past papers: Cold Case</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Free GCSE worksheets</a><a target="_top" href="#academy">Years 7–9: the Academy</a><a target="_top" href="#jumpstart">A-Level Jumpstart</a><a target="_top" href="#schools">For schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
+    <a target="_top" href="#home">Home</a>
+    <span class="grp">GCSE</span>
+    <a class="sub" target="_top" href="#gcse">The Lab and plans</a><a class="sub" target="_top" href="#guide">Exam Execution Guide</a><a class="sub" target="_top" href="#recovery">Mark Recovery System</a><a class="sub" target="_top" href="#coldcase">Cold Case past papers</a><a class="sub" target="_top" href="https://lab.mathsforensics.com/sheets/">Free worksheets</a>
+    <a target="_top" href="#academy">Years 7–9: the Academy</a><a target="_top" href="#jumpstart">A-Level Jumpstart</a><a target="_top" href="#schools">For schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
   </div></details>
 </div></header>
 </div>
@@ -961,7 +1015,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   <div class="cols">
     <div><a class="brand" target="_top" href="#home" aria-label="Maths Forensics home" style="padding:0"><img class="logoimg" src="media/logo.png" alt="Maths Forensics" onerror="this.remove()"><span class="fb"><svg viewBox="0 0 40 46" aria-hidden="true"><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z" fill="#0B122C" stroke="#00FCF1" stroke-width="2.4" stroke-linejoin="round"/><circle cx="19" cy="21" r="6.2" fill="#0B122C" stroke="#00FCF1" stroke-width="2.8"/><circle cx="19" cy="21" r="1.7" fill="#00FCF1"/><path d="M23.4 25.4 28.8 30.8" stroke="#1B36FF" stroke-width="3.8" stroke-linecap="round"/></svg><span class="wm">MATHS<br><span class="c">FORENSICS</span><small>NUMBERS DON'T LIE</small></span></span></a>
       <p style="font-size:15px;margin-top:14px">Every lost mark is evidence. Maths Forensics HQ finds it, from Year 7 to the GCSE exam.</p></div>
-    <div><h5>GCSE</h5><a target="_top" href="#gcse">The Lab and plans</a><a target="_top" href="#coldcase">Cold Case papers</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Free worksheets</a><a target="_top" href="https://www.mathsforensics.com/exam-execution-guide">Exam Execution Guide</a><a target="_top" href="https://www.mathsforensics.com/mark-recovery-system">Mark Recovery System</a><a target="_top" href="https://lab.mathsforensics.com/incident-room/?play=pursuit">Play Hot Pursuit free</a></div>
+    <div><h5>GCSE</h5><a target="_top" href="#gcse">The Lab and plans</a><a target="_top" href="#coldcase">Cold Case papers</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Free worksheets</a><a target="_top" href="#guide">Exam Execution Guide</a><a target="_top" href="#recovery">Mark Recovery System</a><a target="_top" href="https://lab.mathsforensics.com/incident-room/?play=pursuit">Play Hot Pursuit free</a></div>
     <div><h5>More</h5><a target="_top" href="#academy">The Academy (Years 7–9)</a><a target="_top" href="#jumpstart">A-Level Jumpstart</a><a target="_top" href="#schools">For schools</a><a target="_top" href="#about">About Mike</a><a target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a></div>
     <div><h5>Policies</h5><a target="_top" href="https://lab.mathsforensics.com/privacy.html">Privacy</a><a target="_top" href="https://lab.mathsforensics.com/student-privacy.html">Student privacy</a><a target="_top" href="https://lab.mathsforensics.com/safeguarding.html">Safeguarding</a><a target="_top" href="https://lab.mathsforensics.com/ai-marking.html">How AI marking works</a><a target="_top" href="https://lab.mathsforensics.com/terms.html">Terms</a></div>
   </div>
@@ -974,10 +1028,21 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 <header class="sitehd"><div class="w">
   <a class="brand" target="_top" href="#home" aria-label="Maths Forensics home"><img class="logoimg" src="media/logo.png" alt="Maths Forensics" onerror="this.remove()"><span class="fb"><svg viewBox="0 0 40 46" aria-hidden="true"><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z" fill="#0B122C" stroke="#00FCF1" stroke-width="2.4" stroke-linejoin="round"/><circle cx="19" cy="21" r="6.2" fill="#0B122C" stroke="#00FCF1" stroke-width="2.8"/><circle cx="19" cy="21" r="1.7" fill="#00FCF1"/><path d="M23.4 25.4 28.8 30.8" stroke="#1B36FF" stroke-width="3.8" stroke-linecap="round"/></svg><span class="wm">MATHS<br><span class="c">FORENSICS</span><small>NUMBERS DON'T LIE</small></span></span></a>
   <nav class="nav" aria-label="Main">
-    <a target="_top" href="#home">Home</a><a target="_top" href="#gcse">GCSE</a><a target="_top" href="#coldcase">Past papers</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Worksheets</a><a target="_top" href="#academy">Years 7–9</a><a target="_top" href="#jumpstart">A-Level</a><a target="_top" href="#schools">Schools</a><a target="_top" href="#about" aria-current="page">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
+    <a target="_top" href="#home">Home</a>
+    <div class="dd"><a target="_top" href="#gcse">GCSE <span class="car">▾</span></a><div class="ddm">
+      <a target="_top" href="#gcse"><b>The Lab and plans</b><small>Every topic to grade 9, Forensic Marking, games</small></a>
+      <a target="_top" href="#guide"><b>Exam Execution Guide</b><small>The exam technique course · £47.99</small></a>
+      <a target="_top" href="#recovery"><b>Mark Recovery System</b><small>Guide + Casefiles for every topic · £97.99 · opens 6 January</small></a>
+      <a target="_top" href="#coldcase"><b>Cold Case past papers</b><small>Original Higher papers nobody has seen</small></a>
+      <a target="_top" href="https://lab.mathsforensics.com/sheets/"><b>Free worksheets</b><small>Securing, Extending and Mastery, to grade 9</small></a>
+    </div></div>
+    <a target="_top" href="#academy">Years 7–9</a><a target="_top" href="#jumpstart">A-Level</a><a target="_top" href="#schools">Schools</a><a target="_top" href="#about" aria-current="page">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
   </nav>
   <details class="menu"><summary>MENU</summary><div class="drop">
-    <a target="_top" href="#home">Home</a><a target="_top" href="#gcse">GCSE: the Lab and plans</a><a target="_top" href="#coldcase">GCSE past papers: Cold Case</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Free GCSE worksheets</a><a target="_top" href="#academy">Years 7–9: the Academy</a><a target="_top" href="#jumpstart">A-Level Jumpstart</a><a target="_top" href="#schools">For schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
+    <a target="_top" href="#home">Home</a>
+    <span class="grp">GCSE</span>
+    <a class="sub" target="_top" href="#gcse">The Lab and plans</a><a class="sub" target="_top" href="#guide">Exam Execution Guide</a><a class="sub" target="_top" href="#recovery">Mark Recovery System</a><a class="sub" target="_top" href="#coldcase">Cold Case past papers</a><a class="sub" target="_top" href="https://lab.mathsforensics.com/sheets/">Free worksheets</a>
+    <a target="_top" href="#academy">Years 7–9: the Academy</a><a target="_top" href="#jumpstart">A-Level Jumpstart</a><a target="_top" href="#schools">For schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
   </div></details>
 </div></header>
 </div>
@@ -1038,7 +1103,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   <div class="cols">
     <div><a class="brand" target="_top" href="#home" aria-label="Maths Forensics home" style="padding:0"><img class="logoimg" src="media/logo.png" alt="Maths Forensics" onerror="this.remove()"><span class="fb"><svg viewBox="0 0 40 46" aria-hidden="true"><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z" fill="#0B122C" stroke="#00FCF1" stroke-width="2.4" stroke-linejoin="round"/><circle cx="19" cy="21" r="6.2" fill="#0B122C" stroke="#00FCF1" stroke-width="2.8"/><circle cx="19" cy="21" r="1.7" fill="#00FCF1"/><path d="M23.4 25.4 28.8 30.8" stroke="#1B36FF" stroke-width="3.8" stroke-linecap="round"/></svg><span class="wm">MATHS<br><span class="c">FORENSICS</span><small>NUMBERS DON'T LIE</small></span></span></a>
       <p style="font-size:15px;margin-top:14px">Every lost mark is evidence. Maths Forensics HQ finds it, from Year 7 to the GCSE exam.</p></div>
-    <div><h5>GCSE</h5><a target="_top" href="#gcse">The Lab and plans</a><a target="_top" href="#coldcase">Cold Case papers</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Free worksheets</a><a target="_top" href="https://www.mathsforensics.com/exam-execution-guide">Exam Execution Guide</a><a target="_top" href="https://www.mathsforensics.com/mark-recovery-system">Mark Recovery System</a><a target="_top" href="https://lab.mathsforensics.com/incident-room/?play=pursuit">Play Hot Pursuit free</a></div>
+    <div><h5>GCSE</h5><a target="_top" href="#gcse">The Lab and plans</a><a target="_top" href="#coldcase">Cold Case papers</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Free worksheets</a><a target="_top" href="#guide">Exam Execution Guide</a><a target="_top" href="#recovery">Mark Recovery System</a><a target="_top" href="https://lab.mathsforensics.com/incident-room/?play=pursuit">Play Hot Pursuit free</a></div>
     <div><h5>More</h5><a target="_top" href="#academy">The Academy (Years 7–9)</a><a target="_top" href="#jumpstart">A-Level Jumpstart</a><a target="_top" href="#schools">For schools</a><a target="_top" href="#about">About Mike</a><a target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a></div>
     <div><h5>Policies</h5><a target="_top" href="https://lab.mathsforensics.com/privacy.html">Privacy</a><a target="_top" href="https://lab.mathsforensics.com/student-privacy.html">Student privacy</a><a target="_top" href="https://lab.mathsforensics.com/safeguarding.html">Safeguarding</a><a target="_top" href="https://lab.mathsforensics.com/ai-marking.html">How AI marking works</a><a target="_top" href="https://lab.mathsforensics.com/terms.html">Terms</a></div>
   </div>
@@ -1051,10 +1116,21 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 <header class="sitehd"><div class="w">
   <a class="brand" target="_top" href="#home" aria-label="Maths Forensics home"><img class="logoimg" src="media/logo.png" alt="Maths Forensics" onerror="this.remove()"><span class="fb"><svg viewBox="0 0 40 46" aria-hidden="true"><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z" fill="#0B122C" stroke="#00FCF1" stroke-width="2.4" stroke-linejoin="round"/><circle cx="19" cy="21" r="6.2" fill="#0B122C" stroke="#00FCF1" stroke-width="2.8"/><circle cx="19" cy="21" r="1.7" fill="#00FCF1"/><path d="M23.4 25.4 28.8 30.8" stroke="#1B36FF" stroke-width="3.8" stroke-linecap="round"/></svg><span class="wm">MATHS<br><span class="c">FORENSICS</span><small>NUMBERS DON'T LIE</small></span></span></a>
   <nav class="nav" aria-label="Main">
-    <a target="_top" href="#home">Home</a><a target="_top" href="#gcse">GCSE</a><a target="_top" href="#coldcase" aria-current="page">Past papers</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Worksheets</a><a target="_top" href="#academy">Years 7–9</a><a target="_top" href="#jumpstart">A-Level</a><a target="_top" href="#schools">Schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
+    <a target="_top" href="#home">Home</a>
+    <div class="dd"><a target="_top" href="#gcse" aria-current="page">GCSE <span class="car">▾</span></a><div class="ddm">
+      <a target="_top" href="#gcse"><b>The Lab and plans</b><small>Every topic to grade 9, Forensic Marking, games</small></a>
+      <a target="_top" href="#guide"><b>Exam Execution Guide</b><small>The exam technique course · £47.99</small></a>
+      <a target="_top" href="#recovery"><b>Mark Recovery System</b><small>Guide + Casefiles for every topic · £97.99 · opens 6 January</small></a>
+      <a target="_top" href="#coldcase"><b>Cold Case past papers</b><small>Original Higher papers nobody has seen</small></a>
+      <a target="_top" href="https://lab.mathsforensics.com/sheets/"><b>Free worksheets</b><small>Securing, Extending and Mastery, to grade 9</small></a>
+    </div></div>
+    <a target="_top" href="#academy">Years 7–9</a><a target="_top" href="#jumpstart">A-Level</a><a target="_top" href="#schools">Schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
   </nav>
   <details class="menu"><summary>MENU</summary><div class="drop">
-    <a target="_top" href="#home">Home</a><a target="_top" href="#gcse">GCSE: the Lab and plans</a><a target="_top" href="#coldcase">GCSE past papers: Cold Case</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Free GCSE worksheets</a><a target="_top" href="#academy">Years 7–9: the Academy</a><a target="_top" href="#jumpstart">A-Level Jumpstart</a><a target="_top" href="#schools">For schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
+    <a target="_top" href="#home">Home</a>
+    <span class="grp">GCSE</span>
+    <a class="sub" target="_top" href="#gcse">The Lab and plans</a><a class="sub" target="_top" href="#guide">Exam Execution Guide</a><a class="sub" target="_top" href="#recovery">Mark Recovery System</a><a class="sub" target="_top" href="#coldcase">Cold Case past papers</a><a class="sub" target="_top" href="https://lab.mathsforensics.com/sheets/">Free worksheets</a>
+    <a target="_top" href="#academy">Years 7–9: the Academy</a><a target="_top" href="#jumpstart">A-Level Jumpstart</a><a target="_top" href="#schools">For schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
   </div></details>
 </div></header>
 </div>
@@ -1134,7 +1210,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   <div class="cols">
     <div><a class="brand" target="_top" href="#home" aria-label="Maths Forensics home" style="padding:0"><img class="logoimg" src="media/logo.png" alt="Maths Forensics" onerror="this.remove()"><span class="fb"><svg viewBox="0 0 40 46" aria-hidden="true"><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z" fill="#0B122C" stroke="#00FCF1" stroke-width="2.4" stroke-linejoin="round"/><circle cx="19" cy="21" r="6.2" fill="#0B122C" stroke="#00FCF1" stroke-width="2.8"/><circle cx="19" cy="21" r="1.7" fill="#00FCF1"/><path d="M23.4 25.4 28.8 30.8" stroke="#1B36FF" stroke-width="3.8" stroke-linecap="round"/></svg><span class="wm">MATHS<br><span class="c">FORENSICS</span><small>NUMBERS DON'T LIE</small></span></span></a>
       <p style="font-size:15px;margin-top:14px">Every lost mark is evidence. Maths Forensics HQ finds it, from Year 7 to the GCSE exam.</p></div>
-    <div><h5>GCSE</h5><a target="_top" href="#gcse">The Lab and plans</a><a target="_top" href="#coldcase">Cold Case papers</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Free worksheets</a><a target="_top" href="https://www.mathsforensics.com/exam-execution-guide">Exam Execution Guide</a><a target="_top" href="https://www.mathsforensics.com/mark-recovery-system">Mark Recovery System</a><a target="_top" href="https://lab.mathsforensics.com/incident-room/?play=pursuit">Play Hot Pursuit free</a></div>
+    <div><h5>GCSE</h5><a target="_top" href="#gcse">The Lab and plans</a><a target="_top" href="#coldcase">Cold Case papers</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Free worksheets</a><a target="_top" href="#guide">Exam Execution Guide</a><a target="_top" href="#recovery">Mark Recovery System</a><a target="_top" href="https://lab.mathsforensics.com/incident-room/?play=pursuit">Play Hot Pursuit free</a></div>
     <div><h5>More</h5><a target="_top" href="#academy">The Academy (Years 7–9)</a><a target="_top" href="#jumpstart">A-Level Jumpstart</a><a target="_top" href="#schools">For schools</a><a target="_top" href="#about">About Mike</a><a target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a></div>
     <div><h5>Policies</h5><a target="_top" href="https://lab.mathsforensics.com/privacy.html">Privacy</a><a target="_top" href="https://lab.mathsforensics.com/student-privacy.html">Student privacy</a><a target="_top" href="https://lab.mathsforensics.com/safeguarding.html">Safeguarding</a><a target="_top" href="https://lab.mathsforensics.com/ai-marking.html">How AI marking works</a><a target="_top" href="https://lab.mathsforensics.com/terms.html">Terms</a></div>
   </div>
@@ -1147,10 +1223,21 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 <header class="sitehd"><div class="w">
   <a class="brand" target="_top" href="#home" aria-label="Maths Forensics home"><img class="logoimg" src="media/logo.png" alt="Maths Forensics" onerror="this.remove()"><span class="fb"><svg viewBox="0 0 40 46" aria-hidden="true"><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z" fill="#0B122C" stroke="#00FCF1" stroke-width="2.4" stroke-linejoin="round"/><circle cx="19" cy="21" r="6.2" fill="#0B122C" stroke="#00FCF1" stroke-width="2.8"/><circle cx="19" cy="21" r="1.7" fill="#00FCF1"/><path d="M23.4 25.4 28.8 30.8" stroke="#1B36FF" stroke-width="3.8" stroke-linecap="round"/></svg><span class="wm">MATHS<br><span class="c">FORENSICS</span><small>NUMBERS DON'T LIE</small></span></span></a>
   <nav class="nav" aria-label="Main">
-    <a target="_top" href="#home">Home</a><a target="_top" href="#gcse">GCSE</a><a target="_top" href="#coldcase">Past papers</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Worksheets</a><a target="_top" href="#academy">Years 7–9</a><a target="_top" href="#jumpstart" aria-current="page">A-Level</a><a target="_top" href="#schools">Schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
+    <a target="_top" href="#home">Home</a>
+    <div class="dd"><a target="_top" href="#gcse">GCSE <span class="car">▾</span></a><div class="ddm">
+      <a target="_top" href="#gcse"><b>The Lab and plans</b><small>Every topic to grade 9, Forensic Marking, games</small></a>
+      <a target="_top" href="#guide"><b>Exam Execution Guide</b><small>The exam technique course · £47.99</small></a>
+      <a target="_top" href="#recovery"><b>Mark Recovery System</b><small>Guide + Casefiles for every topic · £97.99 · opens 6 January</small></a>
+      <a target="_top" href="#coldcase"><b>Cold Case past papers</b><small>Original Higher papers nobody has seen</small></a>
+      <a target="_top" href="https://lab.mathsforensics.com/sheets/"><b>Free worksheets</b><small>Securing, Extending and Mastery, to grade 9</small></a>
+    </div></div>
+    <a target="_top" href="#academy">Years 7–9</a><a target="_top" href="#jumpstart" aria-current="page">A-Level</a><a target="_top" href="#schools">Schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
   </nav>
   <details class="menu"><summary>MENU</summary><div class="drop">
-    <a target="_top" href="#home">Home</a><a target="_top" href="#gcse">GCSE: the Lab and plans</a><a target="_top" href="#coldcase">GCSE past papers: Cold Case</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Free GCSE worksheets</a><a target="_top" href="#academy">Years 7–9: the Academy</a><a target="_top" href="#jumpstart">A-Level Jumpstart</a><a target="_top" href="#schools">For schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
+    <a target="_top" href="#home">Home</a>
+    <span class="grp">GCSE</span>
+    <a class="sub" target="_top" href="#gcse">The Lab and plans</a><a class="sub" target="_top" href="#guide">Exam Execution Guide</a><a class="sub" target="_top" href="#recovery">Mark Recovery System</a><a class="sub" target="_top" href="#coldcase">Cold Case past papers</a><a class="sub" target="_top" href="https://lab.mathsforensics.com/sheets/">Free worksheets</a>
+    <a target="_top" href="#academy">Years 7–9: the Academy</a><a target="_top" href="#jumpstart">A-Level Jumpstart</a><a target="_top" href="#schools">For schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
   </div></details>
 </div></header>
 </div>
@@ -1279,7 +1366,227 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   <div class="cols">
     <div><a class="brand" target="_top" href="#home" aria-label="Maths Forensics home" style="padding:0"><img class="logoimg" src="media/logo.png" alt="Maths Forensics" onerror="this.remove()"><span class="fb"><svg viewBox="0 0 40 46" aria-hidden="true"><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z" fill="#0B122C" stroke="#00FCF1" stroke-width="2.4" stroke-linejoin="round"/><circle cx="19" cy="21" r="6.2" fill="#0B122C" stroke="#00FCF1" stroke-width="2.8"/><circle cx="19" cy="21" r="1.7" fill="#00FCF1"/><path d="M23.4 25.4 28.8 30.8" stroke="#1B36FF" stroke-width="3.8" stroke-linecap="round"/></svg><span class="wm">MATHS<br><span class="c">FORENSICS</span><small>NUMBERS DON'T LIE</small></span></span></a>
       <p style="font-size:15px;margin-top:14px">Every lost mark is evidence. Maths Forensics HQ finds it, from Year 7 to the GCSE exam.</p></div>
-    <div><h5>GCSE</h5><a target="_top" href="#gcse">The Lab and plans</a><a target="_top" href="#coldcase">Cold Case papers</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Free worksheets</a><a target="_top" href="https://www.mathsforensics.com/exam-execution-guide">Exam Execution Guide</a><a target="_top" href="https://www.mathsforensics.com/mark-recovery-system">Mark Recovery System</a><a target="_top" href="https://lab.mathsforensics.com/incident-room/?play=pursuit">Play Hot Pursuit free</a></div>
+    <div><h5>GCSE</h5><a target="_top" href="#gcse">The Lab and plans</a><a target="_top" href="#coldcase">Cold Case papers</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Free worksheets</a><a target="_top" href="#guide">Exam Execution Guide</a><a target="_top" href="#recovery">Mark Recovery System</a><a target="_top" href="https://lab.mathsforensics.com/incident-room/?play=pursuit">Play Hot Pursuit free</a></div>
+    <div><h5>More</h5><a target="_top" href="#academy">The Academy (Years 7–9)</a><a target="_top" href="#jumpstart">A-Level Jumpstart</a><a target="_top" href="#schools">For schools</a><a target="_top" href="#about">About Mike</a><a target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a></div>
+    <div><h5>Policies</h5><a target="_top" href="https://lab.mathsforensics.com/privacy.html">Privacy</a><a target="_top" href="https://lab.mathsforensics.com/student-privacy.html">Student privacy</a><a target="_top" href="https://lab.mathsforensics.com/safeguarding.html">Safeguarding</a><a target="_top" href="https://lab.mathsforensics.com/ai-marking.html">How AI marking works</a><a target="_top" href="https://lab.mathsforensics.com/terms.html">Terms</a></div>
+  </div>
+  <div class="legal"><span>© 2026 Maths Forensics · support@mathsforensics.com</span><span>Not affiliated with any exam board.</span></div>
+</div></footer>
+</div>
+</main>
+<main class="pg" id="pg-guide" hidden>
+<div class="mf">
+<header class="sitehd"><div class="w">
+  <a class="brand" target="_top" href="#home" aria-label="Maths Forensics home"><img class="logoimg" src="media/logo.png" alt="Maths Forensics" onerror="this.remove()"><span class="fb"><svg viewBox="0 0 40 46" aria-hidden="true"><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z" fill="#0B122C" stroke="#00FCF1" stroke-width="2.4" stroke-linejoin="round"/><circle cx="19" cy="21" r="6.2" fill="#0B122C" stroke="#00FCF1" stroke-width="2.8"/><circle cx="19" cy="21" r="1.7" fill="#00FCF1"/><path d="M23.4 25.4 28.8 30.8" stroke="#1B36FF" stroke-width="3.8" stroke-linecap="round"/></svg><span class="wm">MATHS<br><span class="c">FORENSICS</span><small>NUMBERS DON'T LIE</small></span></span></a>
+  <nav class="nav" aria-label="Main">
+    <a target="_top" href="#home">Home</a>
+    <div class="dd"><a target="_top" href="#gcse" aria-current="page">GCSE <span class="car">▾</span></a><div class="ddm">
+      <a target="_top" href="#gcse"><b>The Lab and plans</b><small>Every topic to grade 9, Forensic Marking, games</small></a>
+      <a target="_top" href="#guide"><b>Exam Execution Guide</b><small>The exam technique course · £47.99</small></a>
+      <a target="_top" href="#recovery"><b>Mark Recovery System</b><small>Guide + Casefiles for every topic · £97.99 · opens 6 January</small></a>
+      <a target="_top" href="#coldcase"><b>Cold Case past papers</b><small>Original Higher papers nobody has seen</small></a>
+      <a target="_top" href="https://lab.mathsforensics.com/sheets/"><b>Free worksheets</b><small>Securing, Extending and Mastery, to grade 9</small></a>
+    </div></div>
+    <a target="_top" href="#academy">Years 7–9</a><a target="_top" href="#jumpstart">A-Level</a><a target="_top" href="#schools">Schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
+  </nav>
+  <details class="menu"><summary>MENU</summary><div class="drop">
+    <a target="_top" href="#home">Home</a>
+    <span class="grp">GCSE</span>
+    <a class="sub" target="_top" href="#gcse">The Lab and plans</a><a class="sub" target="_top" href="#guide">Exam Execution Guide</a><a class="sub" target="_top" href="#recovery">Mark Recovery System</a><a class="sub" target="_top" href="#coldcase">Cold Case past papers</a><a class="sub" target="_top" href="https://lab.mathsforensics.com/sheets/">Free worksheets</a>
+    <a target="_top" href="#academy">Years 7–9: the Academy</a><a target="_top" href="#jumpstart">A-Level Jumpstart</a><a target="_top" href="#schools">For schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
+  </div></details>
+</div></header>
+</div>
+<div class="mf">
+<section class="hero"><div class="w split">
+  <div>
+    <span class="eb">GCSE · Show it · The exam technique course</span>
+    <h1>Stop losing the marks <em>you've already earned.</em></h1>
+    <p class="lede">In 280 GCSE maths scripts we examined, nearly one in three lost marks was avoidable: maths the student knew, lost to the clock, missing working or a slip. The Exam Execution Guide teaches the technique that keeps those marks.</p>
+    <div class="cta"><a class="btn" target="_top" href="https://www.mathsforensics.com/exam-execution-guide-checkout">Get the Guide · £47.99</a><a class="btn ghost" target="_top" href="#recovery">See the full Mark Recovery System</a></div>
+    <div class="proof"><span><b>7</b> lessons and a wrap-up</span><span><b>7</b> printable tools</span><span>AQA, Edexcel, OCR and IGCSE</span></div>
+  </div>
+  <div class="file">
+    <div class="bar"><span>Where avoidable marks go</span><b>280 scripts</b></div>
+    <div class="meter"><span>Reading the question</span><span class="tr"><i style="width:42%"></i></span><em class="st">42%</em></div>
+    <div class="meter"><span>Method not shown</span><span class="tr"><i style="width:24%"></i></span><em class="st">24%</em></div>
+    <div class="meter"><span>Accuracy slips</span><span class="tr"><i style="width:34%"></i></span><em class="st">34%</em></div>
+    <div class="finding"><b>Finding</b>Every one of these is a habit, not a gap in knowledge. Habits can be trained in weeks.</div>
+  </div>
+</div></section>
+</div>
+<div class="mf">
+<section class="alt"><div class="w">
+  <div class="head"><span class="eb">What it teaches</span><h2>Three habits that protect every paper.</h2><p>The exam isn't just a test of what you know. It's a test of how you show it in 90 minutes.</p></div>
+  <div class="g3">
+    <div class="card"><span class="eb" style="margin-bottom:8px">1 · Time and triage</span><h3>Control the clock</h3><p>The three-pass system: bank every easy mark first, then the method marks, then the hard questions. No more blank pages at the end.</p></div>
+    <div class="card"><span class="eb" style="margin-bottom:8px">2 · Method marks</span><h3>Show it so it can be marked</h3><p>If it isn't written down, it can't be marked. The line-by-line habits that earn method marks even when the final answer goes wrong.</p></div>
+    <div class="card"><span class="eb" style="margin-bottom:8px">3 · Error protection</span><h3>Catch the slip</h3><p>Misreading the question, missing units, early rounding. A five-second review that catches them before the examiner does.</p></div>
+  </div>
+</div></section>
+</div>
+<div class="mf">
+<section><div class="w split">
+  <div>
+    <span class="eb">What's inside</span><h2>Short, practical, and ready to use tonight.</h2>
+    <ul class="tick" style="margin-top:16px">
+      <li><b>Seven lessons and a wrap-up:</b> reading the question, method marks, timing and triage, protecting the easy marks, and a full exam walkthrough with real past-paper questions</li>
+      <li><b>Seven printable tools:</b> the Summary Cheatsheet, Timing and Triage Sheet, Method Marks Checklist, Easy-Mark Protection Checklist, Exam Execution Checklist, Three-Pass Strategy Card and Exam Reflection Sheet</li>
+      <li><b>Case file worksheets</b> to practise the technique on every topic, from Securing to Mastery</li>
+    </ul>
+  </div>
+  <div class="card"><span class="eb" style="margin-bottom:8px">The golden rule</span><h3>Improvement happens in the review, not the test.</h3><p>After every practice paper, the Exam Reflection Sheet asks one question about each lost mark: was it Reading, Method or Accuracy? It's the same code Forensic Marking uses, so the Guide and the Lab work together.</p></div>
+</div></section>
+</div>
+<div class="mf">
+<section class="alt" id="buy"><div class="w">
+  <div class="head c"><span class="eb">Choose your course</span><h2>Start with technique, or recover every topic too.</h2></div>
+  <div class="plans" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
+    <div class="plan pick"><span class="badge">AVAILABLE NOW</span><div><h4>Exam Execution Guide</h4><div class="sub">The exam technique course</div></div><div class="pr">£47.99</div>
+      <ul class="tick"><li>Seven lessons and a wrap-up</li><li>Seven printable tools</li><li>Case file worksheets for practice</li></ul>
+      <a class="btn small" target="_top" href="https://www.mathsforensics.com/exam-execution-guide-checkout">Get the Guide</a></div>
+    <div class="plan"><span class="badge jan">OPENS 6 JANUARY</span><div><h4>Mark Recovery System</h4><div class="sub">Technique, then every topic</div></div><div class="pr">£97.99</div>
+      <ul class="tick"><li>Everything in the Exam Execution Guide</li><li>Forensic Casefiles for the topics where marks go</li><li>The Mark Recovery Tracker</li></ul>
+      <a class="btn ghost small" target="_top" href="#recovery">See the Mark Recovery System</a></div>
+  </div>
+  <p class="also">Both courses are included in The Full Investigation, with the Lab, Cold Case papers and Forensic Marking.</p>
+</div></section>
+</div>
+<div class="mf">
+<section><div class="w" style="max-width:860px">
+  <div class="head"><span class="eb">Good to know</span><h2>Questions about the Guide</h2></div>
+  <details><summary>Who is it for?</summary><p>GCSE and IGCSE maths students, Foundation or Higher, especially those who know more than their marks show: in Year 10 or 11, or resitting.</p></details>
+  <details><summary>Does it teach the maths topics?</summary><p>No. It teaches how to sit the paper. The topics are taught in the Mark Recovery System's Casefiles and practised in the Lab.</p></details>
+  <details><summary>How long does it take?</summary><p>It's deliberately short, so it can be used straight away: watch a lesson, then apply it to your next practice paper with the printable tools.</p></details>
+  <details><summary>Should we get the Guide or the Lab?</summary><p>The Guide teaches technique; the Lab is where you practise every topic. If marks go on questions you can already do, start with the Guide.</p></details>
+</div></section>
+</div>
+<div class="mf">
+<section class="final"><div class="w">
+  <span class="eb">Exam Execution Guide</span>
+  <h2>Keep the marks you've earned.</h2>
+  <p class="lede">£47.99, one payment. Seven lessons, seven printable tools.</p>
+  <div class="cta"><a class="btn" target="_top" href="https://www.mathsforensics.com/exam-execution-guide-checkout">Get the Guide</a><a class="btn ghost" target="_top" href="#recovery">See the Mark Recovery System</a></div>
+</div></section>
+</div>
+<div class="mf">
+<footer class="sitefoot"><div class="w">
+  <div class="cols">
+    <div><a class="brand" target="_top" href="#home" aria-label="Maths Forensics home" style="padding:0"><img class="logoimg" src="media/logo.png" alt="Maths Forensics" onerror="this.remove()"><span class="fb"><svg viewBox="0 0 40 46" aria-hidden="true"><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z" fill="#0B122C" stroke="#00FCF1" stroke-width="2.4" stroke-linejoin="round"/><circle cx="19" cy="21" r="6.2" fill="#0B122C" stroke="#00FCF1" stroke-width="2.8"/><circle cx="19" cy="21" r="1.7" fill="#00FCF1"/><path d="M23.4 25.4 28.8 30.8" stroke="#1B36FF" stroke-width="3.8" stroke-linecap="round"/></svg><span class="wm">MATHS<br><span class="c">FORENSICS</span><small>NUMBERS DON'T LIE</small></span></span></a>
+      <p style="font-size:15px;margin-top:14px">Every lost mark is evidence. Maths Forensics HQ finds it, from Year 7 to the GCSE exam.</p></div>
+    <div><h5>GCSE</h5><a target="_top" href="#gcse">The Lab and plans</a><a target="_top" href="#coldcase">Cold Case papers</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Free worksheets</a><a target="_top" href="#guide">Exam Execution Guide</a><a target="_top" href="#recovery">Mark Recovery System</a><a target="_top" href="https://lab.mathsforensics.com/incident-room/?play=pursuit">Play Hot Pursuit free</a></div>
+    <div><h5>More</h5><a target="_top" href="#academy">The Academy (Years 7–9)</a><a target="_top" href="#jumpstart">A-Level Jumpstart</a><a target="_top" href="#schools">For schools</a><a target="_top" href="#about">About Mike</a><a target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a></div>
+    <div><h5>Policies</h5><a target="_top" href="https://lab.mathsforensics.com/privacy.html">Privacy</a><a target="_top" href="https://lab.mathsforensics.com/student-privacy.html">Student privacy</a><a target="_top" href="https://lab.mathsforensics.com/safeguarding.html">Safeguarding</a><a target="_top" href="https://lab.mathsforensics.com/ai-marking.html">How AI marking works</a><a target="_top" href="https://lab.mathsforensics.com/terms.html">Terms</a></div>
+  </div>
+  <div class="legal"><span>© 2026 Maths Forensics · support@mathsforensics.com</span><span>Not affiliated with any exam board.</span></div>
+</div></footer>
+</div>
+</main>
+<main class="pg" id="pg-recovery" hidden>
+<div class="mf">
+<header class="sitehd"><div class="w">
+  <a class="brand" target="_top" href="#home" aria-label="Maths Forensics home"><img class="logoimg" src="media/logo.png" alt="Maths Forensics" onerror="this.remove()"><span class="fb"><svg viewBox="0 0 40 46" aria-hidden="true"><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z" fill="#0B122C" stroke="#00FCF1" stroke-width="2.4" stroke-linejoin="round"/><circle cx="19" cy="21" r="6.2" fill="#0B122C" stroke="#00FCF1" stroke-width="2.8"/><circle cx="19" cy="21" r="1.7" fill="#00FCF1"/><path d="M23.4 25.4 28.8 30.8" stroke="#1B36FF" stroke-width="3.8" stroke-linecap="round"/></svg><span class="wm">MATHS<br><span class="c">FORENSICS</span><small>NUMBERS DON'T LIE</small></span></span></a>
+  <nav class="nav" aria-label="Main">
+    <a target="_top" href="#home">Home</a>
+    <div class="dd"><a target="_top" href="#gcse" aria-current="page">GCSE <span class="car">▾</span></a><div class="ddm">
+      <a target="_top" href="#gcse"><b>The Lab and plans</b><small>Every topic to grade 9, Forensic Marking, games</small></a>
+      <a target="_top" href="#guide"><b>Exam Execution Guide</b><small>The exam technique course · £47.99</small></a>
+      <a target="_top" href="#recovery"><b>Mark Recovery System</b><small>Guide + Casefiles for every topic · £97.99 · opens 6 January</small></a>
+      <a target="_top" href="#coldcase"><b>Cold Case past papers</b><small>Original Higher papers nobody has seen</small></a>
+      <a target="_top" href="https://lab.mathsforensics.com/sheets/"><b>Free worksheets</b><small>Securing, Extending and Mastery, to grade 9</small></a>
+    </div></div>
+    <a target="_top" href="#academy">Years 7–9</a><a target="_top" href="#jumpstart">A-Level</a><a target="_top" href="#schools">Schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
+  </nav>
+  <details class="menu"><summary>MENU</summary><div class="drop">
+    <a target="_top" href="#home">Home</a>
+    <span class="grp">GCSE</span>
+    <a class="sub" target="_top" href="#gcse">The Lab and plans</a><a class="sub" target="_top" href="#guide">Exam Execution Guide</a><a class="sub" target="_top" href="#recovery">Mark Recovery System</a><a class="sub" target="_top" href="#coldcase">Cold Case past papers</a><a class="sub" target="_top" href="https://lab.mathsforensics.com/sheets/">Free worksheets</a>
+    <a target="_top" href="#academy">Years 7–9: the Academy</a><a target="_top" href="#jumpstart">A-Level Jumpstart</a><a target="_top" href="#schools">For schools</a><a target="_top" href="#about">About</a><a class="btn" target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a>
+  </div></details>
+</div></header>
+</div>
+<div class="mf">
+<section class="hero"><div class="w split">
+  <div>
+    <span class="eb">GCSE · Show it · Opens 6 January</span>
+    <h1>Find where the marks go. <em>Win them back, topic by topic.</em></h1>
+    <p class="lede">The Mark Recovery System is the full course: the Exam Execution Guide for technique, plus forensic Casefiles that teach the GCSE topics where most marks go, the misconceptions in each one, and how examiners award the marks.</p>
+    <div class="cta"><a class="btn" target="_top" href="https://www.mathsforensics.com/mark-recovery-waitlist">Reserve your place</a><a class="btn ghost" target="_top" href="#guide">Start now with the Guide</a></div>
+    <div class="proof"><span><b>£97.99</b> one payment</span><span>Includes the <b>Exam Execution Guide</b></span><span>Opens <b>6 January</b></span></div>
+  </div>
+  <div class="file">
+    <div class="bar"><span>Casefile · Ratio and proportion</span><b>23 pages</b></div>
+    <ul class="tick" style="margin:10px 0 0;font-size:15px"><li>Simplifying and sharing in a ratio</li><li>Ratios as fractions, and linking ratios</li><li>Algebra in ratios</li><li>Scale drawings and currency</li><li>Direct and inverse proportion</li><li>Knowledge Check with full worked solutions</li></ul>
+    <div class="finding"><b>Case closed</b>Every Casefile ends by naming the skills secured and the next case to open.</div>
+  </div>
+</div></section>
+</div>
+<div class="mf">
+<section class="alt"><div class="w">
+  <div class="head"><span class="eb">How it works</span><h2>Technique first. Then the evidence, then the fix.</h2></div>
+  <div class="path">
+    <div class="stop c"><span class="y">1 · Technique</span><b>Exam Execution Guide</b><small>Time and triage, method marks and error protection, so no earned mark is thrown away.</small></div>
+    <div class="stop l"><span class="y">2 · Evidence</span><b>Mark Recovery Tracker</b><small>Log every lost mark from your papers as Reading, Method or Accuracy, and see which topics cost the most.</small></div>
+    <div class="stop a"><span class="y">3 · Recover</span><b>The Casefiles</b><small>Explanations, worked examples and the common misconceptions for each topic, with a Knowledge Check.</small></div>
+    <div class="stop e"><span class="y">4 · Prove it</span><b>Case file worksheets</b><small>Securing, Extending and Mastery questions, with Mastery working marked in Forensic Marking.</small></div>
+  </div>
+</div></section>
+</div>
+<div class="mf">
+<section><div class="w">
+  <div class="head"><span class="eb">The Casefiles</span><h2>The topics where the most marks are lost.</h2><p>Each Casefile has explanation boxes, worked examples, a Knowledge Check, full worked solutions and a Case Closed summary.</p></div>
+  <div class="g3">
+    <div class="card"><span class="eb" style="margin-bottom:8px">Number</span><h3>Percentages</h3><p>Multipliers, reverse percentages, compound change.</p></div>
+    <div class="card"><span class="eb" style="margin-bottom:8px">Number</span><h3>Ratio and proportion</h3><p>Sharing, linking ratios, scale, direct and inverse proportion.</p></div>
+    <div class="card"><span class="eb" style="margin-bottom:8px">Algebra</span><h3>Linear and quadratic expressions</h3><p>Expanding, factorising and solving, without the sign slips.</p></div>
+    <div class="card"><span class="eb" style="margin-bottom:8px">Algebra</span><h3>Algebraic graphs</h3><p>Straight lines, quadratics and reading graphs for marks.</p></div>
+    <div class="card"><span class="eb" style="margin-bottom:8px">Algebra</span><h3>Formulae, inequalities and sequences</h3><p>Rearranging, solving inequalities, nth terms.</p></div>
+    <div class="card"><span class="eb" style="margin-bottom:8px">Shape</span><h3>Pythagoras and trigonometry</h3><p>Right-angled triangles in 2D and 3D, with exact values.</p></div>
+    <div class="card"><span class="eb" style="margin-bottom:8px">Shape</span><h3>Area, perimeter, volume and surface area</h3><p>Compound shapes, circles, prisms, cones and spheres.</p></div>
+    <div class="card"><span class="eb" style="margin-bottom:8px">Data</span><h3>Probability and data</h3><p>Tree diagrams, Venn diagrams and statistics questions.</p></div>
+  </div>
+</div></section>
+</div>
+<div class="mf">
+<section class="alt" id="enrol"><div class="w split">
+  <div>
+    <span class="eb">What's included</span><h2>Everything to find the lost marks and win them back.</h2>
+    <ul class="tick" style="margin-top:16px">
+      <li><b>The Exam Execution Guide</b> (£47.99 on its own): seven lessons and seven printable tools</li>
+      <li><b>Forensic Casefiles</b> for eight high-mark topic areas, with worked solutions</li>
+      <li><b>The Mark Recovery Tracker</b> to log and fix every lost mark</li>
+      <li><b>Case file worksheets</b> for every topic, Securing to Mastery</li>
+    </ul>
+  </div>
+  <div class="plan pick"><span class="badge jan">OPENS 6 JANUARY</span><div><h4>Mark Recovery System</h4><div class="sub">Technique + every topic</div></div><div class="pr">£97.99</div>
+    <ul class="tick"><li>Includes the Exam Execution Guide</li><li>All the Casefiles and the Tracker</li><li>One payment, no subscription</li></ul>
+    <a class="btn small" target="_top" href="https://www.mathsforensics.com/mark-recovery-waitlist">Reserve your place</a>
+    <p class="note" style="margin-top:12px">Want to start on technique now? <a class="txt" target="_top" href="#guide">The Exam Execution Guide</a> is available today.</p></div>
+</div></section>
+</div>
+<div class="mf">
+<section><div class="w" style="max-width:860px">
+  <div class="head"><span class="eb">Good to know</span><h2>Questions about the Mark Recovery System</h2></div>
+  <details><summary>When does it open?</summary><p>On 6 January, in time for mocks and the run-up to the summer exams. Reserve your place and you'll be told the moment it opens.</p></details>
+  <details><summary>What's a Casefile?</summary><p>A complete guide to one topic area: the key ideas in clear explanation boxes, worked examples, the misconceptions that lose marks, a Knowledge Check and full solutions.</p></details>
+  <details><summary>How is it different from the Lab?</summary><p>The Lab is online practice for every topic, with feedback and marking. The Mark Recovery System is a course: it teaches the technique and the topics, and the Tracker shows you which to fix first. They work well together.</p></details>
+  <details><summary>Is it part of The Full Investigation?</summary><p>Yes. The Full Investigation includes the Mark Recovery System and the Exam Execution Guide, with the Lab, Cold Case papers and Forensic Marking.</p></details>
+</div></section>
+</div>
+<div class="mf">
+<section class="final"><div class="w">
+  <span class="eb">Mark Recovery System</span>
+  <h2>Every lost mark is evidence. Recover it.</h2>
+  <p class="lede">£97.99, one payment. Opens 6 January.</p>
+  <div class="cta"><a class="btn" target="_top" href="https://www.mathsforensics.com/mark-recovery-waitlist">Reserve your place</a><a class="btn ghost" target="_top" href="#guide">Start with the Guide</a></div>
+</div></section>
+</div>
+<div class="mf">
+<footer class="sitefoot"><div class="w">
+  <div class="cols">
+    <div><a class="brand" target="_top" href="#home" aria-label="Maths Forensics home" style="padding:0"><img class="logoimg" src="media/logo.png" alt="Maths Forensics" onerror="this.remove()"><span class="fb"><svg viewBox="0 0 40 46" aria-hidden="true"><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z" fill="#0B122C" stroke="#00FCF1" stroke-width="2.4" stroke-linejoin="round"/><circle cx="19" cy="21" r="6.2" fill="#0B122C" stroke="#00FCF1" stroke-width="2.8"/><circle cx="19" cy="21" r="1.7" fill="#00FCF1"/><path d="M23.4 25.4 28.8 30.8" stroke="#1B36FF" stroke-width="3.8" stroke-linecap="round"/></svg><span class="wm">MATHS<br><span class="c">FORENSICS</span><small>NUMBERS DON'T LIE</small></span></span></a>
+      <p style="font-size:15px;margin-top:14px">Every lost mark is evidence. Maths Forensics HQ finds it, from Year 7 to the GCSE exam.</p></div>
+    <div><h5>GCSE</h5><a target="_top" href="#gcse">The Lab and plans</a><a target="_top" href="#coldcase">Cold Case papers</a><a target="_top" href="https://lab.mathsforensics.com/sheets/">Free worksheets</a><a target="_top" href="#guide">Exam Execution Guide</a><a target="_top" href="#recovery">Mark Recovery System</a><a target="_top" href="https://lab.mathsforensics.com/incident-room/?play=pursuit">Play Hot Pursuit free</a></div>
     <div><h5>More</h5><a target="_top" href="#academy">The Academy (Years 7–9)</a><a target="_top" href="#jumpstart">A-Level Jumpstart</a><a target="_top" href="#schools">For schools</a><a target="_top" href="#about">About Mike</a><a target="_top" href="https://lab.mathsforensics.com/">Log in to HQ</a></div>
     <div><h5>Policies</h5><a target="_top" href="https://lab.mathsforensics.com/privacy.html">Privacy</a><a target="_top" href="https://lab.mathsforensics.com/student-privacy.html">Student privacy</a><a target="_top" href="https://lab.mathsforensics.com/safeguarding.html">Safeguarding</a><a target="_top" href="https://lab.mathsforensics.com/ai-marking.html">How AI marking works</a><a target="_top" href="https://lab.mathsforensics.com/terms.html">Terms</a></div>
   </div>
@@ -1290,7 +1597,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 
 <script>
 (function(){
-  var names=["home", "academy", "gcse", "schools", "about", "coldcase", "jumpstart"];
+  var names=["home", "academy", "gcse", "schools", "about", "coldcase", "jumpstart", "guide", "recovery"];
   function show(){
     var h=(location.hash||"").slice(1), page=h.split("-")[0], anchor=h.indexOf("-")>0?h:null;
     if(names.indexOf(page)<0){page=names[0];anchor=null}

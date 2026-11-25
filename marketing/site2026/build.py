@@ -7,7 +7,7 @@ out = root / ("out" if os.environ.get("EDITION", "launch") == "launch" else "out
 out.mkdir(exist_ok=True)
 CSS = (src / "style.css").read_text()
 LINKS = json.loads((src / "links.json").read_text())
-PAGES = [("home", "Homepage", "/"), ("academy", "Academy", "/academy"), ("gcse", "GCSE (the Lab)", "/the-lab"), ("schools", "Schools", "/schools"), ("about", "About", "/about"), ("coldcase", "Cold Case", "/cold-case"), ("jumpstart", "A-Level Jumpstart Lab", "/jumpstart-lab")]
+PAGES = [("home", "Homepage", "/"), ("academy", "Academy", "/academy"), ("gcse", "GCSE (the Lab)", "/the-lab"), ("schools", "Schools", "/schools"), ("about", "About", "/about"), ("coldcase", "Cold Case", "/cold-case"), ("jumpstart", "A-Level Jumpstart Lab", "/jumpstart-lab"), ("guide", "Exam Execution Guide", "/exam-execution-guide"), ("recovery", "Mark Recovery System", "/mark-recovery-system")]
 PHOTO = '<span>YOUR PHOTO HERE<br>{label}</span>'
 
 def fill(s):
@@ -47,8 +47,9 @@ EDITION = os.environ.get("EDITION", "launch")
 
 def blocks(name):
     hd = (src / "_header.html").read_text()
-    for pg in ["home", "gcse", "academy", "schools", "about", "coldcase", "jumpstart"]:
+    for pg in ["home", "academy", "schools", "about", "jumpstart"]:
         hd = hd.replace("{{CUR_" + pg + "}}", ' aria-current="page"' if pg == name else "")
+    hd = hd.replace("{{CUR_gcsegroup}}", ' aria-current="page"' if name in ("gcse", "guide", "recovery", "coldcase") else "")
     raw = "<!-- BLOCK: 0 header -->\n" + hd + "\n" + (src / f"{name}.html").read_text() + "\n<!-- BLOCK: 99 footer -->\n" + (src / "_footer.html").read_text()
     if EDITION == "launch":
         for a, b in LAUNCH: raw = re.sub(a, b, raw)
@@ -72,7 +73,7 @@ for name, title, path in PAGES:
     preview.append((name, title, path, "".join(f'<div class="mf">\n{b}\n</div>\n' for _, b in bl)))
 
 # preview: every page on one artifact, switched by #name; site links point at the matching preview page
-url2page = {LINKS[k]: n for k, n in [("HOME", "home"), ("ACADEMY_PAGE", "academy"), ("GCSE_PAGE", "gcse"), ("SCHOOLS_PAGE", "schools"), ("ABOUT", "about"), ("COLD_CASE", "coldcase"), ("JUMPSTART", "jumpstart")]}
+url2page = {LINKS[k]: n for k, n in [("HOME", "home"), ("ACADEMY_PAGE", "academy"), ("GCSE_PAGE", "gcse"), ("SCHOOLS_PAGE", "schools"), ("ABOUT", "about"), ("COLD_CASE", "coldcase"), ("JUMPSTART", "jumpstart"), ("GUIDE", "guide"), ("MRS", "recovery")]}
 nav = "".join(f'<a href="#{n}" data-p="{n}">{t}</a>' for n, t, _, _ in preview)
 pages = ""
 for n, t, path, body in preview:
