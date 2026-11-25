@@ -647,6 +647,31 @@ tr.sessrow>td{background:var(--ink);text-align:left;padding:10px 14px}
 .rtable td.num{white-space:nowrap}
 .rtable td:nth-child(2){white-space:nowrap}
 
+/* ---------- The Investigation: weekly report ---------- */
+.wktools{align-items:center;justify-content:space-between;margin:12px 0}
+.wktools select.inp.sm{width:auto}
+.wkrep{max-width:900px}
+.wkverdict{font-size:17px;line-height:1.5;margin:4px 0 12px;color:#0B122C}
+.rkpis.wkk{grid-template-columns:repeat(4,minmax(0,1fr))}
+.wkrma{display:grid;gap:8px;margin:6px 0 8px}
+.wkrow{display:grid;grid-template-columns:90px minmax(0,1fr) 34px;gap:4px 10px;align-items:center}
+.wklab{font-weight:700;color:#0B122C}
+.wktrack{height:14px;background:#eef1f8;border-radius:7px;overflow:hidden}
+.wktrack i{display:block;height:100%;border-radius:7px}
+.wktrack i.r{background:#1B36FF}.wktrack i.m{background:#7a5cff}.wktrack i.a{background:#0aa5a0}
+.wknum{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;color:#0B122C}
+.wkhow{grid-column:2/4;font-size:12.5px;color:#5a6384;margin-top:-2px}
+.wkplan{list-style:none;padding:0;margin:6px 0;display:grid;gap:10px}
+.wkplan li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:start;border:1px solid #e3e7f3;border-radius:10px;padding:10px 12px}
+.wkplan li p{margin:2px 0 0;font-size:13.5px;color:#3d4566}
+.wkplan .rpill.lo{border-color:#d2394c;color:#b02a3c}.wkplan .rpill.mid{border-color:#c98a00;color:#8a5a00}
+.wkplan .ghost{color:#1B36FF;border-color:#c9cfe3}
+.wklock{margin-top:16px;border:1.5px dashed #b9c0d8;border-radius:12px;padding:14px 16px;background:#f7f8fc}
+.wklock p{margin:6px 0 10px;color:#3d4566;font-size:14px}
+.wkmore{margin-top:14px}
+@media (max-width:640px){.rkpis.wkk{grid-template-columns:repeat(2,minmax(0,1fr))}.wkrow{grid-template-columns:72px minmax(0,1fr) 28px}.wkplan li{grid-template-columns:minmax(0,1fr)}.rpaper.wkrep{padding:20px 16px}.rpaper.wkrep .rbrand{position:static;margin-bottom:6px}.wkslips th:nth-child(2),.wkslips td:nth-child(2){display:none}}
+@media print{:root{color-scheme:light}html{background:#fff!important}.rpaper.wkrep{max-width:none}.wkplan li,.wkrma,.wklock{break-inside:avoid}}
+
 /* ---------- calculator / non-calculator ---------- */
 .calctoggle{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 2px}
 .tag.calc{border-color:rgba(0,252,241,.5);color:var(--cyan)}
@@ -4787,6 +4812,8 @@ const demoStore=(()=>{
       db.attempts.push({id:uid(),user_id:userId,topic,correct,error_id:error_id||null,source,created_at:new Date().toISOString(),...extra}); save();
     },
     async attempts(userId){return db.attempts.filter(a=>a.user_id===userId).map(a=>({source:'practice',...a}))},
+    async writtenMarks(){return []},
+    async plan(){return 'pass'},
     async saveDiagnostic(userId,{grade,score,max,detail}){const d={id:uid(),user_id:userId,grade,score,max,detail,created_at:new Date().toISOString()};db.diagnostics.push(d);save();return d},
     async diagnostics(userId){return db.diagnostics.filter(d=>d.user_id===userId).sort((a,b)=>b.created_at.localeCompare(a.created_at))},
     async resetMyProgress(userId){db.attempts=db.attempts.filter(a=>a.user_id!==userId);save()},
@@ -5044,6 +5071,17 @@ function supabaseStore(cfg){
     async saveDiagnostic(userId,{grade,score,max,detail}){return must(await sb.from('diagnostics').insert({user_id:userId,grade,score,max,detail}).select().single())},
     async diagnostics(userId){const r=await sb.from('diagnostics').select('*').eq('user_id',userId).order('created_at',{ascending:false});return r.error?[]:r.data},
     async resetMyProgress(userId){must(await sb.from('attempts').delete().eq('user_id',userId))},
+    // Forensic Marking reports for the weekly report: only the parts it needs, never the images
+    async writtenMarks(userId){
+      const r=await sb.from('written_marks').select('created_at,status,score,max_marks,topic,rc:result->root_cause,unprot:result->unprotected,board:result->exam_board_score').eq('user_id',userId).eq('status','marked').order('created_at').limit(3000);
+      return r.error?[]:r.data;
+    },
+    // Exam Pass, Exam Season Kit or The Full Investigation (my_access only says free or full)
+    async plan(){
+      const {data}=await sb.auth.getSession(); const tok=data&&data.session&&data.session.access_token; if(!tok) return null;
+      const r=await fetch(cfg.supabaseUrl+'/functions/v1/mark-written',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+tok,apikey:cfg.supabaseAnonKey},body:JSON.stringify({action:'plan'})});
+      const j=await r.json().catch(()=>({})); return ['pass','kit','investigation'].includes(j.plan)?j.plan:null;
+    },
     async joinClass(userId,code){
       const id=must(await sb.rpc('join_class',{p_code:String(code).toUpperCase().replace(/[^A-Z0-9]/g,'')}));
       const r=await sb.from('classes').select('id,name,academy_on,lab_on').eq('id',id).single();
@@ -6182,10 +6220,10 @@ function helpStudent(){
       <li>Round as the question says. If it doesn't say, 3 significant figures is the usual GCSE rule.</li>
     </ul></div></div>
   <div class="panel"><h2>What everything means</h2>${helpGlossHTML([
-    ['Case file','Your evidence file: every answer you give is filed here. It shows which topics are secure, which need work, the exam slips that cost you marks, and your next moves. Check it once a week.'],
+    ['Investigation','Your weekly report and your case file. The weekly report shows how the week went, where the marks went (reading, method or accuracy) and a plan for next week. The case file is the evidence from every answer you give. Check it once a week.'],
     ['Case','One question. New numbers every time, so you can\'t just remember the answer.'],
     ['Case briefing','The method, a worked example and the traps for a topic. It opens automatically the first time you visit a topic.'],
-    ['Evidence found','You made a slip examiners see all the time, like rounding too early or a sign error. It\'s logged in your Case file so you can see which habits cost you the most marks.'],
+    ['Evidence found','You made a slip examiners see all the time, like rounding too early or a sign error. It\'s logged in your case file (in the Investigation tab) so you can see which habits cost you the most marks.'],
     ['Spot the slip','You see another student\'s wrong answer. Say what went wrong, then give the right answer.'],
     ['Dots','Your last 5 answers on a topic: green right on your own, amber right with help, red wrong.'],
     ['Secure ✓','4 of your last 5 right on your own, on at least 2 different days.'],
@@ -6252,7 +6290,7 @@ function helpPass(){
   ])}</div>
   <div class="panel"><h2>For parents</h2>
     <p>The most useful thing you can ask each day is "Have you done your Daily Case?" It takes about 15 minutes and keeps every topic fresh. The day streak on the Today page shows whether it's happening.</p>
-    <p>The <b>Case file</b> tab shows which topics are secure and which exam slips cost the most marks. It's a good thing to look at together once a week.</p></div>`;
+    <p>The <b>Investigation</b> tab has a weekly report: how much was done, where the marks went (reading, method or accuracy) and a three-step plan for next week. Print it or save it as a PDF, and look at it together once a week.</p></div>`;
 }
 function helpFAQ(){
   const q=[
@@ -6290,7 +6328,7 @@ function renderHelp(){
 const ROLE_LABEL={student:'Student',teacher:'Teacher',schooladmin:'School admin',owner:'Owner'};
 const STRAND_SHORT={'Number':'Number','Algebra':'Algebra','Shape, space and measures':'Shape','Data handling and probability':'Data & prob.'};
 const VIEWS={
-  student:[['today','Today'],['practise','Practise'],['marking','Marking'],['casefile','Case file'],['account','Account'],['help','Help']],
+  student:[['today','Today'],['practise','Practise'],['marking','Marking'],['casefile','Investigation'],['account','Account'],['help','Help']],
   teacher:[['classes','My classes'],['practise','Practise'],['marking','Marking'],['account','Account'],['help','Help']],
   schooladmin:[['school','School licence'],['practise','Practise'],['marking','Marking'],['account','Account'],['help','Help']],
   owner:[['owner','Licences'],['practise','Practise'],['marking','Marking'],['account','Account'],['help','Help']],
@@ -6340,6 +6378,7 @@ async function afterLogin(){
   if(S.user&&(S.user.role==='parent'||back)&&api.mode==='live'){location.replace('/academy/');return}
   S.access=await api.access(S.user);
   S.attempts=await api.attempts(S.user.id);
+  S.invLoaded=false;S.wm=null;S.plan=null;S.invWeek=null;
   S.assignments=S.user.role==='student'?await api.studentAssignments(S.user.id):[];
   S.diags=S.user.role==='student'?await api.diagnostics(S.user.id):[];
   S.prevSession=lastSession(S.attempts); // snapshot at sign-in, so "last time" doesn't change as they answer today
@@ -6656,7 +6695,7 @@ function renderMarking(){
     ${way('surprise','Surprise me','A question from any topic at the level you choose.')}
     ${way('paper','A whole Cold Case paper','Question by question, or photograph every page and have the whole paper marked.')}
   </div>
-  <p class="hint" style="margin-top:14px">Photos of your working are deleted after 7 days. Your marks and feedback stay in your Case file. <a href="../ai-marking.html" style="color:var(--cyan)">How AI marking works</a></p>`;
+  <p class="hint" style="margin-top:14px">Photos of your working are deleted after 7 days. Your marks and feedback feed into your weekly report in the Investigation tab. <a href="../ai-marking.html" style="color:var(--cyan)">How AI marking works</a></p>`;
 }
 
 /* ---------- student: case file ---------- */
@@ -6673,9 +6712,16 @@ function caseFileIntroHTML(compact){
 }
 function renderCasefile(){
   view.className='page';
+  loadInvestigationData();
   const st=statsFrom(S.attempts), ids=Object.keys(st).filter(k=>TOP[k]);
   const A=ids.reduce((s,k)=>s+st[k].a,0), C=ids.reduce((s,k)=>s+st[k].c,0), errs=errorsFrom(S.attempts);
-  let h=`<div><span class="eyebrow">Your case file</span><h1 class="ph">Where your marks are going</h1></div>`;
+  if(!S.invTab) S.invTab='report';
+  const tabs=A?`<div class="chips helptabs noprint" role="tablist"><button class="chip" role="tab" type="button" data-invtab="report" aria-pressed="${S.invTab==='report'}">Weekly report</button><button class="chip" role="tab" type="button" data-invtab="file" aria-pressed="${S.invTab==='file'}">Case file</button></div>`:'';
+  if(A&&S.invTab==='report'){
+    view.innerHTML=`<div class="noprint"><span class="eyebrow">The Investigation</span><h1 class="ph">Your week, investigated</h1></div>${tabs}${weeklyReportHTML()}`;
+    bindCasefile(); return;
+  }
+  let h=`<div><span class="eyebrow">The Investigation</span><h1 class="ph">Where your marks are going</h1></div>${tabs}`;
   if(!A){view.innerHTML=h+caseFileIntroHTML(false)+`<div class="empty"><b>No evidence on file yet</b>Answer a few questions and your case file starts filling in straight away. The quickest start is today's Daily Case: 10 questions picked for you.<div class="row" style="justify-content:center;margin-top:12px"><button class="btn" type="button" data-cfgo="daily">Start today's Daily Case</button><button class="ghost" type="button" data-cfgo="practise">Go to Practise</button></div></div>`;bindCasefile();return}
   const top=ids.filter(k=>TOP[k].grade>=7), tA=top.reduce((s,k)=>s+st[k].a,0), tC=top.reduce((s,k)=>s+st[k].c,0);
   const msum=masterySummary(S.attempts), M=msum.M;
@@ -6708,11 +6754,172 @@ function renderCasefile(){
   $('#reset').onclick=async e=>{const b=e.currentTarget;if(b.dataset.armed){await api.resetMyProgress(S.user.id);S.attempts=[];renderCasefile()}else{b.dataset.armed=1;b.textContent='Tap again to clear every answer'}};
 }
 function bindCasefile(){
+  const sel=view.querySelector('[data-invweeksel]'); if(sel) sel.onchange=()=>{S.invWeek=+sel.value;renderCasefile()};
   view.onclick=e=>{
+    const it=e.target.closest('[data-invtab]'); if(it){S.invTab=it.dataset.invtab;renderCasefile();return}
+    const iw=e.target.closest('[data-invweek]'); if(iw){S.invWeek=+iw.dataset.invweek;renderCasefile();return}
+    if(e.target.closest('[data-invprint]')){window.print();return}
+    const vg=e.target.closest('[data-view-go]'); if(vg){go(vg.dataset.viewGo);return}
     const p=e.target.closest('[data-cfpractise]'); if(p){S.topic=p.dataset.cfpractise;if(S.openStrands&&TOP[S.topic])S.openStrands.add(TOP[S.topic].strand);go('practise');return}
     const g=e.target.closest('[data-cfgo]'); if(g){g.dataset.cfgo==='daily'?startRun('daily'):go('practise');return}
     const i=e.target.closest('[data-cfintro]'); if(i){cfIntroHidden=i.dataset.cfintro==='hide';try{localStorage.setItem('mf-cf-intro',cfIntroHidden?'hidden':'shown')}catch(err){}renderCasefile()}
   };
+}
+
+
+/* ---------- The Investigation: weekly report ----------
+   Built from the student's own evidence: every Lab answer (attempts) and every Forensic Marking report (written_marks).
+   Weeks run Monday to Sunday in the student's time zone, the same week as the marking allowance.
+   Depth by plan: free = this week's summary; Exam Pass, Kit and school = the full report for the last 4 weeks;
+   The Full Investigation (and staff) = every week since the start, plus the week-by-week trend. */
+// What kind of lost mark each logged slip is. R: answered a different question from the one asked.
+// M: the wrong method, or a method step missing. A: the right method, then a slip in carrying it out.
+const RMA_OF={
+  'stopped-early':'R','wrong-direction':'R','reverse-pct':'R','wrong-share':'R','complement':'R','not-probability':'R','median-mean':'R',
+  'wrong-average':'R','wrong-form':'R','not-standard-form':'R','hcf-lcm':'R','no-bounds':'R','swapped':'R','iteration-count':'R','replacement':'R',
+  'sign-error':'A','missed-term':'A','rounding':'A','radians':'A','missed-square':'A','half':'A','no-sqrt':'A','not-simplified':'A','bounds-half':'A',
+};
+const rmaOf=id=>RMA_OF[id]||'M';
+const RMA_NAME={R:'Reading',M:'Method',A:'Accuracy'};
+const RMA_HOW={
+  R:'Answering a different question from the one asked. Underline what the question wants, and re-read it before writing the answer.',
+  M:'The wrong method, or a method step missing. Write the method down every time, even when it feels obvious.',
+  A:'The right method, then a slip: a sign, a rounding, a missed square. Check each answer by estimating or substituting back.',
+};
+const weekStartOf=(d=new Date())=>{const x=new Date(d.getFullYear(),d.getMonth(),d.getDate());x.setDate(x.getDate()-((x.getDay()+6)%7));return x};
+const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+const fmtWkDay=(d,y)=>d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',...(y?{year:'numeric'}:{})});
+const tsOf=x=>new Date(x.created_at).getTime();
+
+function weekReport(attempts,wm,ws){
+  const we=addDays(ws,7), t0=ws.getTime(), t1=we.getTime();
+  const inWk=x=>{const t=tsOf(x);return t>=t0&&t<t1};
+  const A=attempts.filter(inWk);
+  const M0=masteryMap(attempts.filter(x=>tsOf(x)<t0),t0), M1=masteryMap(attempts.filter(x=>tsOf(x)<t1),Math.min(t1,Date.now()));
+  const isSec=(M,k)=>!!(M[k]&&M[k].state==='secure');
+  const newly=Object.keys(M1).filter(k=>TOP[k]&&isSec(M1,k)&&!isSec(M0,k));
+  const slipped=Object.keys(M0).filter(k=>TOP[k]&&isSec(M0,k)&&!isSec(M1,k));
+  const byTopic={}; A.forEach(x=>{if(!TOP[x.topic])return;const t=byTopic[x.topic]||(byTopic[x.topic]={a:0,c:0});t.a++;if(x.correct)t.c++});
+  const topics=Object.entries(byTopic).map(([k,v])=>({k,...v,p:v.c/v.a}));
+  const strong=topics.filter(t=>t.a>=3&&t.p>=.75&&!newly.includes(t.k)).sort((a,b)=>b.p-a.p||b.a-a.a);
+  const weak=topics.filter(t=>t.a>=2&&t.p<.6&&!slipped.includes(t.k)).sort((a,b)=>a.p-b.p||b.a-a.a);
+  // Lost marks by kind. Typed answers count when the wrong answer matched a known slip; written answers use Forensic Marking's diagnosis.
+  const W=(wm||[]).filter(x=>x.status==='marked'&&inWk(x));
+  const rma={R:0,M:0,A:0}, slips={};
+  A.forEach(x=>{if(x.correct||!x.error_id||x.source==='written'||!ERR[x.error_id])return;rma[rmaOf(x.error_id)]++;slips[x.error_id]=(slips[x.error_id]||0)+1});
+  let unprot=0, gap=0;
+  W.forEach(x=>{
+    const rc=x.rc||{}, lost=(x.max_marks||0)>(x.score||0);
+    if(lost){const k=rc.category&&rma[rc.category]!=null?rc.category:(rc.error_id&&ERR[rc.error_id]?rmaOf(rc.error_id):null);if(k)rma[k]++;if(rc.error_id&&ERR[rc.error_id])slips[rc.error_id]=(slips[rc.error_id]||0)+1}
+    if(x.unprot) unprot++;
+    if(typeof x.board==='number'&&x.board>(x.score||0)) gap+=x.board-(x.score||0);
+  });
+  const C=A.filter(x=>x.correct).length;
+  return {ws,we,A,n:A.length,C,days:new Set(A.map(x=>dayKey(x.created_at))).size,newly,slipped,strong,weak,topics,rma,
+    diagnosed:rma.R+rma.M+rma.A,wrong:A.length-C,slips:Object.entries(slips).sort((a,b)=>b[1]-a[1]),
+    fm:{n:W.length,score:W.reduce((s,x)=>s+(x.score||0),0),max:W.reduce((s,x)=>s+(x.max_marks||0),0),unprot,gap},
+    secure:Object.keys(M1).filter(k=>TOP[k]&&isSec(M1,k)).length,M1};
+}
+function weekHeadline(r,prev,current){
+  if(!r.n) return current?'No evidence on file yet this week. Ten minutes of Daily Case today starts the report.':'No questions answered this week.';
+  const acc=pct(r.C,r.n);
+  const lead=r.days>=4?'A strong week':r.days>=2?'A steady week':'A light week';
+  let s=`${lead}: ${r.n} question${r.n===1?'':'s'} on ${r.days} day${r.days===1?'':'s'}, with full marks on ${acc}%`;
+  if(prev&&prev.n>=5&&r.n>=5){const d=acc-pct(prev.C,prev.n);s+=d>=3?` (up ${d} points on the week before)`:d<=-3?` (down ${-d} points on the week before)`:' (about the same as the week before)'}
+  s+=r.newly.length?`. ${r.newly.length} topic${r.newly.length===1?' is':'s are'} newly secure.`:'.';
+  if(r.diagnosed>=3){const top=['R','M','A'].sort((a,b)=>r.rma[b]-r.rma[a])[0];s+=` Most of the marks we could trace were lost to ${RMA_NAME[top].toLowerCase()}.`}
+  return s;
+}
+function weekPlan(r,tier){
+  const out=[], nm=k=>TOP[k].name, M=masteryMap(S.attempts);
+  if(r.weak[0]){const t=r.weak[0];out.push({tag:'Weak topic',cls:'lo',k:t.k,b:nm(t.k),t:`${t.c} out of ${t.a} right this week. Read the briefing, practise until it feels easy, then close the case with a Topic check.`})}
+  if(r.slips[0]){const [id,n]=r.slips[0];const ts=r.A.filter(x=>x.error_id===id&&TOP[x.topic]).map(x=>x.topic);out.push({tag:'Exam habit',cls:'mid',k:ts[0],b:`${ERR[id][0]} (×${n})`,t:ERR[id][1]})}
+  if(r.fm.unprot) out.push({tag:'Show the method',cls:'mid',b:`${r.fm.unprot} marked answer${r.fm.unprot===1?'':'s'} with no method shown`,t:'A bare answer can lose every mark if it is wrong, and sometimes even when it is right. Write one line of method for every question.'});
+  const due=Object.keys(M).filter(k=>TOP[k]&&M[k].due).sort((a,b)=>M[a].lastCorrect-M[b].lastCorrect);
+  if(due[0]&&out.length<3) out.push({tag:'Review due',k:due[0],b:nm(due[0]),t:'Secure, but not practised for a while. A few questions keep it in memory.'});
+  if(r.slipped[0]&&out.length<3) out.push({tag:'Slipped',cls:'lo',k:r.slipped[0],b:nm(r.slipped[0]),t:'This topic was secure but recent answers have gone wrong. Re-read the briefing and win it back.'});
+  if(r.days<4&&out.length<3) out.push({tag:'Routine',b:'Four days of Daily Case',t:'About 15 minutes a day. Little and often keeps every topic fresh, and it builds the day streak.'});
+  if(!r.fm.n&&out.length<3) out.push({tag:'Forensic Marking',b:'Have one written answer marked',t:'Pick a grade 7–9 question, write out the full method and have every line marked.'});
+  return out.slice(0,3);
+}
+// how far back each plan can look
+function invTier(){
+  if(!S.access||S.access.level!=='full') return 'free';
+  if(S.access.source==='staff') return 'investigation';
+  if(S.access.source==='school') return 'pass';
+  return S.plan||'pass';
+}
+function invWeeks(tier){
+  const now=weekStartOf();
+  const first=S.attempts.length?weekStartOf(new Date(S.attempts[0].created_at)):now;
+  const out=[]; for(let w=now;w>=first&&out.length<104;w=addDays(w,-7)) out.push(w);
+  if(!out.length) out.push(now);
+  return tier==='free'?out.slice(0,1):tier==='investigation'?out:out.slice(0,4);
+}
+async function loadInvestigationData(){
+  if(S.invLoaded) return;
+  S.invLoaded=true;
+  try{S.wm=await api.writtenMarks(S.user.id)}catch(e){S.wm=[]}
+  if(S.access&&S.access.level==='full'&&S.access.source==='pass'&&!S.plan){try{S.plan=await api.plan()}catch(e){}}
+  if(S.view==='casefile'&&S.invTab!=='file') renderCasefile();
+}
+const RMA_CLS={R:'r',M:'m',A:'a'};
+function weeklyReportHTML(){
+  const tier=invTier(), weeks=invWeeks(tier), wm=S.wm||[];
+  if(!S.invWeek||!weeks.some(w=>w.getTime()===S.invWeek)) S.invWeek=weeks[0].getTime();
+  const ws=new Date(S.invWeek), current=ws.getTime()===weekStartOf().getTime();
+  const r=weekReport(S.attempts,wm,ws), prev=weekReport(S.attempts,wm,addDays(ws,-7));
+  const full=tier!=='free', plan=weekPlan(r,tier), nm=k=>TOP[k].name;
+  const kpis=`<div class="rkpis wkk">
+    <div><b>${r.n}</b><span>Questions answered</span></div>
+    <div><b>${r.days} / 7</b><span>Days active</span></div>
+    <div><b>${r.n?pct(r.C,r.n)+'%':'—'}</b><span>Full marks</span></div>
+    <div><b>${r.secure}</b><span>Topics secure${r.newly.length?` (+${r.newly.length} this week)`:''}</span></div></div>`;
+  const planHTML=items=>items.length?`<ol class="wkplan">${items.map(m=>`<li><span class="rpill ${m.cls||''}">${m.tag}</span><div><b>${m.b}</b><p>${m.t}</p></div>${m.k&&TOP[m.k]?`<button class="ghost sm noprint" type="button" data-cfpractise="${m.k}">Practise</button>`:''}</li>`).join('')}</ol>`:'<p class="hint">Nothing pressing. Keep the routine going.</p>';
+  let h=`<div class="row noprint wktools">
+      ${weeks.length>1?`<div class="chips">${weeks.slice(0,tier==='investigation'?8:4).map((w,i)=>`<button class="chip" type="button" data-invweek="${w.getTime()}" aria-pressed="${w.getTime()===S.invWeek}">${i===0?'This week':i===1?'Last week':'w/c '+w.toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</button>`).join('')}</div>`:''}
+      ${tier==='investigation'&&weeks.length>8?`<select class="inp sm" data-invweeksel>${weeks.map(w=>`<option value="${w.getTime()}" ${w.getTime()===S.invWeek?'selected':''}>Week of ${fmtWkDay(w,1)}</option>`).join('')}</select>`:''}
+      <button class="ghost sm" type="button" data-invprint>Print or save as PDF</button></div>
+  <div class="rpaper wkrep">
+    <div class="rhead"><div class="rkick">The Investigation · Weekly report</div><h2>${esc(S.user.name||'Your report')}</h2>
+      <p class="rsub">${fmtWkDay(ws)} – ${fmtWkDay(addDays(ws,6))} ${addDays(ws,6).getFullYear()}${current?' · this week so far':''}</p><div class="rbrand">MATHS FORENSICS</div></div>
+    <p class="wkverdict">${weekHeadline(r,prev,current)}</p>
+    ${kpis}`;
+  if(!full){
+    h+=`<h3>Next week's first move</h3>${planHTML(plan.slice(0,1))}
+    <div class="wklock"><b>The full weekly report comes with the Exam Pass</b>
+      <p>Where the marks went (reading, method or accuracy), which topics moved up or slipped, the exam habits costing marks, a three-step plan for next week, and your last four weeks to compare.</p>
+      <button class="btn sm noprint" type="button" data-view-go="account">See the Exam Pass</button></div>`;
+  } else {
+    const mx=Math.max(1,r.rma.R,r.rma.M,r.rma.A);
+    h+=`<h3>Where the marks went</h3>
+    ${r.diagnosed?`<div class="wkrma">${['R','M','A'].map(k=>`<div class="wkrow"><span class="wklab">${RMA_NAME[k]}</span><span class="wktrack"><i class="${RMA_CLS[k]}" style="width:${r.rma[k]?Math.max(6,100*r.rma[k]/mx):0}%"></i></span><span class="wknum">${r.rma[k]}</span><span class="wkhow">${RMA_HOW[k]}</span></div>`).join('')}</div>
+      <p class="hint">Based on ${r.diagnosed} lost mark${r.diagnosed===1?'':'s'} we could trace to a cause${r.wrong>r.diagnosed?`. ${r.wrong-r.diagnosed} other wrong answer${r.wrong-r.diagnosed===1?' didn\'t':'s didn\'t'} match a known slip`:''}. Across 280 marked GCSE scripts, reading caused 42% of avoidable lost marks, method 24% and accuracy 34%.</p>`
+      :`<p class="hint">${r.wrong?`${r.wrong} wrong answer${r.wrong===1?'':'s'}, but none matched a known slip. Forensic Marking traces the cause of every lost mark in written work.`:'No lost marks to trace this week.'}</p>`}
+    <div class="rtwo"><div><h3>Going well</h3>${r.newly.length||r.strong.length?`<ul class="rlist">${r.newly.map(k=>`<li><b>${nm(k)}</b> ✓ newly secure</li>`).join('')}${r.strong.slice(0,4).map(t=>`<li>${nm(t.k)}: ${t.c} of ${t.a} right</li>`).join('')}</ul>`:'<p class="hint">No topic with 3 or more answers at 75% yet this week.</p>'}</div>
+      <div><h3>Needs work</h3>${r.weak.length||r.slipped.length?`<ul class="rlist">${r.slipped.map(k=>`<li><b>${nm(k)}</b>: was secure, now slipping</li>`).join('')}${r.weak.slice(0,4).map(t=>`<li>${nm(t.k)}: ${t.c} of ${t.a} right</li>`).join('')}</ul>`:'<p class="hint">No weak topics showed up this week.</p>'}</div></div>
+    <h3>Forensic Marking</h3>
+    ${r.fm.n?`<p><b>${r.fm.n} written answer${r.fm.n===1?'':'s'} marked</b>, scoring ${r.fm.score} out of ${r.fm.max} marks (${pct(r.fm.score,r.fm.max)}%).${r.fm.unprot?` ${r.fm.unprot} had no method shown.`:''}${r.fm.gap?` An exam board might have given ${r.fm.gap} more mark${r.fm.gap===1?'':'s'} for bare answers. Those are marks at risk: one wrong answer with no method scores nothing.`:''}</p>`
+      :`<p class="hint">No written answers marked this week. Forensic Marking checks every line of working and finds exactly where marks are lost.</p>`}
+    ${r.slips.length?`<h3>Exam habits that cost marks</h3><table class="rtable small wkslips"><tr><th>Habit</th><th>Kind</th><th class="num">Times</th><th>How to fix it</th></tr>${r.slips.slice(0,4).map(([id,n])=>`<tr><td><b>${ERR[id][0]}</b></td><td>${RMA_NAME[rmaOf(id)]}</td><td class="num">${n}</td><td>${ERR[id][1]}</td></tr>`).join('')}</table>`:''}
+    <h3>Next week's case plan</h3>${planHTML(plan)}`;
+    if(tier==='investigation'){
+      const hist=weeks.slice(0,12).reverse().map(w=>({w,r:weekReport(S.attempts,wm,w)}));
+      const bw=40, gap=14, H=110, W=hist.length*(bw+gap);
+      h+=`<h3>Your investigation so far</h3>
+      <figure class="rchart"><figcaption>Full marks each week (%)</figcaption>
+      <svg viewBox="0 0 ${W} ${H+34}" role="img" aria-label="Full marks each week">
+        <line class="rbase" x1="0" y1="${H}" x2="${W}" y2="${H}"/>
+        ${hist.map((x,i)=>{const p=x.r.n?pct(x.r.C,x.r.n):0,bh=x.r.n?Math.max(2,H*p/100):0,X=i*(bw+gap)+gap/2;return `<rect class="rbar" x="${X}" y="${H-bh}" width="${bw}" height="${bh}" rx="3"/>${x.r.n?`<text class="rval" x="${X+bw/2}" y="${H-bh-4}" text-anchor="middle">${p}</text>`:''}<text class="rax" x="${X+bw/2}" y="${H+14}" text-anchor="middle">${x.w.toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</text><text class="rax" x="${X+bw/2}" y="${H+27}" text-anchor="middle">${x.r.n} q</text>`}).join('')}
+      </svg></figure>
+      <table class="rtable small"><tr><th>Week of</th><th class="num">Questions</th><th class="num">Days</th><th class="num">Full marks</th><th class="num">Reading</th><th class="num">Method</th><th class="num">Accuracy</th><th class="num">Secure</th></tr>
+      ${hist.slice().reverse().map(x=>`<tr><td>${fmtWkDay(x.w)}</td><td class="num">${x.r.n}</td><td class="num">${x.r.days}</td><td class="num">${x.r.n?pct(x.r.C,x.r.n)+'%':'—'}</td><td class="num">${x.r.rma.R}</td><td class="num">${x.r.rma.M}</td><td class="num">${x.r.rma.A}</td><td class="num">${x.r.secure}</td></tr>`).join('')}</table>`;
+    } else {
+      h+=`<p class="hint noprint wkmore">The week-by-week trend since your first answer comes with The Full Investigation.</p>`;
+    }
+  }
+  h+=`<div class="rfoot">Every answer in the Maths Forensics Lab is evidence. This report uses ${r.n} answer${r.n===1?'':'s'}${r.fm.n?` and ${r.fm.n} marked written answer${r.fm.n===1?'':'s'}`:''} from this week. Generated ${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}.</div></div>`;
+  return h;
 }
 
 /* ---------- account ---------- */
