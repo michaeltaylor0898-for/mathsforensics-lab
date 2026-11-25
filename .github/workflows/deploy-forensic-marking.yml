@@ -33,7 +33,7 @@ jobs:
         with: { deno-version: v2.x }
       - name: Check the mark schemes (paper totals, keywords, clues)
         working-directory: supabase/functions/mark-written
-        run: deno test --no-check marking_test.ts
+        run: deno test --no-check marking_test.ts mock_test.ts
       - name: Deploy mark-written
         if: env.SUPABASE_ACCESS_TOKEN != ''
         run: |

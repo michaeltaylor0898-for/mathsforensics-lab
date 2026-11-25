@@ -139,6 +139,15 @@ h1{font-family:var(--f-display);font-weight:600;font-size:clamp(22px,4.5vw,30px)
 .ptable .sc{font-family:var(--f-mono);font-weight:700;white-space:nowrap}
 .ptable .full{color:var(--good)}.ptable .some{color:var(--cyan)}.ptable .none{color:var(--bad)}.ptable .miss{color:var(--muted)}
 .bars{display:grid;gap:8px;margin-top:10px}
+.mockform{display:grid;grid-template-columns:2fr 1fr;gap:10px;margin:10px 0 12px}
+.mockform label{display:grid;gap:4px;font-size:13px;color:var(--muted)}
+.mockform input{background:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px 12px;color:var(--text);font:inherit;font-size:15px}
+.mkh{font-family:var(--f-display);font-size:16px;margin:22px 0 8px}
+.bar span small{display:block;font-size:11.5px;color:var(--muted)}
+.bar.avoid div i{background:var(--good)}
+.mkplan{padding-left:20px;display:grid;gap:12px}.mkplan p{margin:2px 0 10px;color:var(--muted);font-size:14px}.mkplan .btn{display:inline-block}
+@media (max-width:600px){.mockform{grid-template-columns:1fr}.bar{grid-template-columns:110px 1fr 32px}.mockrep .ptable td:nth-child(5),.mockrep .ptable th:nth-child(5){display:none}}
+@media print{body{background:#fff;color:#000}header,#chooser,.back,[data-mkprint]{display:none!important}}
 .bar{display:grid;grid-template-columns:150px 1fr 40px;gap:10px;align-items:center;font-size:14px}
 .bar div{height:10px;border-radius:5px;background:var(--line);overflow:hidden}.bar div i{display:block;height:100%;background:var(--cyan)}
 @media (max-width:520px){.bar{grid-template-columns:110px 1fr 34px}}
@@ -305,6 +314,7 @@ summary{cursor:pointer;font-weight:600}
 </div>
 
 <section id="paperRun" hidden aria-live="polite"></section>
+<section id="mockRun" hidden aria-live="polite"></section>
 <div class="mike" id="mike" hidden>
   <div class="bubble" id="mikeBubble" role="status" aria-live="polite" hidden></div>
   <button class="mikebtn" id="mikeBtn" aria-label="Mike: tap to see what he noticed">
@@ -314,6 +324,7 @@ summary{cursor:pointer;font-weight:600}
   <span class="mlabel" id="mikeLabel">MIKE</span>
 </div>
 <input type="file" id="pageFiles" accept="image/*" multiple hidden>
+<input type="file" id="mockFiles" accept="image/*" multiple hidden>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
@@ -393,7 +404,7 @@ function prepare(){
     const f=qnum(q)/(last[p]||1);q.level=f<=.34?'e':f<=.67?'m':'h'});
   S.papers=[...new Set(S.questions.map(q=>q.source?.paper).filter(p=>p&&!/^CF-/.test(p)))].sort((a,b)=>paperName(a).localeCompare(paperName(b)));
 }
-const V={way:(()=>{const w=new URLSearchParams(location.search).get('way');return ['topic','surprise','paper','mine'].includes(w)?w:'topic'})(),topic:null,paper:null,pool:null,poolName:''};
+const V={way:(()=>{const w=new URLSearchParams(location.search).get('way');return ['topic','surprise','paper','mock','mine'].includes(w)?w:'topic'})(),topic:null,paper:null,pool:null,poolName:''};
 const SHEET=(()=>{const c=(new URLSearchParams(location.search).get('sheet')||'').toUpperCase();return /^CF-[A-Z-]+$/.test(c)?c:null})();if(SHEET){V.way='paper';V.paper=SHEET}
 function pick(pool){const fresh=pool.filter(q=>!seen.has(q.id)&&q!==S.q);const from=fresh.length?fresh:pool.filter(q=>q!==S.q);const list=from.length?from:pool;return list[Math.floor(Math.random()*list.length)]}
 function levelButtons(pool,attr){
@@ -403,7 +414,7 @@ function levelButtons(pool,attr){
 }
 function renderChooser(){
   const c=$('#chooser');
-  const tabs=`<div class="ways" role="tablist">${[['topic','By topic'],['surprise','Surprise me'],['paper','Full paper'],['mine','My reports']].map(([k,t])=>`<button role="tab" data-way="${k}" aria-selected="${V.way===k}">${t}</button>`).join('')}</div>`;
+  const tabs=`<div class="ways" role="tablist">${[['topic','By topic'],['surprise','Surprise me'],['paper','Full paper'],['mock','School mock'],['mine','My reports']].map(([k,t])=>`<button role="tab" data-way="${k}" aria-selected="${V.way===k}">${t}</button>`).join('')}</div>`;
   let body='';
   if(V.way==='topic'&&!V.topic){
     const have={};S.questions.forEach(q=>{have[q.topic]=(have[q.topic]||0)+1});
@@ -420,6 +431,8 @@ function renderChooser(){
   }else if(V.way==='mine'){
     body=`<p class="hint">Every question you've had marked, newest first. Tap one to see its case report again.</p><div class="reports" id="myReports"><p class="hint">Loading…</p></div>`;
     setTimeout(loadMyReports);
+  }else if(V.way==='mock'){
+    body=mockPane();setTimeout(loadMocks);
   }else if(!V.paper){
     body=`<p class="hint">Work through a Cold Case paper question by question.</p><div class="papers">${S.papers.map(p=>{const qs=S.questions.filter(q=>q.source?.paper===p);const calc=qs[0]?.calculator;
       return `<button class="paper" data-paper="${esc(p)}"><b>${esc(paperName(p))}</b><span>${calc?'Calculator':'Non-calculator'} · ${qs.reduce((a,q)=>a+q.marks,0)} marks · ${qs.filter(q=>seen.has(q.id)).length}/${qs.length} parts tried</span></button>`}).join('')}</div>`;
@@ -472,6 +485,8 @@ $('#chooser').addEventListener('click',e=>{const t=e.target.closest('button');if
   if(d.q){show(S.questions.find(q=>q.id===d.q),null,'');renderChooser();return}
   if(d.wholepaper){openPaperRun(V.paper);return}
   if(d.example){showExample();return}
+  if(d.mockstart){MK.label=$('#mkLabel').value.trim();MK.max=$('#mkMax').value.replace(/\D/g,'');MK.id=null;MK.pages=[];MK.report=null;openMock();return}
+  if(d.mockrep){const row=(MK.list||[]).find(x=>x.id===d.mockrep);if(row){MK.report={...row.result,mock:row.id};openMock()}return}
   if(d.rep){const row=MY.find(x=>x.id===d.rep),q=row&&S.questions.find(x=>x.id===row.question_id);if(!q)return;
     show(q,null,'');renderReport({...row.result,mark_id:row.id,question:q});S.markedFor=workSig();updateSubmit();$('#report').scrollIntoView({behavior:'smooth',block:'start'});return}
 });
@@ -733,6 +748,117 @@ function paperReport(){
     <p class="foot">Tap a question to see its full case report. AI marking can get things wrong: dispute any mark from its report. Photos are deleted after 7 days.</p></div>`;
 }
 
+
+/* ---------- Mock autopsy (The Full Investigation) ----------
+   A school mock the teacher has already marked: photograph every page, we read the teacher's marks and say why every
+   lost mark was lost (reading, method, accuracy, knowledge, not attempted), then build the Mock analysis report. */
+const MK={id:null,label:'',max:'',pages:[],busy:false,report:null,list:null};
+const MCAUSE={R:'Reading',M:'Method',A:'Accuracy',K:'Knowledge',N:'Not attempted'};
+const MCAUSE_HOW={R:'Answered a different question, or missed a key word',M:'Working missing or unclear, so method marks were lost',A:'Right method, then a slip',K:'Didn\'t know the method yet',N:'Left blank'};
+function mockPane(){
+  return `<p class="hint">Had a mock marked by your teacher? Photograph every page and we'll find where every lost mark went: reading, method, accuracy, knowledge or time. We read your teacher's marks; we don't re-mark the paper. Part of The Full Investigation.</p>
+    <div class="mockform"><label>Which paper?<input id="mkLabel" maxlength="80" placeholder="e.g. Edexcel Higher Paper 1, November mock" value="${esc(MK.label)}"></label>
+    <label>Total marks (optional)<input id="mkMax" inputmode="numeric" maxlength="3" placeholder="80" value="${esc(MK.max)}"></label></div>
+    <button class="btn" data-mockstart="1">Add the pages</button>
+    <h3 class="mkh">Your mock reports</h3><div class="reports" id="mockList"><p class="hint">Loading…</p></div>`;
+}
+async function loadMocks(){
+  const box=$('#mockList');if(!box)return;
+  await who();
+  if(!sb||!S.session){box.innerHTML='<p class="hint"><a href="../lab/" style="color:var(--cyan)">Sign in to the Lab</a> to see your mock reports.</p>';return}
+  const {data,error}=await sb.from('written_marks').select('id,status,score,max_marks,created_at,result').eq('question_id','MOCK').eq('status','mock').order('created_at',{ascending:false}).limit(20);
+  if(error){box.innerHTML=`<p class="hint">Couldn't load your mock reports: ${esc(error.message)}</p>`;return}
+  MK.list=data||[];
+  box.innerHTML=MK.list.length?MK.list.map(r=>`<button class="rep" data-mockrep="${r.id}"><b>${esc(r.result?.label||'School mock')}</b><span class="sc">${r.score??'–'}/${r.max_marks??'–'}</span><span>${new Date(r.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})} · ${r.result?.recoverable??0} marks recoverable</span></button>`).join(''):'<p class="hint">No mocks analysed yet.</p>';
+}
+function openMock(){
+  $('#chooser').hidden=true;$('#work').hidden=true;$('#paperRun').hidden=true;$('#mockRun').hidden=false;renderMock();
+  $('#mockRun').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function renderMock(){
+  const box=$('#mockRun');
+  if(MK.report){box.innerHTML=`<button class="back" data-mockclose="1">← Back</button>`+mockReportHTML(MK.report);return}
+  const thumbs=MK.pages.map((pg,i)=>`<div class="pg"><img src="${pg.src}" alt="Page ${i+1}"><span>${i+1}${pg.state==='done'?' ✓':''}</span>${pg.state?'':`<button data-mkrm="${i}" aria-label="Remove page ${i+1}">×</button>`}</div>`).join('');
+  box.innerHTML=`<button class="back" data-mockclose="1">← Back</button>
+    <div class="card"><h2>Mock autopsy</h2><p class="hint">${esc(MK.label||'School mock')}. Add a clear photo of every page, in order, with your teacher's marks visible. Flat page, good light, the whole page in the picture.</p>
+    <div class="pages">${thumbs}<label class="pg add" for="mockFiles">+ Add page photos</label></div>
+    <div class="submit" style="margin-top:4px"><button class="btn" id="mkGo" ${MK.busy||!MK.pages.some(p=>!p.state)?'disabled':''}>${MK.pages.some(p=>p.state)?'Read the new pages':'Read my mock'}</button>
+    ${MK.pages.some(p=>p.state==='done')&&!MK.busy?'<button class="btn ghost" id="mkFinish">Build my report</button>':''}
+    <span class="hint" id="mkStatus">${MK.busy?'Reading… keep this page open.':MK.pages.length?'':'Nothing added yet.'}</span></div>
+    <ul class="prog">${MK.pages.filter(p=>p.log).map(p=>`<li><i>Page ${MK.pages.indexOf(p)+1}</i><span>${p.log}</span></li>`).join('')}</ul></div>`;
+}
+$('#mockFiles').onchange=async e=>{
+  for(const f of e.target.files){
+    const bmp=await createImageBitmap(f,{imageOrientation:'from-image'}).catch(()=>null);if(!bmp)continue;
+    const long=2000,k=Math.min(1,long/Math.max(bmp.width,bmp.height)),c=document.createElement('canvas');
+    c.width=bmp.width*k;c.height=bmp.height*k;c.getContext('2d').drawImage(bmp,0,0,c.width,c.height);
+    let src=c.toDataURL('image/jpeg',.82);if(src.length>3.6e6)src=c.toDataURL('image/jpeg',.6);
+    MK.pages.push({src,state:null,log:''});
+  }
+  e.target.value='';renderMock();
+};
+$('#mockRun').addEventListener('click',async e=>{
+  const t=e.target.closest('button');if(!t)return;
+  if(t.dataset.mkrm){MK.pages.splice(+t.dataset.mkrm,1);renderMock();return}
+  if(t.dataset.mockclose){$('#mockRun').hidden=true;$('#chooser').hidden=false;MK.report=null;V.way='mock';renderChooser();return}
+  if(t.id==='mkGo'){runMock();return}
+  if(t.id==='mkFinish'){finishMock();return}
+  if(t.dataset.mkprint){window.print();return}
+});
+async function runMock(){
+  await who();
+  if(!S.session){$('#mkStatus').innerHTML='<a href="../lab/" style="color:var(--cyan)">Sign in to the Lab</a> first, then come back here.';return}
+  MK.busy=true;renderMock();
+  try{
+    if(!MK.id){const j=await post({action:'mock_start',label:MK.label,max:MK.max||null});MK.id=j.mock}
+    for(const pg of MK.pages){
+      if(pg.state)continue;
+      pg.state='busy';pg.log='Reading the marks…';renderMock();
+      const r=await post({action:'mock_page',mock:MK.id,image:pg.src});
+      pg.state='done';
+      pg.log=!r.readable?'Couldn\'t read this page. Take the photo again, flat and in good light, and add it.'
+        :!r.items.length?'No questions found on this page.'
+        :`Found ${r.items.map(i=>'Q'+esc(i.q)).join(', ')}.${r.marked?'':' No teacher marks seen on this page.'}`;
+      renderMock();
+    }
+  }catch(err){
+    MK.busy=false;MK.pages.forEach(p=>{if(p.state==='busy'){p.state=null;p.log=''}});renderMock();
+    $('#mkStatus').innerHTML=`<span class="err">${esc(err.message)}</span>`;if(err.status===410)MK.id=null;return;
+  }
+  MK.busy=false;await finishMock();
+}
+async function finishMock(){
+  MK.busy=true;renderMock();$('#mkStatus').textContent='Building your report…';
+  try{MK.report=await post({action:'mock_finish',mock:MK.id})}
+  catch(err){MK.busy=false;renderMock();$('#mkStatus').innerHTML=`<span class="err">${esc(err.message)}</span>`;return}
+  MK.busy=false;renderMock();$('#mockRun').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function mockReportHTML(r){
+  const pct=r.pct??0,col=pct>=70?'var(--good)':pct>=40?'var(--cyan)':'var(--bad)';
+  const lostTotal=r.lost_total||0, causes=Object.keys(MCAUSE).filter(c=>r.lost?.[c]).sort((a,b)=>r.lost[b]-r.lost[a]);
+  const bars=causes.map(c=>`<div class="bar ${['R','M','A'].includes(c)?'avoid':''}"><span>${MCAUSE[c]}<small>${MCAUSE_HOW[c]}</small></span><div><i style="width:${Math.round(100*r.lost[c]/Math.max(1,lostTotal))}%"></i></div><b>${r.lost[c]}</b></div>`).join('');
+  const rows=(r.items||[]).map(i=>{const lost=(i.lost||[]).map(l=>`${MCAUSE[l.cause]} ${l.n}`).join(', ');
+    const sc=i.awarded===null||i.available===null?'–':`${i.awarded}/${i.available}`,cls=i.awarded===null?'miss':i.awarded===i.available?'full':i.awarded===0?'none':'some';
+    return `<tr><td>Q${esc(i.q)}</td><td>${esc(TOP[i.topic]?.name||'Other')}</td><td class="sc ${cls}">${sc}</td><td>${esc(lost||(i.awarded===null?'Mark not found':'Full marks'))}</td><td>${esc(i.note||'')}</td></tr>`}).join('');
+  return `<div class="card mockrep"><div class="eyebrow">Mock analysis · ${esc(r.label||'School mock')}</div>
+    <div class="verdict" style="margin-top:10px"><div class="ring" style="--p:${pct};--c:${col}"><b>${pct}%</b></div>
+    <div><span class="eyebrow">Your teacher's marks</span><p>${r.score} out of ${r.max} marks.${r.recoverable?` <b>${r.recoverable} more could be recovered without learning new maths</b>, taking you to ${r.recoverable_pct}%.`:''}</p></div></div>
+    ${r.unmarked?`<div class="notice">We couldn't read your teacher's mark for ${r.unmarked} part${r.unmarked>1?'s':''}. ${r.unmarked>1?'They aren\'t':'It isn\'t'} counted. Add a clearer photo of ${r.unmarked>1?'those pages':'that page'} to include ${r.unmarked>1?'them':'it'}.</div>`:''}
+    ${lostTotal?`<div class="sect"><h3>Where the ${lostTotal} lost marks went</h3><div class="bars">${bars}</div><p class="hint">Reading, method and accuracy are avoidable: the maths was within reach. Across 280 marked GCSE scripts, a third of lost marks were avoidable.</p></div>`:''}
+    ${r.topics?.length?`<div class="sect"><h3>Topics that cost the most</h3><ol>${r.topics.map(t=>`<li>${esc(t.name)}: ${t.lost} mark${t.lost>1?'s':''}${t.avoidable?` (${t.avoidable} avoidable)`:''}</li>`).join('')}</ol></div>`:''}
+    ${r.plan?.length?`<div class="sect"><h3>Your recovery plan</h3><ol class="mkplan">${r.plan.map(p=>`<li><b>${esc(p.title)}</b><p>${esc(p.text)}</p>${p.topic?`<a class="btn ghost small" href="../lab/">Practise in the Lab</a>`:''}</li>`).join('')}</ol></div>`:''}
+    <table class="ptable"><thead><tr><th>Q</th><th>Topic</th><th>Mark</th><th>Lost to</th><th>Finding</th></tr></thead><tbody>${rows}</tbody></table>
+    <p class="foot">We read your teacher's marks and don't change them. AI can misread handwriting: check anything surprising against your script. Each part is added to your Lab evidence, so next week's Investigation report tracks these topics. Photos are deleted after 7 days.</p>
+    <button class="btn ghost" data-mkprint="1">Print or save as PDF</button></div>`;
+}
+// A report opened from the Lab's weekly report: ?mock=<id>
+const MOCK_LINK=(()=>{const m=new URLSearchParams(location.search).get('mock');return /^[0-9a-f-]{36}$/.test(m||'')?m:null})();
+async function openMockLink(){
+  await who();if(!sb||!S.session)return;
+  const {data}=await sb.from('written_marks').select('id,score,max_marks,result').eq('id',MOCK_LINK).eq('status','mock').maybeSingle();
+  if(data){MK.report={...data.result,mock:data.id};openMock()}
+}
+
 /* ---------- Mike mode ----------
    After each pause in writing (2.5 s with the pen up), the working so far goes to Mike's fast checker. He answers with
    a light (green / amber / red) and a short warning at the step where students usually slip, never the answer.
@@ -857,7 +983,7 @@ const SAMPLE={status:'marked',unprotected:null,score:2,max:5,mark_id:null,questi
   fix:['Half of +8 is +4, so start with (x + 4)² − 16 − 4 = 0.','That gives (x + 4)² = 20, so x + 4 = ±√20.','Take away 4: x = −4 ± √20 = −4 ± 2√5.','Check: expand (x + 4)² in your head. Does it give +8x?']};
 function showExample(){V.pool=null;S.q=Object.assign({level:'h'},FALLBACK[0]);$('#work').hidden=false;$('#chooser').hidden=true;renderQ();clearPad();clearPhoto();renderReport(SAMPLE);S.markedFor='example';updateSubmit();$('#report').scrollIntoView({behavior:'smooth',block:'start'})}
 
-who();loadQuestions();sizePad();
+who();loadQuestions();sizePad();if(MOCK_LINK)openMockLink();
 </script>
 </body>
 </html>

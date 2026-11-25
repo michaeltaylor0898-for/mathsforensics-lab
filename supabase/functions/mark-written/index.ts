@@ -8,6 +8,9 @@
 //   POST {action:"paper_start", paper}   -> whole-paper marking: opens a run (Exam Season Kit: 1 paper; Full Investigation: PAPERS_WEEKLY a week)
 //   POST {action:"detect", run, image}   -> which question parts have working on this photographed page (fast model)
 //   POST {run, question_id, image}       -> marks one part from a page of that run (doesn't use the weekly question allowance)
+//   POST {action:"mock_start", label, max?, tier?} -> mock autopsy (The Full Investigation): opens a teacher-marked school mock
+//   POST {action:"mock_page", mock, image}         -> reads one page: the teacher's marks and the cause of every lost mark
+//   POST {action:"mock_finish", mock}              -> the Mock analysis report; files each part as Lab evidence
 //   POST {action:"purge", key}  -> deletes images older than IMAGE_DAYS (default 7); call daily from a scheduler
 //
 // Deploy:   supabase functions deploy mark-written --no-verify-jwt   (the function checks the sign-in itself)
@@ -15,13 +18,14 @@
 //           PURGE_KEY=<long random string> (for the daily image clean-up, see migration 010)
 //           optional: IMAGE_DAYS (default 7), MONITOR_MODEL (default claude-haiku-5-5, the fast model for Mike mode), MIKE_WEEKLY (default 400, Exam Pass only),
 //           MARKING_MODEL (default claude-sonnet-5-5), weekly marked questions: FREE_WEEKLY (1), PASS_WEEKLY (5), KIT_WEEKLY (5), FULL_WEEKLY (40),
-//           whole papers: KIT_PAPERS (1 in total), PAPERS_WEEKLY (2, The Full Investigation),
+//           whole papers: KIT_PAPERS (1 in total), PAPERS_WEEKLY (2, The Full Investigation), MOCKS_WEEKLY (2, mock autopsies),
 //           plan names as sold in Systeme.io (comma-separated, matched in the purchase record): KIT_PLANS ("exam season kit"),
 //           INVESTIGATION_PLANS ("full investigation"),
 //                     ALLOWED_ORIGINS (comma-separated; default lab.mathsforensics.com + localhost)
 // Needs migration 010 (written_marks table + written-work storage bucket).
 import { createClient } from "npm:@supabase/supabase-js@2.45.4";
 import { byId, publicQuestion, SCHEMES } from "./schemes.ts";
+import { cleanPage, mergeItems, MOCK_PROMPT, MOCK_TOOL, type MockItem, mockReport, qKey, topicList } from "./mock.ts";
 import { type AiCheck, type AiLight, type AiMarking, applyCheck, applyMonitor, applyRules, CHECK_PROMPT, CHECK_TOOL, checkText, MARKING_TOOL, MONITOR_PROMPT, MONITOR_TOOL, monitorText, schemeText, SYSTEM_PROMPT } from "./marking.ts";
 
 const MODEL = Deno.env.get("MARKING_MODEL") ?? "claude-sonnet-5-5";
@@ -58,6 +62,9 @@ const DETECT_TOOL = {
   },
 };
 const MONITOR_MODEL = Deno.env.get("MONITOR_MODEL") ?? "claude-haiku-5-5";
+const MOCKS_WEEKLY = Number(Deno.env.get("MOCKS_WEEKLY") ?? 2); // mock autopsies a week, The Full Investigation
+const MOCK_PAGES = 32; // pages per mock
+const MOCK_HOURS = 72; // a mock stays open this long, so pages can be added in more than one sitting
 const MIKE_WEEKLY = Number(Deno.env.get("MIKE_WEEKLY") ?? 400);
 const IMAGE_DAYS = Number(Deno.env.get("IMAGE_DAYS") ?? 7); // how long images of working are kept
 const MAX_IMAGE_BYTES = 3_000_000;
@@ -188,6 +195,98 @@ Deno.serve(async (req) => {
   // The Lab's weekly report asks which plan the student is on, to decide how far back the report can look
   if (body.action === "plan") return json({ plan: tier });
 
+  // Mock autopsy (The Full Investigation): a school mock the teacher has already marked, photographed page by page.
+  // mock_start opens it, mock_page reads one page (the teacher's marks and why each lost mark was lost), mock_finish
+  // adds it up into the Mock analysis report and files each part as Lab evidence for the weekly report.
+  if (body.action === "mock_start" || body.action === "mock_page" || body.action === "mock_finish") {
+    if (tier !== "investigation") return fail("The mock autopsy comes with The Full Investigation.", 403);
+    if (body.action === "mock_start") {
+      const { count: used } = await db.from("written_marks").select("id", { count: "exact", head: true })
+        .eq("user_id", user.id).in("status", ["mock_open", "mock"]).gte("created_at", weekStart().toISOString());
+      if ((used ?? 0) >= MOCKS_WEEKLY) return fail(`You can have ${MOCKS_WEEKLY} mocks analysed a week. You can start another on Monday.`, 429);
+      const label = String(body.label ?? "").replace(/[<>]/g, "").trim().slice(0, 80) || "School mock";
+      const declared = Number(body.max);
+      const id = crypto.randomUUID();
+      const { error } = await db.from("written_marks").insert({
+        id, user_id: user.id, question_id: "MOCK", status: "mock_open",
+        max_marks: Number.isFinite(declared) && declared > 0 && declared <= 300 ? Math.round(declared) : null,
+        result: { label, tier: ["F", "H"].includes(String(body.tier)) ? String(body.tier) : null, pages: 0 },
+      });
+      if (error) return fail("Couldn't start the mock: " + error.message, 500);
+      return json({ mock: id, label, hours: MOCK_HOURS, pages: MOCK_PAGES });
+    }
+    const { data: mk } = await db.from("written_marks").select("id, created_at, status, max_marks, result")
+      .eq("id", String(body.mock ?? "")).eq("user_id", user.id).in("status", ["mock_open", "mock"]).maybeSingle();
+    if (!mk) return fail("Unknown mock. Start it again.", 404);
+    if (mk.status === "mock_open" && Date.now() - Date.parse(mk.created_at) > MOCK_HOURS * 3600e3) return fail("This mock has closed. Start it again to add pages.", 410);
+
+    if (body.action === "mock_page") {
+      if (mk.status !== "mock_open") return fail("This mock's report is finished. Start a new mock to add more pages.", 409);
+      const m3 = /^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+/=]+)$/.exec(String(body.image ?? ""));
+      if (!m3) return fail("Send the page as a JPEG, PNG or WebP image.");
+      if (m3[2].length * 0.75 > MAX_IMAGE_BYTES) return fail("That photo is too large. Try again with a smaller one.");
+      const { count: pagesSoFar } = await db.from("written_marks").select("id", { count: "exact", head: true })
+        .eq("user_id", user.id).eq("status", "mock_page").eq("result->>mock", mk.id);
+      if ((pagesSoFar ?? 0) >= MOCK_PAGES) return fail(`A mock can have up to ${MOCK_PAGES} pages.`, 429);
+      const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
+      if (!apiKey) return fail("Server not set up: missing ANTHROPIC_API_KEY", 500);
+      const started = Date.now();
+      const call = (choice: Record<string, unknown>) => fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "content-type": "application/json" },
+        body: JSON.stringify({
+          model: MODEL, max_tokens: 6000,
+          system: [{ type: "text", text: MOCK_PROMPT, cache_control: { type: "ephemeral" } }],
+          tools: [MOCK_TOOL], tool_choice: choice,
+          messages: [{ role: "user", content: [
+            { type: "image", source: { type: "base64", media_type: m3[1], data: m3[2] } },
+            { type: "text", text: `Topics (id: name):\n${topicList()}\n\nRecord every question part on this page by calling the ${MOCK_TOOL.name} tool, once.` },
+          ] }],
+        }),
+      });
+      let res = await call({ type: "tool", name: MOCK_TOOL.name });
+      if (!res.ok && res.status === 400) { const t = await res.text(); if (/tool_choice/i.test(t)) res = await call({ type: "auto" }); else { console.error("AI error", 400, t); return fail("Couldn't read that page. Try again in a minute.", 503); } }
+      if (!res.ok) { console.error("AI error", res.status, await res.text()); return fail("Couldn't read that page. Try again in a minute.", 503); }
+      const out = await res.json();
+      const raw = (out.content ?? []).find((c: any) => c.type === "tool_use")?.input;
+      if (!raw) return fail("Couldn't read that page. Try again in a minute.", 503);
+      const page = (pagesSoFar ?? 0) + 1;
+      const got = cleanPage(tidyToolInput(raw, MOCK_TOOL.input_schema), page);
+      // Keep the photo for IMAGE_DAYS like any other marked work, so a disputed reading can be checked
+      const pageId = crypto.randomUUID();
+      const ext = m3[1].split("/")[1].replace("jpeg", "jpg");
+      const imagePath = `${user.id}/${pageId}.${ext}`;
+      const up = await db.storage.from("written-work").upload(imagePath, Uint8Array.from(atob(m3[2]), (c) => c.charCodeAt(0)), { contentType: m3[1] });
+      if (up.error) console.error("Image save failed", up.error.message);
+      await db.from("written_marks").insert({
+        id: pageId, user_id: user.id, question_id: "MOCK", status: "mock_page", image_path: up.error ? null : imagePath,
+        result: { mock: mk.id, page, ...got }, model: MODEL,
+        input_tokens: out.usage?.input_tokens ?? null, output_tokens: out.usage?.output_tokens ?? null, ms: Date.now() - started,
+      });
+      return json({ page, ...got });
+    }
+
+    // mock_finish: add the pages up into the report, and file each part as Lab evidence once
+    const { data: pageRows } = await db.from("written_marks").select("result").eq("user_id", user.id)
+      .eq("status", "mock_page").eq("result->>mock", mk.id).order("created_at");
+    const items = mergeItems((pageRows ?? []).map((r: any) => (r.result?.items ?? []) as MockItem[]));
+    if (!items.length) return fail("No questions found yet. Add photos of the marked pages first.", 400);
+    const report = mockReport(items, mk.max_marks ?? null);
+    const result = { ...(mk.result ?? {}), pages: (pageRows ?? []).length, items, ...report };
+    const { error: upErr } = await db.from("written_marks").update({
+      status: "mock", score: report.score, max_marks: report.max || mk.max_marks, result,
+    }).eq("id", mk.id).eq("user_id", user.id);
+    if (upErr) return fail("Couldn't save the report: " + upErr.message, 500);
+    if (mk.status === "mock_open") {
+      const rows = items.filter((i) => i.topic !== "other" && i.available && i.awarded !== null).map((i) => ({
+        user_id: user.id, topic: i.topic, correct: i.awarded === i.available, error_id: null, source: "written",
+        marks: i.awarded, max_marks: i.available, ref: `mock:${mk.id}:${qKey(i.q)}`,
+      }));
+      if (rows.length) { const r = await db.from("attempts").insert(rows); if (r.error) console.error("Attempt save failed", r.error.message); }
+    }
+    return json({ mock: mk.id, ...result });
+  }
+
   // A page of a whole paper? Then it belongs to an open run, and doesn't use the weekly question allowance.
   let run: { id: string; question_id: string; created_at: string } | null = null;
   if (body.run) {
@@ -276,7 +375,7 @@ Deno.serve(async (req) => {
   if (!run) {
     let q = db.from("written_marks").select("id", { count: "exact", head: true })
       .eq("user_id", user.id).gte("created_at", weekStart().toISOString());
-    q = monitor ? q.eq("status", "monitor") : q.not("status", "in", "(monitor,paper)").is("result->>run", null);
+    q = monitor ? q.eq("status", "monitor") : q.not("status", "in", "(monitor,paper,mock_open,mock,mock_page)").is("result->>run", null);
     ({ count } = await q);
     if ((count ?? 0) >= limit) {
       if (monitor) return fail("Mike has watched a lot of working this week. He's back on Monday.", 429);
