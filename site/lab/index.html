@@ -651,6 +651,7 @@ tr.sessrow>td{background:var(--ink);text-align:left;padding:10px 14px}
 .wktools{align-items:center;justify-content:space-between;margin:12px 0}
 .wktools select.inp.sm{width:auto}
 .wkrep{max-width:900px}
+.wkrep a{color:#1B36FF}
 .wkverdict{font-size:17px;line-height:1.5;margin:4px 0 12px;color:#0B122C}
 .rkpis.wkk{grid-template-columns:repeat(4,minmax(0,1fr))}
 .wkrma{display:grid;gap:8px;margin:6px 0 8px}
@@ -5073,7 +5074,7 @@ function supabaseStore(cfg){
     async resetMyProgress(userId){must(await sb.from('attempts').delete().eq('user_id',userId))},
     // Forensic Marking reports for the weekly report: only the parts it needs, never the images
     async writtenMarks(userId){
-      const r=await sb.from('written_marks').select('created_at,status,score,max_marks,topic,rc:result->root_cause,unprot:result->unprotected,board:result->exam_board_score').eq('user_id',userId).eq('status','marked').order('created_at').limit(3000);
+      const r=await sb.from('written_marks').select('id,created_at,status,score,max_marks,topic,rc:result->root_cause,unprot:result->unprotected,board:result->exam_board_score,mlost:result->lost,mlabel:result->>label,mrec:result->recoverable').eq('user_id',userId).in('status',['marked','mock']).order('created_at').limit(3000);
       return r.error?[]:r.data;
     },
     // Exam Pass, Exam Season Kit or The Full Investigation (my_access only says free or full)
@@ -6814,11 +6815,14 @@ function weekReport(attempts,wm,ws){
     if(x.unprot) unprot++;
     if(typeof x.board==='number'&&x.board>(x.score||0)) gap+=x.board-(x.score||0);
   });
+  // School mocks analysed this week (mock autopsy): their avoidable lost marks count too
+  const mocks=(wm||[]).filter(x=>x.status==='mock'&&inWk(x));
+  mocks.forEach(x=>{const l=x.mlost||{};['R','M','A'].forEach(k=>{if(l[k])rma[k]+=l[k]})});
   const C=A.filter(x=>x.correct).length;
   return {ws,we,A,n:A.length,C,days:new Set(A.map(x=>dayKey(x.created_at))).size,newly,slipped,strong,weak,topics,rma,
     diagnosed:rma.R+rma.M+rma.A,wrong:A.length-C,slips:Object.entries(slips).sort((a,b)=>b[1]-a[1]),
     fm:{n:W.length,score:W.reduce((s,x)=>s+(x.score||0),0),max:W.reduce((s,x)=>s+(x.max_marks||0),0),unprot,gap},
-    secure:Object.keys(M1).filter(k=>TOP[k]&&isSec(M1,k)).length,M1};
+    mocks,secure:Object.keys(M1).filter(k=>TOP[k]&&isSec(M1,k)).length,M1};
 }
 function weekHeadline(r,prev,current){
   if(!r.n) return current?'No evidence on file yet this week. Ten minutes of Daily Case today starts the report.':'No questions answered this week.';
@@ -6901,6 +6905,7 @@ function weeklyReportHTML(){
     <h3>Forensic Marking</h3>
     ${r.fm.n?`<p><b>${r.fm.n} written answer${r.fm.n===1?'':'s'} marked</b>, scoring ${r.fm.score} out of ${r.fm.max} marks (${pct(r.fm.score,r.fm.max)}%).${r.fm.unprot?` ${r.fm.unprot} had no method shown.`:''}${r.fm.gap?` An exam board might have given ${r.fm.gap} more mark${r.fm.gap===1?'':'s'} for bare answers. Those are marks at risk: one wrong answer with no method scores nothing.`:''}</p>`
       :`<p class="hint">No written answers marked this week. Forensic Marking checks every line of working and finds exactly where marks are lost.</p>`}
+    ${r.mocks.length?`<h3>School mocks</h3><ul class="rlist">${r.mocks.map(m=>`<li><b>${esc(m.mlabel||'School mock')}</b>: ${m.score??'–'} out of ${m.max_marks??'–'}${m.mrec?`, with ${m.mrec} marks recoverable without new maths`:''}. <a class="noprint" href="../written/?mock=${m.id}">Open the Mock analysis</a></li>`).join('')}</ul>`:''}
     ${r.slips.length?`<h3>Exam habits that cost marks</h3><table class="rtable small wkslips"><tr><th>Habit</th><th>Kind</th><th class="num">Times</th><th>How to fix it</th></tr>${r.slips.slice(0,4).map(([id,n])=>`<tr><td><b>${ERR[id][0]}</b></td><td>${RMA_NAME[rmaOf(id)]}</td><td class="num">${n}</td><td>${ERR[id][1]}</td></tr>`).join('')}</table>`:''}
     <h3>Next week's case plan</h3>${planHTML(plan)}`;
     if(tier==='investigation'){
