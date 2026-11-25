@@ -185,6 +185,8 @@ Deno.serve(async (req) => {
     else if (planNames("KIT_PLANS", "exam season kit").some((w) => bought.includes(w))) tier = "kit";
   }
   const papersAllowed = tier === "kit" || tier === "investigation";
+  // The Lab's weekly report asks which plan the student is on, to decide how far back the report can look
+  if (body.action === "plan") return json({ plan: tier });
 
   // A page of a whole paper? Then it belongs to an open run, and doesn't use the weekly question allowance.
   let run: { id: string; question_id: string; created_at: string } | null = null;
