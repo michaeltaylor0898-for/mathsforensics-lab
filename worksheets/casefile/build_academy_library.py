@@ -18,6 +18,7 @@ def sheet(sid):
 EXTRA = """
 .years{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}.years a{border:1.5px solid var(--line);border-radius:999px;padding:9px 18px;color:#fff;text-decoration:none;font-weight:700}
 .years a:hover{border-color:var(--cyan)}
+.tile.soonu{border-style:dashed;color:var(--muted)}.tile.soonu b{color:#C6CEE8}
 .tile .dl{display:inline-block;margin-top:10px;color:var(--cyan);font-weight:700;font-size:15px}
 .pack{display:flex;justify-content:space-between;gap:16px;align-items:center;background:linear-gradient(135deg,#132158,#0E1640);border:1px solid var(--cyan);border-radius:14px;padding:18px 20px;margin-bottom:14px}
 .pack p{margin:4px 0 0;color:#C6CEE8;font-size:16px}
@@ -31,16 +32,22 @@ secs = ""
 for y in ("7", "8", "9"):
     yd = LIB["years"][y]
     tiles = ""
-    for sid in yd["sheets"]:
+    def tile(sid, unit=""):
         d = sheet(sid)
-        tiles += (f'<a class="tile" href="/sheets/pdf/{sid}.pdf" download><b>{E(strip(d["title"]))}</b>'
-                  f'<small>{E(strip(d["cover_sub"]).split(".")[0])}.</small><span class="dl">Download PDF ↓</span></a>')
+        return (f'<a class="tile" href="/sheets/pdf/{sid}.pdf" download>{unit}<b>{E(strip(d["title"]))}</b>'
+                f'<small>{E(strip(d["cover_sub"]).split(".")[0])}.</small><span class="dl">Download PDF ↓</span></a>')
+    if yd.get("units"):
+        for num, name, sids in yd["units"]:
+            u = f'<span class="eb" style="font-size:11px">Unit {num} · {E(name)}</span><br>'
+            tiles += "".join(tile(sid, u) for sid in sids) if sids else f'<div class="tile soonu">{u}<b>{E(name)}</b><small>Coming soon</small></div>'
+    for sid in yd.get("sheets", []):
+        tiles += tile(sid)
     for pk in LIB["packs"]:
         if pk["year"] == y: shutil.copy(HERE / "academy" / f'{pk["id"]}.pdf', OUT / "pdf" / f'{pk["id"]}.pdf')
     packs = "".join(f'<div class="pack"><div><span class="eb">Whole pack</span><h3 style="margin:4px 0 0;font-size:20px">{E(p["title"])}</h3><p>{E(p["text"])}</p></div>'
                     f'<a class="btn" href="/sheets/pdf/{p["id"]}.pdf" download>Download the pack</a></div>' for p in LIB["packs"] if p["year"] == y)
-    soon = ('<p style="color:var(--muted);margin:14px 0 0;font-size:16px">' + ("Coming next:" if tiles else "The first Year " + y + " sheets are on the way:") +
-            '</p><div class="soon">' + "".join(f"<span>{E(t)}</span>" for t in yd["planned"][:8]) + "</div>") if yd["planned"] else ""
+    soon = "" if yd.get("units") else ('<p style="color:var(--muted);margin:14px 0 0;font-size:16px">' + ("Coming next:" if tiles else "The first Year " + y + " sheets are on the way:") +
+            '</p><div class="soon">' + "".join(f"<span>{E(t)}</span>" for t in yd["planned"][:8]) + "</div>") if yd.get("planned") else ""
     secs += (f'<section id="year-{y}"><div class="w"><h2>Year {y}</h2><p style="color:#C6CEE8;margin:-4px 0 16px">{E(yd["blurb"])}</p>'
              f'{packs}{f"<div class=grid>{tiles}</div>" if tiles else ""}{soon}</div></section>')
 

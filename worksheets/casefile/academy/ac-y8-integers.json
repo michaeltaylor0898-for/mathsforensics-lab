@@ -1,0 +1,240 @@
+{
+ "code": "MF-AC-Y8-INT",
+ "product_line": "Academy worksheet · Year 8 · Free",
+ "strand": "Number",
+ "title": "Integers, powers and roots",
+ "level_line": "Year 8 · KS3",
+ "time": "About 40 minutes",
+ "cover_sub": "Calculate with negative numbers, write numbers as products of primes, find the HCF and LCM, and work with squares, cubes, roots and index notation.",
+ "parents": {
+  "listen": "Ask: <i>will the answer be positive or negative, and why?</i> For HCF and LCM, ask your child to say which one is the <i>biggest number that divides both</i> (HCF) and which is the <i>smallest number both go into</i> (LCM). Mixing them up is the commonest slip."
+ },
+ "levels_long": {
+  "d": "Getting the basics: one step at a time.",
+  "s": "Year 8 standard: a few steps, some in context.",
+  "e": "A stretch: problems, reasoning and spotting mistakes."
+ },
+ "briefing": [
+  "<b>Adding and subtracting</b> negatives: use a number line. Subtracting a negative is the same as adding: 3 − (−5) = 3 + 5.",
+  "<b>Multiplying and dividing:</b> same signs give a positive answer, different signs give a negative answer. −6 × −4 = 24, but 18 ÷ −3 = −6.",
+  "Every whole number can be written as a <b>product of prime factors</b>, such as 60 = 2² × 3 × 5. Use a factor tree.",
+  "The <b>HCF</b> (highest common factor) is the biggest number that divides both. The <b>LCM</b> (lowest common multiple) is the smallest number both divide into.",
+  "<b>Index notation:</b> 2³ means 2 × 2 × 2 = 8. √49 = 7 because 7² = 49, and ∛64 = 4 because 4³ = 64."
+ ],
+ "method": null,
+ "examples": [
+  {
+   "question": "Work out −7 + 3 − (−5)",
+   "steps": [
+    "−7 + 3 = −4 (move 3 to the right).",
+    "−4 − (−5) is the same as −4 + 5.",
+    "−4 + 5 = 1."
+   ],
+   "answer": "1"
+  },
+  {
+   "question": "Work out −6 × −4 and 18 ÷ −3",
+   "steps": [
+    "−6 × −4: same signs, so positive. 6 × 4 = 24.",
+    "18 ÷ −3: different signs, so negative. 18 ÷ 3 = 6."
+   ],
+   "answer": "24 and −6"
+  },
+  {
+   "question": "Write 60 as a product of prime factors.",
+   "steps": [
+    "Split with a factor tree: 60 = 2 × 30, then 30 = 2 × 15, then 15 = 3 × 5.",
+    "Collect the primes: 2 × 2 × 3 × 5.",
+    "Use index notation: 2² × 3 × 5."
+   ],
+   "answer": "60 = 2² × 3 × 5"
+  },
+  {
+   "question": "Find the HCF and the LCM of 12 and 18.",
+   "steps": [
+    "12 = 2² × 3 and 18 = 2 × 3².",
+    "HCF: the primes they share, the lowest power of each: 2 × 3 = 6.",
+    "LCM: every prime, the highest power of each: 2² × 3² = 36."
+   ],
+   "answer": "HCF = 6, LCM = 36"
+  }
+ ],
+ "sections": {
+  "d": {
+   "blurb": "Warm up. One step at a time.",
+   "questions": [
+    {
+     "text": [
+      "−3 + 8"
+     ],
+     "answer": "5",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "4 − 9"
+     ],
+     "answer": "−5",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "−2 − 6"
+     ],
+     "answer": "−8",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "5 × −3"
+     ],
+     "answer": "−15",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "List all the factors of 24."
+     ],
+     "answer": "1, 2, 3, 4, 6, 8, 12, 24",
+     "lines": 2,
+     "answer_label": "Factors"
+    },
+    {
+     "text": [
+      "Work out 6² and √49."
+     ],
+     "answer": "36 and 7",
+     "lines": 2,
+     "answer_label": "6² = ____ √49 ="
+    }
+   ]
+  },
+  "s": {
+   "blurb": "The Year 8 standard. Show each step.",
+   "questions": [
+    {
+     "text": [
+      "−8 − (−3)"
+     ],
+     "answer": "−5",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "−8 + 3",
+     "tip": "Two minus signs next to each other make a plus: −8 − (−3) = −8 + 3."
+    },
+    {
+     "text": [
+      "−24 ÷ −6"
+     ],
+     "answer": "4",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "Same signs, so positive."
+    },
+    {
+     "text": [
+      "(−3)²"
+     ],
+     "answer": "9",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "−3 × −3 = +9"
+    },
+    {
+     "text": [
+      "Write 90 as a product of prime factors. Use index notation."
+     ],
+     "answer": "2 × 3² × 5",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "90 = 2 × 45 = 2 × 3 × 15 = 2 × 3 × 3 × 5."
+    },
+    {
+     "text": [
+      "Find the highest common factor (HCF) of 24 and 36."
+     ],
+     "answer": "12",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "24 = 2³ × 3 and 36 = 2² × 3², so HCF = 2² × 3."
+    },
+    {
+     "text": [
+      "Find the lowest common multiple (LCM) of 8 and 12."
+     ],
+     "answer": "24",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "Multiples of 12: 12, 24 … and 24 is the first that 8 divides."
+    }
+   ]
+  },
+  "e": {
+   "blurb": "Problems, reasoning and one piece of tampered evidence.",
+   "questions": [
+    {
+     "text": [
+      "Work out ∛64 + 2³ − √81"
+     ],
+     "answer": "3",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "4 + 8 − 9"
+    },
+    {
+     "text": [
+      "Raj worked out −5 − (−2). Find his mistake and give the right answer."
+     ],
+     "answer": "−3",
+     "lines": 2,
+     "answer_label": "Correct answer",
+     "working": "Subtracting −2 is the same as adding 2: −5 + 2 = −3.",
+     "tampered": "−5 − (−2) = −5 − 2 = −7"
+    },
+    {
+     "text": [
+      "One bus leaves every 12 minutes. Another leaves every 15 minutes. Both leave at 9:00 am.",
+      "When do they next leave at the same time?"
+     ],
+     "answer": "10:00 am",
+     "lines": 3,
+     "answer_label": "Time",
+     "working": "The LCM of 12 and 15 is 60, so after 60 minutes.",
+     "tip": "'At the same time again' means a common <b>multiple</b>: use the LCM."
+    },
+    {
+     "text": [
+      "2<sup><i>a</i></sup> × 3<sup><i>b</i></sup> = 72.",
+      "Find the values of <i>a</i> and <i>b</i>."
+     ],
+     "answer": "<i>a</i> = 3, <i>b</i> = 2",
+     "lines": 3,
+     "answer_label": "<i>a</i> = ____ <i>b</i> =",
+     "working": "72 = 2 × 36 = 2 × 2 × 18 = 2 × 2 × 2 × 9 = 2³ × 3²."
+    }
+   ]
+  }
+ },
+ "mistakes": [
+  "Subtracting a negative as if it were a positive: −5 − (−2) is −3, not −7.",
+  "Forgetting that (−3)² is positive 9. A negative number squared is always positive.",
+  "Mixing up HCF and LCM. The HCF is never bigger than the numbers; the LCM is never smaller.",
+  "Writing 2³ as 6 (2 × 3) instead of 8 (2 × 2 × 2)."
+ ],
+ "closed_title": "Integers, powers and roots",
+ "closed_points": [
+  "Add, subtract, multiply and divide with negative numbers.",
+  "Write a number as a product of prime factors.",
+  "Find the HCF and LCM, and use them in problems.",
+  "Use squares, cubes, roots and index notation."
+ ],
+ "next": {
+  "title": "Keep going in the Maths Forensics Academy",
+  "text": "Step-by-step lessons, answers checked as you go, story cases and maths games for Years 7 to 9. Try the free topics.",
+  "url": "https://www.mathsforensics.com/academy"
+ }
+}

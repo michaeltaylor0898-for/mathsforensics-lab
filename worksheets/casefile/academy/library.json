@@ -1,17 +1,168 @@
 {
  "about": "The Academy revision library: free Years 7-9 sheets. 'sheets' are built (academy/<id>.json + .pdf); 'planned' are the topics still to write, in the order to write them. Packs bundle built sheets.",
  "years": {
-  "7": {"blurb": "The foundations: number, the first steps in algebra, fractions, shape and data.",
-        "sheets": [],
-        "planned": ["Place value and ordering", "The four operations", "Negative numbers", "Factors, multiples and primes", "Order of operations", "Algebraic notation and substitution", "Simplifying expressions", "Fractions of amounts", "Fractions, decimals and percentages", "Perimeter and area", "Angle facts", "Probability", "Averages and charts"]},
-  "8": {"blurb": "Calculating with fractions and decimals, ratio and percentages, and the algebra that GCSE builds on.",
-        "sheets": ["ac-y8-rounding", "ac-y8-decimals", "ac-y8-fractions", "ac-y8-ordering", "ac-y8-ratio", "ac-y8-percentages", "ac-y8-like-terms", "ac-y8-brackets"],
-        "planned": ["Solving equations", "Sequences and the nth term", "Coordinates and straight-line graphs", "Area of triangles, parallelograms and trapezia", "Angles in parallel lines and polygons", "Circles", "Averages and range", "Probability"]},
-  "9": {"blurb": "Getting GCSE-ready: powers, proportion, graphs, Pythagoras and the start of trigonometry.",
-        "sheets": [],
-        "planned": ["Index laws and standard form", "Percentage change and reverse percentages", "Equations with unknowns on both sides", "Inequalities", "Rearranging formulae", "Expanding double brackets", "y = mx + c", "Direct and inverse proportion", "Pythagoras' theorem", "Introduction to trigonometry", "Volume and surface area", "Transformations", "Scatter graphs", "Relative frequency"]}
+  "7": {
+   "blurb": "The foundations: number, the first steps in algebra, fractions, shape and data.",
+   "sheets": [],
+   "planned": [
+    "Place value and ordering",
+    "The four operations",
+    "Negative numbers",
+    "Factors, multiples and primes",
+    "Order of operations",
+    "Algebraic notation and substitution",
+    "Simplifying expressions",
+    "Fractions of amounts",
+    "Fractions, decimals and percentages",
+    "Perimeter and area",
+    "Angle facts",
+    "Probability",
+    "Averages and charts"
+   ]
+  },
+  "8": {
+   "blurb": "Organised by the 16 units of the Year 8 course (Cambridge Lower Secondary Stage 8), which also cover the KS3 curriculum.",
+   "units": [
+    [
+     1,
+     "Integers",
+     [
+      "ac-y8-integers"
+     ]
+    ],
+    [
+     2,
+     "Expressions, formulae and equations",
+     [
+      "ac-y8-like-terms",
+      "ac-y8-brackets",
+      "ac-y8-equations"
+     ]
+    ],
+    [
+     3,
+     "Place value and rounding",
+     [
+      "ac-y8-rounding"
+     ]
+    ],
+    [
+     4,
+     "Decimals",
+     [
+      "ac-y8-decimals",
+      "ac-y8-ordering"
+     ]
+    ],
+    [
+     5,
+     "Angles and constructions",
+     []
+    ],
+    [
+     6,
+     "Collecting data",
+     [
+      "ac-y8-data"
+     ]
+    ],
+    [
+     7,
+     "Fractions",
+     [
+      "ac-y8-fractions"
+     ]
+    ],
+    [
+     8,
+     "Shapes and symmetry",
+     []
+    ],
+    [
+     9,
+     "Sequences and functions",
+     [
+      "ac-y8-sequences"
+     ]
+    ],
+    [
+     10,
+     "Percentages",
+     [
+      "ac-y8-percentages"
+     ]
+    ],
+    [
+     11,
+     "Graphs",
+     [
+      "ac-y8-graphs"
+     ]
+    ],
+    [
+     12,
+     "Ratio and proportion",
+     [
+      "ac-y8-ratio"
+     ]
+    ],
+    [
+     13,
+     "Probability",
+     [
+      "ac-y8-probability"
+     ]
+    ],
+    [
+     14,
+     "Position and transformation",
+     []
+    ],
+    [
+     15,
+     "Distance, area and volume",
+     []
+    ],
+    [
+     16,
+     "Interpreting and discussing results",
+     []
+    ]
+   ]
+  },
+  "9": {
+   "blurb": "Getting GCSE-ready: powers, proportion, graphs, Pythagoras and the start of trigonometry.",
+   "sheets": [],
+   "planned": [
+    "Index laws and standard form",
+    "Percentage change and reverse percentages",
+    "Equations with unknowns on both sides",
+    "Inequalities",
+    "Rearranging formulae",
+    "Expanding double brackets",
+    "y = mx + c",
+    "Direct and inverse proportion",
+    "Pythagoras' theorem",
+    "Introduction to trigonometry",
+    "Volume and surface area",
+    "Transformations",
+    "Scatter graphs",
+    "Relative frequency"
+   ]
+  }
  },
  "packs": [
-  {"id": "Maths-Forensics-Academy-Year-8-Revision-Pack-1", "year": "8", "title": "Year 8 Revision Pack 1", "text": "All eight Year 8 sheets in one PDF: rounding, decimals, fractions, ordering, ratio, percentages, like terms, brackets."}
+  {
+   "id": "Maths-Forensics-Academy-Year-8-Revision-Pack-1",
+   "year": "8",
+   "title": "Year 8 Revision Pack 1",
+   "text": "Rounding, decimals, fractions, ordering, ratio, percentages, like terms and brackets: eight sheets in one PDF."
+  },
+  {
+   "id": "Maths-Forensics-Academy-Year-8-Revision-Pack-2",
+   "year": "8",
+   "title": "Year 8 Revision Pack 2",
+   "text": "Integers, formulae and equations, sequences, graphs, collecting data and probability: six sheets in one PDF."
+  }
  ]
 }

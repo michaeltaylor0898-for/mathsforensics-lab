@@ -22,6 +22,8 @@ CSS = BASE_CSS + """
 .exs{display:grid;gap:3mm}
 .cover .chips .m{background:#fff;color:var(--navy)}
 .akey{margin:0 0 2mm;font-size:9.2pt;color:var(--muted)}
+.tbl{border-collapse:collapse;margin:1.5mm 0 1mm 4mm;font-size:9.4pt}.tbl td,.tbl th{border:1px solid #C3CADF;padding:1mm 3mm;text-align:center;min-width:12mm}.tbl th{background:var(--soft);font-weight:600}
+.sol .tbl{margin:1mm 0;font-size:8pt}.sol .tbl td,.sol .tbl th{padding:.5mm 1.5mm;min-width:0}
 """
 
 def question(i, q):
@@ -35,7 +37,7 @@ def question(i, q):
 
 def example(ex):
     steps = "".join(f'<div class="step"><b>{i}</b><span>{st}</span></div>' for i, st in enumerate(ex["steps"], 1))
-    return f"""<div class="ex"><p class="q"><em>WORKED EXAMPLE</em>{ex["question"]}</p>
+    return f"""<div class="ex"><p class="q"><em>WORKED EXAMPLE</em>{ex["question"]}</p>{ex.get("svg","")}
       <div class="yellow"><h3 class="mono">Solution</h3>{steps}<div class="fin">✓ {ex["answer"]}</div></div></div>"""
 
 def build(s):

@@ -1,0 +1,227 @@
+{
+ "code": "MF-AC-Y8-DATA",
+ "product_line": "Academy worksheet · Year 8 · Free",
+ "strand": "Statistics",
+ "title": "Collecting data",
+ "level_line": "Year 8 · KS3",
+ "time": "About 40 minutes",
+ "cover_sub": "Classify data, design good survey questions, avoid bias in samples, and organise data in frequency tables, grouped tables and two-way tables.",
+ "parents": {
+  "listen": "Ask: <i>would everyone answer this question the same way you meant it?</i> For samples, ask: <i>who is left out?</i> These questions are about judgement as much as calculation, so it's worth talking through answers."
+ },
+ "levels_long": {
+  "d": "Getting the basics: one step at a time.",
+  "s": "Year 8 standard: a few steps, some in context.",
+  "e": "A stretch: problems, reasoning and spotting mistakes."
+ },
+ "briefing": [
+  "<b>Categorical</b> data are words or categories (eye colour). <b>Discrete</b> data are counted and can only take certain values (number of siblings, shoe size). <b>Continuous</b> data are measured and can take any value (height, time).",
+  "A <b>population</b> is everyone you want to know about; a <b>sample</b> is the group you actually ask. A sample is <b>biased</b> if it isn't representative, for example asking only one year group or only people at a gym.",
+  "Good survey questions are clear, give a time frame, have response boxes that <b>don't overlap and cover every answer</b>, and don't lead people towards an answer.",
+  "Grouped data use <b>class intervals</b> such as 150 ≤ <i>h</i> &lt; 160: from 150 up to, but not including, 160. A <b>two-way table</b> shows two kinds of information at once."
+ ],
+ "method": null,
+ "examples": [
+  {
+   "question": "Is each type of data categorical, discrete or continuous? Eye colour, number of siblings, height.",
+   "steps": [
+    "Eye colour is described in words: categorical.",
+    "Siblings are counted, and there are no halves: discrete.",
+    "Height is measured and can be any value: continuous."
+   ],
+   "answer": "Categorical, discrete, continuous"
+  },
+  {
+   "question": "Improve this survey question: <i>How much TV do you watch? A lot / Some / A little</i>",
+   "steps": [
+    "'A lot' means different things to different people, and there's no time frame.",
+    "Give a time frame and number boxes that don't overlap and cover every answer."
+   ],
+   "answer": "How many hours of TV did you watch yesterday? 0 to 1 · more than 1 up to 2 · more than 2 up to 3 · more than 3"
+  },
+  {
+   "question": "30 students were asked how they travel to school. Complete the two-way table.",
+   "svg": "<table class=\"tbl\"><tr><th></th><th>Walk</th><th>Bus</th><th>Total</th></tr><tr><td>Boys</td><td>8</td><td></td><td>14</td></tr><tr><td>Girls</td><td></td><td>7</td><td></td></tr><tr><td>Total</td><td></td><td></td><td>30</td></tr></table>",
+   "steps": [
+    "Boys who take the bus: 14 − 8 = 6.",
+    "Girls in total: 30 − 14 = 16. Girls who walk: 16 − 7 = 9.",
+    "Totals: walk 8 + 9 = 17, bus 6 + 7 = 13. Check: 17 + 13 = 30 ✓"
+   ],
+   "answer": "Boys bus 6; girls walk 9, total 16; walk 17, bus 13"
+  }
+ ],
+ "sections": {
+  "d": {
+   "blurb": "Warm up. One step at a time.",
+   "questions": [
+    {
+     "text": [
+      "Is shoe size discrete or continuous?"
+     ],
+     "answer": "Discrete: it only takes certain values (sizes and half sizes).",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "Is the time to run 100 m discrete or continuous?"
+     ],
+     "answer": "Continuous: time is measured and can be any value.",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "The pets of 12 students: dog, cat, dog, fish, dog, cat, rabbit, dog, cat, dog, fish, dog.",
+      "Make a frequency table. Which pet is the most common?"
+     ],
+     "answer": "Dog 6, cat 3, fish 2, rabbit 1. Dog is the most common (the mode).",
+     "lines": 4,
+     "answer_label": "Most common"
+    },
+    {
+     "text": [
+      "A school has 800 students. Ana asks 50 of them about school lunches. What is the population, and what is the sample size?"
+     ],
+     "answer": "The population is the 800 students; the sample size is 50.",
+     "lines": 2,
+     "answer_label": "Population ____ Sample size"
+    },
+    {
+     "text": [
+      "What is wrong with these response boxes for <i>How many books did you read last month?</i>  0–5 · 5–10 · 10–15"
+     ],
+     "answer": "They overlap (5 and 10 are in two boxes), and there's no box for more than 15.",
+     "lines": 2,
+     "answer_label": false
+    },
+    {
+     "text": [
+      "Is favourite colour categorical, discrete or continuous?"
+     ],
+     "answer": "Categorical",
+     "lines": 2,
+     "answer_label": "Answer"
+    }
+   ]
+  },
+  "s": {
+   "blurb": "The Year 8 standard. Show each step.",
+   "questions": [
+    {
+     "text": [
+      "Heights of 10 students in cm: 152, 167, 158, 171, 149, 163, 160, 155, 168, 174.",
+      "Complete the grouped frequency table.",
+      "<table class=\"tbl\"><tr><th>Height <i>h</i> (cm)</th><th>Frequency</th></tr><tr><td>140 ≤ <i>h</i> &lt; 150</td><td></td></tr><tr><td>150 ≤ <i>h</i> &lt; 160</td><td></td></tr><tr><td>160 ≤ <i>h</i> &lt; 170</td><td></td></tr><tr><td>170 ≤ <i>h</i> &lt; 180</td><td></td></tr></table>"
+     ],
+     "answer": "1, 3, 4, 2",
+     "lines": 1,
+     "answer_label": "Frequencies",
+     "working": "160 goes in 160 ≤ <i>h</i> &lt; 170. Check: 1 + 3 + 4 + 2 = 10."
+    },
+    {
+     "text": [
+      "Why is this a bad survey question? Write a better one. <i>Don't you agree that school lunches are too expensive?</i>"
+     ],
+     "answer": "It's a leading question: it pushes people to agree. Better: <i>What do you think of the price of school lunches? Too expensive / About right / Good value</i>",
+     "lines": 3,
+     "answer_label": false
+    },
+    {
+     "text": [
+      "To find out how much exercise people in a town do, Leo asks people leaving a gym. Explain why his sample is biased."
+     ],
+     "answer": "People leaving a gym probably exercise more than most people, so they don't represent the whole town.",
+     "lines": 2,
+     "answer_label": false
+    },
+    {
+     "text": [
+      "40 students choose football or drama. Complete the two-way table.",
+      "<table class=\"tbl\"><tr><th></th><th>Football</th><th>Drama</th><th>Total</th></tr><tr><td>Boys</td><td>12</td><td></td><td></td></tr><tr><td>Girls</td><td></td><td>15</td><td></td></tr><tr><td>Total</td><td>20</td><td></td><td>40</td></tr></table>"
+     ],
+     "answer": "Boys drama 5, boys total 17; girls football 8, girls total 23; drama total 20",
+     "lines": 1,
+     "answer_label": "Table done",
+     "working": "Drama total 40 − 20 = 20, so boys drama 20 − 15 = 5. Girls football 20 − 12 = 8."
+    },
+    {
+     "text": [
+      "A height of exactly 160 cm. Does it go in 150 ≤ <i>h</i> &lt; 160 or 160 ≤ <i>h</i> &lt; 170?"
+     ],
+     "answer": "160 ≤ <i>h</i> &lt; 170",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "&lt; 160 means up to but not including 160.",
+     "tip": "≤ means 'less than or equal to'; &lt; means 'less than'."
+    },
+    {
+     "text": [
+      "Design a data collection sheet for how students in your class travel to school."
+     ],
+     "answer": "A table with a row for each way of travelling (walk, bus, car, bike, other), a tally column and a frequency column.",
+     "lines": 4,
+     "answer_label": false
+    }
+   ]
+  },
+  "e": {
+   "blurb": "Problems, reasoning and one piece of tampered evidence.",
+   "questions": [
+    {
+     "text": [
+      "Use your table from question 10. What fraction of the students who chose drama are girls? Simplify."
+     ],
+     "answer": "<span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">4</span></span>",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "<span class=\"frac\"><span class=\"nu\">15</span><span class=\"de\">20</span></span> = <span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">4</span></span>"
+    },
+    {
+     "text": [
+      "Ella grouped times in minutes like this. Find the problem and write better groups."
+     ],
+     "answer": "10 and 20 each fit two groups. Better: 0 ≤ <i>t</i> &lt; 10, 10 ≤ <i>t</i> &lt; 20, 20 ≤ <i>t</i> &lt; 30",
+     "lines": 2,
+     "answer_label": "Better groups",
+     "tampered": "0–10 · 10–20 · 20–30<br>A time of 10 minutes goes in … ?"
+    },
+    {
+     "text": [
+      "A head teacher wants students' views on the canteen. She plans to ask the first 20 students in the lunch queue. Give two reasons this sample might be biased, and suggest a better one."
+     ],
+     "answer": "They all use the canteen and arrived early, and 20 is small. Better: pick students at random from every year group, including those who don't use the canteen, and ask more of them.",
+     "lines": 4,
+     "answer_label": false
+    },
+    {
+     "text": [
+      "120 people were asked a question in a survey and 45% said yes. How many people said yes?"
+     ],
+     "answer": "54",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "0.45 × 120"
+    }
+   ]
+  }
+ },
+ "mistakes": [
+  "Calling counted data continuous: anything you count (people, goals, shoe sizes) is discrete.",
+  "Response boxes that overlap (0–5, 5–10) or leave gaps, or no box for large answers.",
+  "Putting a boundary value in the wrong class: 160 belongs in 160 ≤ <i>h</i> &lt; 170.",
+  "Saying a sample is biased 'because it's small'. Small samples are unreliable; biased samples leave groups out."
+ ],
+ "closed_title": "Collecting data",
+ "closed_points": [
+  "Classify data as categorical, discrete or continuous.",
+  "Write fair survey questions and response boxes.",
+  "Spot bias in a sample and suggest a better one.",
+  "Use tally charts, grouped frequency tables and two-way tables."
+ ],
+ "next": {
+  "title": "Keep going in the Maths Forensics Academy",
+  "text": "Step-by-step lessons, answers checked as you go, story cases and maths games for Years 7 to 9. Try the free topics.",
+  "url": "https://www.mathsforensics.com/academy"
+ }
+}

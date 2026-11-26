@@ -1,0 +1,130 @@
+<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><title>MF-AC-Y8-EQ</title><style>
+@page{size:A4;margin:11mm 13mm 15mm}
+*{box-sizing:border-box}
+:root{--navy:#0B122C;--cyan:#00FCF1;--teal:#00A99F;--blue:#1B36FF;--ink:#16203F;--muted:#5B6585;--line:#D5DAEA;--soft:#F3F6FC;
+ --cy-bg:#E6FFFE;--cy-bd:#00D9CF;--ye-bg:#FFF8D6;--ye-bd:#F2C200;--ye-ink:#6B5200}
+body{margin:0;font-family:Inter,"DejaVu Sans",sans-serif;color:var(--ink);font-size:10.5pt;line-height:1.45;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pb{break-before:page}
+.mono{font-family:"DejaVu Sans Mono",monospace;letter-spacing:.16em;text-transform:uppercase}
+/* cover band */
+.cover{background:var(--navy);color:#EAF0FF;border-radius:3mm;padding:8mm 9mm 7mm;position:relative;overflow:hidden}
+.cover:after{content:"";position:absolute;right:-18mm;top:-18mm;width:70mm;height:70mm;border-radius:50%;border:1.2mm solid rgba(0,252,241,.18)}
+.brand{display:flex;gap:3mm;align-items:center;color:var(--cyan)}
+.brand svg{width:10mm;height:11.5mm}
+.brand b{display:block;font-family:"Inter Display",Inter,sans-serif;font-weight:800;letter-spacing:.08em;font-size:12pt;color:#fff}
+.brand span{display:block;font-size:7pt}
+.cover .series{margin-top:7mm;color:var(--cyan);font-size:7.6pt}
+.cover h1{font-family:"Inter Display",Inter,sans-serif;font-weight:800;font-size:28pt;line-height:1.02;margin:1.5mm 0 2mm;color:#fff;text-transform:uppercase;letter-spacing:.01em}
+.cover .sub{color:#B7C2E6;font-size:10pt;max-width:120mm}
+.cover .chips{display:flex;gap:2mm;margin-top:4.5mm;flex-wrap:wrap}
+.cover .chips span{font-size:7.2pt;padding:1.2mm 2.6mm;border-radius:10mm;border:1px solid rgba(255,255,255,.25);color:#EAF0FF}
+.cover .chips .s{background:#00A99F;border-color:#00A99F}.cover .chips .e{background:var(--blue);border-color:var(--blue)}.cover .chips .m{background:#fff;color:var(--navy);border-color:#fff}
+.cover .code{position:absolute;right:9mm;top:8mm;text-align:right;font-size:7pt;color:#9AA6CC}
+.cover .code b{display:block;color:var(--cyan);font-size:8.4pt}
+.who{display:grid;grid-template-columns:2fr 1fr 1fr;gap:5mm;margin:4.5mm 0 4mm;font-size:8.6pt;color:var(--muted)}
+.who span{border-bottom:1px solid var(--line);padding-bottom:5mm}
+h2.st{font-family:"Inter Display",Inter,sans-serif;font-weight:800;font-size:14pt;text-transform:uppercase;letter-spacing:.02em;margin:5mm 0 2.5mm;display:flex;align-items:center;gap:3mm;break-after:avoid}
+h2.st:after{content:"";flex:1;height:1.2pt;background:var(--cyan)}
+.cyan{background:var(--cy-bg);border:1px solid var(--cy-bd);border-left:3.5pt solid var(--cy-bd);border-radius:2mm;padding:3.5mm 4.5mm;break-inside:avoid}
+.cyan h3,.yellow h3{margin:0 0 1.5mm;font-size:7.6pt;color:#007F78}
+.yellow h3{color:var(--ye-ink)}
+.cyan p{margin:0 0 1.6mm}.cyan p:last-child{margin:0}
+.cyan ol{margin:1mm 0 0;padding-left:5mm}.cyan li{margin:.6mm 0}
+.ex{margin-top:3.5mm;break-inside:avoid}
+.ex .q{font-weight:600;margin:0 0 2mm}
+.ex .q em{font-style:normal;font-family:"DejaVu Sans Mono",monospace;font-size:7.6pt;letter-spacing:.14em;color:var(--blue);margin-right:2mm}
+.yellow{background:var(--ye-bg);border:1px solid var(--ye-bd);border-left:3.5pt solid var(--ye-bd);border-radius:2mm;padding:3mm 4.5mm;break-inside:avoid}
+.yellow .step{display:grid;grid-template-columns:6mm 1fr;gap:1mm;margin:.8mm 0}
+.yellow .step b{color:var(--ye-ink)}
+.yellow .fin{margin-top:2mm;font-weight:700}
+.eq{font-family:"DejaVu Serif",serif;font-size:11pt}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 .2em;font-family:"DejaVu Serif",serif;line-height:1.25}
+.frac .nu{padding:0 .25em .15em;border-bottom:1px solid currentColor}.frac .de{padding:.15em .25em 0}
+.rad{white-space:nowrap}.rad .ov{border-top:1px solid currentColor;padding:0 .12em;margin-left:-.05em}
+.display{text-align:center;margin:2mm 0;font-size:12.5pt}
+.levels{display:grid;grid-template-columns:repeat(3,1fr);gap:3mm;margin:3mm 0 1mm;font-size:8.6pt}
+.levels div{border-radius:2mm;padding:2.5mm 3mm;border:1px solid var(--line)}
+.levels b{display:block;font-size:9.4pt;margin-bottom:.5mm}
+.levels .s{border-top:2.5pt solid #00A99F}.levels .e{border-top:2.5pt solid var(--blue)}.levels .m{border-top:2.5pt solid var(--navy)}
+.sect{margin:4.5mm 0 1mm;display:flex;align-items:center;gap:3mm;break-after:avoid}
+.sect .tag{font-family:"Inter Display",Inter,sans-serif;font-weight:800;color:#fff;padding:1.4mm 3.5mm;border-radius:1.5mm;font-size:10.5pt;text-transform:uppercase;letter-spacing:.04em}
+.sect.s .tag{background:#00A99F}.sect.e .tag{background:var(--blue)}.sect.m .tag{background:var(--navy);box-shadow:inset 0 -1.2mm 0 var(--cyan)}
+.sect p{margin:0;font-size:8.8pt;color:var(--muted)}
+.sect .rule{flex:1;height:1px;background:var(--line)}
+.qg{break-inside:avoid}
+.qq{display:grid;grid-template-columns:7mm 1fr 12mm;gap:2mm;padding:2.6mm 0;border-bottom:1px solid #EEF1F8}
+.qq .n{width:6.4mm;height:6.4mm;border-radius:50%;background:var(--navy);color:var(--cyan);display:grid;place-items:center;font-weight:700;font-size:8.4pt}
+.qq .mk{text-align:right;font-family:"DejaVu Sans Mono",monospace;font-size:8pt;color:var(--muted)}
+.qq .t p{margin:0 0 1mm}
+.qq .eq{display:block;margin:1mm 0 1mm 4mm}
+.space{margin-top:1.5mm;background-image:linear-gradient(#C3CADF 1px,transparent 1px);background-size:100% 7mm;background-position:0 6.9mm}
+.ans{display:flex;justify-content:flex-end;gap:2mm;align-items:flex-end;font-size:8.6pt;color:var(--muted);margin-top:1mm}
+.ans span{display:inline-block;min-width:38mm;border-bottom:1px solid var(--ink);height:5mm}
+.tip{margin:2mm 0 1mm;padding:2.3mm 3.5mm;border-radius:2mm;background:var(--cy-bg);border:1px dashed var(--cy-bd);font-size:8.9pt}
+.tip b.mono{font-size:7pt;color:#007F78;margin-right:2mm}
+.tampered{border:1.5px dashed var(--blue);border-radius:2mm;padding:2mm 3mm;margin:1.5mm 0;font-family:"DejaVu Serif",serif;font-size:10pt;background:#FAFBFF}
+.tampered small{display:block;font-family:"DejaVu Sans Mono",monospace;font-size:6.8pt;letter-spacing:.16em;color:var(--blue);margin-bottom:1mm}
+.marked{display:grid;grid-template-columns:1fr 22mm;gap:4mm;align-items:center;margin-top:3mm;padding:3mm 4mm;border-radius:2mm;background:var(--navy);color:#EAF0FF;font-size:9pt;break-inside:avoid}
+.marked b{color:var(--cyan)}.marked img{width:22mm;height:22mm;background:#fff;border-radius:1mm;padding:1mm}
+.sols{columns:2;column-gap:5mm}
+.sol{break-inside:avoid;margin:0 0 3mm;font-size:9pt}
+.sol .yellow{padding:2.4mm 3.2mm}
+.sol .h{display:flex;justify-content:space-between;align-items:center;margin-bottom:1mm}
+.sol .h b{font-size:9.4pt}
+.sol .lvl{font-size:6.4pt;padding:.4mm 1.6mm;border-radius:1mm;color:#fff}
+.sol .w{color:#4B4320;font-size:8.5pt;margin-top:.6mm}
+.sol .a{font-weight:700;margin-top:.8mm}
+.track{border:1px solid var(--line);border-radius:2mm;padding:3mm 4mm;break-inside:avoid;margin-top:2mm}
+.track table{width:100%;border-collapse:collapse;font-size:8.8pt;margin-top:1.5mm}
+.track th,.track td{border:1px solid var(--line);padding:1.6mm 2mm;text-align:center}
+.track th{background:var(--soft);font-weight:600}.track td:first-child,.track th:first-child{text-align:left}
+.rma{display:grid;grid-template-columns:repeat(3,1fr);gap:3mm;margin-top:2.5mm;font-size:8.4pt}
+.rma div{background:var(--soft);border-radius:1.5mm;padding:2mm 2.5mm}.rma b{display:block;color:var(--blue)}
+.closed{margin-top:5mm;background:var(--navy);color:#DDE5FF;border-radius:3mm;padding:6mm 7mm;break-inside:avoid}
+.closed h2{font-family:"Inter Display",Inter,sans-serif;font-weight:800;color:#fff;font-size:15pt;text-transform:uppercase;margin:0 0 2mm}
+.closed h2 em{font-style:normal;color:var(--cyan)}
+.closed ul{margin:2mm 0 0;padding-left:5mm}.closed li{margin:.8mm 0}
+.closed .tag{color:var(--cyan);font-weight:700;margin-top:3mm}
+.next{display:grid;grid-template-columns:1fr 24mm;gap:5mm;align-items:center;margin-top:4mm;border:1.5px solid var(--cy-bd);border-radius:3mm;padding:4.5mm 5mm;background:var(--cy-bg);break-inside:avoid}
+.next h3{margin:0 0 1mm;font-size:7.6pt;color:#007F78}
+.next b.big{display:block;font-family:"Inter Display",Inter,sans-serif;font-size:13pt;margin-bottom:1mm}
+.next p{margin:0;font-size:9.2pt}
+.next .url{font-family:"DejaVu Sans Mono",monospace;font-size:8pt;color:var(--blue);margin-top:1.5mm}
+.next img{width:24mm;height:24mm;background:#fff;border-radius:1mm;padding:1mm;border:1px solid var(--line)}
+
+.parents{display:grid;grid-template-columns:1fr 1fr;gap:3mm;margin:0 0 1mm}
+.parents div{background:var(--soft);border-radius:2mm;padding:2.6mm 3.5mm;font-size:8.9pt;break-inside:avoid}
+.parents b.mono{display:block;font-size:7.2pt;color:var(--blue);margin-bottom:.8mm}
+.parents p{margin:0}
+.qq{grid-template-columns:7mm 1fr}
+.miss{margin-top:3mm;border:1px solid var(--ye-bd);background:#FFFDF2;border-radius:2mm;padding:3mm 4mm;break-inside:avoid;font-size:9pt}
+.miss h3{margin:0 0 1.2mm;font-size:7.6pt;color:var(--ye-ink)}
+.miss ul{margin:0;padding-left:5mm}.miss li{margin:.6mm 0}
+.exs{display:grid;gap:3mm}
+.cover .chips .m{background:#fff;color:var(--navy)}
+.akey{margin:0 0 2mm;font-size:9.2pt;color:var(--muted)}
+.tbl{border-collapse:collapse;margin:1.5mm 0 1mm 4mm;font-size:9.4pt}.tbl td,.tbl th{border:1px solid #C3CADF;padding:1mm 3mm;text-align:center;min-width:12mm}.tbl th{background:var(--soft);font-weight:600}
+.sol .tbl{margin:1mm 0;font-size:8pt}.sol .tbl td,.sol .tbl th{padding:.5mm 1.5mm;min-width:0}
+</style></head><body><div class="cover"><div class="brand"><svg viewBox="0 0 40 46" aria-hidden="true"><path d="M20 2 37 8v13c0 11-7.5 19.5-17 23C10.5 40.5 3 32 3 21V8z" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="18" cy="20" r="7" fill="none" stroke="currentColor" stroke-width="3"/><path d="m23 25 6 6" stroke="#1B36FF" stroke-width="4" stroke-linecap="round"/></svg><div><b>MATHS FORENSICS ACADEMY</b><span class="mono">Academy worksheet · Year 8 · Free</span></div></div>
+      <div class="series mono">Academy revision · Algebra</div><h1>Formulae and equations</h1><div class="sub">Substitute numbers into expressions and formulae, write equations from words, and solve equations, including brackets and unknowns on both sides.</div>
+      <div class="chips"><span class="s mono">Developing</span><span class="e mono">Securing</span><span class="m mono">Extending</span><span class="mono">Answers included</span></div>
+      <div class="code mono"><b>MF-AC-Y8-EQ</b>Year 8 · KS3 · About 40 minutes</div></div>
+      <div class="who"><span>Name</span><span>Class</span><span>Date</span></div><div class="parents">
+      <div><b class="mono">For parents: how to use this sheet</b><p>Read <b>Learn it</b> together first and talk through the worked examples. Then let your child try the questions on their own. Start at <b>Developing</b>; move up when they get most of a level right. Answers are at the back.</p></div>
+      <div><b class="mono">What to listen for</b><p>Ask: <i>what's been done to x, and how do you undo it?</i> Solving is undoing, in reverse order. Encourage writing one step per line and checking the answer by putting it back into the equation.</p></div></div><h2 class="st">Learn it</h2><div class="cyan"><h3 class="mono">What you need to know</h3><p><b>Substituting</b> means replacing each letter with its value, then working it out in the right order (brackets, powers, × and ÷, then + and −). If <i>a</i> = 4, then 3<i>a</i> = 3 × 4 = 12.</p><p>A <b>formula</b> is a rule linking quantities, such as <i>P</i> = 2<i>l</i> + 2<i>w</i>. An <b>equation</b> is true for particular values, which you find by <b>solving</b>.</p><p>To solve, do the <b>same thing to both sides</b> until the letter is on its own. Undo + with −, × with ÷, and work backwards through what was done to the letter.</p><p>Always <b>check</b>: put your answer back into the original equation.</p>
+      </div>
+      <div class="exs"><div class="ex"><p class="q"><em>WORKED EXAMPLE</em>If <i>a</i> = 4 and <i>b</i> = −2, find the value of 3<i>a</i> + 2<i>b</i>.</p>
+      <div class="yellow"><h3 class="mono">Solution</h3><div class="step"><b>1</b><span>Replace the letters: 3 × 4 + 2 × (−2).</span></div><div class="step"><b>2</b><span>= 12 + (−4) = 8.</span></div><div class="fin">✓ 8</div></div></div><div class="ex"><p class="q"><em>WORKED EXAMPLE</em>Solve 3<i>x</i> + 5 = 20</p>
+      <div class="yellow"><h3 class="mono">Solution</h3><div class="step"><b>1</b><span>Subtract 5 from both sides: 3<i>x</i> = 15.</span></div><div class="step"><b>2</b><span>Divide both sides by 3: <i>x</i> = 5.</span></div><div class="step"><b>3</b><span>Check: 3 × 5 + 5 = 20 ✓</span></div><div class="fin">✓ <i>x</i> = 5</div></div></div><div class="ex"><p class="q"><em>WORKED EXAMPLE</em>Solve 4(<i>x</i> − 2) = 28</p>
+      <div class="yellow"><h3 class="mono">Solution</h3><div class="step"><b>1</b><span>Divide both sides by 4: <i>x</i> − 2 = 7.</span></div><div class="step"><b>2</b><span>Add 2 to both sides: <i>x</i> = 9.</span></div><div class="step"><b>3</b><span>(Or expand first: 4<i>x</i> − 8 = 28, so 4<i>x</i> = 36.)</span></div><div class="fin">✓ <i>x</i> = 9</div></div></div><div class="ex"><p class="q"><em>WORKED EXAMPLE</em>Solve 5<i>x</i> + 3 = 2<i>x</i> + 18</p>
+      <div class="yellow"><h3 class="mono">Solution</h3><div class="step"><b>1</b><span>Take 2<i>x</i> from both sides, so the letter is on one side: 3<i>x</i> + 3 = 18.</span></div><div class="step"><b>2</b><span>Subtract 3: 3<i>x</i> = 15.</span></div><div class="step"><b>3</b><span>Divide by 3: <i>x</i> = 5. Check: 28 = 28 ✓</span></div><div class="fin">✓ <i>x</i> = 5</div></div></div></div><div style="break-inside:avoid"><h2 class="st">Practice</h2><p style="margin:0;font-size:9.4pt">Show your working: it helps you check, and it's how marks are won in tests.</p>
+      <div class="levels"><div class="s"><b>Developing</b>Getting the basics: one step at a time.</div><div class="e"><b>Securing</b>Year 8 standard: a few steps, some in context.</div><div class="m"><b>Extending</b>A stretch: problems, reasoning and spotting mistakes.</div></div></div><div class="sect s"><span class="tag">Developing</span><p>Warm up. One step at a time.</p><span class="rule"></span></div><div class="qg"><div class="qq"><div class="n">1</div><div class="t"><p><i>x</i> + 7 = 12</p><div class="space" style="height:14mm"></div><div class="ans"><i>x</i> =<span></span></div></div></div></div><div class="qg"><div class="qq"><div class="n">2</div><div class="t"><p><i>y</i> − 4 = 9</p><div class="space" style="height:14mm"></div><div class="ans"><i>y</i> =<span></span></div></div></div></div><div class="qg"><div class="qq"><div class="n">3</div><div class="t"><p>3<i>m</i> = 21</p><div class="space" style="height:14mm"></div><div class="ans"><i>m</i> =<span></span></div></div></div></div><div class="qg"><div class="qq"><div class="n">4</div><div class="t"><p><span class="frac"><span class="nu"><i>n</i></span><span class="de">4</span></span> = 5</p><div class="space" style="height:14mm"></div><div class="ans"><i>n</i> =<span></span></div></div></div></div><div class="qg"><div class="qq"><div class="n">5</div><div class="t"><p>If <i>a</i> = 5, find the value of 4<i>a</i> − 3.</p><div class="space" style="height:14mm"></div><div class="ans">Answer<span></span></div></div></div></div><div class="qg"><div class="qq"><div class="n">6</div><div class="t"><p>Cinema tickets cost £8 each. The cost of <i>n</i> tickets is <i>C</i> = 8<i>n</i>. Find <i>C</i> when <i>n</i> = 6.</p><div class="space" style="height:14mm"></div><div class="ans"><i>C</i> = £<span></span></div></div></div></div><div class="sect e"><span class="tag">Securing</span><p>The Year 8 standard. Show each step.</p><span class="rule"></span></div><div class="qg"><div class="qq"><div class="n">7</div><div class="t"><p>2<i>x</i> + 7 = 19</p><div class="space" style="height:14mm"></div><div class="ans"><i>x</i> =<span></span></div></div></div></div><div class="qg"><div class="qq"><div class="n">8</div><div class="t"><p>5<i>y</i> − 3 = 22</p><div class="space" style="height:14mm"></div><div class="ans"><i>y</i> =<span></span></div></div></div></div><div class="qg"><div class="qq"><div class="n">9</div><div class="t"><p><span class="frac"><span class="nu"><i>x</i></span><span class="de">3</span></span> + 4 = 10</p><div class="space" style="height:14mm"></div><div class="ans"><i>x</i> =<span></span></div></div></div><div class="tip"><b class="mono">Forensic tip</b>Undo in reverse order: take away the 4 <b>first</b>, then multiply by 3.</div></div><div class="qg"><div class="qq"><div class="n">10</div><div class="t"><p>3(<i>x</i> + 2) = 27</p><div class="space" style="height:14mm"></div><div class="ans"><i>x</i> =<span></span></div></div></div></div><div class="qg"><div class="qq"><div class="n">11</div><div class="t"><p>If <i>p</i> = 3 and <i>q</i> = −4, find the value of <i>p</i>² + 2<i>q</i>.</p><div class="space" style="height:14mm"></div><div class="ans">Answer<span></span></div></div></div></div><div class="qg"><div class="qq"><div class="n">12</div><div class="t"><p>The perimeter of a rectangle is <i>P</i> = 2<i>l</i> + 2<i>w</i>. Find <i>P</i> when <i>l</i> = 7.5 cm and <i>w</i> = 4 cm.</p><div class="space" style="height:14mm"></div><div class="ans"><i>P</i> =<span></span></div></div></div></div><div class="sect m"><span class="tag">Extending</span><p>Problems, reasoning and one piece of tampered evidence.</p><span class="rule"></span></div><div class="qg"><div class="qq"><div class="n">13</div><div class="t"><p>6<i>x</i> − 4 = 2<i>x</i> + 16</p><div class="space" style="height:21mm"></div><div class="ans"><i>x</i> =<span></span></div></div></div></div><div class="qg"><div class="qq"><div class="n">14</div><div class="t"><p>Lily solved 2<i>x</i> + 3 = 15. Find her mistake and give the right answer.</p><div class="tampered"><small>TAMPERED EVIDENCE · FIND THE MISTAKE</small>2<i>x</i> + 3 = 15<br>2<i>x</i> = 18<br><i>x</i> = 9</div><div class="space" style="height:14mm"></div><div class="ans"><i>x</i> =<span></span></div></div></div></div><div class="qg"><div class="qq"><div class="n">15</div><div class="t"><p>I think of a number. I multiply it by 4, then subtract 7. The answer is 25.</p><p>Write an equation and solve it to find my number.</p><div class="space" style="height:21mm"></div><div class="ans">Number<span></span></div></div></div></div><div class="qg"><div class="qq"><div class="n">16</div><div class="t"><p>Solve 3(2<i>x</i> − 1) = 2(<i>x</i> + 7)</p><div class="space" style="height:28mm"></div><div class="ans"><i>x</i> =<span></span></div></div></div></div><h2 class="st pb">Answer key</h2><p class="akey">For checking together. A right answer with the wrong working is worth a second look: ask your child to explain how they got it.</p>
+      <div class="sols"><div class="sol"><div class="yellow"><div class="h"><b>Q1</b><span class="lvl mono" style="background:#00A99F">Developing</span></div><div class="a">✓ <i>x</i> = 5</div></div></div><div class="sol"><div class="yellow"><div class="h"><b>Q2</b><span class="lvl mono" style="background:#00A99F">Developing</span></div><div class="a">✓ <i>y</i> = 13</div></div></div><div class="sol"><div class="yellow"><div class="h"><b>Q3</b><span class="lvl mono" style="background:#00A99F">Developing</span></div><div class="a">✓ <i>m</i> = 7</div></div></div><div class="sol"><div class="yellow"><div class="h"><b>Q4</b><span class="lvl mono" style="background:#00A99F">Developing</span></div><div class=w>Multiply both sides by 4.</div><div class="a">✓ <i>n</i> = 20</div></div></div><div class="sol"><div class="yellow"><div class="h"><b>Q5</b><span class="lvl mono" style="background:#00A99F">Developing</span></div><div class="a">✓ 17</div></div></div><div class="sol"><div class="yellow"><div class="h"><b>Q6</b><span class="lvl mono" style="background:#00A99F">Developing</span></div><div class="a">✓ £48</div></div></div><div class="sol"><div class="yellow"><div class="h"><b>Q7</b><span class="lvl mono" style="background:var(--blue)">Securing</span></div><div class=w>2<i>x</i> = 12</div><div class="a">✓ <i>x</i> = 6</div></div></div><div class="sol"><div class="yellow"><div class="h"><b>Q8</b><span class="lvl mono" style="background:var(--blue)">Securing</span></div><div class=w>5<i>y</i> = 25</div><div class="a">✓ <i>y</i> = 5</div></div></div><div class="sol"><div class="yellow"><div class="h"><b>Q9</b><span class="lvl mono" style="background:var(--blue)">Securing</span></div><div class=w><span class="frac"><span class="nu"><i>x</i></span><span class="de">3</span></span> = 6, so <i>x</i> = 6 × 3.</div><div class="a">✓ <i>x</i> = 18</div></div></div><div class="sol"><div class="yellow"><div class="h"><b>Q10</b><span class="lvl mono" style="background:var(--blue)">Securing</span></div><div class=w><i>x</i> + 2 = 9</div><div class="a">✓ <i>x</i> = 7</div></div></div><div class="sol"><div class="yellow"><div class="h"><b>Q11</b><span class="lvl mono" style="background:var(--blue)">Securing</span></div><div class=w>9 + (−8)</div><div class="a">✓ 1</div></div></div><div class="sol"><div class="yellow"><div class="h"><b>Q12</b><span class="lvl mono" style="background:var(--blue)">Securing</span></div><div class=w>15 + 8</div><div class="a">✓ 23 cm</div></div></div><div class="sol"><div class="yellow"><div class="h"><b>Q13</b><span class="lvl mono" style="background:var(--navy)">Extending</span></div><div class=w>4<i>x</i> − 4 = 16, so 4<i>x</i> = 20.</div><div class="a">✓ <i>x</i> = 5</div></div></div><div class="sol"><div class="yellow"><div class="h"><b>Q14</b><span class="lvl mono" style="background:var(--navy)">Extending</span></div><div class=w>She added 3 instead of subtracting it. 2<i>x</i> = 12.</div><div class="a">✓ <i>x</i> = 6</div></div></div><div class="sol"><div class="yellow"><div class="h"><b>Q15</b><span class="lvl mono" style="background:var(--navy)">Extending</span></div><div class=w>4<i>n</i> = 32</div><div class="a">✓ 4<i>n</i> − 7 = 25, so <i>n</i> = 8</div></div></div><div class="sol"><div class="yellow"><div class="h"><b>Q16</b><span class="lvl mono" style="background:var(--navy)">Extending</span></div><div class=w>6<i>x</i> − 3 = 2<i>x</i> + 14, so 4<i>x</i> = 17.</div><div class="a">✓ <i>x</i> = 4.25 (or <span class="frac"><span class="nu">17</span><span class="de">4</span></span>)</div></div></div></div>
+      <div class="miss"><h3 class="mono">Mistakes to look out for</h3><ul><li>Doing the opposite to only one side. Whatever you do to one side, do to the other.</li><li>Undoing in the wrong order: in <span class="frac"><span class="nu"><i>x</i></span><span class="de">3</span></span> + 4 = 10, take away 4 before multiplying by 3.</li><li>Sign slips when substituting a negative: 2 × (−4) is −8.</li><li>Not checking. Putting the answer back in catches most mistakes.</li></ul></div>
+      <div class="track"><b style="font-size:10pt">How did it go?</b><table><tr><th>Level</th><th>Questions</th><th>Right first time</th><th>Got it now?</th></tr>
+      <tr><td>Developing</td><td>6</td><td></td><td>☐</td></tr><tr><td>Securing</td><td>6</td><td></td><td>☐</td></tr><tr><td>Extending</td><td>4</td><td></td><td>☐</td></tr></table>
+      <div class="rma"><div><b>R · Reading</b>Misread or missed part of the question</div><div><b>M · Method</b>Didn't know how to do it yet</div><div><b>A · Accuracy</b>Knew how, slipped in the working</div></div>
+      <p style="font-size:8.3pt;color:var(--muted);margin:2mm 0 0">Next to each wrong answer, write R, M or A. Mostly R or A? Slow down and check. Mostly M? Go back to Learn it and the worked examples.</p></div>
+      <div class="closed"><h2>Case closed: <em>Formulae and equations</em></h2><div>On this sheet you've practised how to:</div><ul><li>Substitute positive and negative numbers into expressions and formulae.</li><li>Solve one-step and two-step equations.</li><li>Solve equations with brackets and with the unknown on both sides.</li><li>Write an equation from a problem in words.</li></ul>
+      <div class="tag">Because every case comes down to one principle: numbers don't lie.</div></div>
+      <div class="next"><div><h3 class="mono">Your next assignment</h3><b class="big">Keep going in the Maths Forensics Academy</b><p>Step-by-step lessons, answers checked as you go, story cases and maths games for Years 7 to 9. Try the free topics.</p><div class="url">www.mathsforensics.com/academy</div></div><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALoAAAC6AQAAAAAxdWpcAAABuklEQVR4Xs1YW24DIQwch5XyCTfIUdibRbkZe5QeoBJ8RgK5GrNtP5omP1EcCyFlH2KwZ8dDRHEztsPt68BLbgxhcE6bJAAbf6fXLP7/zqOqlqCqH+feiEdV+4tScqcee4qWeDlWPjZEXlWoBywZcu5tHacSDJg3quUXblRp6w/5H+3jbzz3jawViBc0US0LEJTQnrvG7bizRhORlXQ6lZFwTRCRxRnVEqxmwzZz/Ewd2S746hV61B4LgFChNRu63GNxrSC0EthULcTCGYA/qtxB5dRKnqsSoXeuWKgF2RieB+ett9Wb7ehWL4oDJSKHmlU1qDevtPSogXgw2TVx+rK9f3dnYrO+zOGNiiSvU973LBnhnXM1BYFVmyqBHN6AVxQr7CSfwID8BrnabUKgXlFFe+TwZbtqMUGwFHFQUb1zdRhyHqdL3/sg2SWyejtk6zUmCLP9Wbvx7zjzjAMTq0DPsKG5+/ZdRa01W9+xXHl3nAMPgAnjpEPWBRlNlkZr6voN7ouHupld3/g9arm6n1JntPPOdqA3d99+MANDoz7Shraymomq5VpB81fGebPuebplb7bLW/4n8wVmUA8xeqrGGwAAAABJRU5ErkJggg==" alt="QR code"></div></body></html>

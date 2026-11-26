@@ -1,0 +1,238 @@
+{
+ "code": "MF-AC-Y8-EQ",
+ "product_line": "Academy worksheet · Year 8 · Free",
+ "strand": "Algebra",
+ "title": "Formulae and equations",
+ "level_line": "Year 8 · KS3",
+ "time": "About 40 minutes",
+ "cover_sub": "Substitute numbers into expressions and formulae, write equations from words, and solve equations, including brackets and unknowns on both sides.",
+ "parents": {
+  "listen": "Ask: <i>what's been done to x, and how do you undo it?</i> Solving is undoing, in reverse order. Encourage writing one step per line and checking the answer by putting it back into the equation."
+ },
+ "levels_long": {
+  "d": "Getting the basics: one step at a time.",
+  "s": "Year 8 standard: a few steps, some in context.",
+  "e": "A stretch: problems, reasoning and spotting mistakes."
+ },
+ "briefing": [
+  "<b>Substituting</b> means replacing each letter with its value, then working it out in the right order (brackets, powers, × and ÷, then + and −). If <i>a</i> = 4, then 3<i>a</i> = 3 × 4 = 12.",
+  "A <b>formula</b> is a rule linking quantities, such as <i>P</i> = 2<i>l</i> + 2<i>w</i>. An <b>equation</b> is true for particular values, which you find by <b>solving</b>.",
+  "To solve, do the <b>same thing to both sides</b> until the letter is on its own. Undo + with −, × with ÷, and work backwards through what was done to the letter.",
+  "Always <b>check</b>: put your answer back into the original equation."
+ ],
+ "method": null,
+ "examples": [
+  {
+   "question": "If <i>a</i> = 4 and <i>b</i> = −2, find the value of 3<i>a</i> + 2<i>b</i>.",
+   "steps": [
+    "Replace the letters: 3 × 4 + 2 × (−2).",
+    "= 12 + (−4) = 8."
+   ],
+   "answer": "8"
+  },
+  {
+   "question": "Solve 3<i>x</i> + 5 = 20",
+   "steps": [
+    "Subtract 5 from both sides: 3<i>x</i> = 15.",
+    "Divide both sides by 3: <i>x</i> = 5.",
+    "Check: 3 × 5 + 5 = 20 ✓"
+   ],
+   "answer": "<i>x</i> = 5"
+  },
+  {
+   "question": "Solve 4(<i>x</i> − 2) = 28",
+   "steps": [
+    "Divide both sides by 4: <i>x</i> − 2 = 7.",
+    "Add 2 to both sides: <i>x</i> = 9.",
+    "(Or expand first: 4<i>x</i> − 8 = 28, so 4<i>x</i> = 36.)"
+   ],
+   "answer": "<i>x</i> = 9"
+  },
+  {
+   "question": "Solve 5<i>x</i> + 3 = 2<i>x</i> + 18",
+   "steps": [
+    "Take 2<i>x</i> from both sides, so the letter is on one side: 3<i>x</i> + 3 = 18.",
+    "Subtract 3: 3<i>x</i> = 15.",
+    "Divide by 3: <i>x</i> = 5. Check: 28 = 28 ✓"
+   ],
+   "answer": "<i>x</i> = 5"
+  }
+ ],
+ "sections": {
+  "d": {
+   "blurb": "Warm up. One step at a time.",
+   "questions": [
+    {
+     "text": [
+      "<i>x</i> + 7 = 12"
+     ],
+     "answer": "<i>x</i> = 5",
+     "lines": 2,
+     "answer_label": "<i>x</i> ="
+    },
+    {
+     "text": [
+      "<i>y</i> − 4 = 9"
+     ],
+     "answer": "<i>y</i> = 13",
+     "lines": 2,
+     "answer_label": "<i>y</i> ="
+    },
+    {
+     "text": [
+      "3<i>m</i> = 21"
+     ],
+     "answer": "<i>m</i> = 7",
+     "lines": 2,
+     "answer_label": "<i>m</i> ="
+    },
+    {
+     "text": [
+      "<span class=\"frac\"><span class=\"nu\"><i>n</i></span><span class=\"de\">4</span></span> = 5"
+     ],
+     "answer": "<i>n</i> = 20",
+     "lines": 2,
+     "answer_label": "<i>n</i> =",
+     "working": "Multiply both sides by 4."
+    },
+    {
+     "text": [
+      "If <i>a</i> = 5, find the value of 4<i>a</i> − 3."
+     ],
+     "answer": "17",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "Cinema tickets cost £8 each. The cost of <i>n</i> tickets is <i>C</i> = 8<i>n</i>. Find <i>C</i> when <i>n</i> = 6."
+     ],
+     "answer": "£48",
+     "lines": 2,
+     "answer_label": "<i>C</i> = £"
+    }
+   ]
+  },
+  "s": {
+   "blurb": "The Year 8 standard. Show each step.",
+   "questions": [
+    {
+     "text": [
+      "2<i>x</i> + 7 = 19"
+     ],
+     "answer": "<i>x</i> = 6",
+     "lines": 2,
+     "answer_label": "<i>x</i> =",
+     "working": "2<i>x</i> = 12"
+    },
+    {
+     "text": [
+      "5<i>y</i> − 3 = 22"
+     ],
+     "answer": "<i>y</i> = 5",
+     "lines": 2,
+     "answer_label": "<i>y</i> =",
+     "working": "5<i>y</i> = 25"
+    },
+    {
+     "text": [
+      "<span class=\"frac\"><span class=\"nu\"><i>x</i></span><span class=\"de\">3</span></span> + 4 = 10"
+     ],
+     "answer": "<i>x</i> = 18",
+     "lines": 2,
+     "answer_label": "<i>x</i> =",
+     "working": "<span class=\"frac\"><span class=\"nu\"><i>x</i></span><span class=\"de\">3</span></span> = 6, so <i>x</i> = 6 × 3.",
+     "tip": "Undo in reverse order: take away the 4 <b>first</b>, then multiply by 3."
+    },
+    {
+     "text": [
+      "3(<i>x</i> + 2) = 27"
+     ],
+     "answer": "<i>x</i> = 7",
+     "lines": 2,
+     "answer_label": "<i>x</i> =",
+     "working": "<i>x</i> + 2 = 9"
+    },
+    {
+     "text": [
+      "If <i>p</i> = 3 and <i>q</i> = −4, find the value of <i>p</i>² + 2<i>q</i>."
+     ],
+     "answer": "1",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "9 + (−8)"
+    },
+    {
+     "text": [
+      "The perimeter of a rectangle is <i>P</i> = 2<i>l</i> + 2<i>w</i>. Find <i>P</i> when <i>l</i> = 7.5 cm and <i>w</i> = 4 cm."
+     ],
+     "answer": "23 cm",
+     "lines": 2,
+     "answer_label": "<i>P</i> =",
+     "working": "15 + 8"
+    }
+   ]
+  },
+  "e": {
+   "blurb": "Problems, reasoning and one piece of tampered evidence.",
+   "questions": [
+    {
+     "text": [
+      "6<i>x</i> − 4 = 2<i>x</i> + 16"
+     ],
+     "answer": "<i>x</i> = 5",
+     "lines": 3,
+     "answer_label": "<i>x</i> =",
+     "working": "4<i>x</i> − 4 = 16, so 4<i>x</i> = 20."
+    },
+    {
+     "text": [
+      "Lily solved 2<i>x</i> + 3 = 15. Find her mistake and give the right answer."
+     ],
+     "answer": "<i>x</i> = 6",
+     "lines": 2,
+     "answer_label": "<i>x</i> =",
+     "working": "She added 3 instead of subtracting it. 2<i>x</i> = 12.",
+     "tampered": "2<i>x</i> + 3 = 15<br>2<i>x</i> = 18<br><i>x</i> = 9"
+    },
+    {
+     "text": [
+      "I think of a number. I multiply it by 4, then subtract 7. The answer is 25.",
+      "Write an equation and solve it to find my number."
+     ],
+     "answer": "4<i>n</i> − 7 = 25, so <i>n</i> = 8",
+     "lines": 3,
+     "answer_label": "Number",
+     "working": "4<i>n</i> = 32"
+    },
+    {
+     "text": [
+      "Solve 3(2<i>x</i> − 1) = 2(<i>x</i> + 7)"
+     ],
+     "answer": "<i>x</i> = 4.25 (or <span class=\"frac\"><span class=\"nu\">17</span><span class=\"de\">4</span></span>)",
+     "lines": 4,
+     "answer_label": "<i>x</i> =",
+     "working": "6<i>x</i> − 3 = 2<i>x</i> + 14, so 4<i>x</i> = 17."
+    }
+   ]
+  }
+ },
+ "mistakes": [
+  "Doing the opposite to only one side. Whatever you do to one side, do to the other.",
+  "Undoing in the wrong order: in <span class=\"frac\"><span class=\"nu\"><i>x</i></span><span class=\"de\">3</span></span> + 4 = 10, take away 4 before multiplying by 3.",
+  "Sign slips when substituting a negative: 2 × (−4) is −8.",
+  "Not checking. Putting the answer back in catches most mistakes."
+ ],
+ "closed_title": "Formulae and equations",
+ "closed_points": [
+  "Substitute positive and negative numbers into expressions and formulae.",
+  "Solve one-step and two-step equations.",
+  "Solve equations with brackets and with the unknown on both sides.",
+  "Write an equation from a problem in words."
+ ],
+ "next": {
+  "title": "Keep going in the Maths Forensics Academy",
+  "text": "Step-by-step lessons, answers checked as you go, story cases and maths games for Years 7 to 9. Try the free topics.",
+  "url": "https://www.mathsforensics.com/academy"
+ }
+}

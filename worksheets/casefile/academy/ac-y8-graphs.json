@@ -1,0 +1,230 @@
+{
+ "code": "MF-AC-Y8-GRAPH",
+ "product_line": "Academy worksheet · Year 8 · Free",
+ "strand": "Algebra",
+ "title": "Straight-line graphs",
+ "level_line": "Year 8 · KS3",
+ "time": "About 40 minutes",
+ "cover_sub": "Use coordinates in all four quadrants, draw straight-line graphs from a table of values, and find the gradient and y-intercept of a line.",
+ "parents": {
+  "listen": "Ask: <i>across first, then up or down?</i> Coordinates are always (<i>x</i>, <i>y</i>). For <i>y</i> = <i>m</i><i>x</i> + <i>c</i>, ask which number tells you how steep the line is (<i>m</i>, the gradient) and where it crosses the <i>y</i>-axis (<i>c</i>)."
+ },
+ "levels_long": {
+  "d": "Getting the basics: one step at a time.",
+  "s": "Year 8 standard: a few steps, some in context.",
+  "e": "A stretch: problems, reasoning and spotting mistakes."
+ },
+ "briefing": [
+  "<b>Coordinates</b> (<i>x</i>, <i>y</i>): go across to <i>x</i> first, then up or down to <i>y</i>.",
+  "To draw a line from its equation, make a <b>table of values</b>: choose some <i>x</i> values, work out each <i>y</i>, plot the points and join them with a ruler.",
+  "Every straight line can be written <i>y</i> = <i>m</i><i>x</i> + <i>c</i>. <b><i>m</i> is the gradient</b> (how far up for each 1 across; negative means it slopes down). <b><i>c</i> is the y-intercept</b> (where it crosses the <i>y</i>-axis).",
+  "Lines with the same gradient are <b>parallel</b>. <i>x</i> = 3 is a vertical line; <i>y</i> = 3 is a horizontal line."
+ ],
+ "method": null,
+ "examples": [
+  {
+   "question": "Draw the graph of <i>y</i> = 2<i>x</i> + 1 for <i>x</i> from −1 to 3.",
+   "steps": [
+    "Table of values: <i>x</i> = −1, 0, 1, 2, 3 gives <i>y</i> = −1, 1, 3, 5, 7.",
+    "Plot (−1, −1), (0, 1), (1, 3), (2, 5), (3, 7).",
+    "Join them with a ruler: it's a straight line."
+   ],
+   "answer": "The line shown, crossing the <i>y</i>-axis at 1",
+   "svg": "<svg viewBox=\"0 0 60 72\" style=\"width:60mm;height:72mm;display:block;margin:2mm 0 1mm 4mm\" font-family=\"DejaVu Sans\" font-size=\"3\"><line x1=\"10.00\" y1=\"62.00\" x2=\"10.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"20.00\" y1=\"62.00\" x2=\"20.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"30.00\" y1=\"62.00\" x2=\"30.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"40.00\" y1=\"62.00\" x2=\"40.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"50.00\" y1=\"62.00\" x2=\"50.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"62.00\" x2=\"50.00\" y2=\"62.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"56.80\" x2=\"50.00\" y2=\"56.80\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"51.60\" x2=\"50.00\" y2=\"51.60\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"46.40\" x2=\"50.00\" y2=\"46.40\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"41.20\" x2=\"50.00\" y2=\"41.20\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"36.00\" x2=\"50.00\" y2=\"36.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"30.80\" x2=\"50.00\" y2=\"30.80\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"25.60\" x2=\"50.00\" y2=\"25.60\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"20.40\" x2=\"50.00\" y2=\"20.40\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"15.20\" x2=\"50.00\" y2=\"15.20\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"10.00\" x2=\"50.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"51.60\" x2=\"53.00\" y2=\"51.60\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"20.00\" y1=\"62.00\" x2=\"20.00\" y2=\"7.00\" stroke=\"#16203F\" stroke-width=\".5\"/><text x=\"53.50\" y=\"52.60\" font-style=\"italic\" font-family=\"DejaVu Serif\" font-size=\"3.6\">x</text><text x=\"21.20\" y=\"6.50\" font-style=\"italic\" font-family=\"DejaVu Serif\" font-size=\"3.6\">y</text><text x=\"10.00\" y=\"55.40\" text-anchor=\"middle\">−1</text><text x=\"30.00\" y=\"55.40\" text-anchor=\"middle\">1</text><text x=\"40.00\" y=\"55.40\" text-anchor=\"middle\">2</text><text x=\"50.00\" y=\"55.40\" text-anchor=\"middle\">3</text><text x=\"18.80\" y=\"63.00\" text-anchor=\"end\">−2</text><text x=\"18.80\" y=\"57.80\" text-anchor=\"end\">−1</text><text x=\"18.80\" y=\"47.40\" text-anchor=\"end\">1</text><text x=\"18.80\" y=\"42.20\" text-anchor=\"end\">2</text><text x=\"18.80\" y=\"37.00\" text-anchor=\"end\">3</text><text x=\"18.80\" y=\"31.80\" text-anchor=\"end\">4</text><text x=\"18.80\" y=\"26.60\" text-anchor=\"end\">5</text><text x=\"18.80\" y=\"21.40\" text-anchor=\"end\">6</text><text x=\"18.80\" y=\"16.20\" text-anchor=\"end\">7</text><text x=\"18.80\" y=\"11.00\" text-anchor=\"end\">8</text><polyline points=\"10.00,56.80 10.20,56.59 10.40,56.38 10.60,56.18 10.80,55.97 11.00,55.76 11.20,55.55 11.40,55.34 11.60,55.14 11.80,54.93 12.00,54.72 12.20,54.51 12.40,54.30 12.60,54.10 12.80,53.89 13.00,53.68 13.20,53.47 13.40,53.26 13.60,53.06 13.80,52.85 14.00,52.64 14.20,52.43 14.40,52.22 14.60,52.02 14.80,51.81 15.00,51.60 15.20,51.39 15.40,51.18 15.60,50.98 15.80,50.77 16.00,50.56 16.20,50.35 16.40,50.14 16.60,49.94 16.80,49.73 17.00,49.52 17.20,49.31 17.40,49.10 17.60,48.90 17.80,48.69 18.00,48.48 18.20,48.27 18.40,48.06 18.60,47.86 18.80,47.65 19.00,47.44 19.20,47.23 19.40,47.02 19.60,46.82 19.80,46.61 20.00,46.40 20.20,46.19 20.40,45.98 20.60,45.78 20.80,45.57 21.00,45.36 21.20,45.15 21.40,44.94 21.60,44.74 21.80,44.53 22.00,44.32 22.20,44.11 22.40,43.90 22.60,43.70 22.80,43.49 23.00,43.28 23.20,43.07 23.40,42.86 23.60,42.66 23.80,42.45 24.00,42.24 24.20,42.03 24.40,41.82 24.60,41.62 24.80,41.41 25.00,41.20 25.20,40.99 25.40,40.78 25.60,40.58 25.80,40.37 26.00,40.16 26.20,39.95 26.40,39.74 26.60,39.54 26.80,39.33 27.00,39.12 27.20,38.91 27.40,38.70 27.60,38.50 27.80,38.29 28.00,38.08 28.20,37.87 28.40,37.66 28.60,37.46 28.80,37.25 29.00,37.04 29.20,36.83 29.40,36.62 29.60,36.42 29.80,36.21 30.00,36.00 30.20,35.79 30.40,35.58 30.60,35.38 30.80,35.17 31.00,34.96 31.20,34.75 31.40,34.54 31.60,34.34 31.80,34.13 32.00,33.92 32.20,33.71 32.40,33.50 32.60,33.30 32.80,33.09 33.00,32.88 33.20,32.67 33.40,32.46 33.60,32.26 33.80,32.05 34.00,31.84 34.20,31.63 34.40,31.42 34.60,31.22 34.80,31.01 35.00,30.80 35.20,30.59 35.40,30.38 35.60,30.18 35.80,29.97 36.00,29.76 36.20,29.55 36.40,29.34 36.60,29.14 36.80,28.93 37.00,28.72 37.20,28.51 37.40,28.30 37.60,28.10 37.80,27.89 38.00,27.68 38.20,27.47 38.40,27.26 38.60,27.06 38.80,26.85 39.00,26.64 39.20,26.43 39.40,26.22 39.60,26.02 39.80,25.81 40.00,25.60 40.20,25.39 40.40,25.18 40.60,24.98 40.80,24.77 41.00,24.56 41.20,24.35 41.40,24.14 41.60,23.94 41.80,23.73 42.00,23.52 42.20,23.31 42.40,23.10 42.60,22.90 42.80,22.69 43.00,22.48 43.20,22.27 43.40,22.06 43.60,21.86 43.80,21.65 44.00,21.44 44.20,21.23 44.40,21.02 44.60,20.82 44.80,20.61 45.00,20.40 45.20,20.19 45.40,19.98 45.60,19.78 45.80,19.57 46.00,19.36 46.20,19.15 46.40,18.94 46.60,18.74 46.80,18.53 47.00,18.32 47.20,18.11 47.40,17.90 47.60,17.70 47.80,17.49 48.00,17.28 48.20,17.07 48.40,16.86 48.60,16.66 48.80,16.45 49.00,16.24 49.20,16.03 49.40,15.82 49.60,15.62 49.80,15.41 50.00,15.20\" fill=\"none\" stroke=\"#1B36FF\" stroke-width=\".7\"/><circle cx=\"10.00\" cy=\"56.80\" r=\".8\" fill=\"#16203F\"/><text x=\"11.50\" y=\"55.60\" font-size=\"3.2\" font-weight=\"bold\"></text><circle cx=\"20.00\" cy=\"46.40\" r=\".8\" fill=\"#16203F\"/><text x=\"21.50\" y=\"45.20\" font-size=\"3.2\" font-weight=\"bold\"></text><circle cx=\"30.00\" cy=\"36.00\" r=\".8\" fill=\"#16203F\"/><text x=\"31.50\" y=\"34.80\" font-size=\"3.2\" font-weight=\"bold\"></text><circle cx=\"40.00\" cy=\"25.60\" r=\".8\" fill=\"#16203F\"/><text x=\"41.50\" y=\"24.40\" font-size=\"3.2\" font-weight=\"bold\"></text><circle cx=\"50.00\" cy=\"15.20\" r=\".8\" fill=\"#16203F\"/><text x=\"51.50\" y=\"14.00\" font-size=\"3.2\" font-weight=\"bold\"></text></svg>"
+  },
+  {
+   "question": "Find the gradient and <i>y</i>-intercept of <i>y</i> = 3<i>x</i> − 2.",
+   "steps": [
+    "Compare with <i>y</i> = <i>m</i><i>x</i> + <i>c</i>.",
+    "<i>m</i> = 3, so it goes up 3 for every 1 across.",
+    "<i>c</i> = −2, so it crosses the <i>y</i>-axis at (0, −2)."
+   ],
+   "answer": "Gradient 3, <i>y</i>-intercept −2"
+  },
+  {
+   "question": "Find the gradient of the line through (1, 3) and (3, 11).",
+   "steps": [
+    "Change in <i>y</i>: 11 − 3 = 8. Change in <i>x</i>: 3 − 1 = 2.",
+    "Gradient = change in <i>y</i> ÷ change in <i>x</i> = 8 ÷ 2."
+   ],
+   "answer": "4"
+  }
+ ],
+ "sections": {
+  "d": {
+   "blurb": "Warm up. One step at a time.",
+   "questions": [
+    {
+     "text": [
+      "Write the coordinates of A, B, C and D.",
+      "<svg viewBox=\"0 0 64 64\" style=\"width:64mm;height:64mm;display:block;margin:2mm 0 1mm 4mm\" font-family=\"DejaVu Sans\" font-size=\"3\"><line x1=\"10.00\" y1=\"54.00\" x2=\"10.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"15.50\" y1=\"54.00\" x2=\"15.50\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"21.00\" y1=\"54.00\" x2=\"21.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"26.50\" y1=\"54.00\" x2=\"26.50\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"32.00\" y1=\"54.00\" x2=\"32.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"37.50\" y1=\"54.00\" x2=\"37.50\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"43.00\" y1=\"54.00\" x2=\"43.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"48.50\" y1=\"54.00\" x2=\"48.50\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"54.00\" y1=\"54.00\" x2=\"54.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"54.00\" x2=\"54.00\" y2=\"54.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"48.50\" x2=\"54.00\" y2=\"48.50\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"43.00\" x2=\"54.00\" y2=\"43.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"37.50\" x2=\"54.00\" y2=\"37.50\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"32.00\" x2=\"54.00\" y2=\"32.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"26.50\" x2=\"54.00\" y2=\"26.50\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"21.00\" x2=\"54.00\" y2=\"21.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"15.50\" x2=\"54.00\" y2=\"15.50\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"10.00\" x2=\"54.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"32.00\" x2=\"57.00\" y2=\"32.00\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"32.00\" y1=\"54.00\" x2=\"32.00\" y2=\"7.00\" stroke=\"#16203F\" stroke-width=\".5\"/><text x=\"57.50\" y=\"33.00\" font-style=\"italic\" font-family=\"DejaVu Serif\" font-size=\"3.6\">x</text><text x=\"33.20\" y=\"6.50\" font-style=\"italic\" font-family=\"DejaVu Serif\" font-size=\"3.6\">y</text><text x=\"10.00\" y=\"35.80\" text-anchor=\"middle\">−4</text><text x=\"15.50\" y=\"35.80\" text-anchor=\"middle\">−3</text><text x=\"21.00\" y=\"35.80\" text-anchor=\"middle\">−2</text><text x=\"26.50\" y=\"35.80\" text-anchor=\"middle\">−1</text><text x=\"37.50\" y=\"35.80\" text-anchor=\"middle\">1</text><text x=\"43.00\" y=\"35.80\" text-anchor=\"middle\">2</text><text x=\"48.50\" y=\"35.80\" text-anchor=\"middle\">3</text><text x=\"54.00\" y=\"35.80\" text-anchor=\"middle\">4</text><text x=\"30.80\" y=\"55.00\" text-anchor=\"end\">−4</text><text x=\"30.80\" y=\"49.50\" text-anchor=\"end\">−3</text><text x=\"30.80\" y=\"44.00\" text-anchor=\"end\">−2</text><text x=\"30.80\" y=\"38.50\" text-anchor=\"end\">−1</text><text x=\"30.80\" y=\"27.50\" text-anchor=\"end\">1</text><text x=\"30.80\" y=\"22.00\" text-anchor=\"end\">2</text><text x=\"30.80\" y=\"16.50\" text-anchor=\"end\">3</text><text x=\"30.80\" y=\"11.00\" text-anchor=\"end\">4</text><circle cx=\"43.00\" cy=\"15.50\" r=\".8\" fill=\"#16203F\"/><text x=\"44.50\" y=\"14.30\" font-size=\"3.2\" font-weight=\"bold\">A</text><circle cx=\"26.50\" cy=\"10.00\" r=\".8\" fill=\"#16203F\"/><text x=\"28.00\" y=\"8.80\" font-size=\"3.2\" font-weight=\"bold\">B</text><circle cx=\"15.50\" cy=\"43.00\" r=\".8\" fill=\"#16203F\"/><text x=\"17.00\" y=\"41.80\" font-size=\"3.2\" font-weight=\"bold\">C</text><circle cx=\"54.00\" cy=\"37.50\" r=\".8\" fill=\"#16203F\"/><text x=\"55.50\" y=\"36.30\" font-size=\"3.2\" font-weight=\"bold\">D</text></svg>"
+     ],
+     "answer": "A(2, 3), B(−1, 4), C(−3, −2), D(4, −1)",
+     "lines": 1,
+     "answer_label": "A ____ B ____ C ____ D"
+    },
+    {
+     "text": [
+      "Complete the table for <i>y</i> = <i>x</i> + 3.",
+      "<table class=\"tbl\"><tr><th><i>x</i></th><th>0</th><th>1</th><th>2</th><th>3</th></tr><tr><td><i>y</i></td><td></td><td></td><td></td><td></td></tr></table>"
+     ],
+     "answer": "3, 4, 5, 6",
+     "lines": 1,
+     "answer_label": "<i>y</i> values"
+    },
+    {
+     "text": [
+      "Is the point (2, 7) on the line <i>y</i> = 3<i>x</i> + 1? Show how you know."
+     ],
+     "answer": "Yes: 3 × 2 + 1 = 7.",
+     "lines": 1,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "Write the equation of the horizontal line through (0, 4)."
+     ],
+     "answer": "<i>y</i> = 4",
+     "lines": 1,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "Write the equation of the line through (5, 1) and (5, −3)."
+     ],
+     "answer": "<i>x</i> = 5",
+     "lines": 1,
+     "answer_label": "Answer",
+     "working": "Both points have <i>x</i> = 5: it's a vertical line."
+    },
+    {
+     "text": [
+      "Complete the table for <i>y</i> = 2<i>x</i> − 1.",
+      "<table class=\"tbl\"><tr><th><i>x</i></th><th>−1</th><th>0</th><th>1</th><th>2</th></tr><tr><td><i>y</i></td><td></td><td></td><td></td><td></td></tr></table>"
+     ],
+     "answer": "−3, −1, 1, 3",
+     "lines": 1,
+     "answer_label": "<i>y</i> values"
+    }
+   ]
+  },
+  "s": {
+   "blurb": "The Year 8 standard. Show each step.",
+   "questions": [
+    {
+     "text": [
+      "Complete the table for <i>y</i> = 3<i>x</i> − 2, then draw the graph on the grid.",
+      "<table class=\"tbl\"><tr><th><i>x</i></th><th>−1</th><th>0</th><th>1</th><th>2</th><th>3</th></tr><tr><td><i>y</i></td><td></td><td></td><td></td><td></td><td></td></tr></table>",
+      "<svg viewBox=\"0 0 60 80\" style=\"width:60mm;height:80mm;display:block;margin:2mm 0 1mm 4mm\" font-family=\"DejaVu Sans\" font-size=\"3\"><line x1=\"10.00\" y1=\"70.00\" x2=\"10.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"20.00\" y1=\"70.00\" x2=\"20.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"30.00\" y1=\"70.00\" x2=\"30.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"40.00\" y1=\"70.00\" x2=\"40.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"50.00\" y1=\"70.00\" x2=\"50.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"70.00\" x2=\"50.00\" y2=\"70.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"65.71\" x2=\"50.00\" y2=\"65.71\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"61.43\" x2=\"50.00\" y2=\"61.43\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"57.14\" x2=\"50.00\" y2=\"57.14\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"52.86\" x2=\"50.00\" y2=\"52.86\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"48.57\" x2=\"50.00\" y2=\"48.57\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"44.29\" x2=\"50.00\" y2=\"44.29\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"40.00\" x2=\"50.00\" y2=\"40.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"35.71\" x2=\"50.00\" y2=\"35.71\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"31.43\" x2=\"50.00\" y2=\"31.43\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"27.14\" x2=\"50.00\" y2=\"27.14\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"22.86\" x2=\"50.00\" y2=\"22.86\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"18.57\" x2=\"50.00\" y2=\"18.57\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"14.29\" x2=\"50.00\" y2=\"14.29\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"10.00\" x2=\"50.00\" y2=\"10.00\" stroke=\"#C9D0E2\" stroke-width=\".3\"/><line x1=\"10.00\" y1=\"44.29\" x2=\"53.00\" y2=\"44.29\" stroke=\"#16203F\" stroke-width=\".5\"/><line x1=\"20.00\" y1=\"70.00\" x2=\"20.00\" y2=\"7.00\" stroke=\"#16203F\" stroke-width=\".5\"/><text x=\"53.50\" y=\"45.29\" font-style=\"italic\" font-family=\"DejaVu Serif\" font-size=\"3.6\">x</text><text x=\"21.20\" y=\"6.50\" font-style=\"italic\" font-family=\"DejaVu Serif\" font-size=\"3.6\">y</text><text x=\"10.00\" y=\"48.09\" text-anchor=\"middle\">−1</text><text x=\"30.00\" y=\"48.09\" text-anchor=\"middle\">1</text><text x=\"40.00\" y=\"48.09\" text-anchor=\"middle\">2</text><text x=\"50.00\" y=\"48.09\" text-anchor=\"middle\">3</text><text x=\"18.80\" y=\"71.00\" text-anchor=\"end\">−6</text><text x=\"18.80\" y=\"66.71\" text-anchor=\"end\">−5</text><text x=\"18.80\" y=\"62.43\" text-anchor=\"end\">−4</text><text x=\"18.80\" y=\"58.14\" text-anchor=\"end\">−3</text><text x=\"18.80\" y=\"53.86\" text-anchor=\"end\">−2</text><text x=\"18.80\" y=\"49.57\" text-anchor=\"end\">−1</text><text x=\"18.80\" y=\"41.00\" text-anchor=\"end\">1</text><text x=\"18.80\" y=\"36.71\" text-anchor=\"end\">2</text><text x=\"18.80\" y=\"32.43\" text-anchor=\"end\">3</text><text x=\"18.80\" y=\"28.14\" text-anchor=\"end\">4</text><text x=\"18.80\" y=\"23.86\" text-anchor=\"end\">5</text><text x=\"18.80\" y=\"19.57\" text-anchor=\"end\">6</text><text x=\"18.80\" y=\"15.29\" text-anchor=\"end\">7</text><text x=\"18.80\" y=\"11.00\" text-anchor=\"end\">8</text></svg>"
+     ],
+     "answer": "−5, −2, 1, 4, 7. A straight line through (−1, −5) and (3, 7).",
+     "lines": 0,
+     "answer_label": "Table done ☐ Line drawn"
+    },
+    {
+     "text": [
+      "Write the gradient and <i>y</i>-intercept of <i>y</i> = 4<i>x</i> + 7."
+     ],
+     "answer": "Gradient 4, intercept 7",
+     "lines": 2,
+     "answer_label": "Gradient ____ Intercept"
+    },
+    {
+     "text": [
+      "Write the gradient and <i>y</i>-intercept of <i>y</i> = 5 − 2<i>x</i>."
+     ],
+     "answer": "Gradient −2, intercept 5",
+     "lines": 2,
+     "answer_label": "Gradient ____ Intercept",
+     "tip": "Rewrite it as <i>y</i> = −2<i>x</i> + 5. The gradient is the number in front of <i>x</i>, sign included."
+    },
+    {
+     "text": [
+      "Which two of these lines are parallel? <i>y</i> = 2<i>x</i> + 3, <i>y</i> = 3<i>x</i> + 2, <i>y</i> = 2<i>x</i> − 5, <i>y</i> = <i>x</i> + 2"
+     ],
+     "answer": "<i>y</i> = 2<i>x</i> + 3 and <i>y</i> = 2<i>x</i> − 5",
+     "lines": 2,
+     "answer_label": "Lines",
+     "working": "Parallel lines have the same gradient: 2."
+    },
+    {
+     "text": [
+      "Find the gradient of the line through (1, 3) and (3, 11)."
+     ],
+     "answer": "4",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "<span class=\"frac\"><span class=\"nu\">11 − 3</span><span class=\"de\">3 − 1</span></span> = <span class=\"frac\"><span class=\"nu\">8</span><span class=\"de\">2</span></span>"
+    },
+    {
+     "text": [
+      "A taxi charges £3 plus £2 per mile, so the cost is <i>C</i> = 2<i>m</i> + 3. How much is a 7-mile journey?"
+     ],
+     "answer": "£17",
+     "lines": 2,
+     "answer_label": "£"
+    }
+   ]
+  },
+  "e": {
+   "blurb": "Problems, reasoning and one piece of tampered evidence.",
+   "questions": [
+    {
+     "text": [
+      "Write the equation of the line with gradient 3 that crosses the <i>y</i>-axis at (0, −4)."
+     ],
+     "answer": "<i>y</i> = 3<i>x</i> − 4",
+     "lines": 1,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "Nadia read the gradient of <i>y</i> = 7 − 3<i>x</i>. Find her mistake."
+     ],
+     "answer": "The gradient is −3, not 7.",
+     "lines": 2,
+     "answer_label": "Gradient =",
+     "working": "The gradient is the number in front of <i>x</i>: <i>y</i> = −3<i>x</i> + 7.",
+     "tampered": "The first number is the gradient,<br>so the gradient is 7"
+    },
+    {
+     "text": [
+      "Find the equation of the line through (1, 5) and (3, 9)."
+     ],
+     "answer": "<i>y</i> = 2<i>x</i> + 3",
+     "lines": 3,
+     "answer_label": "Answer",
+     "working": "Gradient <span class=\"frac\"><span class=\"nu\">9 − 5</span><span class=\"de\">3 − 1</span></span> = 2. Then 5 = 2 × 1 + <i>c</i>, so <i>c</i> = 3."
+    },
+    {
+     "text": [
+      "The line <i>y</i> = 2<i>x</i> + 1 meets the line <i>y</i> = 7. Find the point where they meet.",
+      "Where does <i>y</i> = 2<i>x</i> + 1 cross the <i>x</i>-axis?"
+     ],
+     "answer": "(3, 7), and (−0.5, 0)",
+     "lines": 3,
+     "answer_label": "Meet at ____ Crosses at",
+     "working": "2<i>x</i> + 1 = 7 gives <i>x</i> = 3. On the <i>x</i>-axis <i>y</i> = 0: 2<i>x</i> + 1 = 0 gives <i>x</i> = −0.5."
+    }
+   ]
+  }
+ },
+ "mistakes": [
+  "Coordinates the wrong way round: (2, 3) is 2 across and 3 up, not 3 across.",
+  "Reading the gradient as the first number: in <i>y</i> = 7 − 3<i>x</i>, the gradient is −3.",
+  "Mixing up <i>x</i> = 5 (vertical) and <i>y</i> = 5 (horizontal).",
+  "Plotting points correctly but joining them freehand instead of with a ruler."
+ ],
+ "closed_title": "Straight-line graphs",
+ "closed_points": [
+  "Use coordinates in all four quadrants.",
+  "Draw straight-line graphs from a table of values.",
+  "Find the gradient and <i>y</i>-intercept of a line.",
+  "Find the equation of a line, and where two lines meet."
+ ],
+ "next": {
+  "title": "Keep going in the Maths Forensics Academy",
+  "text": "Step-by-step lessons, answers checked as you go, story cases and maths games for Years 7 to 9. Try the free topics.",
+  "url": "https://www.mathsforensics.com/academy"
+ }
+}

@@ -1,0 +1,232 @@
+{
+ "code": "MF-AC-Y8-SEQ",
+ "product_line": "Academy worksheet · Year 8 · Free",
+ "strand": "Algebra",
+ "title": "Sequences and functions",
+ "level_line": "Year 8 · KS3",
+ "time": "About 40 minutes",
+ "cover_sub": "Continue sequences, describe term-to-term rules, find and use the nth term of a linear sequence, and use function machines forwards and backwards.",
+ "parents": {
+  "listen": "Ask: <i>what does it go up by each time, and how does that help with the nth term?</i> The difference becomes the number in front of <i>n</i>. Then check the rule by putting <i>n</i> = 1 in: it should give the first term."
+ },
+ "levels_long": {
+  "d": "Getting the basics: one step at a time.",
+  "s": "Year 8 standard: a few steps, some in context.",
+  "e": "A stretch: problems, reasoning and spotting mistakes."
+ },
+ "briefing": [
+  "A <b>term-to-term rule</b> says how to get from one term to the next: <i>add 4</i>, <i>multiply by 3</i>.",
+  "The <b><i>n</i>th term</b> (position-to-term rule) gives any term from its position. For a sequence that goes up by the same amount each time, the <i>n</i>th term is <b>difference × <i>n</i> + something</b>.",
+  "A <b>function machine</b> turns an input into an output. To go backwards, do the inverse operations in reverse order."
+ ],
+ "method": [
+  "Find the difference between terms: that's the number in front of <i>n</i>.",
+  "Write the times table of that number under the sequence.",
+  "Work out what to add or subtract to get from the times table to the sequence.",
+  "Check with <i>n</i> = 1 and <i>n</i> = 2."
+ ],
+ "examples": [
+  {
+   "question": "Find the next two terms of 7, 11, 15, 19, …",
+   "steps": [
+    "The terms go up by 4 each time.",
+    "19 + 4 = 23 and 23 + 4 = 27."
+   ],
+   "answer": "23, 27"
+  },
+  {
+   "question": "Find the <i>n</i>th term of 5, 8, 11, 14, …",
+   "steps": [
+    "The difference is 3, so start with 3<i>n</i>.",
+    "3<i>n</i> gives 3, 6, 9, 12. The sequence is 2 more each time.",
+    "So the <i>n</i>th term is 3<i>n</i> + 2. Check: <i>n</i> = 1 gives 5 ✓"
+   ],
+   "answer": "3<i>n</i> + 2"
+  },
+  {
+   "question": "A function machine multiplies by 3, then subtracts 4. The output is 23. What was the input?",
+   "steps": [
+    "Go backwards with the inverse operations: add 4, then divide by 3.",
+    "23 + 4 = 27, then 27 ÷ 3 = 9.",
+    "Check forwards: 9 × 3 − 4 = 23 ✓"
+   ],
+   "answer": "9"
+  }
+ ],
+ "sections": {
+  "d": {
+   "blurb": "Warm up. One step at a time.",
+   "questions": [
+    {
+     "text": [
+      "Find the next two terms: 3, 7, 11, 15, …"
+     ],
+     "answer": "19, 23",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "Find the next two terms: 40, 34, 28, 22, …"
+     ],
+     "answer": "16, 10",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "Write the term-to-term rule for 2, 6, 18, 54, …"
+     ],
+     "answer": "Multiply by 3",
+     "lines": 2,
+     "answer_label": "Rule"
+    },
+    {
+     "text": [
+      "A function machine multiplies by 2, then adds 3. What is the output when the input is 5?"
+     ],
+     "answer": "13",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "The first term of a sequence is 5. The rule is <i>add 6</i>. Write the first four terms."
+     ],
+     "answer": "5, 11, 17, 23",
+     "lines": 2,
+     "answer_label": "Terms"
+    },
+    {
+     "text": [
+      "Find the 10th term of 4, 8, 12, 16, …"
+     ],
+     "answer": "40",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "These are the multiples of 4."
+    }
+   ]
+  },
+  "s": {
+   "blurb": "The Year 8 standard. Show each step.",
+   "questions": [
+    {
+     "text": [
+      "Find the <i>n</i>th term of 6, 10, 14, 18, …"
+     ],
+     "answer": "4<i>n</i> + 2",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "Find the <i>n</i>th term of 2, 9, 16, 23, …"
+     ],
+     "answer": "7<i>n</i> − 5",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "7<i>n</i> gives 7, 14, 21: subtract 5."
+    },
+    {
+     "text": [
+      "The <i>n</i>th term of a sequence is 5<i>n</i> − 3. Write the first three terms and the 20th term."
+     ],
+     "answer": "2, 7, 12 and 97",
+     "lines": 2,
+     "answer_label": "First three ____ 20th",
+     "working": "5 × 20 − 3 = 97"
+    },
+    {
+     "text": [
+      "Is 50 a term of the sequence with <i>n</i>th term 3<i>n</i> + 2? Explain how you know."
+     ],
+     "answer": "Yes: it's the 16th term.",
+     "lines": 3,
+     "answer_label": "Answer",
+     "working": "3<i>n</i> + 2 = 50 gives <i>n</i> = 16, a whole number.",
+     "tip": "Set the <i>n</i>th term equal to the number and solve. A whole-number answer means it's in the sequence."
+    },
+    {
+     "text": [
+      "A function machine multiplies by 4, then subtracts 1. The output is 31. What was the input?"
+     ],
+     "answer": "8",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "31 + 1 = 32, 32 ÷ 4 = 8."
+    },
+    {
+     "text": [
+      "Complete the table for <i>y</i> = 2<i>x</i> + 5.",
+      "<table class=\"tbl\"><tr><th><i>x</i></th><th>1</th><th>2</th><th>3</th><th>4</th></tr><tr><td><i>y</i></td><td></td><td></td><td></td><td></td></tr></table>"
+     ],
+     "answer": "7, 9, 11, 13",
+     "lines": 2,
+     "answer_label": "<i>y</i> values"
+    }
+   ]
+  },
+  "e": {
+   "blurb": "Problems, reasoning and one piece of tampered evidence.",
+   "questions": [
+    {
+     "text": [
+      "Find the <i>n</i>th term of 20, 17, 14, 11, …"
+     ],
+     "answer": "23 − 3<i>n</i> (or −3<i>n</i> + 23)",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "The difference is −3, so −3<i>n</i> gives −3, −6, −9: add 23."
+    },
+    {
+     "text": [
+      "Ben found the <i>n</i>th term of 4, 9, 14, 19. Find his mistake and give the right answer."
+     ],
+     "answer": "5<i>n</i> − 1",
+     "lines": 2,
+     "answer_label": "<i>n</i>th term =",
+     "working": "He used the first term, not the difference. The difference is 5.",
+     "tampered": "It starts at 4, then adds 5,<br>so the <i>n</i>th term is <i>n</i> + 5"
+    },
+    {
+     "text": [
+      "Pattern 1 of a matchstick pattern uses 4 matches, pattern 2 uses 7, and pattern 3 uses 10.",
+      "a) Find the <i>n</i>th term.  b) Which pattern uses 100 matches?"
+     ],
+     "answer": "a) 3<i>n</i> + 1  b) Pattern 33",
+     "lines": 4,
+     "answer_label": "a) ____ b)",
+     "working": "b) 3<i>n</i> + 1 = 100, so <i>n</i> = 33."
+    },
+    {
+     "text": [
+      "Find the <i>n</i>th term of 2, 5, 10, 17, 26, …"
+     ],
+     "answer": "<i>n</i>² + 1",
+     "lines": 3,
+     "answer_label": "Answer",
+     "working": "The differences go up (3, 5, 7, 9), so it isn't linear. Compare with the square numbers 1, 4, 9, 16, 25: each term is 1 more."
+    }
+   ]
+  }
+ },
+ "mistakes": [
+  "Using the first term instead of the difference: 4, 9, 14, … is 5<i>n</i> − 1, not <i>n</i> + 4 or <i>n</i> + 5.",
+  "Going backwards through a function machine without reversing the order of the steps.",
+  "Forgetting the sign: a decreasing sequence has a negative number in front of <i>n</i>.",
+  "Not checking the <i>n</i>th term against the first two terms."
+ ],
+ "closed_title": "Sequences and functions",
+ "closed_points": [
+  "Continue sequences and describe term-to-term rules.",
+  "Find and use the <i>n</i>th term of a linear sequence.",
+  "Decide whether a number is in a sequence.",
+  "Use function machines forwards and backwards."
+ ],
+ "next": {
+  "title": "Keep going in the Maths Forensics Academy",
+  "text": "Step-by-step lessons, answers checked as you go, story cases and maths games for Years 7 to 9. Try the free topics.",
+  "url": "https://www.mathsforensics.com/academy"
+ }
+}
