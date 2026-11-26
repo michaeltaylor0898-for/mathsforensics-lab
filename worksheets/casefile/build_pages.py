@@ -97,7 +97,7 @@ for d in sheets:
 groups="".join(f'<section><div class="w"><h2>{E(s)}</h2><div class="grid">'+"".join(f'<a class="tile" href="/sheets/{d["slug"]}/">{E(strip(d["title"]))}<small>{E(strip(d["cover_sub"]).split(".")[0])}.</small></a>' for d in sheets if d["strand"]==s)+'</div></div></section>' for s in ORDER if any(d["strand"]==s for d in sheets))
 body=f"""<main><div class="w hero"><span class="eb">Free GCSE maths worksheets</span><h1>GCSE maths worksheets that go all the way to grade 9.</h1>
 <p class="lede">Every case file has three levels: <b>Securing</b> (grades 4 to 5), <b>Extending</b> (6 to 7) and <b>Mastery</b> (8 to 9). Free to download and print, with worked solutions, exam tips and a piece of tampered evidence to crack.</p>
-<div class="btns"><a class="btn" href="#Number">Find a topic</a><a class="btn ghost" href="/written/">Get your working marked</a></div></div>{groups.replace('<section><div class="w"><h2>Number','<section id="Number"><div class="w"><h2>Number',1)}</main>"""
+<div class="btns"><a class="btn" href="#Number">Find a topic</a><a class="btn ghost" href="/written/">Get your working marked</a><a class="btn ghost" href="/sheets/academy/">Years 7 to 9 sheets</a></div></div>{groups.replace('<section><div class="w"><h2>Number','<section id="Number"><div class="w"><h2>Number',1)}</main>"""
 (OUT/"index.html").write_text(page("Free GCSE maths worksheets, grades 4 to 9 | Maths Forensics","Free printable GCSE maths worksheets with answers, from grade 4 to grade 9. Every topic in three levels: Securing, Extending and Mastery, with exam tips on where marks are lost.",f"{SITE}/sheets/",body))
 print(len(sheets),"sheets ->",OUT)
 urls=[f"{SITE}/sheets/"]+[f"{SITE}/sheets/{d['slug']}/" for d in sheets]

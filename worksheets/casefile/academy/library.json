@@ -1,0 +1,17 @@
+{
+ "about": "The Academy revision library: free Years 7-9 sheets. 'sheets' are built (academy/<id>.json + .pdf); 'planned' are the topics still to write, in the order to write them. Packs bundle built sheets.",
+ "years": {
+  "7": {"blurb": "The foundations: number, the first steps in algebra, fractions, shape and data.",
+        "sheets": [],
+        "planned": ["Place value and ordering", "The four operations", "Negative numbers", "Factors, multiples and primes", "Order of operations", "Algebraic notation and substitution", "Simplifying expressions", "Fractions of amounts", "Fractions, decimals and percentages", "Perimeter and area", "Angle facts", "Probability", "Averages and charts"]},
+  "8": {"blurb": "Calculating with fractions and decimals, ratio and percentages, and the algebra that GCSE builds on.",
+        "sheets": ["ac-y8-rounding", "ac-y8-decimals", "ac-y8-fractions", "ac-y8-ordering", "ac-y8-ratio", "ac-y8-percentages", "ac-y8-like-terms", "ac-y8-brackets"],
+        "planned": ["Solving equations", "Sequences and the nth term", "Coordinates and straight-line graphs", "Area of triangles, parallelograms and trapezia", "Angles in parallel lines and polygons", "Circles", "Averages and range", "Probability"]},
+  "9": {"blurb": "Getting GCSE-ready: powers, proportion, graphs, Pythagoras and the start of trigonometry.",
+        "sheets": [],
+        "planned": ["Index laws and standard form", "Percentage change and reverse percentages", "Equations with unknowns on both sides", "Inequalities", "Rearranging formulae", "Expanding double brackets", "y = mx + c", "Direct and inverse proportion", "Pythagoras' theorem", "Introduction to trigonometry", "Volume and surface area", "Transformations", "Scatter graphs", "Relative frequency"]}
+ },
+ "packs": [
+  {"id": "Maths-Forensics-Academy-Year-8-Revision-Pack-1", "year": "8", "title": "Year 8 Revision Pack 1", "text": "All eight Year 8 sheets in one PDF: rounding, decimals, fractions, ordering, ratio, percentages, like terms, brackets."}
+ ]
+}
