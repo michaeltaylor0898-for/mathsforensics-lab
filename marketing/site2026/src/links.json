@@ -40,5 +40,6 @@
   "ALEVEL_CHECK": "https://www.mathsforensics.com/a-level-readiness-check",
   "WORKSHEETS": "https://lab.mathsforensics.com/sheets/",
   "GUIDE_CHECKOUT": "https://www.mathsforensics.com/exam-execution-checkout",
-  "MRS_WAITLIST": "https://www.mathsforensics.com/mark-recovery-waitlist"
+  "MRS_WAITLIST": "https://www.mathsforensics.com/mark-recovery-waitlist",
+  "DATA_PROTECTION": "https://lab.mathsforensics.com/data-protection.html"
 }
