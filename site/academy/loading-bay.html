@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Loading Bay · Maths Forensics Academy</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="A KS3 algebra game: factorise expressions by finding the biggest crate that fits every parcel, then loading the van.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Josefin+Sans:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Loading Bay: the Academy's navy and cyan, a paper delivery note, and a van you load with the bracket */
+:root{
+  --ink:#0B122C;--panel:#111a3d;--panel2:#16214b;--line:#26336a;--text:#E8ECF8;--muted:#93a0c8;
+  --cyan:#00FCF1;--blue:#1B36FF;--good:#3DDC97;--warn:#FFC857;--bad:#FF6B7A;--kraft:#C9965B;--kraft-d:#8a6234;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Josefin Sans","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--ink);color:var(--text);font-family:var(--f-body);font-size:18px;line-height:1.5;min-height:100vh;overflow-x:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+input{font:inherit}
+a{color:var(--cyan)}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.top{border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.top .wrap{display:flex;align-items:center;gap:12px;padding-block:10px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);margin-right:auto}
+.brand svg{width:28px;height:33px}
+.wm{font-weight:800;letter-spacing:.08em;font-size:14px;line-height:1.1}
+.wm small{display:block;font-family:var(--f-mono);font-weight:500;font-size:10.5px;letter-spacing:.18em;color:var(--cyan);margin-top:3px}
+.best{font-family:var(--f-mono);font-size:12.5px;color:var(--muted);text-align:right}
+.best b{color:var(--warn)}
+main{padding-block:22px 60px}
+h1,h2,h3{margin:0;text-wrap:balance}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan)}
+.muted{color:var(--muted)}
+.small{font-size:15px}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--cyan);color:var(--ink);border:0;border-radius:10px;padding:12px 20px;font-weight:700;font-size:17px;min-height:46px}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.btn.ghost:hover{border-color:var(--cyan)}
+.linkbtn{background:none;border:0;padding:0;color:var(--cyan);text-decoration:underline;text-underline-offset:3px;font-size:16px}
+
+.hero{background:linear-gradient(135deg,#111a3d,#0d1430);border:1px solid var(--line);border-radius:14px;padding:22px 24px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-30px;bottom:-50px;width:240px;height:150px;border:2px dashed rgba(0,252,241,.18);border-radius:14px;transform:rotate(-8deg)}
+.hero h1{font-family:var(--f-display);font-weight:800;font-size:clamp(28px,5vw,46px);letter-spacing:.02em}
+.hero p{max-width:62ch;margin:10px 0 0;color:#c4cbe4}
+.levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.levels{grid-template-columns:1fr}}
+.lvl{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:left;display:flex;flex-direction:column;gap:8px}
+.lvl:hover{border-color:var(--cyan)}
+.lvl b{font-size:19px}.lvl .eg{font-family:var(--f-mono);font-size:15px;color:var(--cyan)}
+.lvl .bs{font-family:var(--f-mono);font-size:12.5px;color:var(--muted)}
+.how{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;counter-reset:s}
+@media (max-width:760px){.how{grid-template-columns:1fr}}
+.how div{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:16px}
+.how div::before{counter-increment:s;content:"STEP " counter(s);display:block;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.14em;color:var(--cyan);margin-bottom:4px}
+
+.hud{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;font-family:var(--f-mono);font-size:13px;color:var(--muted);letter-spacing:.06em}
+.hud b{color:var(--text)}
+.pips{display:flex;gap:4px}.pips i{width:16px;height:6px;border-radius:3px;background:var(--line)}.pips i.done{background:var(--good)}.pips i.now{background:var(--cyan)}
+.note{background:#f4ecd8;color:#2a2418;border-radius:10px;padding:14px 18px;box-shadow:0 18px 30px -18px #000;display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline}
+.note .tag{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.14em;color:#6b5d43;text-transform:uppercase;width:100%}
+.note .expr{font-family:var(--f-mono);font-size:clamp(21px,3.8vw,30px);font-weight:700}
+.note .ask{font-size:16px;color:#5b4f38}
+
+/* parcels on the dock */
+.dock{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;padding:14px;border-radius:14px;background:repeating-linear-gradient(90deg,#141d42 0 40px,#121a3b 40px 80px);border:1px solid var(--line);min-height:96px}
+.parcel{position:relative;background:var(--kraft);color:#2a1a07;border-radius:6px;padding:16px 16px 10px;min-width:86px;text-align:center;font-family:var(--f-mono);font-weight:700;font-size:22px;box-shadow:inset 0 -6px 0 rgba(0,0,0,.12),0 8px 14px -8px #000}
+.parcel::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:12px;margin-left:-6px;background:rgba(255,255,255,.22)}
+.parcel span{position:relative}
+.parcel small{display:block;position:relative;font-size:12px;font-weight:500;color:#4a3214;margin-top:2px}
+.parcel.gone{opacity:.25;transform:translateY(-6px)}
+.dock .lab{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.14em;color:var(--muted);width:100%}
+
+/* the crate question */
+.crate{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:14px 16px}
+.crate label{font-size:16px;flex:1 1 260px}
+.crate input,.slot input{background:var(--ink);border:1px solid var(--line);border-radius:9px;padding:10px 12px;color:var(--text);font-family:var(--f-mono);font-size:21px;font-weight:700}
+.crate input{width:150px}
+.crate input:focus,.slot input:focus{border-color:var(--cyan);outline:none}
+.crate.bad{border-color:var(--bad);animation:shake .35s}
+@keyframes shake{20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+
+/* the vehicle */
+.road{position:relative;padding:4px 0 30px;overflow:hidden;border-bottom:4px dashed #2f3c75}
+.vehicle{display:flex;align-items:flex-end;gap:0;width:max-content;max-width:100%;transition:transform 1.3s cubic-bezier(.5,0,.9,.4)}
+.vehicle.go{transform:translateX(calc(100vw + 200px))}
+.boxv{position:relative;background:linear-gradient(#f2f4fa,#d9deea);color:#16203F;border-radius:10px 4px 4px 10px;padding:16px 18px 22px;min-height:120px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 6px;min-width:260px}
+.boxv .side{font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;color:#5b6585;width:100%;text-transform:uppercase}
+.boxv .hcf{font-family:var(--f-mono);font-weight:800;font-size:30px;color:var(--blue);min-width:28px}
+.boxv .par{font-family:var(--f-mono);font-weight:300;font-size:46px;line-height:1;color:#16203F}
+.boxv .op{font-family:var(--f-mono);font-weight:700;font-size:26px}
+.slot{display:flex;flex-direction:column;align-items:center;gap:2px}
+.slot small{font-family:var(--f-mono);font-size:11.5px;color:#5b6585}
+.slot input{width:92px;text-align:center;background:#fff;color:#16203F;border:2px solid #b9c1d9}
+.slot input.bad{border-color:var(--bad);animation:shake .35s}
+.slot input.ok{border-color:var(--good);background:#eafbf3}
+.unit{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.boxv .done{font-family:var(--f-mono);font-weight:700;font-size:26px;color:#13794c;padding:4px 6px}
+.boxv{flex:1 1 auto;min-width:0}.cab{flex:none;position:relative;width:96px;height:96px;background:linear-gradient(#2d4bff,#1B36FF);border-radius:6px 30px 8px 4px;margin-left:4px}
+.cab::before{content:"";position:absolute;right:10px;top:12px;width:44px;height:34px;background:#bfe9ff;border-radius:3px 18px 3px 3px}
+.cab::after{content:"";position:absolute;right:-6px;bottom:14px;width:10px;height:8px;background:var(--warn);border-radius:2px}
+.wheel{position:absolute;bottom:-18px;width:36px;height:36px;border-radius:50%;background:#0a0d18;border:7px solid #39405a}
+.boxv .wheel.a{left:30px}.boxv .wheel.b{right:30px}.cab .wheel{left:30px}
+.vehicle.lorry .boxv{min-width:340px}.vehicle.artic .boxv{min-width:420px;border-radius:4px}
+.vehicle.artic .cab{height:108px}
+@media (max-width:560px){.boxv{min-width:0;flex:1 1 auto;padding:12px 12px 22px}.vehicle.lorry .boxv,.vehicle.artic .boxv{min-width:0}.cab{width:64px;height:84px}.cab::before{width:30px;right:6px}.boxv .par{font-size:34px}.boxv .hcf{font-size:24px}.slot input{width:64px;font-size:18px;padding:8px 6px}.boxv .op{font-size:22px}.unit{gap:4px}.vehicle{width:100%}}
+
+.fb{border-radius:12px;padding:12px 14px;font-size:16px;border:1px solid var(--line);background:var(--panel2)}
+.fb b{display:block;font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:3px}
+.fb.no{border-color:rgba(255,107,122,.5)}.fb.no b{color:var(--bad)}
+.fb.ok{border-color:rgba(61,220,151,.5)}.fb.ok b{color:var(--good)}
+.fb.hint b{color:var(--warn)}
+.closed{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center;background:var(--panel);border:1px solid var(--good);border-radius:14px;padding:16px 18px}
+.closed .ans{font-family:var(--f-mono);font-weight:700;font-size:clamp(20px,3.6vw,28px)}
+.closed .chk{font-family:var(--f-mono);font-size:14.5px;color:var(--muted)}
+.stamp{border:3px solid var(--good);color:var(--good);font-family:var(--f-mono);font-weight:700;letter-spacing:.16em;padding:4px 10px;border-radius:6px;transform:rotate(-6deg);font-size:14px}
+.score{font-family:var(--f-display);font-weight:800;font-size:56px;color:var(--cyan);line-height:1}
+.stars{font-size:34px;letter-spacing:6px;color:var(--warn)}
+.elog{display:grid;gap:8px;padding:0;margin:0;list-style:none}
+.elog li{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:16px}
+.elog li b{font-family:var(--f-mono);font-size:12px;color:var(--bad);letter-spacing:.08em;text-transform:uppercase;display:block}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+footer{border-top:1px solid var(--line);color:var(--muted);font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:space-between;padding-block:16px calc(16px + env(safe-area-inset-bottom,0px))}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="index.html">
+    <svg viewBox="0 0 40 46" aria-hidden="true"><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z" fill="#111a3d" stroke="#00FCF1" stroke-width="2.2" stroke-linejoin="round"/><circle cx="19" cy="21" r="6.2" fill="#111a3d" stroke="#00FCF1" stroke-width="2.6"/><circle cx="19" cy="21" r="1.6" fill="#00FCF1"/><path d="M23.4 25.4 28.8 30.8" stroke="#1B36FF" stroke-width="3.8" stroke-linecap="round"/></svg>
+    <span class="wm">MATHS FORENSICS<small>ACADEMY · TRAINING GAME</small></span>
+  </a>
+  <div class="best" id="best"></div>
+</div></header>
+<main class="wrap" id="app"></main>
+<div class="sr" aria-live="polite" id="live"></div>
+<footer><div class="wrap"><span>Loading Bay · factorising expressions · KS3</span><span><a href="index.html#t-factorising-learn">Back to Factorising</a></span></div></footer>
+<script>
+"use strict";
+const $ = s => document.querySelector(s), app = $("#app");
+const R = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const MINUS = "−";
+const say = t => { $("#live").textContent = ""; setTimeout(() => $("#live").textContent = t, 30); };
+const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) [a, b] = [b, a % b]; return a; };
+
+/* ---------- terms ----------
+   A term is { c: coefficient, v: { x: 2, y: 1 } } meaning c·x²·y. */
+const SUP = { 2: "²", 3: "³" };
+function body(v) { return Object.keys(v).sort().filter(k => v[k] > 0).map(k => k + (v[k] > 1 ? SUP[v[k]] || "^" + v[k] : "")).join(""); }
+function termText(t, first) {           // {c:-3,v:{x:1}} -> "− 3x" inside an expression, "−3x" first
+  const b = body(t.v), m = Math.abs(t.c), s = (m === 1 && b ? "" : m) + b;
+  return first ? (t.c < 0 ? MINUS : "") + s : (t.c < 0 ? ` ${MINUS} ` : " + ") + s;
+}
+const monoText = t => termText({ c: Math.abs(t.c), v: t.v }, true);
+const exprText = ts => ts.map((t, i) => termText(t, i === 0)).join("");
+const mult = (a, b) => { const v = { ...a.v }; for (const k in b.v) v[k] = (v[k] || 0) + b.v[k]; return { c: a.c * b.c, v }; };
+function divides(h, t) { if (t.c % h.c !== 0) return false; for (const k in h.v) if ((t.v[k] || 0) < h.v[k]) return false; return true; }
+function divide(t, h) { const v = { ...t.v }; for (const k in h.v) v[k] = (v[k] || 0) - h.v[k]; for (const k in v) if (!v[k]) delete v[k]; return { c: t.c / h.c, v }; }
+function hcfOf(ts) {
+  const c = ts.reduce((g, t) => gcd(g, t.c), 0), v = {};
+  for (const k of Object.keys(ts[0].v)) { const m = Math.min(...ts.map(t => t.v[k] || 0)); if (m > 0) v[k] = m; }
+  return { c, v };
+}
+const sameMono = (a, b) => Math.abs(a.c) === Math.abs(b.c) && body(a.v) === body(b.v);
+
+// reading what the student types: "3x", "x", "2xy", "x2", "x^2", "x²", "-4", "+5"
+function parseMono(raw) {
+  let s = String(raw).toLowerCase().replace(/\s+/g, "").replace(/[−–—]/g, "-").replace(/×|\*/g, "");
+  if (!s) return null;
+  const m = s.match(/^([+-]?)(\d*)((?:[a-z](?:\^?\d|[²³])?)*)$/);
+  if (!m) return null;
+  const [, sg, d, lets] = m;
+  if (!d && !lets) return null;
+  let c = d === "" ? 1 : +d; if (sg === "-") c = -c;
+  const v = {};
+  (lets.match(/[a-z](?:\^?\d|[²³])?/g) || []).forEach(p => { const k = p[0], e = p.length === 1 ? 1 : p.slice(-1) === "²" ? 2 : p.slice(-1) === "³" ? 3 : +p.replace(/\D/g, ""); v[k] = (v[k] || 0) + e; });
+  return { c, v };
+}
+
+/* ---------- deliveries ---------- */
+const LEVELS = [
+  { name: "Van", cls: "van", eg: "6x + 15", blurb: "Two parcels. The crate is a number.", cases: 10 },
+  { name: "Lorry", cls: "lorry", eg: "x² + 5x · 4a + 8b − 12", blurb: "Letters in the crate, or three parcels.", cases: 10 },
+  { name: "Artic", cls: "artic", eg: "8x² − 12x · 6x²y + 9xy", blurb: "The crate has a number and letters. Take it all out.", cases: 10 }
+];
+const LET = ["x", "y", "a", "b", "m", "n", "p", "t"];
+function coprime(cs) { return cs.reduce((g, c) => gcd(g, c), 0) === 1; }
+function makeCase(level) {
+  for (let tries = 0; tries < 200; tries++) {
+    const X = pick(LET), Y = pick(LET.filter(l => l !== X)), sg = () => Math.random() < .4 ? -1 : 1;
+    let h, inner;
+    if (level === 0) {
+      h = { c: R(2, 9), v: {} };
+      const a = pick([1, 1, 2, 3, 4, 5]), b = Math.random() < .2 ? 1 : R(2, 11);
+      inner = [{ c: a, v: { [X]: 1 } }, { c: sg() * b, v: {} }];
+    } else if (level === 1) {
+      const k = pick(["letter", "letter", "three", "mixed"]);
+      if (k === "letter") { h = { c: 1, v: { [X]: 1 } }; inner = [{ c: pick([1, 1, 2, 3]), v: { [X]: 1 } }, { c: sg() * R(2, 9), v: {} }]; }
+      else if (k === "three") { h = { c: R(2, 6), v: {} }; inner = [{ c: R(1, 5), v: { [X]: 1 } }, { c: sg() * R(1, 5), v: { [Y]: 1 } }, { c: sg() * R(1, 7), v: {} }]; }
+      else { h = { c: R(2, 6), v: { [X]: 1 } }; inner = [{ c: R(1, 4), v: { [Y]: 1 } }, { c: sg() * R(1, 7), v: {} }]; }
+    } else {
+      const k = pick(["sq", "sq", "two", "xy", "three"]);
+      if (k === "sq") { h = { c: R(2, 6), v: { [X]: 1 } }; inner = [{ c: R(1, 5), v: { [X]: 1 } }, { c: sg() * R(1, 7), v: {} }]; }
+      else if (k === "two") { h = { c: R(2, 6), v: { [X]: 1 } }; inner = [{ c: R(1, 5), v: { [Y]: 1 } }, { c: sg() * R(1, 7), v: {} }]; }
+      else if (k === "xy") { h = { c: R(2, 5), v: { [X]: 1, [Y]: 1 } }; inner = [{ c: R(1, 5), v: { [X]: 1 } }, { c: sg() * R(1, 7), v: {} }]; }
+      else { h = { c: R(2, 5), v: { [X]: 1 } }; inner = [{ c: R(1, 4), v: { [X]: 1 } }, { c: sg() * R(1, 6), v: {} }, { c: sg() * R(1, 5), v: { [Y]: 1 } }]; }
+    }
+    if (!coprime(inner.map(t => t.c))) continue;
+    if (inner.some((t, i) => inner.some((u, j) => j > i && body(t.v) === body(u.v)))) continue;
+    const terms = inner.map(t => mult(h, t));
+    const H = hcfOf(terms);
+    if (H.c !== h.c || body(H.v) !== body(h.v)) continue;                    // the crate really is the biggest
+    if (level === 0 && Math.abs(terms[1].c) === Math.abs(terms[0].c)) continue;
+    return { terms, h, inner };
+  }
+  return makeCase(level);
+}
+
+const ERR = {
+  notfactor: ["Crate doesn't fit", "The crate has to fit every parcel: it must divide every term exactly, letters included."],
+  notfull: ["Not fully factorised", "A common factor that isn't the highest leaves something to take out. Look for the biggest number, and any letter in every term."],
+  one: ["Forgot the 1", "When a term is the whole crate, 1 is left behind: 5y + 5 = 5(y + 1), not 5(y)."],
+  letter: ["Letter left in", "Divide the letters too: 8x² ÷ 4x = 2x, because x² ÷ x = x."],
+  divide: ["Division slip", "Divide each number by the crate's number: 12 ÷ 4 = 3."],
+  sign: ["Sign changed", "Each term keeps its sign inside the bracket."]
+};
+
+/* ---------- game state ---------- */
+let BEST = {}; try { BEST = JSON.parse(localStorage.getItem("mfa.loading") || "{}"); } catch (e) {}
+const saveBest = () => { try { localStorage.setItem("mfa.loading", JSON.stringify(BEST)); } catch (e) {} };
+let G = null;
+function showBest() { const b = LEVELS.map((l, i) => BEST[i] ? `${l.name} <b>${BEST[i]}</b>` : "").filter(Boolean); $("#best").innerHTML = b.length ? "Best: " + b.join(" · ") : ""; }
+
+function screenStart() {
+  G = null; showBest();
+  app.innerHTML = `<div class="stack" style="gap:22px">
+    <section class="hero"><div class="eyebrow">Training game · Algebra</div><h1>Loading Bay</h1>
+      <p>Every delivery is an expression, and every term is a parcel. Find the biggest crate that fits every parcel, then load the van with what's left. That's factorising.</p></section>
+    <div class="how"><div>Read the delivery note. Find the <b>highest common factor</b>: the biggest number, and any letters, that go into every term.</div><div>Type it as the crate. Then type what's left of each parcel inside the van. If a parcel is the whole crate, <b>1</b> is left.</div><div>Ten deliveries a level. Fewer slips and faster loading score more.</div></div>
+    <h2 class="eyebrow" style="margin:0">Choose your vehicle</h2>
+    <div class="levels">${LEVELS.map((l, i) => `<button class="lvl" data-l="${i}"><b>${l.name}</b><span class="eg">${l.eg}</span><span class="muted small">${l.blurb}</span><span class="bs">${BEST[i] ? "Best score " + BEST[i] : l.cases + " deliveries"}</span></button>`).join("")}</div>
+  </div>`;
+  app.querySelectorAll("[data-l]").forEach(b => b.onclick = () => startGame(+b.dataset.l));
+}
+function startGame(level) { G = { level, n: 0, score: 0, errs: {}, clean: 0 }; nextCase(); }
+function nextCase() {
+  G.n++; G.cs = makeCase(G.level); G.phase = "crate"; G.miss = 0; G.revealed = 0; G.t0 = Date.now(); G.ctries = 0; G.tries = {}; G.done = {}; G.draft = {};
+  render(); say(`Delivery ${G.n}. Factorise ${exprText(G.cs.terms).replace(/−/g, "minus")}.`);
+  const i = $("#crateIn"); if (i) i.focus();
+}
+function logErr(k) { G.errs[k] = (G.errs[k] || 0) + 1; G.miss++; }
+
+function render() {
+  const cs = G.cs, L = LEVELS[G.level];
+  const pips = Array.from({ length: L.cases }, (_, i) => `<i class="${i < G.n - 1 ? "done" : i === G.n - 1 ? "now" : ""}"></i>`).join("");
+  const loading = G.phase !== "crate";
+  app.innerHTML = `<div class="stack" style="gap:16px">
+    <div class="hud"><span>${L.name.toUpperCase()}</span><span>DELIVERY <b>${G.n}</b> / ${L.cases}</span><span class="pips">${pips}</span><span style="margin-left:auto">SCORE <b>${G.score}</b></span></div>
+    <div class="note"><div class="tag">Delivery note · ${String(G.n).padStart(2, "0")}</div><div class="expr">${esc(exprText(cs.terms))}</div><div class="ask">Factorise fully.</div></div>
+    <div class="dock"><div class="lab">ON THE DOCK · ${cs.terms.length} PARCELS</div>${cs.terms.map((t, i) => `<div class="parcel${G.done[i] !== undefined ? " gone" : ""}"><span>${esc(termText(t, true))}</span></div>`).join("")}</div>
+    ${loading ? "" : `<form class="crate" id="crate"><label for="crateIn"><b>What's the biggest crate that fits every parcel?</b><br><span class="muted small">The highest common factor of ${cs.terms.map(t => esc(monoText(t))).join(", ")}</span></label>
+      <input id="crateIn" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="e.g. 3x" aria-label="Highest common factor"><button class="btn">Load crate</button></form>`}
+    <div class="road"><div class="vehicle ${L.cls}" id="veh">${vehicleHTML()}</div></div>
+    ${G.phase === "load" ? `<div class="row"><button class="btn" id="loadBtn">Load the van</button><span class="muted small">Press Enter in a box, or load them all at once.</span></div>` : ""}
+    <div id="fb" aria-live="polite"></div>
+    <div class="row"><button class="linkbtn" id="quit">End game</button></div>
+  </div>`;
+  wire();
+}
+function vehicleHTML() {
+  const cs = G.cs, loading = G.phase !== "crate";
+  let inside;
+  if (!loading) inside = `<span class="side" style="width:auto">Waiting for the crate…</span>`;
+  else inside = `<span class="hcf">${esc(monoText(cs.h) === "1" ? "" : monoText(cs.h))}</span>` + cs.inner.map((t, i) => {
+      const op = i === 0 ? `<span class="par">(</span>` : `<span class="op">${t.c < 0 ? MINUS : "+"}</span>`, last = i === cs.inner.length - 1;
+      const slot = G.done[i] !== undefined ? `<span class="done">${esc(G.done[i])}</span>`
+        : `<span class="slot"><small>${esc(monoText(cs.terms[i]))} ÷ ${esc(monoText(cs.h))}</small><input data-i="${i}" value="${esc(G.draft[i] || "")}" class="${G.tries[i] ? "bad" : ""}" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="What's left of ${esc(monoText(cs.terms[i]))}"></span>`;
+      return `<span class="unit">${op}${slot}${last ? `<span class="par">)</span>` : ""}</span>`;
+    }).join("");
+  return `<div class="boxv"><span class="side">Maths Forensics Logistics</span>${inside}<span class="wheel a"></span><span class="wheel b"></span></div><div class="cab"><span class="wheel"></span></div>`;
+}
+function fb(kind, title, msg) { $("#fb").innerHTML = `<div class="fb ${kind}"><b>${title}</b>${msg}</div>`; say(title + ". " + msg.replace(/<[^>]+>/g, "")); }
+
+/* ---------- step 1: the crate (highest common factor) ---------- */
+function checkCrate(raw) {
+  const cs = G.cs, r = parseMono(raw);
+  G.ctries++;
+  const reveal = () => { G.revealed++; G.phase = "load"; render(); fb("hint", "Here's the crate", `The highest common factor is <b>${esc(monoText(cs.h))}</b>. Now load what's left of each parcel.`); focusSlot(); };
+  if (!r || r.c <= 0) { G.ctries--; return fb("hint", "Type the crate", "Type the highest common factor, like 3 or 2x."); }
+  if (sameMono(r, cs.h)) { G.phase = "load"; render(); fb("ok", "Crate loaded", `${esc(monoText(cs.h))} fits every parcel. Now type what's left of each one.`); return focusSlot(); }
+  const bad = cs.terms.find(t => !divides(r, { c: Math.abs(t.c), v: t.v }));
+  if (bad) {
+    logErr("notfactor");
+    const why = Math.abs(bad.c) % r.c !== 0 ? `${r.c} doesn't go into ${Math.abs(bad.c)}.` : `${esc(monoText(bad))} doesn't have ${esc(Object.keys(r.v).filter(k => (bad.v[k] || 0) < r.v[k]).map(k => k + (r.v[k] > 1 ? SUP[r.v[k]] : "")).join(" or "))} in it.`;
+    if (G.ctries >= 3) return reveal();
+    shakeCrate(); return fb("no", "That crate doesn't fit", `${esc(monoText(r))} doesn't fit the parcel ${esc(monoText(bad))}: ${why}`);
+  }
+  logErr("notfull");
+  if (G.ctries >= 3) return reveal();
+  shakeCrate();
+  const hint = G.ctries >= 2 ? ` Biggest number that divides ${cs.terms.map(t => Math.abs(t.c)).join(" and ")}: ${cs.h.c}.${body(cs.h.v) ? ` Letters in every term: ${body(cs.h.v)}.` : ""}` : "";
+  fb("no", "Fits, but not the biggest", `${esc(monoText(r))} fits every parcel, but a bigger crate fits too, so the van wouldn't be fully loaded.${hint}`);
+}
+function shakeCrate() { const c = $("#crate"); if (c) { c.classList.remove("bad"); void c.offsetWidth; c.classList.add("bad"); } const i = $("#crateIn"); if (i) { i.select(); i.focus(); } }
+function focusSlot() { const i = app.querySelector(".slot input"); if (i) i.focus(); }
+
+/* ---------- step 2: load what's left of each parcel ---------- */
+function evalSlot(i, raw) {          // marks one parcel; returns null if empty, else { ok, why }
+  const cs = G.cs, want = cs.inner[i], t = cs.terms[i], r = parseMono(raw);
+  const wantPos = { c: Math.abs(want.c), v: want.v };
+  if (!String(raw).trim()) return null;
+  G.tries[i] = (G.tries[i] || 0) + 1;
+  if (r && r.c > 0 && sameMono(r, wantPos)) { G.done[i] = monoText(wantPos); delete G.tries[i]; return { ok: true }; }
+  let why;
+  if (!r) { G.tries[i]--; return { ok: false, why: `Type what's left of ${esc(monoText(t))}, like 2x or 5.` }; }
+  if (wantPos.c === 1 && !body(wantPos.v) && (r.c === 0 || sameMono(r, { c: Math.abs(t.c), v: t.v }))) { logErr("one"); why = `${esc(monoText(t))} is the whole crate, so <b>1</b> is left, not ${r.c === 0 ? "0" : "the whole parcel"}.`; }
+  else if (Object.keys(cs.h.v).some(k => (r.v[k] || 0) > (want.v[k] || 0))) { logErr("letter"); why = `Take the crate's letters out too: ${esc(monoText(t))} ÷ ${esc(monoText(cs.h))} doesn't leave ${esc(monoText(r))}.`; }
+  else if (r.c < 0) { logErr("sign"); why = `The sign is already on the van, so just type the term: what's ${esc(monoText(t))} ÷ ${esc(monoText(cs.h))}?`; }
+  else { logErr("divide"); why = G.tries[i] >= 2 ? `${Math.abs(t.c)} ÷ ${cs.h.c} = ${wantPos.c}${body(cs.h.v) ? `, and take ${body(cs.h.v)} out of ${body(t.v) || "it"}` : ""}.` : `Divide the number and the letters by the crate, ${esc(monoText(cs.h))}.`; }
+  if (G.tries[i] >= 3) { G.done[i] = monoText(wantPos); G.revealed++; delete G.tries[i]; why += " The answer is filled in for you."; }
+  return { ok: false, why };
+}
+function submitSlots(only) {
+  const cs = G.cs, idx = only !== null ? [only] : cs.inner.map((_, i) => i).filter(i => G.done[i] === undefined);
+  let bad = null, why = null, any = false;
+  for (const i of idx) {
+    const r = evalSlot(i, G.draft[i] || "");
+    if (!r) continue; any = true;
+    if (r.ok) delete G.draft[i]; else if (bad === null) { bad = i; why = r.why; }
+  }
+  if (cs.inner.every((_, j) => G.done[j] !== undefined)) return closeCase();
+  render();
+  if (!any) fb("hint", "Load the van", "Type what's left of each parcel in the boxes inside the van.");
+  if (why) fb("no", "That's not what's left", why);
+  const el = (bad !== null && app.querySelector(`.slot input[data-i="${bad}"]`)) || [...app.querySelectorAll(".slot input")].find(x => !x.value) || app.querySelector(".slot input");
+  if (el) el.focus();
+}
+function closeCase() {
+  const cs = G.cs, secs = Math.round((Date.now() - G.t0) / 1000);
+  const pts = Math.max(10, 100 - 15 * G.miss - 25 * G.revealed) + (secs <= 35 + 10 * G.level ? 20 : 0);
+  if (!G.miss && !G.revealed) G.clean++;
+  G.score += pts; G.phase = "done";
+  const hv = monoText(cs.h) === "1" ? "" : monoText(cs.h);
+  const ans = `${hv}(${exprText(cs.inner)})`;
+  const check = cs.inner.map((t, i) => `${monoText(cs.h)} × ${monoText(t)} = ${monoText(cs.terms[i])}`).join(" · ");
+  render();
+  const v = $("#veh"); requestAnimationFrame(() => setTimeout(() => v && v.classList.add("go"), 350));
+  $("#fb").innerHTML = `<div class="closed"><span class="stamp">LOADED</span><div><div class="muted small">Fully factorised</div><div class="ans">${esc(ans)}</div><div class="chk">Check by expanding: ${esc(check)} ✓</div></div>
+    <div class="muted small" style="margin-left:auto;text-align:right">+${pts} points${G.miss ? ` · ${G.miss} slip${G.miss > 1 ? "s" : ""}` : " · clean delivery"}<br>${secs}s</div>
+    <button class="btn" id="next">${G.n < LEVELS[G.level].cases ? "Next delivery" : "See your report"}</button></div>`;
+  say(`Loaded. ${ans}. Plus ${pts} points.`);
+  $("#next").onclick = () => G.n < LEVELS[G.level].cases ? nextCase() : screenEnd();
+  $("#next").focus();
+}
+function screenEnd() {
+  const L = G.level, max = LEVELS[L].cases * 120, stars = G.score >= max * .75 ? 3 : G.score >= max * .5 ? 2 : 1;
+  const isBest = !BEST[L] || G.score > BEST[L]; if (isBest) { BEST[L] = G.score; saveBest(); }
+  const errs = Object.entries(G.errs).sort((a, b) => b[1] - a[1]);
+  app.innerHTML = `<div class="stack" style="gap:20px;max-width:760px">
+    <div class="eyebrow">${LEVELS[L].name} · all ${LEVELS[L].cases} deliveries made</div>
+    <div class="row" style="gap:24px"><div class="score">${G.score}</div><div><div class="stars" aria-label="${stars} out of 3 stars">${"★".repeat(stars)}${"☆".repeat(3 - stars)}</div><div class="muted small">${G.clean} clean deliver${G.clean === 1 ? "y" : "ies"}${isBest ? " · new best" : ` · best ${BEST[L]}`}</div></div></div>
+    <section class="panel stack"><div class="eyebrow" style="color:var(--warn)">Error report</div>
+      ${errs.length ? `<ul class="elog">${errs.map(([k, n]) => `<li><b>${ERR[k][0]} × ${n}</b>${ERR[k][1]}</li>`).join("")}</ul>` : `<p style="margin:0">No slips at all. ${L < 2 ? "Try a bigger vehicle." : "Artic driver standard."}</p>`}</section>
+    <div class="row"><button class="btn" id="again">Play again</button>${L < 2 ? `<button class="btn ghost" id="up">Try the ${LEVELS[L + 1].name}</button>` : ""}<a class="btn ghost" href="index.html#t-factorising-learn">Factorising</a></div>
+  </div>`;
+  showBest();
+  $("#again").onclick = () => startGame(L); const up = $("#up"); if (up) up.onclick = () => startGame(L + 1);
+}
+
+function wire() {
+  $("#quit").onclick = () => { if ($("#quit").dataset.sure) return screenStart(); $("#quit").dataset.sure = 1; $("#quit").textContent = "Tap again to end this game"; };
+  const c = $("#crate"); if (c) c.onsubmit = e => { e.preventDefault(); checkCrate($("#crateIn").value); };
+  app.querySelectorAll(".slot input").forEach(inp => {
+    inp.oninput = () => { G.draft[+inp.dataset.i] = inp.value; };
+    inp.onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); G.draft[+inp.dataset.i] = inp.value; submitSlots(+inp.dataset.i); } };
+  });
+  const lb = $("#loadBtn"); if (lb) lb.onclick = () => submitSlots(null);
+}
+
+screenStart();
+</script>
+</body>
+</html>
