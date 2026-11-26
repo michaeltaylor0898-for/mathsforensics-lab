@@ -1,0 +1,238 @@
+{
+ "code": "MF-AC-Y8-LIKE",
+ "product_line": "Academy worksheet · Year 8 · Free",
+ "strand": "Algebra",
+ "title": "Collecting like terms",
+ "level_line": "Year 8 · KS3",
+ "time": "About 40 minutes",
+ "cover_sub": "Simplify expressions by collecting like terms, including negative terms and squared terms, and use them for perimeters.",
+ "parents": {
+  "listen": "Ask: <i>which terms are alike, and what sign is in front of each one?</i> Encourage your child to circle like terms in the same colour, keeping the sign in front with each term."
+ },
+ "levels_long": {
+  "d": "Getting the basics: one step at a time.",
+  "s": "Year 8 standard: a few steps, some in context.",
+  "e": "A stretch: problems, reasoning and spotting mistakes."
+ },
+ "briefing": [
+  "A <b>term</b> is a number, a letter, or numbers and letters multiplied together: 5, <i>x</i>, 3<i>y</i>, 4<i>a</i><i>b</i>.",
+  "<b>Like terms</b> have exactly the same letters, with the same powers. 3<i>x</i> and 5<i>x</i> are alike; 3<i>x</i> and 3<i>x</i>² are not; <i>a</i><i>b</i> and <i>b</i><i>a</i> are alike.",
+  "To simplify, add or subtract the numbers in front of like terms. The sign in front of a term belongs to that term.",
+  "Unlike terms stay separate: 3<i>x</i> + 4<i>y</i> can't be simplified."
+ ],
+ "method": [
+  "Circle or colour each group of like terms, including the sign in front.",
+  "Add or subtract the numbers in front of each group.",
+  "Write the answer, usually letters in alphabetical order and numbers last."
+ ],
+ "examples": [
+  {
+   "question": "Simplify 3<i>a</i> + 5<i>a</i> − 2<i>a</i>",
+   "steps": [
+    "All the terms are alike.",
+    "3 + 5 − 2 = 6."
+   ],
+   "answer": "6<i>a</i>"
+  },
+  {
+   "question": "Simplify 4<i>x</i> + 3<i>y</i> − <i>x</i> + 2<i>y</i>",
+   "steps": [
+    "<i>x</i> terms: 4<i>x</i> − <i>x</i> = 3<i>x</i>. (<i>x</i> means 1<i>x</i>.)",
+    "<i>y</i> terms: 3<i>y</i> + 2<i>y</i> = 5<i>y</i>."
+   ],
+   "answer": "3<i>x</i> + 5<i>y</i>"
+  },
+  {
+   "question": "Simplify 5<i>p</i> − 2<i>q</i> − 3<i>p</i> + 7<i>q</i> − 1",
+   "steps": [
+    "<i>p</i> terms: 5<i>p</i> − 3<i>p</i> = 2<i>p</i>.",
+    "<i>q</i> terms: −2<i>q</i> + 7<i>q</i> = 5<i>q</i>.",
+    "The number −1 has nothing to combine with."
+   ],
+   "answer": "2<i>p</i> + 5<i>q</i> − 1"
+  },
+  {
+   "question": "Simplify 2<i>x</i>² + 3<i>x</i> − <i>x</i>² + 4<i>x</i>",
+   "steps": [
+    "<i>x</i>² terms: 2<i>x</i>² − <i>x</i>² = <i>x</i>².",
+    "<i>x</i> terms: 3<i>x</i> + 4<i>x</i> = 7<i>x</i>.",
+    "<i>x</i>² and <i>x</i> are not like terms, so they stay separate."
+   ],
+   "answer": "<i>x</i>² + 7<i>x</i>"
+  }
+ ],
+ "sections": {
+  "d": {
+   "blurb": "Warm up. One step at a time.",
+   "questions": [
+    {
+     "text": [
+      "<i>a</i> + <i>a</i> + <i>a</i>"
+     ],
+     "answer": "3<i>a</i>",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "4<i>b</i> + 3<i>b</i>"
+     ],
+     "answer": "7<i>b</i>",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "9<i>c</i> − 4<i>c</i>"
+     ],
+     "answer": "5<i>c</i>",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "2<i>x</i> + 5 + 3<i>x</i>"
+     ],
+     "answer": "5<i>x</i> + 5",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "3<i>m</i> + 2<i>n</i> + <i>m</i>"
+     ],
+     "answer": "4<i>m</i> + 2<i>n</i>",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "6<i>y</i> − <i>y</i>"
+     ],
+     "answer": "5<i>y</i>",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "<i>y</i> means 1<i>y</i>."
+    }
+   ]
+  },
+  "s": {
+   "blurb": "The Year 8 standard. Show each step.",
+   "questions": [
+    {
+     "text": [
+      "5<i>a</i> + 3<i>b</i> − 2<i>a</i> + <i>b</i>"
+     ],
+     "answer": "3<i>a</i> + 4<i>b</i>",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "7<i>x</i> − 3<i>y</i> − 2<i>x</i> − 5<i>y</i>"
+     ],
+     "answer": "5<i>x</i> − 8<i>y</i>",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "−3<i>y</i> − 5<i>y</i> = −8<i>y</i>",
+     "tip": "The sign in front belongs to the term: −3<i>y</i> and −5<i>y</i> make −8<i>y</i>."
+    },
+    {
+     "text": [
+      "4<i>p</i> + 6 − <i>p</i> − 9"
+     ],
+     "answer": "3<i>p</i> − 3",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "2<i>a</i><i>b</i> + 3<i>b</i><i>a</i>"
+     ],
+     "answer": "5<i>a</i><i>b</i>",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "<i>b</i><i>a</i> is the same as <i>a</i><i>b</i>."
+    },
+    {
+     "text": [
+      "A rectangle has sides of length 3<i>x</i> + 1 and <i>x</i> + 4. Write an expression for its perimeter. Simplify it."
+     ],
+     "answer": "8<i>x</i> + 10",
+     "lines": 3,
+     "answer_label": "Answer",
+     "working": "3<i>x</i> + 1 + <i>x</i> + 4 + 3<i>x</i> + 1 + <i>x</i> + 4"
+    },
+    {
+     "text": [
+      "3<i>x</i>² + 2<i>x</i> + <i>x</i>² − 5<i>x</i>"
+     ],
+     "answer": "4<i>x</i>² − 3<i>x</i>",
+     "lines": 2,
+     "answer_label": "Answer"
+    }
+   ]
+  },
+  "e": {
+   "blurb": "Problems, reasoning and one piece of tampered evidence.",
+   "questions": [
+    {
+     "text": [
+      "6<i>a</i> − 2<i>b</i> + 3 − 4<i>a</i> − <i>b</i> − 7"
+     ],
+     "answer": "2<i>a</i> − 3<i>b</i> − 4",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "Tom simplified 3<i>x</i> + 4<i>y</i>. Find his mistake."
+     ],
+     "answer": "3<i>x</i> + 4<i>y</i> can't be simplified: <i>x</i> and <i>y</i> are not like terms.",
+     "lines": 2,
+     "answer_label": "Correct answer",
+     "working": "7<i>x</i><i>y</i> would mean 7 × <i>x</i> × <i>y</i>.",
+     "tampered": "3<i>x</i> + 4<i>y</i> = 7<i>x</i><i>y</i>"
+    },
+    {
+     "text": [
+      "Fill in the missing term: 4<i>x</i> + ☐ − 2<i>x</i> = 2<i>x</i> + 5<i>y</i>"
+     ],
+     "answer": "5<i>y</i>",
+     "lines": 2,
+     "answer_label": "☐ =",
+     "working": "4<i>x</i> − 2<i>x</i> = 2<i>x</i>, so the missing term must give + 5<i>y</i>."
+    },
+    {
+     "text": [
+      "A triangle has sides 2<i>a</i> + 3, <i>a</i> − 1 and 3<i>a</i> + 4.",
+      "a) Write an expression for the perimeter. Simplify it.",
+      "b) The perimeter is 30 cm. Find <i>a</i>."
+     ],
+     "answer": "a) 6<i>a</i> + 6  b) <i>a</i> = 4",
+     "lines": 4,
+     "answer_label": "a) ____ b) <i>a</i> =",
+     "working": "b) 6<i>a</i> + 6 = 30, so 6<i>a</i> = 24."
+    }
+   ]
+  }
+ },
+ "mistakes": [
+  "Combining unlike terms: 3<i>x</i> + 4<i>y</i> is not 7<i>x</i><i>y</i>, and <i>x</i>² + <i>x</i> is not <i>x</i>³ or 2<i>x</i>².",
+  "Losing the sign in front of a term: 7<i>x</i> − 3<i>y</i> − 5<i>y</i> gives −8<i>y</i>, not −2<i>y</i>.",
+  "Forgetting that <i>x</i> means 1<i>x</i>.",
+  "Collecting the numbers and letters together: 2<i>x</i> + 5 is not 7<i>x</i>."
+ ],
+ "closed_title": "Collecting like terms",
+ "closed_points": [
+  "Recognise like and unlike terms.",
+  "Simplify expressions with negative terms.",
+  "Simplify expressions with squared terms.",
+  "Write and simplify expressions for perimeters."
+ ],
+ "next": {
+  "title": "Keep going in the Maths Forensics Academy",
+  "text": "Step-by-step lessons, answers checked as you go, story cases and maths games for Years 7 to 9. Try the free topics.",
+  "url": "https://www.mathsforensics.com/academy"
+ }
+}

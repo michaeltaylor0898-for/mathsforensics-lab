@@ -1,0 +1,233 @@
+{
+ "code": "MF-AC-Y8-BRACKETS",
+ "product_line": "Academy worksheet · Year 8 · Free",
+ "strand": "Algebra",
+ "title": "Expanding brackets and factorising",
+ "level_line": "Year 8 · KS3",
+ "time": "About 40 minutes",
+ "cover_sub": "Multiply out brackets, expand and simplify, and factorise expressions by taking out the highest common factor.",
+ "parents": {
+  "listen": "Ask: <i>have you multiplied <b>every</b> term inside the bracket?</i> For factorising, ask: <i>what's the biggest thing that goes into every term?</i> Your child can always check a factorised answer by expanding it again."
+ },
+ "levels_long": {
+  "d": "Getting the basics: one step at a time.",
+  "s": "Year 8 standard: a few steps, some in context.",
+  "e": "A stretch: problems, reasoning and spotting mistakes."
+ },
+ "briefing": [
+  "<b>Expanding</b> a bracket means multiplying every term inside it by the term outside: 3(<i>x</i> + 4) = 3<i>x</i> + 12.",
+  "Watch the signs: a negative number outside changes the sign of every term inside. −2(<i>b</i> − 4) = −2<i>b</i> + 8.",
+  "<b>Factorising</b> is the reverse: find the <b>highest common factor</b> (HCF) of every term, write it outside a bracket, and work out what goes inside.",
+  "Check any factorised answer by expanding it again: you should get back to where you started."
+ ],
+ "method": null,
+ "examples": [
+  {
+   "question": "Expand 3(<i>x</i> + 4)",
+   "steps": [
+    "3 × <i>x</i> = 3<i>x</i>.",
+    "3 × 4 = 12."
+   ],
+   "answer": "3<i>x</i> + 12"
+  },
+  {
+   "question": "Expand 2<i>a</i>(<i>a</i> − 5)",
+   "steps": [
+    "2<i>a</i> × <i>a</i> = 2<i>a</i>².",
+    "2<i>a</i> × −5 = −10<i>a</i>."
+   ],
+   "answer": "2<i>a</i>² − 10<i>a</i>"
+  },
+  {
+   "question": "Expand and simplify 3(2<i>x</i> + 1) + 2(<i>x</i> − 4)",
+   "steps": [
+    "Expand each bracket: 6<i>x</i> + 3 + 2<i>x</i> − 8.",
+    "Collect like terms: 6<i>x</i> + 2<i>x</i> = 8<i>x</i> and 3 − 8 = −5."
+   ],
+   "answer": "8<i>x</i> − 5"
+  },
+  {
+   "question": "Factorise fully 4<i>y</i>² + 10<i>y</i>",
+   "steps": [
+    "The HCF of 4 and 10 is 2, and both terms contain <i>y</i>: the HCF is 2<i>y</i>.",
+    "4<i>y</i>² ÷ 2<i>y</i> = 2<i>y</i> and 10<i>y</i> ÷ 2<i>y</i> = 5.",
+    "Check: 2<i>y</i>(2<i>y</i> + 5) = 4<i>y</i>² + 10<i>y</i> ✓"
+   ],
+   "answer": "2<i>y</i>(2<i>y</i> + 5)"
+  }
+ ],
+ "sections": {
+  "d": {
+   "blurb": "Warm up. One step at a time.",
+   "questions": [
+    {
+     "text": [
+      "Expand 2(<i>x</i> + 3)"
+     ],
+     "answer": "2<i>x</i> + 6",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "Expand 5(<i>y</i> − 2)"
+     ],
+     "answer": "5<i>y</i> − 10",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "Expand 4(2<i>a</i> + 1)"
+     ],
+     "answer": "8<i>a</i> + 4",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "Factorise 3<i>x</i> + 6"
+     ],
+     "answer": "3(<i>x</i> + 2)",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "Factorise 5<i>a</i> − 10"
+     ],
+     "answer": "5(<i>a</i> − 2)",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "Expand and simplify 3(<i>x</i> + 2) + 4"
+     ],
+     "answer": "3<i>x</i> + 10",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "3<i>x</i> + 6 + 4"
+    }
+   ]
+  },
+  "s": {
+   "blurb": "The Year 8 standard. Show each step.",
+   "questions": [
+    {
+     "text": [
+      "Expand <i>x</i>(<i>x</i> + 7)"
+     ],
+     "answer": "<i>x</i>² + 7<i>x</i>",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "Expand −2(3<i>b</i> − 4)"
+     ],
+     "answer": "−6<i>b</i> + 8",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "−2 × −4 = +8",
+     "tip": "Negative × negative = positive: −2 × −4 = +8."
+    },
+    {
+     "text": [
+      "Expand and simplify 2(<i>x</i> + 5) + 3(<i>x</i> − 1)"
+     ],
+     "answer": "5<i>x</i> + 7",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "2<i>x</i> + 10 + 3<i>x</i> − 3"
+    },
+    {
+     "text": [
+      "Factorise 12<i>m</i> + 18"
+     ],
+     "answer": "6(2<i>m</i> + 3)",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "The HCF of 12 and 18 is 6."
+    },
+    {
+     "text": [
+      "Factorise <i>y</i>² + 9<i>y</i>"
+     ],
+     "answer": "<i>y</i>(<i>y</i> + 9)",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "Expand and simplify 4(2<i>p</i> + 3) − 2(<i>p</i> + 1)"
+     ],
+     "answer": "6<i>p</i> + 10",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "8<i>p</i> + 12 − 2<i>p</i> − 2"
+    }
+   ]
+  },
+  "e": {
+   "blurb": "Problems, reasoning and one piece of tampered evidence.",
+   "questions": [
+    {
+     "text": [
+      "Factorise fully 8<i>x</i>² − 12<i>x</i>"
+     ],
+     "answer": "4<i>x</i>(2<i>x</i> − 3)",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "The HCF is 4<i>x</i>."
+    },
+    {
+     "text": [
+      "Ella factorised 9<i>a</i> + 12. Find her mistake and give the right answer."
+     ],
+     "answer": "3(3<i>a</i> + 4)",
+     "lines": 2,
+     "answer_label": "Correct answer",
+     "working": "Expanding her answer gives 9<i>a</i> + 36, not 9<i>a</i> + 12. She forgot to divide the 12 by 3.",
+     "tampered": "9<i>a</i> + 12 = 3(3<i>a</i> + 12)"
+    },
+    {
+     "text": [
+      "Expand and simplify 5(2<i>y</i> − 3) − 3(<i>y</i> − 4)"
+     ],
+     "answer": "7<i>y</i> − 3",
+     "lines": 3,
+     "answer_label": "Answer",
+     "working": "10<i>y</i> − 15 − 3<i>y</i> + 12",
+     "tip": "−3 × −4 = +12. The negative in front of the second bracket multiplies <b>both</b> terms."
+    },
+    {
+     "text": [
+      "Show that 3(2<i>n</i> + 4) is always a multiple of 6, whatever whole number <i>n</i> is."
+     ],
+     "answer": "3(2<i>n</i> + 4) = 6<i>n</i> + 12 = 6(<i>n</i> + 2), which is 6 × a whole number.",
+     "lines": 3,
+     "answer_label": false
+    }
+   ]
+  }
+ },
+ "mistakes": [
+  "Multiplying only the first term in the bracket: 3(<i>x</i> + 4) written as 3<i>x</i> + 4.",
+  "Sign errors with a negative outside: −2(3<i>b</i> − 4) is −6<i>b</i> + 8, not −6<i>b</i> − 8.",
+  "Not factorising fully: 8<i>x</i>² − 12<i>x</i> = 2<i>x</i>(4<i>x</i> − 6) isn't finished, because 4<i>x</i> − 6 still has a common factor of 2.",
+  "Forgetting to divide every term when factorising. Expanding again catches this."
+ ],
+ "closed_title": "Expanding brackets and factorising",
+ "closed_points": [
+  "Expand single brackets, including negative and letter terms outside.",
+  "Expand and simplify expressions with two brackets.",
+  "Factorise by taking out the highest common factor.",
+  "Check a factorised answer by expanding it."
+ ],
+ "next": {
+  "title": "Keep going in the Maths Forensics Academy",
+  "text": "Step-by-step lessons, answers checked as you go, story cases and maths games for Years 7 to 9. Try the free topics.",
+  "url": "https://www.mathsforensics.com/academy"
+ }
+}

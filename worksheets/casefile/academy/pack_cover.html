@@ -1,0 +1,120 @@
+<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><title>MF-AC-Y8-PACK1</title><style>
+@page{size:A4;margin:11mm 13mm 15mm}
+*{box-sizing:border-box}
+:root{--navy:#0B122C;--cyan:#00FCF1;--teal:#00A99F;--blue:#1B36FF;--ink:#16203F;--muted:#5B6585;--line:#D5DAEA;--soft:#F3F6FC;
+ --cy-bg:#E6FFFE;--cy-bd:#00D9CF;--ye-bg:#FFF8D6;--ye-bd:#F2C200;--ye-ink:#6B5200}
+body{margin:0;font-family:Inter,"DejaVu Sans",sans-serif;color:var(--ink);font-size:10.5pt;line-height:1.45;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pb{break-before:page}
+.mono{font-family:"DejaVu Sans Mono",monospace;letter-spacing:.16em;text-transform:uppercase}
+/* cover band */
+.cover{background:var(--navy);color:#EAF0FF;border-radius:3mm;padding:8mm 9mm 7mm;position:relative;overflow:hidden}
+.cover:after{content:"";position:absolute;right:-18mm;top:-18mm;width:70mm;height:70mm;border-radius:50%;border:1.2mm solid rgba(0,252,241,.18)}
+.brand{display:flex;gap:3mm;align-items:center;color:var(--cyan)}
+.brand svg{width:10mm;height:11.5mm}
+.brand b{display:block;font-family:"Inter Display",Inter,sans-serif;font-weight:800;letter-spacing:.08em;font-size:12pt;color:#fff}
+.brand span{display:block;font-size:7pt}
+.cover .series{margin-top:7mm;color:var(--cyan);font-size:7.6pt}
+.cover h1{font-family:"Inter Display",Inter,sans-serif;font-weight:800;font-size:28pt;line-height:1.02;margin:1.5mm 0 2mm;color:#fff;text-transform:uppercase;letter-spacing:.01em}
+.cover .sub{color:#B7C2E6;font-size:10pt;max-width:120mm}
+.cover .chips{display:flex;gap:2mm;margin-top:4.5mm;flex-wrap:wrap}
+.cover .chips span{font-size:7.2pt;padding:1.2mm 2.6mm;border-radius:10mm;border:1px solid rgba(255,255,255,.25);color:#EAF0FF}
+.cover .chips .s{background:#00A99F;border-color:#00A99F}.cover .chips .e{background:var(--blue);border-color:var(--blue)}.cover .chips .m{background:#fff;color:var(--navy);border-color:#fff}
+.cover .code{position:absolute;right:9mm;top:8mm;text-align:right;font-size:7pt;color:#9AA6CC}
+.cover .code b{display:block;color:var(--cyan);font-size:8.4pt}
+.who{display:grid;grid-template-columns:2fr 1fr 1fr;gap:5mm;margin:4.5mm 0 4mm;font-size:8.6pt;color:var(--muted)}
+.who span{border-bottom:1px solid var(--line);padding-bottom:5mm}
+h2.st{font-family:"Inter Display",Inter,sans-serif;font-weight:800;font-size:14pt;text-transform:uppercase;letter-spacing:.02em;margin:5mm 0 2.5mm;display:flex;align-items:center;gap:3mm;break-after:avoid}
+h2.st:after{content:"";flex:1;height:1.2pt;background:var(--cyan)}
+.cyan{background:var(--cy-bg);border:1px solid var(--cy-bd);border-left:3.5pt solid var(--cy-bd);border-radius:2mm;padding:3.5mm 4.5mm;break-inside:avoid}
+.cyan h3,.yellow h3{margin:0 0 1.5mm;font-size:7.6pt;color:#007F78}
+.yellow h3{color:var(--ye-ink)}
+.cyan p{margin:0 0 1.6mm}.cyan p:last-child{margin:0}
+.cyan ol{margin:1mm 0 0;padding-left:5mm}.cyan li{margin:.6mm 0}
+.ex{margin-top:3.5mm;break-inside:avoid}
+.ex .q{font-weight:600;margin:0 0 2mm}
+.ex .q em{font-style:normal;font-family:"DejaVu Sans Mono",monospace;font-size:7.6pt;letter-spacing:.14em;color:var(--blue);margin-right:2mm}
+.yellow{background:var(--ye-bg);border:1px solid var(--ye-bd);border-left:3.5pt solid var(--ye-bd);border-radius:2mm;padding:3mm 4.5mm;break-inside:avoid}
+.yellow .step{display:grid;grid-template-columns:6mm 1fr;gap:1mm;margin:.8mm 0}
+.yellow .step b{color:var(--ye-ink)}
+.yellow .fin{margin-top:2mm;font-weight:700}
+.eq{font-family:"DejaVu Serif",serif;font-size:11pt}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 .2em;font-family:"DejaVu Serif",serif;line-height:1.25}
+.frac .nu{padding:0 .25em .15em;border-bottom:1px solid currentColor}.frac .de{padding:.15em .25em 0}
+.rad{white-space:nowrap}.rad .ov{border-top:1px solid currentColor;padding:0 .12em;margin-left:-.05em}
+.display{text-align:center;margin:2mm 0;font-size:12.5pt}
+.levels{display:grid;grid-template-columns:repeat(3,1fr);gap:3mm;margin:3mm 0 1mm;font-size:8.6pt}
+.levels div{border-radius:2mm;padding:2.5mm 3mm;border:1px solid var(--line)}
+.levels b{display:block;font-size:9.4pt;margin-bottom:.5mm}
+.levels .s{border-top:2.5pt solid #00A99F}.levels .e{border-top:2.5pt solid var(--blue)}.levels .m{border-top:2.5pt solid var(--navy)}
+.sect{margin:4.5mm 0 1mm;display:flex;align-items:center;gap:3mm;break-after:avoid}
+.sect .tag{font-family:"Inter Display",Inter,sans-serif;font-weight:800;color:#fff;padding:1.4mm 3.5mm;border-radius:1.5mm;font-size:10.5pt;text-transform:uppercase;letter-spacing:.04em}
+.sect.s .tag{background:#00A99F}.sect.e .tag{background:var(--blue)}.sect.m .tag{background:var(--navy);box-shadow:inset 0 -1.2mm 0 var(--cyan)}
+.sect p{margin:0;font-size:8.8pt;color:var(--muted)}
+.sect .rule{flex:1;height:1px;background:var(--line)}
+.qg{break-inside:avoid}
+.qq{display:grid;grid-template-columns:7mm 1fr 12mm;gap:2mm;padding:2.6mm 0;border-bottom:1px solid #EEF1F8}
+.qq .n{width:6.4mm;height:6.4mm;border-radius:50%;background:var(--navy);color:var(--cyan);display:grid;place-items:center;font-weight:700;font-size:8.4pt}
+.qq .mk{text-align:right;font-family:"DejaVu Sans Mono",monospace;font-size:8pt;color:var(--muted)}
+.qq .t p{margin:0 0 1mm}
+.qq .eq{display:block;margin:1mm 0 1mm 4mm}
+.space{margin-top:1.5mm;background-image:linear-gradient(#C3CADF 1px,transparent 1px);background-size:100% 7mm;background-position:0 6.9mm}
+.ans{display:flex;justify-content:flex-end;gap:2mm;align-items:flex-end;font-size:8.6pt;color:var(--muted);margin-top:1mm}
+.ans span{display:inline-block;min-width:38mm;border-bottom:1px solid var(--ink);height:5mm}
+.tip{margin:2mm 0 1mm;padding:2.3mm 3.5mm;border-radius:2mm;background:var(--cy-bg);border:1px dashed var(--cy-bd);font-size:8.9pt}
+.tip b.mono{font-size:7pt;color:#007F78;margin-right:2mm}
+.tampered{border:1.5px dashed var(--blue);border-radius:2mm;padding:2mm 3mm;margin:1.5mm 0;font-family:"DejaVu Serif",serif;font-size:10pt;background:#FAFBFF}
+.tampered small{display:block;font-family:"DejaVu Sans Mono",monospace;font-size:6.8pt;letter-spacing:.16em;color:var(--blue);margin-bottom:1mm}
+.marked{display:grid;grid-template-columns:1fr 22mm;gap:4mm;align-items:center;margin-top:3mm;padding:3mm 4mm;border-radius:2mm;background:var(--navy);color:#EAF0FF;font-size:9pt;break-inside:avoid}
+.marked b{color:var(--cyan)}.marked img{width:22mm;height:22mm;background:#fff;border-radius:1mm;padding:1mm}
+.sols{columns:2;column-gap:5mm}
+.sol{break-inside:avoid;margin:0 0 3mm;font-size:9pt}
+.sol .yellow{padding:2.4mm 3.2mm}
+.sol .h{display:flex;justify-content:space-between;align-items:center;margin-bottom:1mm}
+.sol .h b{font-size:9.4pt}
+.sol .lvl{font-size:6.4pt;padding:.4mm 1.6mm;border-radius:1mm;color:#fff}
+.sol .w{color:#4B4320;font-size:8.5pt;margin-top:.6mm}
+.sol .a{font-weight:700;margin-top:.8mm}
+.track{border:1px solid var(--line);border-radius:2mm;padding:3mm 4mm;break-inside:avoid;margin-top:2mm}
+.track table{width:100%;border-collapse:collapse;font-size:8.8pt;margin-top:1.5mm}
+.track th,.track td{border:1px solid var(--line);padding:1.6mm 2mm;text-align:center}
+.track th{background:var(--soft);font-weight:600}.track td:first-child,.track th:first-child{text-align:left}
+.rma{display:grid;grid-template-columns:repeat(3,1fr);gap:3mm;margin-top:2.5mm;font-size:8.4pt}
+.rma div{background:var(--soft);border-radius:1.5mm;padding:2mm 2.5mm}.rma b{display:block;color:var(--blue)}
+.closed{margin-top:5mm;background:var(--navy);color:#DDE5FF;border-radius:3mm;padding:6mm 7mm;break-inside:avoid}
+.closed h2{font-family:"Inter Display",Inter,sans-serif;font-weight:800;color:#fff;font-size:15pt;text-transform:uppercase;margin:0 0 2mm}
+.closed h2 em{font-style:normal;color:var(--cyan)}
+.closed ul{margin:2mm 0 0;padding-left:5mm}.closed li{margin:.8mm 0}
+.closed .tag{color:var(--cyan);font-weight:700;margin-top:3mm}
+.next{display:grid;grid-template-columns:1fr 24mm;gap:5mm;align-items:center;margin-top:4mm;border:1.5px solid var(--cy-bd);border-radius:3mm;padding:4.5mm 5mm;background:var(--cy-bg);break-inside:avoid}
+.next h3{margin:0 0 1mm;font-size:7.6pt;color:#007F78}
+.next b.big{display:block;font-family:"Inter Display",Inter,sans-serif;font-size:13pt;margin-bottom:1mm}
+.next p{margin:0;font-size:9.2pt}
+.next .url{font-family:"DejaVu Sans Mono",monospace;font-size:8pt;color:var(--blue);margin-top:1.5mm}
+.next img{width:24mm;height:24mm;background:#fff;border-radius:1mm;padding:1mm;border:1px solid var(--line)}
+
+.parents{display:grid;grid-template-columns:1fr 1fr;gap:3mm;margin:0 0 1mm}
+.parents div{background:var(--soft);border-radius:2mm;padding:2.6mm 3.5mm;font-size:8.9pt;break-inside:avoid}
+.parents b.mono{display:block;font-size:7.2pt;color:var(--blue);margin-bottom:.8mm}
+.parents p{margin:0}
+.qq{grid-template-columns:7mm 1fr}
+.miss{margin-top:3mm;border:1px solid var(--ye-bd);background:#FFFDF2;border-radius:2mm;padding:3mm 4mm;break-inside:avoid;font-size:9pt}
+.miss h3{margin:0 0 1.2mm;font-size:7.6pt;color:var(--ye-ink)}
+.miss ul{margin:0;padding-left:5mm}.miss li{margin:.6mm 0}
+.exs{display:grid;gap:3mm}
+.cover .chips .m{background:#fff;color:var(--navy)}
+.akey{margin:0 0 2mm;font-size:9.2pt;color:var(--muted)}
+
+.pk td{padding:2.4mm 2mm;border-bottom:1px solid var(--line);vertical-align:top}.pk{width:100%;border-collapse:collapse;margin-top:2mm}
+</style></head><body>
+<div class="cover" style="padding:12mm 10mm 11mm"><div class="brand"><svg viewBox="0 0 40 46" aria-hidden="true"><path d="M20 2 37 8v13c0 11-7.5 19.5-17 23C10.5 40.5 3 32 3 21V8z" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="18" cy="20" r="7" fill="none" stroke="currentColor" stroke-width="3"/><path d="m23 25 6 6" stroke="#1B36FF" stroke-width="4" stroke-linecap="round"/></svg><div><b>MATHS FORENSICS ACADEMY</b><span class="mono">Free revision pack · Year 8</span></div></div>
+<div class="series mono" style="margin-top:12mm">Academy revision · Number, ratio and algebra</div><h1 style="font-size:34pt">Year 8 Revision Pack 1</h1>
+<div class="sub" style="max-width:150mm">Eight worksheets with worked examples, three levels of practice and full answers. Written for parents helping at home: no maths degree needed.</div>
+<div class="chips"><span class="s mono">Developing</span><span class="e mono">Securing</span><span class="m mono">Extending</span><span class="mono">Answers included</span></div></div>
+<h2 class="st">In this pack</h2><table class="pk"><tr><td class="mono" style="font-size:7.5pt;color:var(--blue)">1</td><td><b>Rounding and estimating</b><br><span style="color:var(--muted);font-size:8.8pt">Round to tens, hundreds, decimal places and significant figures, then use rounding to estimate answers and check calculations.</span></td></tr><tr><td class="mono" style="font-size:7.5pt;color:var(--blue)">2</td><td><b>Arithmetic with decimals</b><br><span style="color:var(--muted);font-size:8.8pt">Add, subtract, multiply and divide with decimals, without a calculator, and know where the decimal point goes every time.</span></td></tr><tr><td class="mono" style="font-size:7.5pt;color:var(--blue)">3</td><td><b>Arithmetic with fractions</b><br><span style="color:var(--muted);font-size:8.8pt">Add, subtract, multiply and divide fractions and mixed numbers, and find a fraction of an amount.</span></td></tr><tr><td class="mono" style="font-size:7.5pt;color:var(--blue)">4</td><td><b>Ordering fractions and decimals</b><br><span style="color:var(--muted);font-size:8.8pt">Compare and order decimals, fractions and percentages, including negative numbers, using place value and common denominators.</span></td></tr><tr><td class="mono" style="font-size:7.5pt;color:var(--blue)">5</td><td><b>Ratio</b><br><span style="color:var(--muted);font-size:8.8pt">Simplify ratios, share amounts in a ratio, and use ratio in recipes, mixtures and problems.</span></td></tr><tr><td class="mono" style="font-size:7.5pt;color:var(--blue)">6</td><td><b>Percentages</b><br><span style="color:var(--muted);font-size:8.8pt">Find percentages of amounts with and without a calculator, increase and decrease by a percentage, and write one number as a percentage of another.</span></td></tr><tr><td class="mono" style="font-size:7.5pt;color:var(--blue)">7</td><td><b>Collecting like terms</b><br><span style="color:var(--muted);font-size:8.8pt">Simplify expressions by collecting like terms, including negative terms and squared terms, and use them for perimeters.</span></td></tr><tr><td class="mono" style="font-size:7.5pt;color:var(--blue)">8</td><td><b>Expanding brackets and factorising</b><br><span style="color:var(--muted);font-size:8.8pt">Multiply out brackets, expand and simplify, and factorise expressions by taking out the highest common factor.</span></td></tr></table>
+<h2 class="st">How to use it</h2>
+<div class="parents"><div><b class="mono">One sheet at a time</b><p>Pick the topic your child finds hardest, or the one their class is on now. Each sheet takes about 40 minutes and can be split over two evenings.</p></div>
+<div><b class="mono">Learn it, then try it</b><p>Read the <b>Learn it</b> page together and talk through the worked examples. Then let your child work on their own, starting at <b>Developing</b>.</p></div>
+<div><b class="mono">Move up a level</b><p>Most of a level right? Move up. Developing is the basics, Securing is the Year 8 standard, Extending is a stretch.</p></div>
+<div><b class="mono">Check together</b><p>The answer key is at the back of each sheet, with the mistakes to look out for. Ask your child to explain their working, not just the answer.</p></div></div>
+<div class="next" style="margin-top:6mm"><div><h3 class="mono">Want more?</h3><b class="big">The Maths Forensics Academy</b><p>Step-by-step lessons for Years 7 to 9, answers checked as your child goes, story cases and maths games, and a weekly view of their progress for you.</p><div class="url">mathsforensics.com/academy</div></div></div>
+</body></html>

@@ -1,0 +1,238 @@
+{
+ "code": "MF-AC-Y8-FRAC",
+ "product_line": "Academy worksheet · Year 8 · Free",
+ "strand": "Number",
+ "title": "Arithmetic with fractions",
+ "level_line": "Year 8 · KS3",
+ "time": "About 40 minutes",
+ "cover_sub": "Add, subtract, multiply and divide fractions and mixed numbers, and find a fraction of an amount.",
+ "parents": {
+  "listen": "Ask: <i>can you add these straight away, or do the bottom numbers need to match first?</i> For dividing, listen for <i>flip the second fraction and multiply</i>. Mixed numbers should become top-heavy fractions before multiplying or dividing."
+ },
+ "levels_long": {
+  "d": "Getting the basics: one step at a time.",
+  "s": "Year 8 standard: a few steps, some in context.",
+  "e": "A stretch: problems, reasoning and spotting mistakes."
+ },
+ "briefing": [
+  "The bottom number (<b>denominator</b>) says how many equal parts; the top number (<b>numerator</b>) says how many of them you have.",
+  "<b>Adding and subtracting:</b> the denominators must be the same. Find a common denominator, change both fractions, then add or subtract the numerators only.",
+  "<b>Multiplying:</b> multiply the tops and multiply the bottoms. <b>Dividing:</b> flip the second fraction and multiply.",
+  "<b>Mixed numbers</b> such as 2<span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">2</span></span> become top-heavy fractions first: <span class=\"frac\"><span class=\"nu\">5</span><span class=\"de\">2</span></span>. Always simplify your answer."
+ ],
+ "method": null,
+ "examples": [
+  {
+   "question": "Work out <span class=\"frac\"><span class=\"nu\">2</span><span class=\"de\">3</span></span> + <span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">4</span></span>",
+   "steps": [
+    "Common denominator 12: <span class=\"frac\"><span class=\"nu\">2</span><span class=\"de\">3</span></span> = <span class=\"frac\"><span class=\"nu\">8</span><span class=\"de\">12</span></span> and <span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">4</span></span> = <span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">12</span></span>.",
+    "Add the tops: <span class=\"frac\"><span class=\"nu\">8</span><span class=\"de\">12</span></span> + <span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">12</span></span> = <span class=\"frac\"><span class=\"nu\">11</span><span class=\"de\">12</span></span>."
+   ],
+   "answer": "<span class=\"frac\"><span class=\"nu\">11</span><span class=\"de\">12</span></span>"
+  },
+  {
+   "question": "Work out <span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">4</span></span> × <span class=\"frac\"><span class=\"nu\">2</span><span class=\"de\">5</span></span>",
+   "steps": [
+    "Tops: 3 × 2 = 6. Bottoms: 4 × 5 = 20.",
+    "<span class=\"frac\"><span class=\"nu\">6</span><span class=\"de\">20</span></span> simplifies to <span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">10</span></span> (÷ 2)."
+   ],
+   "answer": "<span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">10</span></span>"
+  },
+  {
+   "question": "Work out <span class=\"frac\"><span class=\"nu\">5</span><span class=\"de\">6</span></span> ÷ <span class=\"frac\"><span class=\"nu\">2</span><span class=\"de\">3</span></span>",
+   "steps": [
+    "Flip the second fraction and multiply: <span class=\"frac\"><span class=\"nu\">5</span><span class=\"de\">6</span></span> × <span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">2</span></span>.",
+    "= <span class=\"frac\"><span class=\"nu\">15</span><span class=\"de\">12</span></span> = <span class=\"frac\"><span class=\"nu\">5</span><span class=\"de\">4</span></span> = 1<span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">4</span></span>."
+   ],
+   "answer": "1<span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">4</span></span>"
+  },
+  {
+   "question": "Work out 2<span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">2</span></span> + 1<span class=\"frac\"><span class=\"nu\">2</span><span class=\"de\">3</span></span>",
+   "steps": [
+    "Make them top-heavy: <span class=\"frac\"><span class=\"nu\">5</span><span class=\"de\">2</span></span> + <span class=\"frac\"><span class=\"nu\">5</span><span class=\"de\">3</span></span>.",
+    "Common denominator 6: <span class=\"frac\"><span class=\"nu\">15</span><span class=\"de\">6</span></span> + <span class=\"frac\"><span class=\"nu\">10</span><span class=\"de\">6</span></span> = <span class=\"frac\"><span class=\"nu\">25</span><span class=\"de\">6</span></span>.",
+    "<span class=\"frac\"><span class=\"nu\">25</span><span class=\"de\">6</span></span> = 4<span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">6</span></span>."
+   ],
+   "answer": "4<span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">6</span></span>"
+  }
+ ],
+ "sections": {
+  "d": {
+   "blurb": "Warm up. One step at a time.",
+   "questions": [
+    {
+     "text": [
+      "<span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">5</span></span> + <span class=\"frac\"><span class=\"nu\">2</span><span class=\"de\">5</span></span>"
+     ],
+     "answer": "<span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">5</span></span>",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "<span class=\"frac\"><span class=\"nu\">7</span><span class=\"de\">9</span></span> − <span class=\"frac\"><span class=\"nu\">4</span><span class=\"de\">9</span></span>"
+     ],
+     "answer": "<span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">9</span></span> = <span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">3</span></span>",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "Find <span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">4</span></span> of 28."
+     ],
+     "answer": "21",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "28 ÷ 4 = 7, then 7 × 3."
+    },
+    {
+     "text": [
+      "<span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">2</span></span> + <span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">4</span></span>"
+     ],
+     "answer": "<span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">4</span></span>",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "<span class=\"frac\"><span class=\"nu\">2</span><span class=\"de\">4</span></span> + <span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">4</span></span>"
+    },
+    {
+     "text": [
+      "<span class=\"frac\"><span class=\"nu\">2</span><span class=\"de\">3</span></span> × 6"
+     ],
+     "answer": "4",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "<span class=\"frac\"><span class=\"nu\">12</span><span class=\"de\">3</span></span> = 4"
+    },
+    {
+     "text": [
+      "Simplify <span class=\"frac\"><span class=\"nu\">12</span><span class=\"de\">18</span></span> fully."
+     ],
+     "answer": "<span class=\"frac\"><span class=\"nu\">2</span><span class=\"de\">3</span></span>",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "Divide top and bottom by 6."
+    }
+   ]
+  },
+  "s": {
+   "blurb": "The Year 8 standard. Show each step.",
+   "questions": [
+    {
+     "text": [
+      "<span class=\"frac\"><span class=\"nu\">2</span><span class=\"de\">5</span></span> + <span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">3</span></span>"
+     ],
+     "answer": "<span class=\"frac\"><span class=\"nu\">11</span><span class=\"de\">15</span></span>",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "<span class=\"frac\"><span class=\"nu\">6</span><span class=\"de\">15</span></span> + <span class=\"frac\"><span class=\"nu\">5</span><span class=\"de\">15</span></span>"
+    },
+    {
+     "text": [
+      "<span class=\"frac\"><span class=\"nu\">5</span><span class=\"de\">6</span></span> − <span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">4</span></span>"
+     ],
+     "answer": "<span class=\"frac\"><span class=\"nu\">7</span><span class=\"de\">12</span></span>",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "<span class=\"frac\"><span class=\"nu\">10</span><span class=\"de\">12</span></span> − <span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">12</span></span>"
+    },
+    {
+     "text": [
+      "<span class=\"frac\"><span class=\"nu\">2</span><span class=\"de\">3</span></span> × <span class=\"frac\"><span class=\"nu\">4</span><span class=\"de\">7</span></span>"
+     ],
+     "answer": "<span class=\"frac\"><span class=\"nu\">8</span><span class=\"de\">21</span></span>",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "<span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">5</span></span> ÷ <span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">10</span></span>"
+     ],
+     "answer": "2",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "<span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">5</span></span> × <span class=\"frac\"><span class=\"nu\">10</span><span class=\"de\">3</span></span> = <span class=\"frac\"><span class=\"nu\">30</span><span class=\"de\">15</span></span> = 2",
+     "tip": "Keep the first fraction, change ÷ to ×, flip the second fraction."
+    },
+    {
+     "text": [
+      "Write <span class=\"frac\"><span class=\"nu\">17</span><span class=\"de\">5</span></span> as a mixed number."
+     ],
+     "answer": "3<span class=\"frac\"><span class=\"nu\">2</span><span class=\"de\">5</span></span>",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "17 ÷ 5 = 3 remainder 2."
+    },
+    {
+     "text": [
+      "1<span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">2</span></span> × <span class=\"frac\"><span class=\"nu\">2</span><span class=\"de\">3</span></span>"
+     ],
+     "answer": "1",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "<span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">2</span></span> × <span class=\"frac\"><span class=\"nu\">2</span><span class=\"de\">3</span></span> = <span class=\"frac\"><span class=\"nu\">6</span><span class=\"de\">6</span></span> = 1"
+    }
+   ]
+  },
+  "e": {
+   "blurb": "Problems, reasoning and one piece of tampered evidence.",
+   "questions": [
+    {
+     "text": [
+      "3<span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">4</span></span> − 1<span class=\"frac\"><span class=\"nu\">2</span><span class=\"de\">3</span></span>"
+     ],
+     "answer": "1<span class=\"frac\"><span class=\"nu\">7</span><span class=\"de\">12</span></span>",
+     "lines": 3,
+     "answer_label": "Answer",
+     "working": "<span class=\"frac\"><span class=\"nu\">13</span><span class=\"de\">4</span></span> − <span class=\"frac\"><span class=\"nu\">5</span><span class=\"de\">3</span></span> = <span class=\"frac\"><span class=\"nu\">39</span><span class=\"de\">12</span></span> − <span class=\"frac\"><span class=\"nu\">20</span><span class=\"de\">12</span></span> = <span class=\"frac\"><span class=\"nu\">19</span><span class=\"de\">12</span></span>"
+    },
+    {
+     "text": [
+      "2<span class=\"frac\"><span class=\"nu\">2</span><span class=\"de\">5</span></span> ÷ 1<span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">5</span></span>"
+     ],
+     "answer": "2",
+     "lines": 3,
+     "answer_label": "Answer",
+     "working": "<span class=\"frac\"><span class=\"nu\">12</span><span class=\"de\">5</span></span> ÷ <span class=\"frac\"><span class=\"nu\">6</span><span class=\"de\">5</span></span> = <span class=\"frac\"><span class=\"nu\">12</span><span class=\"de\">5</span></span> × <span class=\"frac\"><span class=\"nu\">5</span><span class=\"de\">6</span></span> = <span class=\"frac\"><span class=\"nu\">60</span><span class=\"de\">30</span></span> = 2"
+    },
+    {
+     "text": [
+      "Leo worked out <span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">3</span></span> + <span class=\"frac\"><span class=\"nu\">2</span><span class=\"de\">5</span></span>. Find his mistake and give the right answer."
+     ],
+     "answer": "<span class=\"frac\"><span class=\"nu\">11</span><span class=\"de\">15</span></span>",
+     "lines": 2,
+     "answer_label": "Correct answer",
+     "working": "He added the tops and the bottoms. The denominators must match first: <span class=\"frac\"><span class=\"nu\">5</span><span class=\"de\">15</span></span> + <span class=\"frac\"><span class=\"nu\">6</span><span class=\"de\">15</span></span>.",
+     "tampered": "<span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">3</span></span> + <span class=\"frac\"><span class=\"nu\">2</span><span class=\"de\">5</span></span> = <span class=\"frac\"><span class=\"nu\">1 + 2</span><span class=\"de\">3 + 5</span></span> = <span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">8</span></span>"
+    },
+    {
+     "text": [
+      "One batch of flapjacks uses <span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">4</span></span> of a cup of oats.",
+      "How many full batches can be made from 5 cups of oats? How much oats is left over?"
+     ],
+     "answer": "6 batches, with <span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">2</span></span> a cup left over",
+     "lines": 4,
+     "answer_label": "Batches ____ Left over",
+     "working": "5 ÷ <span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">4</span></span> = 5 × <span class=\"frac\"><span class=\"nu\">4</span><span class=\"de\">3</span></span> = <span class=\"frac\"><span class=\"nu\">20</span><span class=\"de\">3</span></span> = 6<span class=\"frac\"><span class=\"nu\">2</span><span class=\"de\">3</span></span>, so 6 full batches use 4<span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">2</span></span> cups."
+    }
+   ]
+  }
+ },
+ "mistakes": [
+  "Adding the denominators: <span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">3</span></span> + <span class=\"frac\"><span class=\"nu\">2</span><span class=\"de\">5</span></span> = <span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">8</span></span>. The denominators must match, and then only the tops are added.",
+  "Multiplying or dividing mixed numbers without making them top-heavy first.",
+  "Flipping the first fraction instead of the second when dividing.",
+  "Not simplifying the final answer, or leaving a top-heavy answer when a mixed number is asked for."
+ ],
+ "closed_title": "Arithmetic with fractions",
+ "closed_points": [
+  "Add and subtract fractions with different denominators.",
+  "Multiply and divide fractions.",
+  "Work with mixed numbers.",
+  "Find a fraction of an amount and solve problems with fractions."
+ ],
+ "next": {
+  "title": "Keep going in the Maths Forensics Academy",
+  "text": "Step-by-step lessons, answers checked as you go, story cases and maths games for Years 7 to 9. Try the free topics.",
+  "url": "https://www.mathsforensics.com/academy"
+ }
+}

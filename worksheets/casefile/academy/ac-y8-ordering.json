@@ -1,0 +1,229 @@
+{
+ "code": "MF-AC-Y8-ORDER",
+ "product_line": "Academy worksheet · Year 8 · Free",
+ "strand": "Number",
+ "title": "Ordering fractions and decimals",
+ "level_line": "Year 8 · KS3",
+ "time": "About 40 minutes",
+ "cover_sub": "Compare and order decimals, fractions and percentages, including negative numbers, using place value and common denominators.",
+ "parents": {
+  "listen": "Ask: <i>can you make them all the same type first?</i> The most common mistake is thinking a decimal with more digits is bigger (0.125 is <b>smaller</b> than 0.5). Writing the decimals with the same number of digits helps."
+ },
+ "levels_long": {
+  "d": "Getting the basics: one step at a time.",
+  "s": "Year 8 standard: a few steps, some in context.",
+  "e": "A stretch: problems, reasoning and spotting mistakes."
+ },
+ "briefing": [
+  "To compare <b>decimals</b>, line up the decimal points and give them the same number of decimal places by adding zeros. Then compare digit by digit from the left.",
+  "To compare <b>fractions</b>, either change them to decimals (divide the top by the bottom) or give them a common denominator.",
+  "Useful facts: <span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">2</span></span> = 0.5, <span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">4</span></span> = 0.25, <span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">4</span></span> = 0.75, <span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">5</span></span> = 0.2, <span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">8</span></span> = 0.125, <span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">3</span></span> = 0.333…",
+  "&lt; means <i>is less than</i>; &gt; means <i>is greater than</i>. For negative numbers, the further below zero, the smaller the number."
+ ],
+ "method": null,
+ "examples": [
+  {
+   "question": "Put in order, smallest first: 0.4, 0.35, 0.405, 0.04",
+   "steps": [
+    "Give them all 3 decimal places: 0.400, 0.350, 0.405, 0.040.",
+    "Now compare them like whole numbers: 40, 350, 400, 405."
+   ],
+   "answer": "0.04, 0.35, 0.4, 0.405"
+  },
+  {
+   "question": "Put in order, smallest first: <span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">5</span></span>, 0.58, <span class=\"frac\"><span class=\"nu\">2</span><span class=\"de\">3</span></span>, 62%",
+   "steps": [
+    "Change them all to decimals: 0.6, 0.58, 0.666…, 0.62.",
+    "Compare: 0.58 < 0.6 < 0.62 < 0.666…",
+    "Write them in their original form."
+   ],
+   "answer": "0.58, <span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">5</span></span>, 62%, <span class=\"frac\"><span class=\"nu\">2</span><span class=\"de\">3</span></span>"
+  },
+  {
+   "question": "Which is bigger, <span class=\"frac\"><span class=\"nu\">5</span><span class=\"de\">8</span></span> or <span class=\"frac\"><span class=\"nu\">7</span><span class=\"de\">12</span></span>?",
+   "steps": [
+    "Common denominator 24: <span class=\"frac\"><span class=\"nu\">5</span><span class=\"de\">8</span></span> = <span class=\"frac\"><span class=\"nu\">15</span><span class=\"de\">24</span></span> and <span class=\"frac\"><span class=\"nu\">7</span><span class=\"de\">12</span></span> = <span class=\"frac\"><span class=\"nu\">14</span><span class=\"de\">24</span></span>.",
+    "15 > 14."
+   ],
+   "answer": "<span class=\"frac\"><span class=\"nu\">5</span><span class=\"de\">8</span></span> is bigger"
+  }
+ ],
+ "sections": {
+  "d": {
+   "blurb": "Warm up. One step at a time.",
+   "questions": [
+    {
+     "text": [
+      "Which is bigger, 0.6 or 0.06?"
+     ],
+     "answer": "0.6",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "Write &lt; or &gt; in the box: 0.45 ☐ 0.5"
+     ],
+     "answer": "0.45 &lt; 0.5",
+     "lines": 2,
+     "answer_label": "0.45 ☐ 0.5",
+     "working": "0.45 against 0.50."
+    },
+    {
+     "text": [
+      "Put in order, smallest first: 0.7, 0.07, 0.17"
+     ],
+     "answer": "0.07, 0.17, 0.7",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "Write <span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">4</span></span> as a decimal."
+     ],
+     "answer": "0.75",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "Which is bigger, <span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">3</span></span> or <span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">4</span></span>?"
+     ],
+     "answer": "<span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">3</span></span>",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "Thirds are bigger pieces than quarters."
+    },
+    {
+     "text": [
+      "Put in order, smallest first: 2.3, 2.03, 2.33, 3.2"
+     ],
+     "answer": "2.03, 2.3, 2.33, 3.2",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "2.30, 2.03, 2.33, 3.20"
+    }
+   ]
+  },
+  "s": {
+   "blurb": "The Year 8 standard. Show each step.",
+   "questions": [
+    {
+     "text": [
+      "Put in order, smallest first: 0.5, 0.45, 0.405, 0.54"
+     ],
+     "answer": "0.405, 0.45, 0.5, 0.54",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "0.500, 0.450, 0.405, 0.540",
+     "tip": "Add zeros so every number has <b>3 decimal places</b>, then compare."
+    },
+    {
+     "text": [
+      "Put in order, smallest first: <span class=\"frac\"><span class=\"nu\">2</span><span class=\"de\">5</span></span>, 0.35, <span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">8</span></span>"
+     ],
+     "answer": "0.35, <span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">8</span></span>, <span class=\"frac\"><span class=\"nu\">2</span><span class=\"de\">5</span></span>",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "0.4, 0.35, 0.375"
+    },
+    {
+     "text": [
+      "Put in order, smallest first: 0.6, <span class=\"frac\"><span class=\"nu\">5</span><span class=\"de\">8</span></span>, 0.65"
+     ],
+     "answer": "0.6, <span class=\"frac\"><span class=\"nu\">5</span><span class=\"de\">8</span></span>, 0.65",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "<span class=\"frac\"><span class=\"nu\">5</span><span class=\"de\">8</span></span> = 0.625"
+    },
+    {
+     "text": [
+      "Write &lt; or &gt; in the box: <span class=\"frac\"><span class=\"nu\">4</span><span class=\"de\">5</span></span> ☐ 0.85"
+     ],
+     "answer": "<span class=\"frac\"><span class=\"nu\">4</span><span class=\"de\">5</span></span> &lt; 0.85",
+     "lines": 2,
+     "answer_label": "☐",
+     "working": "<span class=\"frac\"><span class=\"nu\">4</span><span class=\"de\">5</span></span> = 0.8"
+    },
+    {
+     "text": [
+      "Put in order, <b>largest</b> first: 72%, 0.7, <span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">4</span></span>, 0.705"
+     ],
+     "answer": "<span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">4</span></span>, 72%, 0.705, 0.7",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "0.75, 0.72, 0.705, 0.7"
+    },
+    {
+     "text": [
+      "Write a decimal that is between 0.3 and 0.31."
+     ],
+     "answer": "Any decimal between them, for example 0.305",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "0.300 and 0.310: anything from 0.301 to 0.309 works, and so do longer decimals."
+    }
+   ]
+  },
+  "e": {
+   "blurb": "Problems, reasoning and one piece of tampered evidence.",
+   "questions": [
+    {
+     "text": [
+      "Put in order, smallest first: <span class=\"frac\"><span class=\"nu\">5</span><span class=\"de\">6</span></span>, <span class=\"frac\"><span class=\"nu\">7</span><span class=\"de\">9</span></span>, <span class=\"frac\"><span class=\"nu\">4</span><span class=\"de\">5</span></span>"
+     ],
+     "answer": "<span class=\"frac\"><span class=\"nu\">7</span><span class=\"de\">9</span></span>, <span class=\"frac\"><span class=\"nu\">4</span><span class=\"de\">5</span></span>, <span class=\"frac\"><span class=\"nu\">5</span><span class=\"de\">6</span></span>",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "0.833…, 0.777…, 0.8 (or common denominator 90: 75, 70, 72)."
+    },
+    {
+     "text": [
+      "Put in order, smallest first: −0.3, −0.03, −<span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">4</span></span>, 0.2"
+     ],
+     "answer": "−0.3, −<span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">4</span></span>, −0.03, 0.2",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "−<span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">4</span></span> = −0.25. The further below zero, the smaller."
+    },
+    {
+     "text": [
+      "Kai says 0.125 is bigger than 0.5. Find the mistake in his reasoning."
+     ],
+     "answer": "0.125 is smaller: 0.125 &lt; 0.500.",
+     "lines": 2,
+     "answer_label": "Correct statement",
+     "working": "He compared the digits as whole numbers. Line up the decimal places: 0.125 against 0.500.",
+     "tampered": "125 is bigger than 5,<br>so 0.125 is bigger than 0.5"
+    },
+    {
+     "text": [
+      "Write a fraction that lies between <span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">3</span></span> and <span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">2</span></span>. Show how you know it does."
+     ],
+     "answer": "For example <span class=\"frac\"><span class=\"nu\">5</span><span class=\"de\">12</span></span> or <span class=\"frac\"><span class=\"nu\">2</span><span class=\"de\">5</span></span>",
+     "lines": 3,
+     "answer_label": "Fraction",
+     "working": "<span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">3</span></span> = <span class=\"frac\"><span class=\"nu\">4</span><span class=\"de\">12</span></span> and <span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">2</span></span> = <span class=\"frac\"><span class=\"nu\">6</span><span class=\"de\">12</span></span>, so <span class=\"frac\"><span class=\"nu\">5</span><span class=\"de\">12</span></span> is between them. (<span class=\"frac\"><span class=\"nu\">2</span><span class=\"de\">5</span></span> = 0.4 also works.)"
+    }
+   ]
+  }
+ },
+ "mistakes": [
+  "Thinking more digits means bigger: 0.405 is less than 0.45.",
+  "Comparing fractions by their denominators only, so <span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">4</span></span> looks bigger than <span class=\"frac\"><span class=\"nu\">1</span><span class=\"de\">3</span></span>.",
+  "Ordering negative numbers as if they were positive: −0.3 is smaller than −0.03.",
+  "Ordering largest first when the question asks for smallest first."
+ ],
+ "closed_title": "Ordering fractions and decimals",
+ "closed_points": [
+  "Order decimals using place value.",
+  "Compare fractions using decimals or a common denominator.",
+  "Order a mix of fractions, decimals and percentages.",
+  "Order negative decimals and fractions."
+ ],
+ "next": {
+  "title": "Keep going in the Maths Forensics Academy",
+  "text": "Step-by-step lessons, answers checked as you go, story cases and maths games for Years 7 to 9. Try the free topics.",
+  "url": "https://www.mathsforensics.com/academy"
+ }
+}

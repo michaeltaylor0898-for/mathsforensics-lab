@@ -1,0 +1,248 @@
+{
+ "code": "MF-AC-Y8-ROUND",
+ "product_line": "Academy worksheet · Year 8 · Free",
+ "strand": "Number",
+ "title": "Rounding and estimating",
+ "level_line": "Year 8 · KS3",
+ "time": "About 40 minutes",
+ "cover_sub": "Round to tens, hundreds, decimal places and significant figures, then use rounding to estimate answers and check calculations.",
+ "parents": {
+  "listen": "Ask: <i>which digit are you rounding to, and which digit decides?</i> A child who can point to both digits has understood. When estimating, listen for rounding to one significant figure, not to the nearest whole number."
+ },
+ "levels_long": {
+  "d": "Getting the basics: one step at a time.",
+  "s": "Year 8 standard: a few steps, some in context.",
+  "e": "A stretch: problems, reasoning and spotting mistakes."
+ },
+ "briefing": [
+  "Rounding makes a number simpler while keeping it close to the real value. Find the digit you're rounding to, then look at the <b>next digit</b> to the right: <b>5 or more, round up</b>; <b>4 or less, leave it</b>.",
+  "<b>Decimal places</b> (d.p.) are counted after the decimal point. <b>Significant figures</b> (s.f.) are counted from the first digit that isn't zero.",
+  "To <b>estimate</b>, round every number to 1 significant figure, then work out the easier calculation. Write ≈, which means <i>approximately equal to</i>."
+ ],
+ "method": [
+  "Find the digit in the place you're rounding to, and draw a line just after it.",
+  "Look at the next digit along.",
+  "5 or more: add one to the digit before the line. 4 or less: leave it.",
+  "Whole numbers: fill in with zeros up to the decimal point. Decimals: stop at the line."
+ ],
+ "examples": [
+  {
+   "question": "Round 3847 to the nearest hundred.",
+   "steps": [
+    "The hundreds digit is 8: 38 | 47.",
+    "The next digit is 4.",
+    "4 or less, so the 8 stays.",
+    "Fill in with zeros: 3800."
+   ],
+   "answer": "3800"
+  },
+  {
+   "question": "Round 6.2753 to 2 decimal places.",
+   "steps": [
+    "Two digits after the point: 6.27 | 53.",
+    "The next digit is 5.",
+    "5 or more, so the 7 goes up to 8."
+   ],
+   "answer": "6.28"
+  },
+  {
+   "question": "Round 0.04718 to 2 significant figures.",
+   "steps": [
+    "The first digit that isn't zero is 4. Count 2 figures from there: 0.047 | 18.",
+    "The next digit is 1, so the 7 stays.",
+    "Don't remove the zeros at the front: they hold the place."
+   ],
+   "answer": "0.047"
+  },
+  {
+   "question": "Estimate the answer to 38.6 × 4.9.",
+   "steps": [
+    "Round each number to 1 significant figure: 38.6 ≈ 40 and 4.9 ≈ 5.",
+    "40 × 5 = 200."
+   ],
+   "answer": "38.6 × 4.9 ≈ 200 (the exact answer is 189.14)"
+  }
+ ],
+ "sections": {
+  "d": {
+   "blurb": "Warm up. One step at a time.",
+   "questions": [
+    {
+     "text": [
+      "Round 2463 to the nearest ten."
+     ],
+     "answer": "2460",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "The tens digit is 6; the next digit is 3, so it stays."
+    },
+    {
+     "text": [
+      "Round 7851 to the nearest hundred."
+     ],
+     "answer": "7900",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "78 | 51: the next digit is 5, so round up."
+    },
+    {
+     "text": [
+      "Round 5.68 to 1 decimal place."
+     ],
+     "answer": "5.7",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "5.6 | 8: 8 is 5 or more."
+    },
+    {
+     "text": [
+      "Round 9.0471 to 2 decimal places."
+     ],
+     "answer": "9.05",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "9.04 | 71: 7 is 5 or more."
+    },
+    {
+     "text": [
+      "Round 48 520 to the nearest thousand."
+     ],
+     "answer": "49 000",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "48 | 520: the next digit is 5, so round up."
+    },
+    {
+     "text": [
+      "Estimate 29 × 41 by rounding each number to the nearest ten."
+     ],
+     "answer": "30 × 40 = 1200",
+     "lines": 2,
+     "answer_label": "≈"
+    }
+   ]
+  },
+  "s": {
+   "blurb": "The Year 8 standard. Show each step.",
+   "questions": [
+    {
+     "text": [
+      "Round 0.6382 to 2 decimal places."
+     ],
+     "answer": "0.64",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "0.63 | 82"
+    },
+    {
+     "text": [
+      "Round 45 672 to 2 significant figures."
+     ],
+     "answer": "46 000",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "45 | 672: round up, then fill with zeros.",
+     "tip": "Keep the zeros. 46 is <b>not</b> the same size as 45 672: the answer must be close to the original number."
+    },
+    {
+     "text": [
+      "Round 0.003851 to 1 significant figure."
+     ],
+     "answer": "0.004",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "The first non-zero digit is 3: 0.003 | 851, and 8 rounds it up."
+    },
+    {
+     "text": [
+      "Round 3.996 to 2 decimal places."
+     ],
+     "answer": "4.00",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "3.99 | 6 rounds up, and 3.99 + 0.01 = 4.00. Write both zeros to show 2 d.p."
+    },
+    {
+     "text": [
+      "Estimate 7.8 × 52.3."
+     ],
+     "answer": "8 × 50 = 400",
+     "lines": 2,
+     "answer_label": "≈"
+    },
+    {
+     "text": [
+      "Estimate the answer to",
+      "<span class=\"display\"><span class=\"frac\"><span class=\"nu\">19.6 + 41.2</span><span class=\"de\">3.1</span></span></span>"
+     ],
+     "answer": "<span class=\"frac\"><span class=\"nu\">20 + 40</span><span class=\"de\">3</span></span> = 20",
+     "lines": 2,
+     "answer_label": "≈"
+    }
+   ]
+  },
+  "e": {
+   "blurb": "Problems, reasoning and one piece of tampered evidence.",
+   "questions": [
+    {
+     "text": [
+      "A whole number, rounded to the nearest ten, is 70.",
+      "What is the smallest it could be? What is the largest?"
+     ],
+     "answer": "Smallest 65, largest 74",
+     "lines": 2,
+     "answer_label": "Smallest ____ Largest",
+     "working": "65 to 74 all round to 70; 75 rounds to 80."
+    },
+    {
+     "text": [
+      "Tickets cost £11.85 each. Estimate the cost of 38 tickets.",
+      "Is your estimate more or less than the real cost? Explain how you know."
+     ],
+     "answer": "40 × £12 = £480. It's more than the real cost, because both numbers were rounded up. (The real cost is £450.30.)",
+     "lines": 3,
+     "answer_label": "≈ £"
+    },
+    {
+     "text": [
+      "Sam estimated 0.48 × 612. Find the mistake and give a better estimate."
+     ],
+     "answer": "0.48 rounds to 0.5 (1 s.f.), not 0. 0.5 × 600 = 300.",
+     "lines": 2,
+     "answer_label": "Better estimate ≈",
+     "working": "Rounding 0.48 to the nearest whole number makes it 0 and loses all the information.",
+     "tampered": "0.48 ≈ 0 and 612 ≈ 600<br>0 × 600 = 0<br>Estimate: 0"
+    },
+    {
+     "text": [
+      "Estimate",
+      "<span class=\"display\"><span class=\"frac\"><span class=\"nu\">6.12 × 39.8</span><span class=\"de\">0.49</span></span></span>"
+     ],
+     "answer": "<span class=\"frac\"><span class=\"nu\">6 × 40</span><span class=\"de\">0.5</span></span> = <span class=\"frac\"><span class=\"nu\">240</span><span class=\"de\">0.5</span></span> = 480",
+     "lines": 3,
+     "answer_label": "≈",
+     "working": "Dividing by 0.5 is the same as multiplying by 2.",
+     "tip": "How many halves are there in 240? Dividing by 0.5 <b>doubles</b> the number."
+    }
+   ]
+  }
+ },
+ "mistakes": [
+  "Rounding the wrong digit, or counting significant figures from the decimal point instead of the first non-zero digit.",
+  "Dropping place-holder zeros: 45 672 to 2 s.f. is 46 000, not 46.",
+  "Writing 3.996 to 2 d.p. as 3.10 or 4. The answer is 4.00.",
+  "Rounding small decimals to 0 when estimating. Round to 1 significant figure instead: 0.48 ≈ 0.5."
+ ],
+ "closed_title": "Rounding and estimating",
+ "closed_points": [
+  "Round to the nearest 10, 100 and 1000.",
+  "Round to decimal places and significant figures.",
+  "Estimate answers by rounding to 1 significant figure.",
+  "Explain whether an estimate is bigger or smaller than the real answer."
+ ],
+ "next": {
+  "title": "Keep going in the Maths Forensics Academy",
+  "text": "Step-by-step lessons, answers checked as you go, story cases and maths games for Years 7 to 9. Try the free topics.",
+  "url": "https://www.mathsforensics.com/academy"
+ }
+}

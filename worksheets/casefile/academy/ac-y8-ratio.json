@@ -1,0 +1,239 @@
+{
+ "code": "MF-AC-Y8-RATIO",
+ "product_line": "Academy worksheet · Year 8 · Free",
+ "strand": "Ratio",
+ "title": "Ratio",
+ "level_line": "Year 8 · KS3",
+ "time": "About 40 minutes",
+ "cover_sub": "Simplify ratios, share amounts in a ratio, and use ratio in recipes, mixtures and problems.",
+ "parents": {
+  "listen": "Ask: <i>how many parts are there altogether, and how much is one part worth?</i> Almost every ratio question comes down to finding one part. Watch out for dividing by each number in the ratio instead of by the total number of parts."
+ },
+ "levels_long": {
+  "d": "Getting the basics: one step at a time.",
+  "s": "Year 8 standard: a few steps, some in context.",
+  "e": "A stretch: problems, reasoning and spotting mistakes."
+ },
+ "briefing": [
+  "A ratio compares amounts. 3 : 5 means for every 3 of the first, there are 5 of the second: <b>8 parts</b> altogether.",
+  "<b>Simplify</b> a ratio by dividing every number by the same thing, like simplifying a fraction. The amounts must be in the <b>same units</b> first.",
+  "<b>Sharing in a ratio:</b> add the numbers to find the total parts, divide to find one part, then multiply."
+ ],
+ "method": [
+  "Add the numbers in the ratio: the total number of parts.",
+  "Divide the amount by the number of parts: the value of one part.",
+  "Multiply one part by each number in the ratio.",
+  "Check: the shares add up to the amount you started with."
+ ],
+ "examples": [
+  {
+   "question": "Simplify 12 : 18",
+   "steps": [
+    "The biggest number that divides both is 6.",
+    "12 ÷ 6 = 2 and 18 ÷ 6 = 3."
+   ],
+   "answer": "2 : 3"
+  },
+  {
+   "question": "Share £40 in the ratio 3 : 5",
+   "steps": [
+    "3 + 5 = 8 parts.",
+    "£40 ÷ 8 = £5 for one part.",
+    "3 × £5 = £15 and 5 × £5 = £25.",
+    "Check: £15 + £25 = £40 ✓"
+   ],
+   "answer": "£15 and £25"
+  },
+  {
+   "question": "Red and blue beads are in the ratio 2 : 7. There are 14 blue beads. How many red beads are there?",
+   "steps": [
+    "Blue is 7 parts, and 7 parts = 14 beads.",
+    "One part = 14 ÷ 7 = 2 beads.",
+    "Red is 2 parts: 2 × 2 = 4."
+   ],
+   "answer": "4 red beads"
+  }
+ ],
+ "sections": {
+  "d": {
+   "blurb": "Warm up. One step at a time.",
+   "questions": [
+    {
+     "text": [
+      "Simplify 6 : 10"
+     ],
+     "answer": "3 : 5",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "Simplify 20 : 15"
+     ],
+     "answer": "4 : 3",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "Share 20 sweets in the ratio 1 : 4"
+     ],
+     "answer": "4 and 16",
+     "lines": 2,
+     "answer_label": "____ and",
+     "working": "5 parts, 4 sweets a part."
+    },
+    {
+     "text": [
+      "Share £30 in the ratio 2 : 1"
+     ],
+     "answer": "£20 and £10",
+     "lines": 2,
+     "answer_label": "£ ____ and £",
+     "working": "3 parts, £10 a part."
+    },
+    {
+     "text": [
+      "Boys to girls in a club is 1 : 2. There are 10 boys. How many girls are there?"
+     ],
+     "answer": "20",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "Simplify 4 : 8 : 12"
+     ],
+     "answer": "1 : 2 : 3",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "Divide by 4."
+    }
+   ]
+  },
+  "s": {
+   "blurb": "The Year 8 standard. Show each step.",
+   "questions": [
+    {
+     "text": [
+      "Share £72 in the ratio 5 : 3"
+     ],
+     "answer": "£45 and £27",
+     "lines": 2,
+     "answer_label": "£ ____ and £",
+     "working": "8 parts, £9 a part."
+    },
+    {
+     "text": [
+      "Write 50 cm : 2 m in its simplest form."
+     ],
+     "answer": "1 : 4",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "50 cm : 200 cm, then divide by 50.",
+     "tip": "Change to the <b>same units</b> first: 2 m = 200 cm."
+    },
+    {
+     "text": [
+      "Squash and water are mixed in the ratio 1 : 6. How much squash goes with 300 ml of water?"
+     ],
+     "answer": "50 ml",
+     "lines": 2,
+     "answer_label": "ml",
+     "working": "6 parts = 300 ml, one part = 50 ml."
+    },
+    {
+     "text": [
+      "Share 90 in the ratio 2 : 3 : 4"
+     ],
+     "answer": "20, 30 and 40",
+     "lines": 2,
+     "answer_label": "Three amounts",
+     "working": "9 parts, 10 a part."
+    },
+    {
+     "text": [
+      "A recipe for 4 people uses 200 g of pasta. How much pasta is needed for 6 people?"
+     ],
+     "answer": "300 g",
+     "lines": 2,
+     "answer_label": "g",
+     "working": "50 g a person."
+    },
+    {
+     "text": [
+      "Dogs to cats in a shelter is 3 : 5. There are 40 animals. How many cats are there?"
+     ],
+     "answer": "25",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "8 parts, 5 animals a part."
+    }
+   ]
+  },
+  "e": {
+   "blurb": "Problems, reasoning and one piece of tampered evidence.",
+   "questions": [
+    {
+     "text": [
+      "Ana's age to Ben's age is 3 : 4. Ben is 5 years older than Ana. How old are they?"
+     ],
+     "answer": "Ana 15, Ben 20",
+     "lines": 2,
+     "answer_label": "Ana ____ Ben",
+     "working": "The difference is 1 part, so 1 part = 5 years.",
+     "tip": "The <b>difference</b> between the two numbers in the ratio is a number of parts too."
+    },
+    {
+     "text": [
+      "Jay was asked to share £60 in the ratio 2 : 3. Find the mistake and give the right shares."
+     ],
+     "answer": "£24 and £36",
+     "lines": 2,
+     "answer_label": "£ ____ and £",
+     "working": "He divided by each number in the ratio. There are 5 parts: £12 a part.",
+     "tampered": "£60 ÷ 2 = £30<br>£60 ÷ 3 = £20<br>Answer: £30 and £20"
+    },
+    {
+     "text": [
+      "Red to green counters in a bag is 3 : 5.",
+      "a) What fraction of the counters are red?",
+      "b) There are 24 counters. How many are red?"
+     ],
+     "answer": "a) <span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">8</span></span>  b) 9",
+     "lines": 3,
+     "answer_label": "a) ____ b)",
+     "working": "a) 3 parts out of 8.  b) 24 ÷ 8 = 3, then 3 × 3."
+    },
+    {
+     "text": [
+      "Green paint is yellow and blue mixed in the ratio 3 : 2.",
+      "There are 12 litres of yellow and 10 litres of blue. What is the most green paint that can be made?"
+     ],
+     "answer": "20 litres",
+     "lines": 4,
+     "answer_label": "litres",
+     "working": "All the yellow (3 parts = 12 l, so 1 part = 4 l) needs 8 l of blue, which is there: 12 + 8 = 20 l. Using all the blue would need 15 l of yellow."
+    }
+   ]
+  }
+ },
+ "mistakes": [
+  "Dividing the amount by each number in the ratio, instead of by the total number of parts.",
+  "Simplifying before changing to the same units (50 cm : 2 m is not 25 : 1).",
+  "Saying 3 : 5 means <span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">5</span></span> are red. It's <span class=\"frac\"><span class=\"nu\">3</span><span class=\"de\">8</span></span>: there are 8 parts altogether.",
+  "Giving the shares in the wrong order."
+ ],
+ "closed_title": "Ratio",
+ "closed_points": [
+  "Simplify ratios, including different units.",
+  "Share an amount in a ratio.",
+  "Find the value of one part from any information.",
+  "Use ratio in recipes, mixtures and age problems."
+ ],
+ "next": {
+  "title": "Keep going in the Maths Forensics Academy",
+  "text": "Step-by-step lessons, answers checked as you go, story cases and maths games for Years 7 to 9. Try the free topics.",
+  "url": "https://www.mathsforensics.com/academy"
+ }
+}

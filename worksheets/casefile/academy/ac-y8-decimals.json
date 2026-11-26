@@ -1,0 +1,238 @@
+{
+ "code": "MF-AC-Y8-DEC",
+ "product_line": "Academy worksheet · Year 8 · Free",
+ "strand": "Number",
+ "title": "Arithmetic with decimals",
+ "level_line": "Year 8 · KS3",
+ "time": "About 40 minutes",
+ "cover_sub": "Add, subtract, multiply and divide with decimals, without a calculator, and know where the decimal point goes every time.",
+ "parents": {
+  "listen": "Ask: <i>where does the decimal point go, and why?</i> For multiplying, listen for counting decimal places. For dividing, listen for making the number you divide by into a whole number first."
+ },
+ "levels_long": {
+  "d": "Getting the basics: one step at a time.",
+  "s": "Year 8 standard: a few steps, some in context.",
+  "e": "A stretch: problems, reasoning and spotting mistakes."
+ },
+ "briefing": [
+  "<b>Adding and subtracting:</b> line up the decimal points, one under the other. Fill any gaps with zeros so both numbers have the same number of decimal places.",
+  "<b>Multiplying:</b> ignore the decimal points and multiply as whole numbers. Then count the decimal places in the question: the answer has the same number.",
+  "<b>Dividing by a decimal:</b> multiply both numbers by 10 (or 100) until you're dividing by a whole number. The answer doesn't change."
+ ],
+ "method": null,
+ "examples": [
+  {
+   "question": "Work out 12.7 + 3.85",
+   "steps": [
+    "Line up the points and fill the gap: 12.70 + 3.85.",
+    "Add column by column, carrying as normal."
+   ],
+   "answer": "16.55"
+  },
+  {
+   "question": "Work out 8 − 2.36",
+   "steps": [
+    "Write 8 as 8.00 so the points line up.",
+    "8.00 − 2.36, borrowing as normal."
+   ],
+   "answer": "5.64"
+  },
+  {
+   "question": "Work out 0.6 × 0.04",
+   "steps": [
+    "Multiply without the points: 6 × 4 = 24.",
+    "Count decimal places in the question: 1 + 2 = 3.",
+    "Give the answer 3 decimal places: 0.024."
+   ],
+   "answer": "0.024"
+  },
+  {
+   "question": "Work out 7.2 ÷ 0.3",
+   "steps": [
+    "Multiply both numbers by 10: 72 ÷ 3.",
+    "72 ÷ 3 = 24."
+   ],
+   "answer": "24"
+  }
+ ],
+ "sections": {
+  "d": {
+   "blurb": "Warm up. One step at a time.",
+   "questions": [
+    {
+     "text": [
+      "4.5 + 2.3"
+     ],
+     "answer": "6.8",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "9.6 − 3.4"
+     ],
+     "answer": "6.2",
+     "lines": 2,
+     "answer_label": "Answer"
+    },
+    {
+     "text": [
+      "3.75 + 2.4"
+     ],
+     "answer": "6.15",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "3.75 + 2.40"
+    },
+    {
+     "text": [
+      "10 − 4.7"
+     ],
+     "answer": "5.3",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "10.0 − 4.7"
+    },
+    {
+     "text": [
+      "2.3 × 4"
+     ],
+     "answer": "9.2",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "23 × 4 = 92, then 1 decimal place."
+    },
+    {
+     "text": [
+      "8.4 ÷ 2"
+     ],
+     "answer": "4.2",
+     "lines": 2,
+     "answer_label": "Answer"
+    }
+   ]
+  },
+  "s": {
+   "blurb": "The Year 8 standard. Show each step.",
+   "questions": [
+    {
+     "text": [
+      "15.08 − 6.9"
+     ],
+     "answer": "8.18",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "15.08 − 6.90",
+     "tip": "Write 6.9 as 6.90 so the decimal points line up."
+    },
+    {
+     "text": [
+      "0.7 × 0.8"
+     ],
+     "answer": "0.56",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "7 × 8 = 56, then 2 decimal places."
+    },
+    {
+     "text": [
+      "3.6 × 2.5"
+     ],
+     "answer": "9",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "36 × 25 = 900, then 2 decimal places: 9.00."
+    },
+    {
+     "text": [
+      "4.65 ÷ 3"
+     ],
+     "answer": "1.55",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "Short division, keeping the point in line."
+    },
+    {
+     "text": [
+      "9.6 ÷ 0.4"
+     ],
+     "answer": "24",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "× 10: 96 ÷ 4."
+    },
+    {
+     "text": [
+      "A pen costs £1.35. How much do 6 pens cost?"
+     ],
+     "answer": "£8.10",
+     "lines": 2,
+     "answer_label": "£",
+     "working": "135 × 6 = 810p."
+    }
+   ]
+  },
+  "e": {
+   "blurb": "Problems, reasoning and one piece of tampered evidence.",
+   "questions": [
+    {
+     "text": [
+      "0.24 × 0.15"
+     ],
+     "answer": "0.036",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "24 × 15 = 360, then 4 decimal places: 0.0360."
+    },
+    {
+     "text": [
+      "0.144 ÷ 0.12"
+     ],
+     "answer": "1.2",
+     "lines": 2,
+     "answer_label": "Answer",
+     "working": "× 100: 14.4 ÷ 12."
+    },
+    {
+     "text": [
+      "Mia worked out 2.4 × 0.3. Find her mistake and give the right answer."
+     ],
+     "answer": "0.72",
+     "lines": 2,
+     "answer_label": "Correct answer",
+     "working": "There are 2 decimal places in the question (2.4 and 0.3), so the answer needs 2: 0.72.",
+     "tampered": "24 × 3 = 72<br>So 2.4 × 0.3 = 7.2"
+    },
+    {
+     "text": [
+      "0.75 kg of sweets is shared into bags of 0.05 kg.",
+      "a) How many bags can be filled?",
+      "b) The sweets cost £6.40 per kg. How much do 0.75 kg cost?"
+     ],
+     "answer": "a) 15 bags  b) £4.80",
+     "lines": 4,
+     "answer_label": "a) ____ b) £",
+     "working": "a) 75 ÷ 5 = 15.  b) 6.40 × 0.75 = 4.80 (or three quarters of £6.40)."
+    }
+   ]
+  }
+ },
+ "mistakes": [
+  "Not lining up the decimal points: 12.7 + 3.85 written as 4.12 or 16.92.",
+  "Subtracting the smaller digit from the bigger in each column instead of borrowing: 8 − 2.36 = 6.36.",
+  "Counting decimal places wrongly when multiplying: 0.6 × 0.04 = 0.24.",
+  "Dividing by a decimal without multiplying both numbers by 10."
+ ],
+ "closed_title": "Arithmetic with decimals",
+ "closed_points": [
+  "Add and subtract decimals by lining up the points.",
+  "Multiply decimals by counting decimal places.",
+  "Divide by a decimal by making it a whole number first.",
+  "Use decimals in money and measures problems."
+ ],
+ "next": {
+  "title": "Keep going in the Maths Forensics Academy",
+  "text": "Step-by-step lessons, answers checked as you go, story cases and maths games for Years 7 to 9. Try the free topics.",
+  "url": "https://www.mathsforensics.com/academy"
+ }
+}
