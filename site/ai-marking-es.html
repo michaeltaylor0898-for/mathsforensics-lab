@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cómo funciona la corrección con IA · Maths Forensics Lab</title>
+<meta name="description" content="Cómo usa Maths Forensics la IA para corregir el desarrollo matemático manuscrito, qué puede y qué no puede hacer, y cómo reclamar una nota.">
+<link rel="alternate" hreflang="en" href="https://lab.mathsforensics.com/ai-marking.html">
+<link rel="alternate" hreflang="es" href="https://lab.mathsforensics.com/ai-marking-es.html">
+<style>
+:root{--ink:#0B122C;--panel:#111a3d;--line:#26336a;--cyan:#00FCF1;--blue:#1B36FF;--text:#E8ECF8;--muted:#a3aed3}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--text);font-family:"Josefin Sans","Avenir Next","Segoe UI",system-ui,sans-serif;font-size:17px;line-height:1.6}
+.wrap{max-width:780px;margin:0 auto;padding:32px max(18px,env(safe-area-inset-left,0px)) 64px}
+header{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+header svg{width:34px;height:39px;flex:none}
+.wm{font-weight:800;letter-spacing:.08em;font-size:15px;line-height:1.1}
+.wm small{display:block;font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:500;font-size:11px;letter-spacing:.18em;color:var(--cyan);margin-top:4px}
+h1{font-size:clamp(28px,5vw,38px);line-height:1.15;margin:0 0 6px}
+.updated{color:var(--muted);margin:0 0 24px;font-size:15px}
+h2{font-size:21px;margin:36px 0 8px;padding-top:16px;border-top:1px solid var(--line)}
+h3{font-size:17px;margin:20px 0 4px;color:var(--cyan)}
+p,li{color:var(--text)}
+ul{padding-left:22px}
+li{margin:4px 0}
+a{color:var(--cyan)}
+.summary{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:0 0 8px}
+.summary ul{margin:6px 0 0}
+table{width:100%;border-collapse:collapse;font-size:15px;margin:8px 0}
+th,td{text-align:left;vertical-align:top;padding:9px 10px;border-bottom:1px solid var(--line)}
+th{color:var(--cyan);font-weight:700}
+.tablewrap{overflow-x:auto}
+.allpol{margin-top:28px}
+.back{display:inline-block;margin-top:32px;font-weight:700}
+.lang{margin:-14px 0 20px;font-size:15px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<svg viewBox="0 0 40 46" aria-hidden="true"><path d="M20 2 37 8v14c0 11-7.5 18.5-17 22C10.5 40.5 3 33 3 22V8z" fill="#111a3d" stroke="#00FCF1" stroke-width="2.2" stroke-linejoin="round"/><circle cx="19" cy="21" r="6.2" fill="#111a3d" stroke="#00FCF1" stroke-width="2.6"/><circle cx="19" cy="21" r="1.6" fill="#00FCF1"/><path d="M23.4 25.4 28.8 30.8" stroke="#1B36FF" stroke-width="3.8" stroke-linecap="round"/></svg>
+<div class="wm">MATHS FORENSICS<small>LAB · GCSE MATHS</small></div>
+</header>
+
+<h1>Cómo funciona la corrección con IA</h1>
+<p class="updated">Última actualización: 26 de noviembre de 2026</p>
+<p class="lang"><a href="ai-marking.html" hreflang="en" lang="en">Read in English</a></p>
+<div class="summary">
+<b>En resumen</b>
+<ul>
+<li>Cuando usas respuestas escritas, un modelo de IA lee una imagen de tu desarrollo y lo corrige según nuestros criterios de corrección.</li>
+<li>La IA es Claude, creada por Anthropic. Ve tu desarrollo y la pregunta, nunca tu nombre ni tu correo electrónico, y Anthropic no puede usarlos para entrenar sus modelos.</li>
+<li>Es el código, no la IA, el que aplica las reglas de los criterios de corrección y suma tu puntuación.</li>
+<li>Puedes ver exactamente lo que leyó la IA y reclamar cualquier nota. Una persona revisa cada reclamación.</li>
+<li>Las imágenes de tu desarrollo se eliminan a los 7 días. Tus notas y comentarios se quedan en tu historial de aprendizaje.</li>
+<li>Las notas de la IA son notas de práctica. No son resultados de examen ni notas previstas.</li>
+</ul>
+</div>
+
+<h2>1. Dónde se usa la IA</h2>
+<div class="tablewrap"><table>
+<tr><th>Función</th><th>Qué hace la IA</th><th>Qué no hace nunca</th></tr>
+<tr><td>Respuestas escritas</td><td>Lee tu desarrollo línea a línea, decide cada punto según nuestros criterios de corrección, encuentra el paso en el que se perdieron puntos y escribe un comentario breve</td><td>Cambiar las reglas de los criterios de corrección ni el total (eso lo hace el código)</td></tr>
+<tr><td>Check my working</td><td>Mira tu desarrollo hasta ese momento, te dice si vas bien y te señala una línea que conviene revisar</td><td>Darte la respuesta ni escribir el siguiente paso</td></tr>
+<tr><td>Mike mode</td><td>Después de cada pausa en tu escritura, enciende un semáforo: verde (vas bien), ámbar (has llegado a un paso en el que los alumnos suelen perder puntos), rojo (un error que te costará puntos)</td><td>Darte la respuesta, ni ponerse en rojo salvo que esté seguro</td></tr>
+</table></div>
+<p>Todo lo demás en el Lab, como las respuestas escritas con el teclado, la práctica por temas e Incident Room, se corrige con reglas fijas, no con IA. La IA nunca mantiene conversaciones abiertas con los alumnos.</p>
+
+<h2>2. Quién proporciona la IA</h2>
+<p>La IA es Claude, un modelo creado por Anthropic, que usamos a través del servicio para empresas de Anthropic. Las condiciones comerciales de Anthropic establecen que no puede entrenar modelos con el contenido de sus clientes («may not train models on Customer Content»), y trata los datos conforme a sus condiciones de tratamiento de datos. Solo le enviamos la imagen de tu desarrollo, la pregunta y nuestros criterios de corrección. Nunca le enviamos tu nombre, tu correo electrónico ni tu centro.</p>
+
+<h2>3. Cómo se deciden las notas</h2>
+<ul>
+<li>Cada pregunta tiene unos criterios de corrección escritos por Mike Taylor, profesor de matemáticas de GCSE con más de diez años de experiencia corrigiendo exámenes, al estilo de los organismos examinadores: puntos de método (M), puntos de precisión (A) y puntos independientes (B).</li>
+<li>Primero, la IA copia lo que lee en tu desarrollo; después decide cada punto e indica qué línea lo ganó o lo perdió.</li>
+<li>Después, el código aplica las reglas que la IA no puede saltarse: el arrastre de errores (follow-through) solo donde los criterios lo permiten, los puntos que dependen de puntos anteriores y la regla de Maths Forensics que se explica a continuación. El código suma la puntuación.</li>
+<li><b>La regla de Maths Forensics:</b> un punto de método exige que el método esté escrito, y un punto de precisión exige primero un punto de método. Por eso, una respuesta correcta sin desarrollo no obtiene puntos de método ni de precisión. Es más estricto que algunos organismos examinadores, y lo es a propósito. Cuando un organismo examinador probablemente daría más puntos, tu informe lo indica.</li>
+</ul>
+
+<h2>4. Qué precisión tiene y qué hacemos con los errores</h2>
+<p>La corrección con IA puede leer mal la letra o equivocarse al valorar un punto, igual que un corrector humano. Para detectarlo:</p>
+<ul>
+<li>cada informe muestra <b>lo que leyó la IA</b> en tu desarrollo, para que veas enseguida si hubo una lectura errónea;</li>
+<li>los puntos de los que la IA no está segura se marcan como <b>provisionales</b>;</li>
+<li>puedes <b>reclamar cualquier nota</b> desde el informe en un plazo de 7 días, y Mike Taylor la revisa;</li>
+<li>comparamos la IA con correcciones hechas a mano antes y después de cada cambio, y ajustamos los criterios de corrección cuando no coinciden.</li>
+</ul>
+
+<h2>5. Qué pasa con tus datos</h2>
+<ul>
+<li>La imagen de tu desarrollo se guarda de forma privada, donde solo tú puedes verla, y se elimina a los 7 días. Solo se conserva más tiempo mientras haya una reclamación abierta sobre ella.</li>
+<li>Check my working y Mike mode no guardan ninguna imagen.</li>
+<li>Tus notas, tus comentarios y la copia escrita de tu desarrollo se quedan en tu historial de aprendizaje, para que el Lab pueda seguir qué errores cometes y orientar tu práctica.</li>
+<li>Todos los detalles están en nuestra <a href="privacy-es.html">política de privacidad</a>.</li>
+</ul>
+
+<h2>6. Para centros educativos</h2>
+<p>Las notas de la IA sirven para practicar y recibir comentarios. No deben usarse por sí solas para informes a las familias, decisiones de agrupamiento ni notas previstas. Los profesores pueden revisar las notas y las reclamaciones, y nuestro acuerdo de encargo del tratamiento regula cómo se trata el trabajo de los alumnos.</p>
+
+<h2>7. Preguntas o dudas</h2>
+<p>Escribe a <a href="mailto:support@mathsforensics.com">support@mathsforensics.com</a>. Si crees que una nota es incorrecta, lo más rápido es usar «Dispute a mark» en el informe.</p>
+
+<p class="allpol"><a href="policies-es.html">Todas las políticas</a></p>
+<p>Maths Forensics es un nombre comercial de HARLEQUIN DIGITAL INNOVATIONS, S.L. Los datos de la empresa figuran en nuestro <a href="legal-notice-es.html">aviso legal</a>.</p>
+<a class="back" href="./">← Volver a Maths Forensics Lab</a>
+</div>
+</body>
+</html>
